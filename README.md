@@ -1,3 +1,6 @@
+# pantheon-brc-upstream-d10
+BRC upstream of Drupal 10 on Pantheon
+
 # Composer-enabled Drupal template
 
 This is Pantheon's recommended starting point for forking new [Drupal](https://www.drupal.org/) upstreams
