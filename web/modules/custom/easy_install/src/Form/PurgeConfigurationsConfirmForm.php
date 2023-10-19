@@ -49,6 +49,13 @@ class PurgeConfigurationsConfirmForm extends ConfirmFormBase {
   protected $entityTypeManager;
 
   /**
+   * The entity manager.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * An array of modules to uninstall.
    *
    * @var array
@@ -66,6 +73,8 @@ class PurgeConfigurationsConfirmForm extends ConfirmFormBase {
    *   The configuration manager.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_manager
    *   The entity manager.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file system.
    */
   public function __construct(ModuleInstallerInterface $module_installer, KeyValueStoreExpirableInterface $key_value_expirable, ConfigManagerInterface $config_manager, EntityTypeManagerInterface $entity_manager, FileSystemInterface $file_system) {
     $this->moduleInstaller = $module_installer;
@@ -142,8 +151,8 @@ class PurgeConfigurationsConfirmForm extends ConfirmFormBase {
       '#items' => $this->modules['install'],
     ];
     foreach ($this->modules['install'] as $module => $module_name) {
-      $install_dir = drupal_get_path('module', $module) . '/' . InstallStorage::CONFIG_INSTALL_DIRECTORY;
-      $optional_dir = drupal_get_path('module', $module) . '/' . InstallStorage::CONFIG_OPTIONAL_DIRECTORY;
+      $install_dir = \Drupal::service('extension.list.module')->getPath($module) . '/' . InstallStorage::CONFIG_INSTALL_DIRECTORY;
+      $optional_dir = \Drupal::service('extension.list.module')->getPath($module) . '/' . InstallStorage::CONFIG_OPTIONAL_DIRECTORY;
       if(file_exists($install_dir)) { 
           $install_details =  $this->fileSystem->scanDirectory($install_dir, "/\.(yml)$/");
       }
