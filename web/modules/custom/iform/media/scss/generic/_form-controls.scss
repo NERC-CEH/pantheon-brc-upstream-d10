@@ -1,0 +1,116 @@
+.page-notice {
+  padding: 0.3em;
+  display: block;
+  margin-bottom: 1em;
+  &.ui-state-default {
+    background-color: lightyellow;
+  }
+  &.ui-state-highlight {
+    border-color: $colour-range-1-b;
+    background-color: mix($colour-range-1-b, white, 20%);
+    color: #333;
+  }
+  p {
+    margin: 0.5em 1.5em 0.5em 1.5em;
+  }
+  span.ui-icon {
+    float: left;
+  }
+  span.fas, span.far {
+    font-size: 150%;
+  }
+}
+
+label, form label {
+  width: $label-width;
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+  vertical-align: top;
+  margin: 8px 0;
+  font-weight: bold;
+}
+
+form input:not([type="submit"]), form select, form textarea, #form-params textarea, .timeEntry_control,
+    .inline-control, button.inline-control, input.inline-control {
+  vertical-align: top;
+  margin: 4px 0;
+  display: inline;
+  padding: $control-padding;
+  -webkit-border-radius: $control-radius;
+  -moz-border-radius: $control-radius;
+  border-radius: $control-radius;
+}
+
+.helpText {
+  margin-left: $label-width + $control-padding;
+}
+
+/* Required asterisk can be large */
+.deh-required {
+  font-size: 150%;
+}
+
+/* Control box is div class used to group controls with a single label, e.g. hierarchical select. */
+.control-box {
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+}
+
+/* Some default button spacing. */
+.indicia-button {
+  padding: 0.3em 1.5em;
+  margin: 0.25em;
+  min-height: 23px;
+  width: auto;
+  line-height: 1.5;
+}
+
+/* Find-me icon position inside edge of sref control */
+input.findme {
+  padding-right: 18px;
+}
+
+#findme-icon {
+  margin: 8px 0 0 -18px;
+  vertical-align: top;
+  padding-right: 2px;
+}
+
+/* Control sizing classes */
+.control-width-0 {
+  width: 25px !important;
+  box-sizing: border-box;
+}
+
+.control-width-1 {
+  width: 50px !important;
+  box-sizing: border-box;
+}
+
+.control-width-2 {
+  width: 100px !important;
+  box-sizing: border-box;
+}
+
+.control-width-3 {
+  width: 150px !important;
+  box-sizing: border-box;
+}
+
+.control-width-4 {
+  width: 200px !important;
+  box-sizing: border-box;
+}
+
+.control-width-5 {
+  width: 300px !important;
+  box-sizing: border-box;
+}
+
+.control-width-6 {
+  width: 500px !important;
+  box-sizing: border-box;
+}

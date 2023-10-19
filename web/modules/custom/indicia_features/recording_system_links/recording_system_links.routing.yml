@@ -1,0 +1,48 @@
+recording_system_links.manage_links:
+  path: '/admin/config/recording-system-links'
+  defaults:
+    _controller: '\Drupal\recording_system_links\Controller\RecordingSystemLinksController::manageLinks'
+  requirements:
+    _permission: 'admin recording system links'
+recording_system_links.configure_link:
+  path: '/admin/config/recording-system-links/link-settings'
+  defaults:
+    _form: '\Drupal\recording_system_links\Form\LinkSettingsForm'
+  requirements:
+    _permission: 'admin recording system links'
+recording_system_links.manage_mappings:
+  path: '/admin/config/recording-system-links/mappings'
+  defaults:
+    _controller: '\Drupal\recording_system_links\Controller\RecordingSystemLinksController::manageMappings'
+  requirements:
+    _permission: 'admin recording system links'
+recording_system_links.configure_mapping:
+  path: '/admin/config/recording-system-links/mappings/settings'
+  defaults:
+    _form: '\Drupal\recording_system_links\Form\MappingSettingsForm'
+  requirements:
+    _permission: 'admin recording system links'
+recording_system_links.connect:
+  path: '/recording-system-links/{machineName}/connect'
+  defaults:
+    _controller: '\Drupal\recording_system_links\Controller\RecordingSystemLinksController::connect'
+    _title: 'Connect recording system'
+  requirements:
+    _permission: 'connect recording system links'
+    _role: 'authenticated'
+recording_system_links.oauth2-callback:
+  path: '/recording-system-links/{machineName}/oauth2-callback'
+  defaults:
+    _controller: '\Drupal\recording_system_links\Controller\RecordingSystemLinksController::oauth2Callback'
+    _title: 'Redirect from oAuth login to receive token'
+  requirements:
+    _permission: 'connect recording system links'
+    _role: 'authenticated'
+recording_system_links.oauth2-callback-foo:
+  path: '/recording-system-links/oauth2-callback'
+  defaults:
+    _controller: '\Drupal\recording_system_links\Controller\RecordingSystemLinksController::oauth2Callback'
+    _title: 'Redirect from oAuth login to receive token'
+  requirements:
+    _permission: 'connect recording system links'
+    _role: 'authenticated'

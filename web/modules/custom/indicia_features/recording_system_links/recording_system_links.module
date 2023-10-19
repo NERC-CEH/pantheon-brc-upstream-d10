@@ -1,0 +1,143 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\recording_system_links\Utility\IndiciaUtils;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Adds buttons for linking to recording systems, or shows existing link info.
+ *
+ * */
+function recording_system_links_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id === 'user_form') {
+    $formUserId = $form_state->getFormObject()->getEntity()->id();
+    if ($formUserId === \Drupal::currentUser()->id() && \Drupal::currentUser()->hasPermission('connect recording system links')) {
+      $form['recording_system_links'] = [
+        '#type' => 'details',
+        '#open' => TRUE,
+        '#title' => t('Recording system links'),
+      ];
+      $utils = \Drupal::service('recording_system_links.recording_system_utils');
+      $links = $utils->getUsersSystemLinkList(TRUE);
+      foreach ($links as $link) {
+        // New link button with info.
+        $form['recording_system_links'][$link->machine_name] = [
+          '#type' => 'details',
+          '#open' => TRUE,
+          '#title' => $link->title,
+          '#description' => $link->description,
+        ];
+        if ($link->rst_uid) {
+          // Existing link.
+          $form['recording_system_links'][$link->machine_name]['info'] = [
+            '#type' => 'item',
+            '#title' => t('Your account is linked to to %title.', ['%title' => $link->title]),
+          ];
+        }
+        else {
+          $form['recording_system_links'][$link->machine_name]['connect_recording_system'] = [
+            '#type' => 'link',
+            '#title' => t('Connect to %title', ['%title' => $link->title]),
+            '#url' => Url::fromRoute('recording_system_links.connect', ['machineName' => $link->machine_name]),
+            '#attributes' => [
+              'class' => ['button'],
+            ],
+          ];
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_iform_after_submit().
+ *
+ * When records submitted, find any links to recording systems that fire on
+ * hooks, then sychronise the records.
+ */
+function recording_system_links_iform_after_submit(array $submission, $op, $response, &$msg) {
+  if ($response['outer_table'] === 'sample') {
+    // Retrieve links for hooks.
+    $utils = \Drupal::service('recording_system_links.recording_system_utils');
+    $links = $utils->getUsersSystemLinkList(FALSE, 'hook');
+    if (count($links) === 0) {
+      return;
+    };
+    if (isset($submission['fields']['survey_id'])) {
+      // Don't want to do anything if none of the links configured to include this survey ID.
+      $thisSurveyId = $submission['fields']['survey_id']['value'];
+      $needThisSurvey = FALSE;
+      foreach ($links as $link) {
+        if (empty($link->survey_ids) || in_array($thisSurveyId, explode(',', $link->survey_ids))) {
+          $needThisSurvey = TRUE;
+          break;
+        }
+      }
+      if (!$needThisSurvey) {
+        return;
+      }
+    }
+    $records = IndiciaUtils::getRecordsForSample($response['outer_id']);
+    if (count($records) === 0) {
+      return;
+    }
+    $msg .= ' ' . $utils->syncRecords($records, $links, TRUE, $op);
+  }
+}
+
+/**
+ * Implements hook_cron().
+ *
+ * If cron sync enabled, then finds records since the last cron run for users
+ * who have linked their accounts and syncs them.
+ */
+function recording_system_links_cron() {
+  $utils = \Drupal::service('recording_system_links.recording_system_utils');
+  $links = $utils->getAllSystemLinkWithUserIdsList('cron');
+  /*
+   * Fetching records - find list of survey IDs to filter. If between 1 and 10, then filter, else don't bother.
+   * Find list of user IDs to filter, if between 1 and 10 then filter, else don't bother.
+   * Filter to tracking > lowest tracking for cron enabled links
+   * Save a link - if cron turned on and wasn't before, then reset tracking to current highest. DONE
+   * In the records loop, skip for a link if < link's tracking.
+   * All links get the same tracking number after loop.
+   *
+   */
+  // Get tracking from the last run.
+  $tracking = $utils->getMinTracking($links);
+  $currentMaxTracking = IndiciaUtils::getCurrentMaxTracking();
+  //$surveyIds = $utils->getAllSurveysForLinks($systemLinks);
+
+  $warehouseUserIds = $utils->getWarehouseUserIdFilterForCron();
+
+  if (empty($warehouseUserIds)) {
+    // No users, so just store the current tracking, then stop.
+    $utils->setCurrentTrackingOnLinks($links);
+    return;
+  }
+  $surveyIds = [];
+  foreach ($links as $link) {
+    if (empty($link->survey_ids)) {
+      $surveyIds = NULL;
+      break;
+    }
+    else {
+      $surveyIds = array_merge($surveyIds, explode(',', $link->survey_ids));
+    }
+  }
+  $surveyIds = $surveyIds === NULL ? NULL : array_unique($surveyIds);
+
+  $records = IndiciaUtils::getRecordsFromTracking($tracking, $surveyIds, $warehouseUserIds);
+  if (count($records) === 0) {
+    // Wind forward to the current tracking value.
+    $utils->setCurrentTrackingOnLinks($links, $currentMaxTracking);
+    return;
+  }
+  $utils->syncRecords($records, $links);
+  $lastRecord = array_pop($records);
+  // Set the link tracking to the last record's tracking in case not all
+  // records were returned.
+  $utils->setCurrentTrackingOnLinks($links, $lastRecord['tracking']);
+}

@@ -1,0 +1,241 @@
+<?php
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_user_profile_form_alter().
+ *
+ * Adds controls for configuring the user's email notification settings on the
+ * Indicia warehouse to the user account form.
+ */
+function indicia_notification_emails_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  iform_load_helpers(['data_entry_helper']);
+  // Get the warehouse user id for the user whose profile is being viewed.
+  $account = $form_state->getFormObject()->getEntity();
+  if (!$account->id()) {
+    // Nothing to do if user not created yet.
+    return;
+  }
+  $userId = hostsite_get_user_field('indicia_user_id', FALSE, FALSE, $account->id());
+  if (!$userId) {
+    // Nothing to do if not linked to the warehouse.
+    return;
+  }
+  // Add a fieldset for the controls.
+  $form['notification_settings'] = [
+    '#type' => 'fieldset',
+    '#title' => t('Email notification settings'),
+  ];
+  // A control for the quick setting of all types of notification frequency.
+  $form['notification_settings']['email_frequency'] = [
+    '#type' => 'select',
+    '#title' => t('Email digest frequency'),
+    '#description' => t('How often would you like to receive an email summarising your notifications?'),
+    '#options' => [
+      '' => t('Never'),
+      'IH' => t('Hourly'),
+      'D' => t('Daily'),
+      'W' => t('Weekly'),
+      '-' => t('Use advanced settings below'),
+    ],
+  ];
+  $form['notification_settings']['advanced_email_settings'] = [
+    '#type' => 'details',
+    '#title' => t('Advanced notification settings'),
+    '#description' => t('Control email notification digest frequency separately for each type of notification'),
+    '#weight' => 2,
+    '#open' => FALSE,
+  ];
+
+  // Get existing data from the warehouse for the user.
+  $config = \Drupal::config('iform.settings');
+  $auth = data_entry_helper::get_read_write_auth($config->get('website_id'), $config->get('password'));
+  $notificationEmailsExistingData = indicia_notification_emails_existing_data($auth['read'], $userId);
+  // Set up the advanced option selects.
+  $selects = indicia_notification_emails_get_options($account);
+  indicia_notification_emails_advanced_selects($selects, $notificationEmailsExistingData,
+    $form['notification_settings']['advanced_email_settings'], $overallMode);
+  // Set overall email frequency based on values in advanced selects.
+  $form['notification_settings']['email_frequency']['#default_value'] = $overallMode;
+  // Attach JS for interactions between the selects and details open/closed status.
+  $form['#attached']['library'][] = 'indicia_notification_emails/user-form';
+  // Attach a form submit handler so we can save the settings.
+  foreach (array_keys($form['actions']) as $action) {
+    if ($action != 'preview' && isset($form['actions'][$action]['#type']) && $form['actions'][$action]['#type'] === 'submit') {
+      $form['actions'][$action]['#submit'][] = 'indicia_notification_emails_user_form_submit';
+    }
+  }
+}
+
+/**
+ * Submit handler for the user forn, saves the notification settings.
+ *
+ * @param array $form
+ *   Form object.
+ * @param FormStateInterface $form_state
+ *   Form state data.
+ */
+function indicia_notification_emails_user_form_submit($form, FormStateInterface $form_state) {
+  iform_load_helpers(['data_entry_helper']);
+  $account = $form_state->getFormObject()->getEntity();
+  $userId = hostsite_get_user_field('indicia_user_id', FALSE, FALSE, $account->id());
+  $config = \Drupal::config('iform.settings');
+  $auth = data_entry_helper::get_read_write_auth($config->get('website_id'), $config->get('password'));
+  // Build  submission which lists multiple records.
+  $submission = [
+    'id' => 'user_email_notification_setting',
+    'submission_list' => [
+      'entries' => [],
+    ],
+  ];
+  // Get the list of all available options.
+  $options = indicia_notification_emails_get_options($account);
+  // Load the user's existing data so we can post to the same ID for updates.
+  $notificationEmailsExistingData = indicia_notification_emails_existing_data($auth['read'], $userId);
+  foreach ($options as $option) {
+    $value = $form_state->getValue("email_$option[0]_frequency");
+    $sourceType = $option[2];
+    // If the drop-down is set to blank, and it is a new item rather than a
+    // drop-down the user has changed to being blank from an existing selection,
+    // then we can ignore this code as we don't need to take any action.
+    if (!empty($value) || !empty($_notification_emails_existing_data[$sourceType])) {
+      $data = [
+        'id' => 'user_email_notification_setting',
+        'fields' => [],
+      ];
+      if (!empty($notificationEmailsExistingData[$sourceType])) {
+        $data['fields']['id'] = ['value' => $notificationEmailsExistingData[$sourceType]['id']];
+      }
+      // For existing records that are then set to blank, we can delete the
+      // user_email_notification_setting.
+      if (empty($value)) {
+        $data['fields']['deleted'] = ['value' => 't'];
+      }
+      else {
+        $data['fields']['user_id'] = ['value' => $userId];
+        $data['fields']['notification_source_type'] = ['value' => $sourceType];
+        // The source frequency to use is simply the value from the select
+        // drop-down, so grab from post for the fieldname.
+        $data['fields']['notification_frequency'] = ['value' => $value];
+      }
+      $submission['submission_list']['entries'][] = $data;
+      // Set the data holder to empty once we have given it to the submissions
+      // list so we can re-use it.
+      $data = [];
+    }
+  }
+  // Submit the stucture for processing.
+  if (count($submission['submission_list']['entries'])) {
+    $response = data_entry_helper::forward_post_to('save', $submission, $auth['write_tokens']);
+    if (!(is_array($response) && array_key_exists('success', $response))) {
+      \Drupal::messenger()->addWarning(print_r($response, TRUE));
+    }
+  }
+}
+
+/**
+ * Retrieves the config for the list of options available to this user.
+ *
+ * @param object $account
+ *   User account.
+ *
+ * @return array
+ *   List of options.
+ */
+function indicia_notification_emails_get_options($account) {
+  $options = [
+    ['comment', 'comments on your records', 'C'],
+    ['query', 'queried records', 'Q'],
+    ['redet', 'redetermined records', 'RD'],
+    ['auto_check', 'records which failed automated checks', 'A'],
+    ['verification', 'verification of your records', 'V'],
+    ['milestone', "milestones and awards you've achieved", 'M'],
+    ['pending_groups_users', "pending members for groups you administer", 'GU'],
+  ];
+  if ($account->hasPermission('verification')) {
+    $options[] = ['verifier_task', "records for you to verify", 'VT'];
+  }
+  if ($account->hasPermission('mentoring') || $account->hasPermission('moderator')) {
+    $options[] = ['pending_record_task', "records for you to check", 'PT'];
+  }
+  return $options;
+}
+
+/**
+ * Create form elements for selecting advanced options.
+ *
+ * @param array $selects
+ *   The list of selects to create. Each element is an [machine_name,
+ *   description, code).
+ * @param array
+ *   List of existing settings for this user.
+ * @param array $el
+ *   Form element to add to (e.g. the advanced settings details fieldset).
+ * @param string $overallMode
+ *   Returns overall frequency. Used to return a notification frequency if all
+ *   the selects are the same or '-'.
+ */
+function indicia_notification_emails_advanced_selects(array $selects, $notificationEmailsExistingData, array &$el, &$overallMode) {
+  $firstFound = FALSE;
+  $mixFound = FALSE;
+  // If we don't have a full complement of setttings in the database, then it
+  // means some are marked as never.
+  if (count($notificationEmailsExistingData) < count($selects)) {
+    $firstFound = '-';
+  }
+  foreach ($selects as $def) {
+    $el["email_$def[0]_frequency"] = [
+      '#type' => 'select',
+      '#title' => t('Email digest frequency for @type', ['@type' => t($def[1])]),
+      '#description' => t(
+        'How often would you like to receive an email summarising your notifications about @type?',
+        ['@type' => t($def[1])]),
+      '#options' => [
+        '' => t('Never'),
+        'IH' => t('Hourly'),
+        'D' => t('Daily'),
+        'W' => t('Weekly'),
+      ],
+    ];
+    if (!empty($notificationEmailsExistingData[$def[2]])) {
+      $el["email_$def[0]_frequency"]['#default_value'] = $notificationEmailsExistingData[$def[2]]['notification_frequency'];
+      // Track if all the settings are the same or not. This affects the default
+      // value we can apply to the basic drop down which controls all of the
+      // settings in one go.
+      if (!$firstFound) {
+        $firstFound = $notificationEmailsExistingData[$def[2]]['notification_frequency'];
+      }
+      if ($firstFound !== $notificationEmailsExistingData[$def[2]]['notification_frequency']) {
+        $mixFound = TRUE;
+      }
+    }
+  }
+  $overallMode = $mixFound ? '-' : $firstFound;
+}
+
+/**
+ * Retrieve the existing settings for this user from the warehouse.
+ *
+ * @param array $readAuth
+ *   Read authorisation tokens.
+ * @param int $userId
+ *   Warehouse user ID.
+ *
+ * @return array
+ *   Existing notification settings data.
+ */
+function indicia_notification_emails_existing_data(array $readAuth, $userId) {
+  $freqSettingsData = \data_entry_helper::get_population_data([
+    'table' => 'user_email_notification_setting',
+    'extraParams' => $readAuth + ['user_id' => $userId],
+    'nocache' => TRUE,
+  ]);
+  $notificationEmailsExistingData = [];
+  foreach ($freqSettingsData as $freqSettingsDataItem) {
+    $notificationEmailsExistingData[$freqSettingsDataItem['notification_source_type']] = [
+      'id' => $freqSettingsDataItem['id'],
+      'notification_frequency' => $freqSettingsDataItem['notification_frequency'],
+    ];
+  }
+  return $notificationEmailsExistingData;
+}

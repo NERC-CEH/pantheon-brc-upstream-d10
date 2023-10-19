@@ -1,0 +1,17 @@
+#filter-bar {
+  label, select, input, .ctrl-wrap, > div {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 4px;
+  }
+  label {
+    width: auto;
+    margin-left: 15px;
+  }
+  .form-group {
+    margin-bottom: 0;
+  }
+  .form-control {
+    width: auto;
+  }
+}

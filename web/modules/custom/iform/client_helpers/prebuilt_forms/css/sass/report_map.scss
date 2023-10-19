@@ -1,0 +1,27 @@
+$map-container-color: #eeeeee;
+
+#map-container {
+  float: left;
+  clear: left;
+  background-color: $map-container-color;
+}
+
+#map-toolbar {
+  float: none;
+}
+
+#map-legend, #map-layer-picker {
+  float: right;
+  clear: right;
+
+  li {
+    div, img {
+      display: inline-block;
+      vertical-align: middle;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+    }
+  }
+}
+

@@ -1,0 +1,10 @@
+name: 'Indicia auto exports'
+description: 'Handles automated periodic exporting of data to Darwin Core or other formats.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+version: "8.1.0"
+package: "Indicia"
+type: module
+dependencies:
+  - iform
+  - webform

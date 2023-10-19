@@ -1,0 +1,17 @@
+<?php
+ 
+/**
+ * Implements hook_install().
+ */
+function iform_openlayers_install() {
+  $config = \Drupal::configFactory()->getEditable('iform.openlayers.settings');
+  $config->set('openlayers_mode', 'custom');
+  $config->save();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function iform_openlayers_uninstall() {
+  \Drupal::configFactory()->getEditable('iform.openlayers.settings')->delete();
+}

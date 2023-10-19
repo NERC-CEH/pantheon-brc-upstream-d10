@@ -1,0 +1,23 @@
+<?php
+
+/**
+ * @file
+ * Installation hooks for module.
+ */
+
+ /**
+ * Implements hook_install().
+ */
+function disable_user_login_and_registration_install() {
+  // Disable user login and registration on module install by default
+  \Drupal::state()->set('disable_user_register', 1);
+  \Drupal::state()->set('disable_user_login', 1);
+}
+
+ /**
+ * Implements hook_uninstall().
+ */
+function disable_user_login_and_registration_uninstall() {
+  \Drupal::state()->delete('disable_user_register');
+  \Drupal::state()->delete('disable_user_login');
+}

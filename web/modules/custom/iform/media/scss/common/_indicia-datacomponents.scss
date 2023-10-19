@@ -1,0 +1,723 @@
+$shadow-colour: #a7a7a7;
+$file-box-width: 400px;
+$file-box-padding: 20px;
+$file-box-icon-size: 30px;
+
+@mixin cell {
+  padding: 4px 2px;
+  word-wrap: break-word;
+}
+
+@mixin drop-shadow($size:4px) {
+  -webkit-box-shadow: $size $size calc($size*2) $shadow-colour;
+  -moz-box-shadow: $size $size calc($size*2) $shadow-colour;
+  box-shadow: $size $size calc($size*2) $shadow-colour;
+}
+
+@mixin verification-button {
+  border: solid #f0f0f0 1px;
+  border-radius: 4px;
+  background: none;
+  box-shadow: none;
+  color: black;
+  text-shadow: none;
+  min-height: 22px;
+  margin: 4px;
+  padding: 6px;
+  &:hover {
+    background: #f0f0f0;
+    color: #000000;
+  }
+  &:link, &:visited {
+    color: black;
+  }
+  &:active {
+    background: lighten(lightcoral, 20%);
+  }
+  &:focus {
+    background: none;
+    color: #000000;
+    &:active {
+      background: lighten(lightcoral, 20%);
+    }
+  }
+}
+
+@mixin control-settings-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 1em;
+  opacity: 0.95;
+  background-color: #f0f0f0;
+  border: solid silver 1px;
+  z-index: 1;
+  border-radius: 4px;
+}
+
+/* So we can absolute position the loading spinner */
+body {
+  position: relative;
+  > .loading-spinner {
+    position: fixed;
+  }
+}
+
+.idc-control {
+  .idc-tools {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: solid silver 1px;
+    border-radius: 3px;
+    background-color: rgba(225, 235, 225, 0.9);
+    span {
+      font-size: 20px;
+      padding: 0;
+      margin: 2px;
+      color: #999;
+    }
+    span:hover {
+      color: #333;
+    }
+  }
+}
+
+/* idcCardGallery plugin */
+.idc-cardGallery {
+  /* Ensure height enough for spinner. */
+  min-height: 140px;
+  &.max-size-mode {
+    .card:not(.show-max-size) {
+      display: none;
+    }
+  }
+  .es-card-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    .card {
+      flex-basis: 98%;
+      flex-grow: 1;
+      margin: 1%;
+      width: 90%;
+      box-sizing: border-box;
+      background-color: $colour-even-row;
+      position: relative;
+      border: 1px solid grey;
+      @include drop-shadow;
+      &:not(.selected) {
+        a[data-fancybox] {
+          pointer-events: none;
+        }
+      }
+      &:last-of-type {
+        flex-grow: 0;
+      }
+      &:hover:not(.disabled) {
+        color: $colour-hover-row;
+        background-color: $colour-hover-row-bg;
+      }
+      &.selected:not(.disabled,.show-max-size) {
+        color: $colour-select-row;
+        background-color: $colour-select-row-bg;
+      }
+      &:not(.disabled) {
+        border: 1px solid grey;
+      }
+      .expand-card {
+        position: absolute;
+        bottom: 4px;
+        right: 4px;
+        border: none;
+        padding: 0;
+      }
+      .collapse-card {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        display: none;
+        border: none;
+        padding: 0;
+      }
+      &.show-max-size {
+        margin: 0;
+        flex-basis: 98%;
+        @include drop-shadow(6px);
+        .image-container {
+          text-align: center;
+          /* Prevent images pushing buttons off bottom of page. */
+          img {
+            max-height: 600px;
+          }
+        }
+        .expand-card {
+          display: none;
+        }
+        .collapse-card {
+          display: initial;
+        }
+      }
+      .image-container {
+        display: flex;
+        padding: 4px;
+        > * {
+          max-width: 98%;
+          flex-basis: 0;
+          flex-grow: 1;
+          flex-shrink: 0;
+          margin-right: 4px;
+          img {
+            max-width: 100%;
+          }
+          &:first-child {
+            margin-left: 4px;
+          }
+        }
+      }
+      ul.data-container {
+        padding: 8px;
+        margin-bottom: 0;
+        li {
+          list-style-type: none;
+        }
+      }
+      /* Taxon label titles */
+      h3 {
+        font-size: 1.1em;
+        font-weight: bold;
+        margin: 0;
+      }
+      /* If verification buttons moved to card in max size mode */
+      .verification-buttons-cntr {
+        padding: 8px;
+        margin: 8px;
+        background: #ccc;
+        border-radius: 4px;
+        button {
+          @include verification-button;
+        }
+        .fas, .far {
+          /* Consistent height independent of border settings. */
+          height: 18px;
+        }
+      }
+    }
+    @media (min-width: 801px) {
+      .card:not(.show-max-size) {
+        flex-basis: 48%;
+      }
+      .card.big:not(.show-max-size) {
+        flex-basis: 98%;
+      }
+    }
+    @media (min-width: 1201px) {
+      .card:not(.show-max-size) {
+        flex-basis: 31%;
+      }
+      .card.big:not(.show-max-size) {
+        flex-basis: 48%;
+      }
+    }
+    @media (min-width: 1601px) {
+      .card:not(.show-max-size) {
+        flex-basis: 23%;
+      }
+      .card.big:not(.show-max-size) {
+        flex-basis: 48%;
+      }
+    }
+  }
+  .pager {
+    background-color: #eee;
+    padding: 8px;
+  }
+  .sort-dropdown {
+    @include control-settings-overlay;
+    li {
+      list-style-type: none;
+      background: #e7e7e7;
+      border: solid #777 1px;
+      padding: 4px;
+      margin: 2px 4px;
+      position: relative;
+      h4 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+      p {
+        margin: 0;
+        font-size: 1rem;
+      }
+      /* Sort icon */
+      span {
+        position: absolute;
+        right: 4px;
+        top: 4px;
+      }
+    }
+  }
+  #card-nav-buttons {
+    float: right;
+  }
+}
+
+/* idcDataGrid plugin */
+.idc-dataGrid {
+  position: relative;
+  /* Ensure height enough for spinner. */
+  min-height: 140px;
+  .data-grid-settings {
+    @include control-settings-overlay;
+    bottom: 0;
+    min-height: 500px;
+    ol {
+      overflow: auto;
+      li {
+        background: #e7e7e7;
+        border: solid #777 1px;
+        padding: 4px;
+        margin: 2px 4px;
+        list-style-position: inside;
+        .checkbox {
+          display: inline-block;
+          vertical-align: middle;
+          label {
+            margin: 0;
+            width: auto;
+          }
+          input[type="checkbox"] {
+            margin-right: 8px;
+          }
+        }
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
+  &.layout-align-bottom {
+    table.es-data-grid {
+      /* Remove margin so controlLayout can anchor to bottom of page. */
+      margin-bottom: 0;
+    }
+  }
+}
+table.es-data-grid {
+  background-color: $colour-odd-row;
+  thead {
+    tr {
+      th, td {
+        @include cell;
+      }
+      &.es-filter-row {
+        input {
+          width: 100%;
+          box-sizing: border-box;
+          margin: 0;
+        }
+        /* Position search value warning icon over input. */
+        .fa-exclamation-circle {
+          margin-left: -20px;
+        }
+      }
+      .fa-sort {
+        opacity: 0.3;
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+  tbody {
+    tr {
+      th, td {
+        @include cell;
+      }
+      @include grid-rows;
+      img {
+        max-height: 60px;
+        border-radius: 4px;
+        margin: 2px;
+        @include drop-shadow(3px);
+        &.multi {
+          max-height: 45px;
+        }
+      }
+    }
+  }
+  &.fixed-header {
+    tbody {
+      display:block;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+    thead, tbody tr {
+      display:table;
+      width:100%;
+      /* even columns width , fix width of table too*/
+      table-layout: fixed;
+    }
+    .multiselect-cell {
+      padding: 0;
+      width: 12px;
+    }
+  }
+  tfoot {
+    span {
+      margin: 0 1em;
+    }
+    button span {
+      // Undo margin if span inside a button.
+      margin: 0 0 0 8px;
+    }
+  }
+}
+
+/* idcLeafletMap plugin */
+.idc-leafletMap {
+  height: 500px;
+  /* Map tooltips */
+  .leaflet-tooltip {
+    h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+  }
+}
+
+/* idcVerificationButtons plugin */
+.verification-buttons-cntr, .idc-verificationButtons-row {
+  * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.idc-verificationButtons-row {
+  button, a {
+    @include verification-button;
+  }
+  .multi-only {
+    display: none;
+  }
+  .sep {
+    height: 20px;
+    width: 1px;
+    background-color: silver;
+    margin: 0 8px;
+  }
+}
+
+.verification-popup {
+  button {
+    margin-left: 8px;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+.verification-popup {
+  .comment-cntr {
+    position: relative;
+    .comment-tools {
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 0.9rem;
+      span {
+        cursor: pointer;
+        padding: 4px 0;
+        &:hover {
+          color: $colour-select-row-bg;
+        }
+      }
+    }
+    .comment-preview {
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: 20px;
+      bottom: 0;
+      background: #e7e7e7;
+      padding: 8px;
+    }
+    .save-template {
+      cursor: pointer;
+      margin: 0;
+    }
+  }
+  #template-help-cntr {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    bottom: 4px;
+    left: 4px;
+    background: white;
+    z-index: 1000;
+    article {
+      border: solid silver 1px;
+      border-radius: 4px;
+      padding: 8px;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 30px;
+      left: 0;
+      overflow-y: scroll;
+      .fa-copy {
+        cursor: pointer;
+        &:hover {
+          background: #e7e7e7;
+          border-radius: 2px;
+        }
+      }
+    }
+    button {
+      position: absolute;
+      bottom: 4px;
+    }
+  }
+}
+
+#upload-decisions-form {
+  min-width: 600px;
+  max-width: 900px;
+  .upload-output {
+    margin-top: 15px;
+  }
+  progress {
+    width: 100%;
+    height: 20px;
+  }
+  dl {
+    margin: 15px;
+    dt {
+      min-width: 300px;
+      margin-right: 20px;
+      margin-bottom: 8px;
+    }
+  }
+}
+
+.multiselect-mode {
+  .multi-only {
+    display: initial;
+    button {
+      margin: 0;
+      &.active {
+        background: #cde;
+        border: #999;
+      }
+    }
+  }
+  .single-only {
+    display: none;
+  }
+}
+
+/* idcEsDownload */
+.idc-download-ctl-part {
+  display: inline-block;
+}
+.idc-download-files {
+  display: none;
+  @include drop-shadow;
+  max-width: $file-box-width;
+  padding: $file-box-padding;
+  margin: auto;
+  > div {
+    border: dashed silver 1px;
+    margin: calc($file-box-icon-size / 3);
+    padding: calc($file-box-icon-size / 3);
+    pre {
+      background: #f4f4f4;
+      border: 1px solid #ddd;
+      border-left: 3px solid #f36d33;
+      color: #666;
+      page-break-inside: avoid;
+      font-family: monospace;
+      font-size: 15px;
+      line-height: 1.6;
+      margin: calc($file-box-icon-size / 3) 0 0 0;
+      max-width: 100%;
+      overflow: auto;
+      padding: calc($file-box-icon-size / 3);
+      display: block;
+      word-wrap: break-word;
+    }
+  }
+}
+
+/* idcRecordDetailsPane */
+.idc-recordDetails {
+  .ui-tabs-nav {
+    border-bottom: solid silver 1px;
+  }
+  .ui-tabs .ui-tabs-panel {
+    padding: 8px;
+    min-height: 150px;
+  }
+  .record-details {
+    th {
+      width: 200px;
+      padding: 0 0.5em;
+    }
+    td {
+      padding: 0 0.5em;
+      span {
+        /* Ensure long words in data don't break flow. */
+        word-break: break-word;
+      }
+    }
+    .fas, .far {
+      font-size: 130%;
+    }
+    .attrs {
+      position: relative;
+      min-height: 120px;
+    }
+    .field-id {
+      font-weight: bold;
+    }
+  }
+  .recorder-experience {
+    position: relative;
+    min-height: 150px;
+    table {
+      width: 100%;
+      th {
+        width: 25%;
+      }
+      td {
+        span {
+          margin-left: 8px;
+          display: inline-block;
+          vertical-align: middle;
+          height: 15px;
+          border-radius: 4px;
+          @include drop-shadow(2px);
+          &.exp-V {
+            background-color: green;
+          }
+          &.exp-C {
+            background-color: silver;
+          }
+          &.exp-R {
+            background-color: red;
+          }
+        }
+        a {
+          min-width: 30px;
+          display: inline-block;
+          vertical-align: middle;
+          text-align: right;
+        }
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+  66% {
+    opacity: 0;
+    visibility: visible;
+  }
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.verification-popup {
+  textarea {
+    min-width: 400px;
+  }
+}
+
+#verification-form {
+  legend * {
+    display: inline-block;
+    vertical-align: baseline;
+    &:first-child {
+      margin-right: 15px;
+    }
+    &.status {
+      font-weight: bold;
+      font-style: italic;
+    }
+  }
+  #ctrl-wrap-verify-template {
+    max-width: 400px;
+    .fa-trash-alt {
+      margin: 0;
+      cursor: pointer;
+      &.disabled {
+        opacity: 0.2;
+      }
+    }
+  }
+}
+
+.field-taxon--accepted-name, .field-taxon--species {
+  font-style: italic;
+}
+
+/* idcRecordsMover */
+.post-move-info {
+  .output {
+    border: solid silver 1px;
+    width: 350px;
+    min-height: 140px;
+    padding: 4px;
+    margin-bottom: 8px;
+    p {
+      margin: 2px;
+    }
+  }
+}
+
+/* Custom verification rule icons */
+.custom-rule-flag {
+  background: lighten(orange, 40%);
+  color: $colour-hover-row;
+  padding: 3px;
+  border-radius: 11px;
+  width: 22px;
+  height: 22px;
+  text-align: center;
+  border: solid 1px orange;
+  font-size: 15px !important;
+}
+
+/* A progress bar for stuff when we don't know the duration */
+@keyframes slideprogress {
+  from {margin-left: 0;}
+  to {margin-left: 90%;}
+}
+
+.progress-cntr {
+  margin-top: 15px;
+  .unknown-time-progressbar {
+    background-color: #f0f0f0;
+    border: solid silver 1px;
+    border-radius: 8px;
+    /* (height of inner div) / 2 + padding */
+    padding: 3px;
+    > div {
+      background-color: silver;
+      width: 10%;
+      height: 10px;
+      border-radius: 10px;
+      animation: slideprogress;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
+  }
+}

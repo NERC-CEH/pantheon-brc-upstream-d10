@@ -1,0 +1,9 @@
+.sort-handle {
+  background: url(../images/drag-handle.png) no-repeat;
+  width: 26px;
+  height: 26px;
+  display: inline-block;
+  vertical-align: middle;
+  cursor: move;
+	cursor: -webkit-grabbing;
+}

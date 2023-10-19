@@ -1,0 +1,19 @@
+#map-container {
+  float: left;
+  clear: left;
+  background-color: #eeeeee; }
+
+#map-toolbar {
+  float: none; }
+
+#map-legend, #map-layer-picker {
+  float: right;
+  clear: right; }
+  #map-legend li div, #map-legend li img, #map-layer-picker li div, #map-layer-picker li img {
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    margin-right: 8px; }
+
+/*# sourceMappingURL=report_map.css.map */

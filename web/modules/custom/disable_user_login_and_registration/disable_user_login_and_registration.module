@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * @file
+ * This is the module to disable user normal login and registration.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+/**
+ * Implements hook_form_alter().
+ */
+function disable_user_login_and_registration_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id == 'user_login_form' && \Drupal::state()->get('disable_user_login') === 1) {
+    $form['#access'] = FALSE;
+  }
+}

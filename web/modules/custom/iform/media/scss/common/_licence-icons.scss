@@ -1,0 +1,31 @@
+$icon-height: 18px;
+
+.licence {
+  span.icon {
+    background: url(../images/licences-sprite.png) no-repeat center left;
+    width: 100px;
+    height: $icon-height;
+    box-sizing: border-box;
+    background-position: 0 0;
+    display: inline-block;
+    vertical-align: middle;
+    &.licence-cc-by {
+      background-position-y: -$icon-height;
+    }
+    &.licence-cc-by-nc {
+      background-position-y: -$icon-height*2;
+    }
+    &.licence-cc0 {
+      background-position-y: -$icon-height*3;
+    }
+    &.licence-cc-by-nc-sa {
+      background-position-y: -$icon-height*4;
+    }
+    &.licence-cc-by-nd {
+      background-position-y: -$icon-height*5;
+    }
+    &.licence-cc-by-nc-nd {
+      background-position-y: -$icon-height*6;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+user-form:
+  version: VERSION
+  js:
+    js/user-form.js: {}
+  dependencies:
+    - core/jquery

@@ -1,0 +1,15 @@
+@media screen and (min-width: 700px) {
+  #edit-field-taxon-groups .form-type-checkbox {
+    display: inline-block;
+    width: 45%;
+  }
+}
+
+@media screen and (min-width: 1100px) {
+  #edit-field-taxon-groups .form-type-checkbox {
+    display: inline-block;
+    width: 31%;
+  }
+}
+
+

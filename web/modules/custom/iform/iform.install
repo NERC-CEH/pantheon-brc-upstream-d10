@@ -1,0 +1,9 @@
+<?php
+/**
+* @file
+* Install, update, and uninstall functions for the iform module.
+*/
+
+function iform_uninstall() {
+
+}

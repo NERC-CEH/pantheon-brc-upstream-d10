@@ -1,4 +1,4 @@
-# pantheon-brc-upstream-d10
+# Pantheon brc upstream for Drupal 10
 BRC upstream of Drupal 10 on Pantheon
 
 # Composer-enabled Drupal template

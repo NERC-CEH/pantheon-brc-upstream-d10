@@ -1,0 +1,20 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_taxon_groups
+  module:
+    - options
+    - user
+id: user.user.field_taxon_groups
+field_name: field_taxon_groups
+entity_type: user
+bundle: user
+label: 'Species groups'
+description: 'If you would like to, please tell us the species groups you are interested in recording. This indicates a preference only, you will still be able to record other species. It also allows us to tailor reports in iRecord to show you information that is most likely to be of interest.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: list_integer

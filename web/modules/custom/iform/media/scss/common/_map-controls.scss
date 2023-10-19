@@ -1,0 +1,63 @@
+#map-container, #filter-map-container {
+  position: relative;
+}
+.layer_list ul {
+  li {
+    list-style: none;
+    * {
+      display: inline-block;
+      vertical-align: middle;
+      margin: 0;
+      margin-right: 15px;
+    }
+  }
+}
+
+#map-footer {
+  background-color: #cccccc;
+  padding: 0;
+  box-sizing: border-box;
+  .grid-ref-hint {
+    opacity: 0;
+  }
+  > span, > div {
+    font-size: 1em;
+    font-family: arial, sans-serif;
+    margin: 0;
+    float: left;
+    box-sizing: border-box;
+  }
+  > span {
+    width: 25%;
+    background-color: #bbbbbb;
+  }
+  > div {
+    width: 27%;
+    span {
+      white-space:nowrap;
+      padding: 0 2px;
+      &.data {
+        background-color: #e7e7e7;
+        border: solid 1px #aaaaaa;
+      }
+    }
+  }
+  >div.active span.data {
+    background-color: #ffffcc;
+    color: #0000ff;
+  }
+  > div.hint-normal {
+    width: 21%;
+  }
+
+}
+/* Simplify to remove label if no space on 2 column layout */
+.columns #map-footer {
+  > span {
+    display: none;
+  }
+  > div {
+    width: 33%;
+    font-size: 9px;
+  }
+}

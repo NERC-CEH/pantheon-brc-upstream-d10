@@ -1,0 +1,61 @@
+.media-gallery ul {
+  padding: 0;
+  li {
+    display:-moz-inline-stack;
+    display:inline-block;
+    zoom:1;
+    *display:inline;
+    list-style-type: none;
+    vertical-align: top;
+  }
+}
+/* Allow info panels to use absolute positioning */
+.gallery-item {
+  position: relative;
+  padding: 0.5em;
+  /* Record status icon overlay on image */
+  .status-icon {
+    position: absolute;
+    right: 0;
+    top: 8px;
+  }
+}
+/* Media/image information overlays */
+.media-info {
+  position: relative;
+  width: auto;
+  background: white;
+  padding: 8px;
+  border: solid silver 1px;
+  border-radius: 4px;
+  /* Media info can overlay image (not other file types) */
+  &.image-info {
+    position: absolute;
+    left: 18px;
+    bottom: 18px;
+    opacity: 0.7;
+  }
+  * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  /* Media info close button style */
+  .media-info-close {
+    margin-left: 8px;
+    color: #777777;
+    cursor: pointer;
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
+.image-caption.small {
+  width: 100px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10px;
+}
+
+.fancybox-is-open div.fancybox-bg {
+  opacity: .5;
+}

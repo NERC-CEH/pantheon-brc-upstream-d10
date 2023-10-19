@@ -1,0 +1,10 @@
+name: 'Locations SHP file importer'
+description: 'Import Indicia locations from SHP files.'
+core: 8.x
+core_version_requirement: ^8 || ^9
+version: "8.13.0"
+package: "Indicia"
+type: module
+configure: locations_shp_importer.settings
+dependencies:
+  - iform

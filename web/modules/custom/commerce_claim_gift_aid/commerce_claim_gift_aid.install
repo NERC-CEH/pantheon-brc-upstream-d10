@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * @file
+ * Trigger entity updates.
+ */
+
+use Drupal\commerce_claim_gift_aid\GiftAidFieldDefinitionProvider;
+
+/**
+ * Implements hook_install().
+ */
+function commerce_claim_gift_aid_install() {
+  // Manually Adds a gift aid field onto orders.
+  $fieldStorageDefinition = GiftAidFieldDefinitionProvider::getGiftAidField();
+  \Drupal::entityDefinitionUpdateManager()
+    ->installFieldStorageDefinition('gift_aid', 'commerce_order', 'commerce_claim_gift_aid', $fieldStorageDefinition);
+
+  \Drupal::messenger()->addStatus(t('Please update your gift aid text <a href="@link">here</a>', [
+    '@link' => '/admin/config/commerce-claim-gift-aid',
+  ]));
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function commerce_claim_gift_aid_uninstall() {
+  $definitionUpdateManager = \Drupal::entityDefinitionUpdateManager();
+  if ($giftAidField = $definitionUpdateManager->getFieldStorageDefinition('gift_aid', 'commerce_order')) {
+    $definitionUpdateManager->uninstallFieldStorageDefinition($giftAidField);
+  }
+}

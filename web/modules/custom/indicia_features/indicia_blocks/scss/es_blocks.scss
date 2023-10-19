@@ -1,0 +1,56 @@
+#indicia-es-totals-block-container {
+  font-size: 150%;
+  display: table;
+  width: 100%;
+  margin-bottom: 8px;
+  > div {
+    padding: 0 2px;
+    display: table-cell;
+    > div {
+      /* hide till loaded */
+      opacity: 0;
+      text-align: center;
+      background: #eee;
+      padding: 8px;
+      &.loaded {
+        opacity: 1;
+      }
+      i {
+        margin-right: 15px;
+        margin-left: -8px;
+      }
+    }
+  }
+}
+
+#recent-records-container {
+  max-height: 500px;
+  overflow-y: scroll;
+  .list-group-item {
+    padding: 0 0 0 10px;
+    .recent-records-details {
+      margin: 10px 10px 10px 0;
+    }
+  }
+  .record-title {
+    font-weight: bold;
+  }
+  .latin {
+    font-style: italic;
+  }
+  .recent-records-images {
+    div.thumbnail {
+      float: right;
+    }
+  }
+  .recent-records-images {
+    width: 35%;
+    .thumbnail {
+      margin-bottom: 0px;
+      border: none;
+      padding: 2px;
+      max-width: 95px;
+      float: right;
+    }
+  }
+}

@@ -1,0 +1,6 @@
+disable_user_login_and_registration.settings:
+  title: 'Login/Registartion visibility'
+  description: 'Enable or disable user login and registration page.'
+  route_name: disable_user_login_and_registration.disable_config_form
+  parent: user.admin_index
+  weight: 99

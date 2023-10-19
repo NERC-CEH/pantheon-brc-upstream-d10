@@ -1,0 +1,98 @@
+<?php
+
+use Drupal\webform\Entity\WebformSubmission;
+use Drupal\indicia_auto_exports\Export\ExportHelper;
+
+/**
+ * Implements hook_cron().
+ *
+ * Generates published groups data exports.
+ */
+function indicia_auto_exports_cron() {
+  // Build a query on the webform submission data. Can't use EntityQuery as
+  // submission data are not stored in entity fields.
+  $select = \Drupal::service('database')->select('webform_submission_data', 'wsd');
+  // Limit to published group metadata forms.
+  $select->join('webform_submission', 'ws', "ws.sid=wsd.sid AND ws.webform_id='published_group_metadata'");
+  $results = $select->fields('wsd', ['sid', 'value'])
+    // Filter to the export_due data value and sort by it.
+    ->condition('wsd.name', 'export_due', '=')
+    ->orderBy('wsd.value', 'ASC')
+    // Only return the first submission.
+    ->range(0, 1)
+    ->execute();
+  foreach ($results as $row) {
+    $nextExport = WebformSubmission::load($row->sid);
+    // Only do something if the export is due.
+    if (strtotime($nextExport->getElementData('export_due')) <= date_timestamp_get(date_create())) {
+      $config = \Drupal::config('iform.settings');
+      $fileName = 'export-group-' . $nextExport->getElementData('group') . '.zip';
+      $helper = new ExportHelper([
+        'elasticsearchHost' => $config->get('base_url') . 'index.php/services/rest',
+        'index' => $config->get('elasticsearch_endpoint'),
+        'outputFile' => hostsite_get_public_file_path() . '/indicia/exports/' . $fileName,
+        'metadataFormContents' => $nextExport->getData(),
+        // @todo Make the following configurable.
+        'outputType' => 'dwca',
+        'outputTypeVariant' => 'gbif',
+        'query' => [
+          'bool' => [
+            'must' => [
+              [
+                'term' => [
+                  'metadata.group.id' => $nextExport->getElementData('group'),
+                ],
+              ],
+            ],
+          ],
+        ],
+      ]);
+      $helper->buildFile();
+      // Set the last export date. The preSave webform handler will set the due
+      // date.
+      $nextExport->setElementData('last_export_date', date('Y-m-d\TH:i:s'));
+      if ($nextExport->save() !== SAVED_UPDATED) {
+        \Drupal::logger('indicia_auto_exports')->error(t('Failed to save last export date for exported dataset.'));
+      }
+    }
+  }
+}
+
+function indicia_auto_exports_theme($existing, $type, $theme, $path) {
+  return [
+    'meta' => [
+      'variables' => [],
+    ],
+    'eml' => [
+      'variables' => [],
+    ],
+    'eml_contact' => [
+      'variables' => [],
+    ],
+  ];
+}
+
+/**
+ * Implements webform_options_alter().
+ *
+ * Alters the options for the groups to those the user is admin for.
+ */
+function indicia_auto_exports_webform_options_alter(array &$options, array &$element, $options_id = NULL) {
+  if ($element['#title'] === 'Group') {
+    iform_load_helpers(['report_helper']);
+    $conn = iform_get_connection_details();
+    $readAuth = \report_helper::get_read_auth($conn['website_id'], $conn['password']);
+    $groups = \report_helper::get_report_data([
+      'dataSource' => 'library/groups/groups_list',
+      'readAuth' => $readAuth,
+      'extraParams' => [
+        'currentUser' => hostsite_get_user_field('indicia_user_id'),
+        'userFilterMode' => 'admin',
+      ],
+    ]);
+    $options = [];
+    foreach ($groups as $group) {
+      $options[$group['id']] = $group['title'];
+    }
+  }
+}

@@ -1,0 +1,8 @@
+# Route to the batch restore form
+disable_user_login_and_registration.disable_config_form:
+  path: '/admin/config/login-registration-settings'
+  defaults:
+    _title: 'Login and Registration disable/enable'
+    _form: '\Drupal\disable_user_login_and_registration\Form\DisableConfig'
+  requirements:
+    _permission: 'administer site configuration'

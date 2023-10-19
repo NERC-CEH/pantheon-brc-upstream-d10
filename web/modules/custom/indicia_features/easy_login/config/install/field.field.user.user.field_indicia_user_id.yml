@@ -1,0 +1,21 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.user.field_indicia_user_id
+id: user.user.field_indicia_user_id
+field_name: field_indicia_user_id
+entity_type: user
+bundle: user
+label: 'Indicia Warehouse User ID'
+description: 'System use. The ID of this user on the Indicia warehouse.'
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

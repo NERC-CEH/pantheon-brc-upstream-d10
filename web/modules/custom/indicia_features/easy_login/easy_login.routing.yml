@@ -1,0 +1,7 @@
+easy_login.resolve_multiple_users:
+  path: '/easy_login/resolve_multiple_users'
+  defaults:
+    _form: '\Drupal\easy_login\Form\ResolveMultipleUsersForm'
+    _title: 'Resolve multiple users'
+  requirements:
+    _permission: 'access content'

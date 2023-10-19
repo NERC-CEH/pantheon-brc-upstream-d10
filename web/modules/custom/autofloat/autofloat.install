@@ -1,0 +1,29 @@
+<?php
+
+/**
+ * @file
+ * Install, update and uninstall functions.
+ */
+
+use Drupal\Core\Url;
+use Drupal\Core\Link;
+
+/**
+ * Implements hook_install().
+ */
+function autofloat_install() {
+  $url = Url::fromRoute('filter.admin_overview');
+  $formats_link = Link::fromTextAndUrl(t('Configuration > Content authoring > Text formats'), $url)->toString();
+
+  $text = t('Add the AutoFloat filter to a text format under @formats_link. Move it below other image related filters in the filter processing order.', [
+    '@formats_link' => $formats_link,
+  ]);
+  \Drupal::messenger()->addMessage($text);
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function autofloat_uninstall() {
+  drupal_flush_all_caches();
+}

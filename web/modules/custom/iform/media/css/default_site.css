@@ -1,0 +1,769 @@
+.scTaxonCell {
+  padding-right: 1em;
+  background-color: #e3e3e3;
+  border: 1px solid #D3D3D3;
+}
+
+.scTaxonCell p.inline-error {
+  /* hide the error in the species input as it messes layout */
+  display: none;
+}
+
+.scTaxonCell .ui-effects-wrapper {
+  width: 100% !important;
+}
+
+table.species-grid .warning, #review-input-content .warning {
+  background: url(../images/warning.png) center right no-repeat;
+}
+
+.ui-widget-header th {
+  padding: 0.2em;
+}
+
+#imp-georef-output-div ol  {
+  list-style-type: none;
+  padding-left: 3em;
+  padding-bottom: 1em;
+}
+
+#imp-postcode {
+  text-transform: uppercase;
+}
+
+.inline-error {
+  color: red;
+  width: auto;
+  margin-left: 1em;
+}
+
+.deh-required {
+  color: red;
+  font-weight: bold;
+}
+
+p.inline-error {
+  margin: 0 0 0 164px;
+}
+
+.species-grid p.inline-error {
+  margin: 0;
+  font-size: 80%;
+}
+
+.validation-icon {
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+  margin: 4px;
+}
+
+.error_message {
+  font-weight: bold;
+}
+
+a {
+  cursor: pointer;
+}
+
+.auto {
+  width: auto
+}
+
+.loading-panel {
+  text-align: center;
+  vertical-align: middle;
+  padding: 2em;
+  width: 200px;
+  margin: 5em auto 0 auto;
+}
+
+.loading-panel img {
+  margin-right: 2em;
+  vertical-align: middle;
+}
+
+.flickr-panel {
+  padding: 0.5em;
+}
+
+.mediafile, .link {
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+  margin: 1em;
+  padding: 0.5em;
+  vertical-align: top;
+}
+
+.link {
+  min-width: 46%;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+.mediafile > .ui-widget-header {
+  padding: 0.2em;
+  margin-bottom: 0.2em;
+}
+
+.mediafile img, .mediafile audio {
+  display: block;
+}
+
+.mediafile p {
+  text-align: center;
+}
+
+.mediafile label {
+  margin-bottom: 0px;
+}
+
+.mediafile input {
+  margin-top: 0px;
+}
+
+.indicia-button {
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.action-button {
+  margin: 4px;
+  display: block;
+}
+
+.indicia-button span {
+  float: left;
+  vertical-align: middle;
+  position: relative;
+}
+
+.indicia-button .ui-icon {
+  margin: 2px 4px 0px 4px;
+}
+
+.buttons {
+  padding: 8px;
+}
+
+.right {
+  float: right !important;
+}
+
+.left {
+  float: left !important;
+}
+
+.centre {
+  text-align: center;
+}
+
+#f-dosearch {
+  margin: 3px 2em 0 1px;
+}
+
+.f-photo p {
+  float: left;
+}
+
+.f-photo button {
+  margin-top: 5px;
+  float: right;
+}
+
+.wide {
+  width: 500px;
+}
+
+.nobreak {
+  white-space: nowrap;
+}
+
+li.ui-state-error {
+  margin: 0.5em;
+}
+
+.loading-hide {
+  left:-999em; position: absolute;
+}
+
+#imp-georef-div {
+  margin-bottom: 1em;
+  padding: 0.5em;
+}
+
+.control-box span {
+  margin-left: 1em;
+  margin-top: 2px;
+}
+
+.control-box span  * {
+  margin-left: 1em;
+  vertical-align: middle;
+}
+
+.control-box label {
+  width: auto;
+}
+
+.tree-browser {
+  padding: 0.5em;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+  min-width: 400px;
+  min-height: 100px;
+}
+
+.tree-browser li {
+  padding: 0.25em;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+}
+
+.progress {
+  width: 100%;
+}
+
+.progress  * {
+  vertical-align: middle;
+  text-align: center;
+}
+
+.plupload input {
+  cursor: pointer;
+}
+
+.plupload_iframe input {
+  margin: 0;
+}
+
+.ui-widget-header th {
+  padding-right: 16px;
+}
+
+.ui-widget-header th.asc {
+  background: url(../images/asc.gif) no-repeat right;
+}
+
+.ui-widget-header th.desc {
+  background: url(../images/desc.gif) no-repeat right;
+}
+
+.report-grid .ui-widget td {
+  padding: 0 0.3em;
+}
+
+#verification-grid .report-grid .single img {
+  width: 40px;
+}
+
+#verification-grid .report-grid .multi img {
+  width: 30px;
+}
+
+td.row-buttons {
+  width: 16px;
+}
+
+td.row-buttons img {
+  cursor: pointer;
+  width: 14px;
+  min-width: 14px;
+  margin: 1px;
+  padding: 0;
+}
+
+.ui-tabs .ui-tabs-nav li, .control-box li {
+  list-style-type: none;
+}
+
+.control-box li {
+  background: none;
+}
+
+.control-box li * {
+  margin: 0 0.5em;
+}
+
+.control-box.inline li {
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+}
+
+.species-checklist-select-species {
+  font-style: italic;
+}
+
+.heading-option {
+  font-weight: bold;
+}
+
+.sub-option {
+  margin-left: 1em;
+}
+
+.layer-list {
+  width: 300px;
+  border: dotted 1px;
+  line-height: 20px;
+  padding: 0.5em;
+}
+
+.layer-list img {
+  margin: 0px;
+  border: none;
+  margin-right: 1em;
+}
+
+.layer-list input {
+  margin-right: 1em;
+}
+
+.layer-list ul li {
+  list-style: none;
+  background: none;
+}
+
+.layer-list ul li * {
+  vertical-align: middle;
+}
+
+.layer-list ul li div {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: none 1px;
+  margin-right: 1em;
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+}
+
+.olControlLayerSwitcher label {
+  width: auto;
+  margin: 0 0 0 1em;
+}
+
+.linear-form * {
+  vertical-align: middle;
+  width: auto;
+  margin-left: 0;
+}
+
+.linear-form div:first-child label, .linear-form > label:first-child {
+  width: 160px;
+}
+
+table.jqplot-table-legend {
+  width: auto;
+  border: none;
+  font-size: 100%;
+}
+
+td.jqplot-table-legend.highlight {
+  background-color: yellow;
+}
+
+.pager-button {
+  border: solid grey 1px;
+  padding: 2px;
+  background-color: #ccc;
+}
+
+tfoot {
+  background-color: #eee;
+}
+
+tfoot td div{
+  padding: 2px 4px;
+}
+
+#map-toolbar-outer div.olControlEditingToolbar, #map-toolbar-outer div.param-container, #map-toolbar-outer label {
+  width: auto;
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+}
+
+#map-toolbar-outer label {
+  padding: 0 0.25em 0 1em;
+}
+
+#map-toolbar-outer  * {
+  vertical-align: middle;
+}
+
+form #map-toolbar {
+  float: none;
+  padding-left: 1.5em;
+}
+
+.no-border {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.report-picker-container {
+  height: 250px;
+  width:  100%;
+}
+
+.report-picker-container > ul {
+  float: left;
+  width: 59%;
+  height: 100%;
+  overflow: scroll;
+  margin: 0;
+}
+
+.report-picker-container > div {
+  float: right;
+  width: 40%
+}
+
+.report-picker-container input, .report-picker-container label {
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.report-picker-container input {
+  margin-right: 0.2em;
+}
+
+.report-picker-container ul li {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.report-metadata-popup {
+  width: 800px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.report-metadata-popup table {
+  width: 100%;
+  padding-bottom: 1em;
+}
+
+.report-metadata-popup td {
+  text-align: left;
+}
+
+.report-picker-container li.expandable, .report-picker-container li.collapsable {
+  font-weight: bold;
+  line-height: 14px;
+  padding-bottom: 2px;
+}
+
+.unlocked-icon {
+  background-image: url(../images/Indicia_PadlockIcons_Open.png);
+  width: 19px;
+  height: 19px;
+}
+
+.locked-icon {
+  background-image: url(../images/Indicia_PadlockIcons_Closed.png);
+  width: 14px;
+  height: 19px;
+}
+
+.locked-icon, .unlocked-icon, #findme-icon {
+  background-repeat: no-repeat;
+  display: inline-block;
+  margin: 0 0.25em;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+#findme-icon {
+  background-image: url(../images/findme.png);
+  width: 16px;
+  height: 16px;
+}
+
+#findme-icon.spinning {
+  background-image: url(../images/ajax-loader.gif);
+}
+
+/* for sub list control */
+ul.ind-sub-list {
+  margin-left: 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+ul.ind-sub-list li {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 0.5em;
+  padding: 0 0.25em;
+  list-style-type: none;
+  background: #e7e7e7;
+}
+ul.ind-sub-list li:last-child {
+  margin-right: 0;
+}
+ul.ind-sub-list li span {
+  vertical-align: middle;
+}
+
+span.ind-delete-icon, span.ind-add-icon, span.ind-cancel-icon {
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin: 0 0.25em 0 0;
+  cursor: pointer;
+  list-style-type: none;
+}
+
+span.ind-delete-icon {
+  background-image: url(../images/nuvola/cancel-16px.png);
+}
+
+span.ind-add-icon {
+  background-image: url(../images/add.png);
+}
+
+span.ind-cancel-icon {
+  background-image: url(../images/cancel.png);
+  margin: 0.5em;
+}
+.filter-popup #location_list\:box {
+  vertical-align: top;
+}
+.popup-filter-options-container {
+  overflow-y: scroll;
+  max-height: 400px;
+  height: 400px
+}
+
+.filter-row {
+  background: #e7e7e7;
+}
+
+.filter-row th {
+  padding: 0;
+}
+
+.report-grid .filter-row th:first-child {
+  background: url(../images/filter.png) no-repeat left;
+}
+.report-grid .filter-row th{
+  padding: 0 1px;
+}
+.report-grid .filter-row th:first-child{
+  padding-left: 16px;
+}
+
+.report-grid-container {
+  position: relative;
+}
+
+.col-picker {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+}
+
+.col-picker-options-container li {
+  list-style-type: none;
+}
+
+.col-picker-options-container * {
+  vertical-align: middle;
+  margin: 0 0.5em;
+}
+
+.filter-row input {
+  border: none;
+  margin: 0;
+  width: 100%;
+  /* Ensure padding of input does not mess up 100% width */
+  box-sizing: border-box; /* css3 rec */
+  -moz-box-sizing: border-box; /* ff2 */
+  -ms-box-sizing: border-box; /* ie8 */
+  -webkit-box-sizing: border-box; /* safari3 */
+  -khtml-box-sizing: border-box; /* konqueror */
+}
+
+/* Tooltips for the report grid */
+.tooltip{
+  position:absolute;
+  left:-2000px;
+  background-color:#fefede;
+  padding:5px;
+  border:1px solid #fff;
+}
+
+.tooltip p {
+  margin: 0;
+}
+
+/* override jquery-ui.custom.css to support browsers which understand border-radius (e.g. IE9) */
+.ui-corner-all {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+.ui-corner-tr{
+  -webkit-border-top-right-radius: 4px;
+  -moz-border-radius-topright: 4px;
+  border-top-right-radius: 4px;
+}
+.ui-corner-br{
+  -webkit-border-bottom-right-radius: 4px;
+  -moz-border-radius-bottomright: 4px;
+  border-bottom-right-radius: 4px;
+}
+.ui-corner-bl{
+  -webkit-border-bottom-left-radius: 4px;
+  -moz-border-radius-bottomleft: 4px;
+  border-bottom-left-radius: 4px;
+}
+.ui-corner-tl{
+  -webkit-border-top-left-radius: 4px;
+  -moz-border-radius-topleft: 4px;
+  border-top-left-radius: 4px;
+}
+
+div.note-success, p.note-success {
+  background-color: #eeffee;
+}
+
+div.note-fail, p.note-fail {
+  border: solid #ff0000 1px;
+}
+
+.import-mappings-table table {
+  float: left;
+  width: 68%;
+}
+
+.import-mappings-table th {
+  text-align:center;
+  width: 58%;
+  padding: 2px;
+}
+
+.import-mappings-table td.note {
+  font-size: 8pt;
+  padding: 0 0 4px;
+}
+
+#import-mappings-instructions {
+  float: right;
+  width: 30%;
+}
+
+.scm-block .control-box {
+  vertical-align: top;
+}
+
+@media screen and (max-device-width: 790px) {
+  label {
+    display: block;
+    width: auto;
+  }
+  .control-box label{
+    display: inline;
+  }
+  textarea  {
+    width: 80%;
+  }
+  .helpText {
+    margin-left: 0;
+  }
+}
+
+.autocomplete-select {
+  border: solid silver 1px;
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+  background: url(../images/desc.gif) no-repeat center center #eee;
+  width: 16px;
+  margin-left: -1px;
+}
+
+#add-link-form input.text {
+  width: 640px;
+}
+
+/* social media icons for links in reports */
+.social-icon, .file-icon {
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  background: url(../images/somicro/with_border/sharethis-variation.png) no-repeat center center;
+  display:-moz-inline-stack;
+  display:inline-block;
+  zoom:1;
+  *display:inline;
+}
+
+.social-icon.soundcloud {
+  background-image: url(../images/somicro/with_border/soundcloud-variation.png);
+}
+.social-icon.flickr {
+  background-image: url(../images/somicro/with_border/flickr-variation.png);
+}
+.social-icon.instagram {
+  background-image: url(../images/somicro/with_border/instagram-variation.png);
+}
+.social-icon.twitpic {
+  background-image: url(../images/somicro/with_border/twitpic-variation.png);
+}
+.social-icon.facebook {
+  background-image: url(../images/somicro/with_border/facebook-variation.png);
+}
+.social-icon.twitter {
+  background-image: url(../images/somicro/with_border/twitter-variation.png);
+}
+.social-icon.youtube {
+  background-image: url(../images/somicro/with_border/youtube-variation.png);
+}
+.social-icon.vimeo {
+  background-image: url(../images/somicro/with_border/vimeo-variation.png);
+}
+.file-icon.pdf {
+  background-image: url(../images/nuvola/pdf-32px.png);
+}
+#filter-form label {
+  display: block;
+}
+
+/* Flags for record details panes, e.g. verification or record_details prebuilt forms. */
+#record-flags span {
+  padding: 0.5em;
+  margin: 0.5em;
+  border: solid red 1px;
+  border-radius: 4px;
+  display: inline-block;
+  font-weight: bold;
+  background-color: #ffcccc;
+}
+
+.resolveLocationPopup li {
+  list-style-type: none;
+}
+
+/* Tidy map layer picker */
+#preset_layers li * {
+  display: inline-block;
+}

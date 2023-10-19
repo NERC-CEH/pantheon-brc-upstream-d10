@@ -1,0 +1,56 @@
+#indicia-es-totals-block-container {
+  font-size: 150%;
+  display: table;
+  width: 100%;
+  margin-bottom: 8px;
+}
+#indicia-es-totals-block-container > div {
+  padding: 0 2px;
+  display: table-cell;
+}
+#indicia-es-totals-block-container > div > div {
+  /* hide till loaded */
+  opacity: 0;
+  text-align: center;
+  background: #eee;
+  padding: 8px;
+}
+#indicia-es-totals-block-container > div > div.loaded {
+  opacity: 1;
+}
+#indicia-es-totals-block-container > div > div i {
+  margin-right: 15px;
+  margin-left: -8px;
+}
+
+#recent-records-container {
+  max-height: 500px;
+  overflow-y: scroll;
+}
+#recent-records-container .list-group-item {
+  padding: 0 0 0 10px;
+}
+#recent-records-container .list-group-item .recent-records-details {
+  margin: 10px 10px 10px 0;
+}
+#recent-records-container .record-title {
+  font-weight: bold;
+}
+#recent-records-container .latin {
+  font-style: italic;
+}
+#recent-records-container .recent-records-images div.thumbnail {
+  float: right;
+}
+#recent-records-container .recent-records-images {
+  width: 35%;
+}
+#recent-records-container .recent-records-images .thumbnail {
+  margin-bottom: 0px;
+  border: none;
+  padding: 2px;
+  max-width: 95px;
+  float: right;
+}
+
+/*# sourceMappingURL=es_blocks.css.map */

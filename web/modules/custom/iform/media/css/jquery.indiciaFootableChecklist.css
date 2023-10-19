@@ -1,0 +1,6 @@
+
+
+/*Hide toggle until species selected*/
+.footable.breakpoint > tbody > tr.scClonableRow > td > span.footable-toggle {
+  display: none;
+}

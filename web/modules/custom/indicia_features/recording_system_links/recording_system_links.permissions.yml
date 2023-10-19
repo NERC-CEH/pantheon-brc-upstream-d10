@@ -1,0 +1,5 @@
+admin recording system links:
+  title: 'Administer links to other recording systems'
+  description: 'Configure the oAuth connection required to link to another system.'
+connect recording system links:
+  title: 'Connect your user account to other recording systems'

@@ -1,0 +1,12 @@
+recording_system_links.manage_links_menu:
+  title: 'Recording system links'
+  description: 'Configure links to other recording systems'
+  parent: iform.admin_config_iform
+  route_name: recording_system_links.manage_links
+  weight: 49
+recording_system_links.manage_mappings_menu:
+  title: 'Recording system link lookup value mappings'
+  description: 'Configure lookup pmapping tables required when sending records to other systems'
+  parent: iform.admin_config_iform
+  route_name: recording_system_links.manage_mappings
+  weight: 50

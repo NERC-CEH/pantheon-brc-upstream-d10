@@ -1,0 +1,6 @@
+{
+    "name": "drupal/indicia_auto_exports",
+    "description": "A module to automate the periodic generation of export files from Indicia.",
+    "type": "drupal-module",
+    "license": "GPL-2.0-or-later"
+}

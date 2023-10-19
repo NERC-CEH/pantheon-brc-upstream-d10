@@ -1,0 +1,62 @@
+iform.admin_config_iform:
+  path: '/admin/config/iform'
+  defaults:
+    _controller: '\Drupal\system\Controller\SystemController::systemAdminMenuBlockPage'
+    _title: 'Indicia settings'
+  requirements:
+    _permission: 'admin iform'
+iform.settings:
+  path: '/admin/config/iform/settings'
+  defaults:
+    _form: '\Drupal\iform\Form\SettingsForm'
+    _title: 'Indicia settings'
+  requirements:
+    _permission: 'admin iform'
+iform.cache:
+  path: '/admin/config/iform/cache'
+  defaults:
+    _form: '\Drupal\iform\Form\CacheForm'
+    _title: 'Indicia cache management'
+  requirements:
+    _permission: 'admin iform'
+iform.diagnostics:
+  path: '/admin/config/iform/diagnostics'
+  defaults:
+    _form: '\Drupal\iform\Form\DiagnosticsForm'
+    _title: 'Indicia diagnostics'
+  requirements:
+    _permission: 'admin iform'
+iform.ajax:
+  path: '/iform/ajax/{form}/{method}/{nid}'
+  defaults:
+    _controller: '\Drupal\iform\Controller\IformController::ajaxCallback'
+  requirements:
+    _permission: 'access iform content'
+iform.esproxy:
+  path: '/iform/esproxy/{method}/{nid}'
+  defaults:
+    _controller: '\Drupal\iform\Controller\IformController::esproxyCallback'
+  requirements:
+    _permission: 'access iform content'
+iform.dynamicattrsproxy:
+  path: '/iform/dynamicattrsproxy/{method}'
+  defaults:
+    _controller: '\Drupal\iform\Controller\IformController::dynamicattrsproxyCallback'
+  requirements:
+    _permission: 'access iform content'
+iform.joingroup:
+  path: '/join/{title}'
+  defaults:
+    _controller: '\Drupal\iform\Controller\IformController::joinGroupCallbackWithTitle'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: TRUE
+iform.joinchildgroup:
+  path: '/join/{title}/{parent}'
+  defaults:
+    _controller: '\Drupal\iform\Controller\IformController::joinGroupCallbackWithParentAndTitle'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: TRUE

@@ -1,0 +1,25 @@
+responsivewrappers.settings:
+  type: config_object
+  label: 'Responsive wrappers settings'
+  mapping:
+    add_css:
+      type: integer
+      label: 'Attach module CSS with input filter'
+    version:
+      type: integer
+      label: 'Bootstrap output version'
+    image_class:
+      type: string
+      label: 'Custom image class'
+    iframe_wrapper_class:
+      type: string
+      label: 'Custom iframe wrapper class'
+    iframe_class:
+      type: string
+      label: 'Custom iframe class'
+    table_wrapper_class:
+      type: string
+      label: 'Custom table wrapper class'
+    table_class:
+      type: string
+      label: 'Custom table class'

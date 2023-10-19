@@ -1,0 +1,14 @@
+name: Forum Access Migrate
+type: module
+description: Migrating Forum Access datas.
+core_version_requirement: ^8.8 || ^9
+package: Migration
+
+dependencies:
+  - forum_access:forum_access
+  - migrate_plus:migrate_plus
+
+# Information added by Drupal.org packaging script on 2023-08-23
+version: '8.x-1.0'
+project: 'forum_access'
+datestamp: 1692792010

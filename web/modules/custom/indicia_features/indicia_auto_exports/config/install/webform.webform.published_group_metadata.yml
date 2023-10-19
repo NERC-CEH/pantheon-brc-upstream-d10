@@ -1,0 +1,208 @@
+langcode: en
+status: open
+dependencies:
+  module:
+    - indicia_auto_exports
+open: null
+close: null
+weight: 0
+uid: 1
+template: false
+archive: false
+id: published_group_metadata
+title: 'Published group metadata'
+description: 'Metadata, including publishing frequency and dataset information required for Darwin Core, for group datasets that are automatically published.'
+category: ''
+elements: "export_settings:\n  '#type': webform_wizard_page\n  '#title': 'Export settings'\n  export_settings_fieldset:\n    '#type': fieldset\n    '#title': 'Export settings'\n    group:\n      '#type': select\n      '#title': Group\n      '#help': 'Choose the group to publish. The list of groups available is limited to those you are an administrator for.'\n      '#options':\n        foo: bar\n      '#required': true\n    export_frequency:\n      '#type': radios\n      '#title': 'Export frequency'\n      '#help': 'Please select how often the export should be generated.'\n      '#options':\n        '1 day': Daily\n        '1 week': Weekly\n        '1 month': Monthly\n      '#required': true\n    darwin_core_output_values:\n      '#type': webform_section\n      '#title': 'Darwin Core output values'\n      '#help': 'Values for some Darwin Core fields that are fixed for all occurrences in the output file.'\n      rights_holder:\n        '#type': textfield\n        '#title': 'Rights holder'\n        '#help': 'Darwin Core rightsHolder value. A person or organization owning or managing rights over the resource.'\n        '#required': true\n      dataset_name:\n        '#type': textfield\n        '#title': 'Dataset name'\n        '#help': 'Value for the Darwin Core datasetName field. The name identifying the data set from which the record was derived.'\n        '#required': true\n      basis_of_record:\n        '#type': select\n        '#title': 'Basis of record'\n        '#description': 'The specific nature of the data record.'\n        '#options':\n          Event: Event\n          FossilSpecimen: FossilSpecimen\n          HumanObservation: HumanObservation\n          LivingSpecimen: LivingSpecimen\n          MachineObservation: MachineObservation\n          MaterialCitation: MaterialCitation\n          MaterialSample: MaterialSample\n          Occurrence: Occurrence\n          PreservedSpecimen: PreservedSpecimen\n          Taxon: Taxon\n        '#required': true\n        '#default_value': HumanObservation\n      occurrence_status:\n        '#type': webform_radios_other\n        '#title': 'Occurrence status'\n        '#options':\n          present: present\n          absent: absent\n        '#required': true\n        '#default_value': present\n      occurrence_id_prefix:\n        '#type': textfield\n        '#title': 'Occurrence ID prefix'\n        '#description': '&nbsp;'\n        '#help': 'Text to prepend to the numeric occurrence ID value from the warehouse to generate a unique ID for export to other systems.'\n    system_settings:\n      '#type': webform_section\n      '#title': 'System settings'\n      last_export_date:\n        '#type': datetime\n        '#title': 'Last export date'\n        '#disabled': true\n        '#date_date_format': ''\n        '#date_time_format': ''\n      export_due:\n        '#type': datetime\n        '#title': 'Export due'\n        '#description': 'The expected date/time that this export will be generated.'\n        '#disabled': true\n        '#date_date_format': ''\n        '#date_time_format': ''\nbasic_metadata:\n  '#type': webform_wizard_page\n  '#title': 'Basic metadata'\n  basic_metadata_fieldset:\n    '#type': fieldset\n    '#title': 'Basic metadata'\n    title:\n      '#type': textfield\n      '#title': Title\n      '#required': true\n    publishing_organisation:\n      '#type': textfield\n      '#title': 'Publishing organisation'\n      '#help': 'Please select the organisation responsible for publishing (producing, releasing, holding) this resource. It will be used as the resource&#39;s publishing organisation when registering this resource with GBIF and when submitting metadata during DOI registrations. It will also be used to auto-generate the citation for the resource (if auto-generation is turned on), so consider the prominence of the role. Please be aware your selection cannot be changed after the resource has been either registered with GBIF or assigned a DOI.'\n      '#required': true\n    metadata_language:\n      '#type': select\n      '#title': 'Metadata language'\n      '#description': 'The language in which the metadata document is written.'\n      '#options': languages_iso_639_2\n      '#required': true\n    data_language:\n      '#type': select\n      '#title': 'Data language'\n      '#help': 'The primary language in which the described data (not the metadata document) is written.'\n      '#options': languages_iso_639_2\n      '#required': true\n    update_frequency:\n      '#type': select\n      '#title': 'Update frequency'\n      '#help': 'The frequency with which changes are made to the resource after the initial resource has been published. For convenience, its value will default to the auto-publishing interval (if auto-publishing has been turned on), however, it can always be overridden later. Please note a description of the maintenance frequency of the resource can also be entered on the Additional Metadata page.'\n      '#options':\n        daily: Daily\n        weekly: Weekly\n        monthly: Monthly\n        biannually: Biannually\n        annually: Annually\n        asNeeded: 'As needed'\n        continually: Continually\n        irregular: Irregular\n        notPlanned: 'Not planned'\n        otherMaintenancePeriod: 'Other maintenance period'\n      '#required': true\n    licence:\n      '#type': webform_section\n      '#title': Licence\n      '#help': 'The licence that you apply to a dataset provides a standardized way to define appropriate uses of your work. GBIF encourages publishers to adopt the least restrictive licence possible from among three machine-readable options (CC0 1.0, CC-BY 4.0 or CC-BY-NC 4.0) to encourage the widest possible use and application of data. Learn more&nbsp;<a href=\"http://www.gbif.org/terms/licences\" target=\"_blank\">here</a>. If you are unable to choose one of the three options, and your dataset contains occurrence data, you will not be able to register your dataset with GBIF or make it globally discoverable through GBIF.org. If you feel unable to select one of the three options, please contact the GBIF Secretariat at participation@gbif.org.'\n      default_licence_code:\n        '#type': textfield\n        '#title': 'Default licence code'\n        '#description': 'Licence code (e.g. CCO) to apply to any occurrences that don&#39;t have an occurrence-level licence specified.'\n        '#required': true\n      licence_name:\n        '#type': textfield\n        '#title': 'Licence name'\n        '#required': true\n      licence_url:\n        '#type': url\n        '#title': 'Licence URL'\n        '#description': 'Link to the licence&#39;s description.'\n        '#required': true\n    subtype:\n      '#type': select\n      '#title': Subtype\n      '#help': 'Subtype of the resource.'\n      '#options':\n        Specimen: Specimen\n        Observation: Observation\n      '#empty_option': 'Select a subtype'\n    description:\n      '#type': textarea\n      '#title': Description\n      '#multiple': true\n      '#description': '&nbsp;'\n      '#help': 'A brief overview of the resource that is being documented broken into paragraphs.'\n      '#required': true\n    resource_contacts:\n      '#type': webform_custom_composite\n      '#title': 'Resource contacts'\n      '#help': 'The list of contacts represents the people and organisations that should be contacted to get more information about the resource, that curate the resource or to whom putative problems with the resource or its data should be addressed.'\n      '#required': true\n      '#multiple__header': false\n      '#element':\n        first_name:\n          '#type': textfield\n          '#title': 'First name'\n        surname:\n          '#type': textfield\n          '#required': true\n          '#title': Surname\n        email:\n          '#type': email\n          '#title': 'Email address'\n        organisation:\n          '#type': textfield\n          '#required': true\n          '#title': Organisation\n        position:\n          '#type': textfield\n          '#required': true\n          '#title': Position\n          '#placeholder': 'Position within the organisation'\n        address:\n          '#type': textarea\n          '#title': Address\n        city:\n          '#type': textfield\n          '#title': City\n        county_state_province:\n          '#type': textfield\n          '#title': County/State/Province\n        country:\n          '#type': select\n          '#options': country_names\n          '#title': Country\n          '#help': 'Countries, territories, and islands are based on the ISO 3166-1 standard.'\n        postcode:\n          '#type': textfield\n          '#title': Postcode\n        home_page:\n          '#type': url\n          '#title': 'Home page'\n          '#placeholder': 'Enter URL'\n        phone:\n          '#type': tel\n          '#title': Phone\n        personnel_directory:\n          '#type': url\n          '#title': 'Personnel directory'\n          '#help': 'The URL of the personnel directory system to which the personnel identifier belongs.'\n        personnel_identifier:\n          '#type': textfield\n          '#title': 'Personnel identifier'\n          '#help': 'A 16-digit ORCID ID (e.g. 0000-0002-1825-0097) or another identifier that links this person to the personnel directory specified.'\n    resource_creators:\n      '#type': webform_custom_composite\n      '#title': 'Resource creators'\n      '#help': 'The list of creators represents the people and organisations who created the resource, in priority order. The list will be used to auto-generate the resource citation (if auto-generation is turned on).'\n      '#required': true\n      '#multiple__header': false\n      '#element':\n        first_name:\n          '#type': textfield\n          '#title': 'First name'\n        surname:\n          '#type': textfield\n          '#required': true\n          '#title': Surname\n        email:\n          '#type': email\n          '#title': 'Email address'\n        organisation:\n          '#type': textfield\n          '#required': true\n          '#title': Organisation\n        position:\n          '#type': textfield\n          '#required': true\n          '#title': Position\n          '#placeholder': 'Position within the organisation'\n        address:\n          '#type': textarea\n          '#title': Address\n        city:\n          '#type': textfield\n          '#title': City\n        county_state_province:\n          '#type': textfield\n          '#title': County/State/Province\n        country:\n          '#type': select\n          '#options': country_names\n          '#title': Country\n          '#help': 'Countries, territories, and islands are based on the ISO 3166-1 standard.'\n        postcode:\n          '#type': textfield\n          '#title': Postcode\n        home_page:\n          '#type': url\n          '#title': 'Home page'\n          '#placeholder': 'Enter URL'\n        phone:\n          '#type': tel\n          '#title': Phone\n        personnel_directory:\n          '#type': url\n          '#title': 'Personnel directory'\n          '#help': 'The URL of the personnel directory system to which the personnel identifier belongs.'\n        personnel_identifier:\n          '#type': textfield\n          '#title': 'Personnel identifier'\n          '#help': 'A 16-digit ORCID ID (e.g. 0000-0002-1825-0097) or another identifier that links this person to the personnel directory specified.'\n    metadata_providers:\n      '#type': webform_custom_composite\n      '#title': 'Metadata providers'\n      '#help': 'The list of metadata providers represents the people and organisations responsible for producing the resource metadata.'\n      '#required': true\n      '#multiple__header': false\n      '#element':\n        first_name:\n          '#type': textfield\n          '#title': 'First name'\n        surname:\n          '#type': textfield\n          '#required': true\n          '#title': Surname\n        email:\n          '#type': email\n          '#title': 'Email address'\n        organisation:\n          '#type': textfield\n          '#required': true\n          '#title': Organisation\n        position:\n          '#type': textfield\n          '#required': true\n          '#title': Position\n          '#placeholder': 'Position within the organisation'\n        address:\n          '#type': textarea\n          '#title': Address\n        city:\n          '#type': textfield\n          '#title': City\n        county_state_province:\n          '#type': textfield\n          '#title': County/State/Province\n        country:\n          '#type': select\n          '#options': country_names\n          '#title': Country\n          '#help': 'Countries, territories, and islands are based on the ISO 3166-1 standard.'\n        postcode:\n          '#type': textfield\n          '#title': Postcode\n        home_page:\n          '#type': url\n          '#title': 'Home page'\n          '#placeholder': 'Enter URL'\n        phone:\n          '#type': tel\n          '#title': Phone\n        personnel_directory:\n          '#type': url\n          '#title': 'Personnel directory'\n          '#help': 'The URL of the personnel directory system to which the personnel identifier belongs.'\n        personnel_identifier:\n          '#type': textfield\n          '#title': 'Personnel identifier'\n          '#help': 'A 16-digit ORCID ID (e.g. 0000-0002-1825-0097) or another identifier that links this person to the personnel directory specified.'\ngeographic_coverage:\n  '#type': webform_wizard_page\n  '#title': 'Geographic coverage'\n  geographic_coverage_fieldset:\n    '#type': fieldset\n    '#title': 'Geographic coverage'\n    geographic_description:\n      '#type': textarea\n      '#title': 'Geographic description'\n      '#help': 'Geographic description text to include in the Geographic coverage section of the EML file.'\n      '#required': true\n    west_coord:\n      '#type': number\n      '#title': West\n      '#min': -180\n      '#max': 180\n    east_coord:\n      '#type': number\n      '#title': East\n      '#min': -180\n      '#max': 180\n    south_coord:\n      '#type': number\n      '#title': South\n      '#min': -90\n      '#max': 90\n    north_coord:\n      '#type': number\n      '#title': North\n      '#min': -90\n      '#max': 90\ntaxonomic_coverage:\n  '#type': webform_wizard_page\n  '#title': 'Taxonomic coverage'\n  taxonomic_coverage_fieldset:\n    '#type': fieldset\n    '#title': 'Taxonomic coverage'\n    taxonomic_coverage_list:\n      '#type': webform_custom_composite\n      '#title': 'Taxonomic coverage list'\n      '#description': '&nbsp;'\n      '#help': 'Please enter metadata about the taxonomic areas covered by the resource.'\n      '#multiple__empty_items': 0\n      '#element':\n        description:\n          '#type': textarea\n          '#title': Description\n          '#description': |\n            A description of the range of taxa addressed in the data set or collection.\n            Example(s):\n            \"All vascular plants were identified to family or species, mosses and lichens were identified as moss or lichen.\"\n            \n        taxon_list:\n          '#type': textarea\n          '#title': 'Taxon list'\n          '#description': 'Enter taxa, one per line, in format: scientific name;common name;rank'\ntemporal_coverage:\n  '#type': webform_wizard_page\n  '#title': 'Temporal coverage'\n  temporal_coverage_fieldset:\n    '#type': fieldset\n    '#title': 'Temporal coverage'\n    '#help': 'Please enter metadata about the time periods covered by the resource. First add the appropriate type of time period, then fill in the form fields that appear.'\n    temporal_coverage_single_date:\n      '#type': webform_custom_composite\n      '#title': 'Single date'\n      '#help': 'This date is meant to represent a coverage spanning one day.'\n      '#multiple__item_label': date\n      '#multiple__no_items_message': 'No dates entered. Please add dates below.'\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more dates'\n      '#element':\n        single_date:\n          '#type': date\n          '#title': 'Single date'\n    temporaral_coverage_formation_period:\n      '#type': webform_custom_composite\n      '#title': 'Formation period'\n      '#help': 'Text description of the time period during which the collection was assembled (e.g., &quot;Victorian&quot;, &quot;1922-1932&quot;, &quot;c. 1750&quot;). Use this type to indicate an ongoing collection (e.g., &quot;2010-current&quot;).'\n      '#multiple__item_label': 'formation period'\n      '#multiple__no_items_message': 'No formation periods entered. Please add formation periods below.'\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more formation periods'\n      '#element':\n        formation_period:\n          '#type': textfield\n          '#title': 'Formation period'\n    temporal_coverage_date_range:\n      '#type': webform_custom_composite\n      '#title': 'Date range'\n      '#help': 'A coverage specified by a start and end date.'\n      '#multiple__item_label': 'date range'\n      '#multiple__no_items_message': 'No date ranges entered. Please add date ranges below.'\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more date ranges'\n      '#element':\n        start_date:\n          '#type': date\n          '#required': true\n          '#title': 'Start date'\n          '#help': 'The date the coverage began.'\n        end_date:\n          '#type': date\n          '#required': true\n          '#title': 'End date'\n          '#help': 'The date the coverage ended.'\n    temporal_coverage_living_time_period:\n      '#type': webform_custom_composite\n      '#title': 'Living time period'\n      '#help': 'Time period during which biological material was alive. Includes palaeontological time periods or other text phrases (e.g., &quot;1900-1950&quot;, &quot;Ming Dynasty&quot;, &quot;Pleistocene&quot;).'\n      '#multiple__item_label': 'living time period'\n      '#multiple__no_items_message': 'No living time periods entered. Please add living time periods below.'\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more living time periods'\n      '#element':\n        living_time_period:\n          '#type': textfield\n          '#title': 'Living time period'\nkeywords:\n  '#type': webform_wizard_page\n  '#title': Keywords\n  keywords_fieldset:\n    '#type': fieldset\n    '#title': Keywords\n    keyword_sets:\n      '#type': webform_custom_composite\n      '#title': 'Keyword sets'\n      '#help': 'Please enter sets of keywords for the resource, each with a thesaurus or controlled vocabulary.'\n      '#multiple__header': false\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more keyword sets'\n      '#element':\n        thesaurus_vocabulary:\n          '#type': textfield\n          '#required': true\n          '#title': Thesaurus/vocabulary\n          '#help': 'A name for the keyword thesaurus/vocabulary from which the keywords were derived. Keyword thesauri are usually discipline-specific and can be custom or official. If the keywords are not drawn from a specific thesaurus or vocabulary, enter ''n/a'''\n        keywords:\n          '#type': textarea\n          '#required': true\n          '#title': Keywords\n          '#help': 'Comma separated list of keywords'\nassociated_parties_page:\n  '#type': webform_wizard_page\n  '#title': 'Associated parties'\n  associated_parties_fieldset:\n    '#type': fieldset\n    '#title': 'Associated parties'\n    associated_parties:\n      '#type': webform_custom_composite\n      '#title': 'Associated parties'\n      '#help': 'Parties associated with this resource (e.g., the hosting institution).'\n      '#multiple__header': false\n      '#multiple__empty_items': 0\n      '#element':\n        first_name:\n          '#type': textfield\n          '#title': 'First name'\n        surname:\n          '#type': textfield\n          '#required': true\n          '#title': Surname\n        email:\n          '#type': email\n          '#title': 'Email address'\n        organisation:\n          '#type': textfield\n          '#required': true\n          '#title': Organisation\n        position:\n          '#type': textfield\n          '#required': true\n          '#title': Position\n          '#placeholder': 'Position within the organisation'\n        address:\n          '#type': textarea\n          '#title': Address\n        city:\n          '#type': textfield\n          '#title': City\n        county_state_province:\n          '#type': textfield\n          '#title': County/State/Province\n        country:\n          '#type': select\n          '#options': country_names\n          '#title': Country\n          '#help': 'Countries, territories and islands are based on the ISO 3166-1 standard.'\n        postcode:\n          '#type': textfield\n          '#title': Postcode\n        home_page:\n          '#type': url\n          '#title': 'Home page'\n          '#placeholder': 'Enter URL'\n        phone:\n          '#type': tel\n          '#title': Phone\n        personnel_directory:\n          '#type': url\n          '#title': 'Personnel directory'\n          '#help': 'Countries, territories and islands are based on the ISO 3166-1 standard.'\n        personnel_identifier:\n          '#type': textfield\n          '#title': 'Personnel identifier'\n          '#help': 'A 16-digit ORCID ID (e.g. 0000-0002-1825-0097) or another identifier that links this person to the personnel directory specified.'\n        role:\n          '#type': select\n          '#options':\n            author: Author\n            contentProvider: 'Content provider'\n            custodianSteward: 'Custodian steward'\n            distributor: Distributor\n            editor: Editor\n            metadataProvider: 'Metadata provider'\n            originator: Originator\n            owner: Owner\n            pointOfContact: 'Point of contact'\n            principalInvestigator: 'Principal investigator'\n            processor: Processor\n            publisher: Publisher\n            user: User\n            programmer: Programmer\n            curator: Curator\n            reviewer: Reviewer\n          '#title': Role\n          '#help': |\n            Author: an agent associated with authoring a publication that used the data set, or of a data paper\n            Content Provider: an agent who contributed content to a data set (data set being described may be a composite)\n            Custodian Steward: an agent who is responsible for/takes care of the data set\n            Distributor: an agent involved in the publishing/distribution chain of a data set\n            Editor: an agent associated with editing a publication that used the data set, or of a data paper\n            Metadata Provider: an agent responsible for providing the metadata\n            Originator: an agent who originally gathered/prepared the data set\n            Owner: an agent who owns the data set (may or may not be the custodian)\n            Point Of Contact: an agent to contact for further information about the data set\n            Principal Investigator: an primary scientific contact associated with the data set\n            Processor: an agent responsible for any post-collection processing of the data set\n            Publisher: the agent associated with publishing a publication that used the data set, or of a data paper\n            User: an agent that makes use of the datset\n            Programmer: an agent providing informatics/programming support related to the data set\n            Curator: an agent that maintains and documents the specimens in a collection. Some of their duties include preparing and labeling specimens so they are ready for identification, and protecting the specimens\n            \nproject_data:\n  '#type': webform_wizard_page\n  '#title': 'Project data'\n  project_data_fieldset:\n    '#type': fieldset\n    '#title': 'Project data'\n    project_title:\n      '#type': textfield\n      '#title': 'Project title'\n      '#required': true\n    project_identifier:\n      '#type': textfield\n      '#title': Identifier\n      '#help': 'A unique identifier for this project.'\n    project_description:\n      '#type': textarea\n      '#title': Description\n    project_funding:\n      '#type': textarea\n      '#title': Funding\n    project_study_area_description:\n      '#type': textarea\n      '#title': 'Study area description'\n    project_design_description:\n      '#type': textarea\n      '#title': 'Design description'\n    personnel:\n      '#type': webform_custom_composite\n      '#title': Personnel\n      '#required': true\n      '#multiple__add_more_input_label': 'more people'\n      '#element':\n        first_name:\n          '#type': textfield\n          '#title': 'First name'\n        last_name:\n          '#type': textfield\n          '#required': true\n          '#title': 'Last name'\n        role:\n          '#type': select\n          '#options':\n            Author: Author\n            'Content Provider': 'Content Provider'\n            'Custodian Steward': 'Custodian Steward'\n            Distributor: Distributor\n            Editor: Editor\n            'Metadata Provider': 'Metadata Provider'\n            Originator: Originator\n            Owner: Owner\n            'Point of Contact': 'Point of Contact'\n            'Principle Investigator': 'Principle Investigator'\n            Processor: Processor\n            Publisher: Publisher\n            User: User\n            Programmer: Programmer\n            Curator: Curator\n            Reviewer: Reviewer\n          '#title': Role\n        personnel_directory:\n          '#type': url\n          '#title': 'Personnel directory'\n          '#help': 'The URL of the personnel directory system to which the personnel identifier belongs.'\n        personnel_identifier:\n          '#type': textfield\n          '#title': 'Personnel identifier'\n          '#help': 'A 16-digit ORCID ID (e.g. 0000-0002-1825-0097) or another identifier that links this person to the personnel directory specified.'\nsampling_method:\n  '#type': webform_wizard_page\n  '#title': 'Sampling method'\n  sampling_method_fieldset:\n    '#type': fieldset\n    '#title': 'Sampling method'\n    study_extent:\n      '#type': textarea\n      '#title': 'Study extent'\n      '#required': true\n    sampling_description:\n      '#type': textarea\n      '#title': 'Sampling description'\n      '#required': true\n    quality_control:\n      '#type': textarea\n      '#title': 'Quality control'\n    step_descriptions:\n      '#type': textarea\n      '#title': 'Step descriptions'\n      '#multiple': true\n      '#required': true\ncitations:\n  '#type': webform_wizard_page\n  '#title': Citations\n  citations_fieldset:\n    '#type': fieldset\n    '#title': Citations\n    resource_citation:\n      '#type': textarea\n      '#title': 'Resource citation'\n      '#required': true\n    resource_citation_identifier:\n      '#type': textfield\n      '#title': 'Resource citation identifier'\n    bibliographic_citations:\n      '#type': webform_custom_composite\n      '#title': 'Bibliographic citations'\n      '#multiple__header': false\n      '#multiple__empty_items': 0\n      '#element':\n        citation:\n          '#type': textarea\n          '#required': true\n          '#title': 'Biblioghraphic citation'\n          '#help': 'The citation of an external resource related to or used in the creation of this resource.'\n        citation_identifier:\n          '#type': textfield\n          '#title': 'Citation identifier'\n          '#help': 'A DOI, URI, or other persistent identifier that resolves to the online external resource. It should be used in the citation, usually at the end.'\ncollection_data:\n  '#type': webform_wizard_page\n  '#title': 'Collection data'\n  collection_data_fieldset:\n    '#type': fieldset\n    '#title': 'Collection data'\n    '#help': 'Please enter the collection metadata for the resource.'\n    collections:\n      '#type': webform_custom_composite\n      '#title': Collections\n      '#multiple__header': false\n      '#multiple__item_label': collection\n      '#multiple__no_items_message': 'No collections entered. Please add collections below.'\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more collections'\n      '#element':\n        collection_name:\n          '#type': textfield\n          '#required': true\n          '#title': Name\n          '#help': 'Official name of the Collection in the local language.'\n        collection_identifier:\n          '#type': textfield\n          '#title': 'Collection identifier'\n          '#help': 'The URI (LSID or URL) of the collection. In RDF, used as URI of the collection resource.'\n        parent_collection_identifier:\n          '#type': textfield\n          '#title': 'Parent collection identifier'\n          '#help': 'Identifier for the parent collection for this sub-collection. Enables a hierarchy of collections and sub collections to be built. Please enter \"Not applicable\" if this collection does not have a parent collection.'\n    specimen_preservation_methods:\n      '#type': webform_custom_composite\n      '#title': 'Specimen preservation methods'\n      '#multiple__empty_items': 0\n      '#element':\n        method:\n          '#type': select\n          '#options':\n            noTreatment: 'No treatment'\n            alcohol: Alcohol\n            deepFrozen: 'Deep frozen'\n            dried: Dried\n            driedAndPressed: 'Dried and pressed'\n            formalin: Formalin\n            refrigerated: Refrigerated\n            freezeDried: Freeze-dried\n            glycerin: Glycerin\n            gumArabic: 'Gum arabic'\n            microscopicPreparation: 'Microscopic preparation'\n            mounted: Mounted\n            pinned: Pinned\n            other: Other\n          '#required': true\n          '#title': Method\n    curatorial_units_count_with_uncertainty:\n      '#type': webform_custom_composite\n      '#title': 'Curatorial units - count with uncertainty'\n      '#multiple__empty_items': 0\n      '#element':\n        count:\n          '#type': textfield\n          '#required': true\n          '#title': Count\n        plus_minus:\n          '#type': textfield\n          '#title': +/-\n        unit_type:\n          '#type': textfield\n          '#title': 'Unit type'\n    curatorial_units_count_range:\n      '#type': webform_custom_composite\n      '#title': 'Curatorial units - count range'\n      '#multiple__empty_items': 0\n      '#element':\n        count_low:\n          '#type': textfield\n          '#required': true\n          '#title': Between\n        count_high:\n          '#type': textfield\n          '#required': true\n          '#title': and\n        unit_type:\n          '#type': textfield\n          '#title': 'Unit type'\nexternal_links:\n  '#type': webform_wizard_page\n  '#title': 'External links'\n  external_links_fieldset:\n    '#type': fieldset\n    '#title': 'External links'\n    '#help': 'External links to your resource homepage or other available formats (e.g., database dumps, spreadsheets, nexus, linked data, etc.).'\n    resource_homepage:\n      '#type': url\n      '#title': 'Resource homepage'\n    other_data_formats:\n      '#type': webform_custom_composite\n      '#title': 'Other data formats'\n      '#help': 'Links to your resource data in other formats (e.g., database dumps, spreadsheets, nexus, linked data, etc.).'\n      '#multiple__header': false\n      '#multiple__no_items_message': 'No data formats entered. Please add items below.'\n      '#multiple__empty_items': 0\n      '#multiple__add_more_input_label': 'more formats'\n      '#element':\n        name:\n          '#type': textfield\n          '#required': true\n          '#title': Name\n        character_set:\n          '#type': textfield\n          '#required': true\n          '#title': 'Character set'\n          '#help': 'Contains the name of the character encoding. This is typically ASCII or UTF-8, or one of the other common encodings.'\n        download_url:\n          '#type': url\n          '#required': true\n          '#title': 'Download url'\n          '#help': 'The URL to download the resource in the mentioned format.'\n        data_format:\n          '#type': textfield\n          '#required': true\n          '#title': 'Data format'\n          '#help': |\n            Name of the format of the data object\n            Example(s):\n            Microsoft Excel\n            \n        data_format_version:\n          '#type': textfield\n          '#title': 'Data format version'\n          '#help': |\n            Version of the format of the data object\n            Example(s):\n            2000 (9.0.2720)\n            \ngeneral_info:\n  '#type': webform_wizard_page\n  '#title': 'Additional metadata'\n  additional_metadata_fieldset:\n    '#type': fieldset\n    '#title': 'Additional metadata'\n    date_last_published:\n      '#type': date\n      '#title': 'Date last published'\n      '#date_date_format': ''\n    resource_logo_url:\n      '#type': url\n      '#title': 'Resource logo URL'\n      '#help': 'Resource logo URL. If you don&#39;t have an online logo URL a file can be uploaded to the IPT&#39;s metadata form once this dataset is synced to the IPT.'\n    dataset_purpose:\n      '#type': textarea\n      '#title': 'Dataset purpose'\n      '#help': 'Summary of the intentions for which the data set was developed. Includes objectives for creating the data set and what the data set is to support.'\n    maintenance_description:\n      '#type': textarea\n      '#title': 'Maintenance description'\n      '#help': 'A description of the maintenance frequency of this resource. This description compliments the update frequency selected on the Basic Metadata page.'\n    additional_info:\n      '#type': textarea\n      '#title': 'Additional info'\n      '#help': 'Additional info field value for the Darwin Core ouput eml.xml file.'\n    alternate_identifiers:\n      '#type': textfield\n      '#title': 'Alternate identifiers'\n      '#multiple': true\n      '#help': 'Alternative identifiers that are used to label this resource, possibly from different data management systems, can be listed here.'\n      '#multiple__empty_items': 0"
+css: ''
+javascript: ''
+settings:
+  ajax: false
+  ajax_scroll_top: form
+  ajax_progress_type: ''
+  ajax_effect: ''
+  ajax_speed: null
+  page: true
+  page_submit_path: ''
+  page_confirm_path: ''
+  page_theme_name: ''
+  form_title: source_entity_webform
+  form_submit_once: false
+  form_exception_message: ''
+  form_open_message: ''
+  form_close_message: ''
+  form_previous_submissions: true
+  form_confidential: false
+  form_confidential_message: ''
+  form_disable_remote_addr: false
+  form_convert_anonymous: false
+  form_prepopulate: false
+  form_prepopulate_source_entity: false
+  form_prepopulate_source_entity_required: false
+  form_prepopulate_source_entity_type: ''
+  form_reset: false
+  form_disable_autocomplete: false
+  form_novalidate: false
+  form_disable_inline_errors: false
+  form_required: false
+  form_unsaved: false
+  form_disable_back: false
+  form_submit_back: false
+  form_autofocus: false
+  form_details_toggle: false
+  form_access_denied: default
+  form_access_denied_title: ''
+  form_access_denied_message: ''
+  form_access_denied_attributes: {  }
+  form_file_limit: ''
+  form_method: ''
+  form_action: ''
+  form_attributes: {  }
+  share: false
+  share_node: false
+  share_theme_name: ''
+  share_title: true
+  share_page_body_attributes: {  }
+  submission_label: ''
+  submission_log: false
+  submission_views: {  }
+  submission_views_replace: {  }
+  submission_user_columns: {  }
+  submission_user_duplicate: false
+  submission_access_denied: default
+  submission_access_denied_title: ''
+  submission_access_denied_message: ''
+  submission_access_denied_attributes: {  }
+  submission_exception_message: ''
+  submission_locked_message: ''
+  submission_excluded_elements: {  }
+  submission_exclude_empty: false
+  submission_exclude_empty_checkbox: false
+  previous_submission_message: ''
+  previous_submissions_message: ''
+  autofill: false
+  autofill_message: ''
+  autofill_excluded_elements: {  }
+  wizard_progress_bar: true
+  wizard_progress_pages: false
+  wizard_progress_percentage: false
+  wizard_progress_link: true
+  wizard_progress_states: false
+  wizard_auto_forward: true
+  wizard_auto_forward_hide_next_button: false
+  wizard_keyboard: true
+  wizard_start_label: ''
+  wizard_preview_link: false
+  wizard_confirmation: true
+  wizard_confirmation_label: ''
+  wizard_track: ''
+  wizard_prev_button_label: ''
+  wizard_next_button_label: ''
+  wizard_toggle: true
+  wizard_toggle_show_label: ''
+  wizard_toggle_hide_label: ''
+  preview: 0
+  preview_label: ''
+  preview_title: ''
+  preview_message: ''
+  preview_attributes: {  }
+  preview_excluded_elements: {  }
+  preview_exclude_empty: true
+  preview_exclude_empty_checkbox: false
+  draft: none
+  draft_multiple: false
+  draft_auto_save: false
+  draft_saved_message: ''
+  draft_loaded_message: ''
+  draft_pending_single_message: ''
+  draft_pending_multiple_message: ''
+  confirmation_type: page
+  confirmation_title: ''
+  confirmation_message: ''
+  confirmation_url: ''
+  confirmation_attributes: {  }
+  confirmation_back: true
+  confirmation_back_label: ''
+  confirmation_back_attributes: {  }
+  confirmation_exclude_query: false
+  confirmation_exclude_token: false
+  confirmation_update: false
+  limit_total: null
+  limit_total_interval: null
+  limit_total_message: ''
+  limit_total_unique: false
+  limit_user: null
+  limit_user_interval: null
+  limit_user_message: ''
+  limit_user_unique: false
+  entity_limit_total: null
+  entity_limit_total_interval: null
+  entity_limit_user: null
+  entity_limit_user_interval: null
+  purge: none
+  purge_days: null
+  results_disabled: false
+  results_disabled_ignore: false
+  results_customize: false
+  token_view: false
+  token_update: false
+  token_delete: false
+  serial_disabled: false
+access:
+  create:
+    roles:
+      - anonymous
+      - authenticated
+    users: {  }
+    permissions: {  }
+  view_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  purge_any:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  view_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  update_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  delete_own:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  administer:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  test:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+  configuration:
+    roles: {  }
+    users: {  }
+    permissions: {  }
+handlers:
+  indicia_auto_exports_webform_handler:
+    id: indicia_auto_exports_webform_handler
+    label: 'Indicia auto exports webform handler'
+    notes: ''
+    handler_id: indicia_auto_exports_webform_handler
+    status: true
+    conditions: {  }
+    weight: 0
+    settings: {  }
+variants: {  }

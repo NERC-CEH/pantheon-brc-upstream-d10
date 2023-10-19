@@ -1,0 +1,12 @@
+locations_shp_importer.admin_import_locations_settings:
+  title: 'Configure importing locations from SHP files'
+  route_name: locations_shp_importer.settings
+  parent: iform.admin_config_iform
+  description: 'Allows settings including available location types to be configured.'
+  weight: 49
+locations_shp_importer.admin_import_locations:
+  title: 'Import locations from SHP files'
+  route_name: locations_shp_importer.import
+  parent: iform.admin_config_iform
+  description: 'Import locations from SHP file.'
+  weight: 50

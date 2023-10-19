@@ -1,0 +1,106 @@
+.olMap {
+  img {
+    border: none !important;
+  }
+  .layersDiv {
+    border-radius: 6px;
+    input, label.olButton {
+      display: inline-block;
+      width: auto;
+      max-width: 150px;
+    }
+  }
+}
+
+div.olControlEditingToolbar {
+  div {
+    background-image: url("../images/map-toolbar.png");
+    width: 24px;
+    height: 22px;
+    margin: 5px 2px;
+  }
+
+  .olControlNavigationItemInactive {
+    background-position: 0px 0px;
+  }
+
+  .olControlNavigationItemActive {
+    background-position: 0px -23px;
+  }
+
+  .olControlDrawFeaturePolygonItemInactive {
+    background-position: -25px 0px;
+  }
+
+  .olControlDrawFeaturePolygonItemActive {
+    background-position: -25px -23px;
+  }
+
+  .olControlDrawFeaturePathItemInactive {
+    background-position: -50px 0px;
+  }
+
+  .olControlDrawFeaturePathItemActive {
+    background-position: -50px -23px;
+  }
+
+  .olControlDrawFeaturePointItemInactive {
+    background-position: -75px 0px;
+  }
+
+  .olControlDrawFeaturePointItemActive {
+    background-position: -75px -23px;
+  }
+
+  .olControlSelectFeatureItemInactive {
+    background-position: -100px 0px;
+  }
+
+  .olControlSelectFeatureItemActive {
+    background-position: -100px -23px;
+  }
+
+  .olControlModifyFeatureItemInactive {
+    background-position: -125px 0px;
+  }
+
+  .olControlModifyFeatureItemActive {
+    background-position: -125px -23px;
+  }
+
+  .olControlClearLayerItemInactive {
+    background-position: -150px 0px;
+  }
+
+  .olControlClearLayerItemActive {
+    background-position: -150px -23px;
+  }
+
+  .olControlClickSrefItemInactive {
+    background-position: -175px 0px;
+  }
+
+  .olControlClickSrefItemActive {
+    background-position: -175px -23px;
+  }
+
+  .olControlFullscreenItemInactive {
+    background-position: -200px 0px;
+  }
+
+  .olControlFullscreenItemActive {
+    background-position: -200px -23px;
+  }
+}
+
+/* Click tolerance input */
+label#click-buffer {
+  position: absolute;
+  top: 8px;
+  width: auto;
+  margin: 0 4px;
+  background: white;
+  opacity: 0.7;
+  z-index: 9999;
+  float: left !important;
+}

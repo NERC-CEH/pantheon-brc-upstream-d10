@@ -1,0 +1,12 @@
+{
+  "name": "drupal/commerce_claim_gift_aid",
+  "type": "drupal-module",
+  "description": "Allows shops to claim gift aid from eligible order items.",
+  "homepage": "https://www.drupal.org/project/commerce_claim_gift_aid",
+  "license": "GPL-2.0+",
+  "require": {
+    "drupal/commerce": "~2.0",
+    "drupal/core": "^8.7.7 || ^9"
+  },
+  "minimum-stability": "dev"
+}

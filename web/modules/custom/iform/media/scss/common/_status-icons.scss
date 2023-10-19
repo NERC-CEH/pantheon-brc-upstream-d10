@@ -1,0 +1,158 @@
+$icon-size: 16px;
+$col-width: $icon-size*2;
+/* Define the purpose of the 3 columns in the sprite. */
+$default-col: 0px;
+$queried-col: -$col-width;
+$answered-col: -$col-width*2;
+/* Define the purpose of the rows in the sprite. */
+$accepted-correct-row: 0px;
+$accepted-row: -$icon-size;
+$plausible-row: -$icon-size*2;
+$certain-row: -$icon-size*3;
+$likely-row: -$icon-size*4;
+$uncertain-row: -$icon-size*5;
+$not-accepted-row: -$icon-size*6;
+$not-accepted-incorrect-row: -$icon-size*7;
+$not-reviewed-row: -$icon-size*8;
+
+.status-icon {
+  background: url(../images/statuses-sprite.png) no-repeat center center;
+  width: $icon-size * 2;
+  height: $icon-size;
+  display: inline-block;
+  /* Default state, not reviewed */
+  &.status-.substatus-.certainty-, &.status-C.substatus-.certainty-.query- {
+    background: none;
+  }
+  &.certainty-C {
+    /* Not reviewed, recorder was certain */
+    background-position: $default-col $certain-row;
+    &.query-Q {
+      background-position: $queried-col $certain-row;
+    }
+    &.query-A {
+      background-position: $answered-col $certain-row;
+    }
+  }
+  &.certainty-L {
+    /* Not reviewed, recorder thought likely */
+    background-position: $default-col $likely-row;
+    &.query-Q {
+      background-position: $queried-col $likely-row;
+    }
+    &.query-A {
+      background-position: $answered-col $likely-row;
+    }
+  }
+  &.certainty-U {
+    /* Not reviewed, recorder was uncertain */
+    background-position: $default-col $uncertain-row;
+    &.query-Q {
+      background-position: $queried-col $uncertain-row;
+    }
+    &.query-A {
+      background-position: $answered-col $uncertain-row;
+    }
+  }
+  &.status-V {
+    /* Accepted */
+    background-position: $default-col $accepted-row;
+    &.query-Q {
+      background-position: $queried-col $accepted-row;
+    }
+    &.query-A {
+      background-position: $answered-col $accepted-row;
+    }
+    &.substatus-1 {
+      /* Accepted as correct */
+      background-position: $default-col $accepted-correct-row;
+      &.query-Q {
+        background-position: $queried-col $accepted-correct-row;
+      }
+      &.query-A {
+        background-position: $answered-col $accepted-correct-row
+      }
+    }
+  }
+  &.status-C {
+    /* Not reviewed, recorder certainty not known */
+    background-position: $default-col $not-reviewed-row;
+    &.query-Q {
+      background-position: $queried-col $not-reviewed-row;
+    }
+    &.query-A {
+      background-position: $answered-col $not-reviewed-row;
+    }
+    &.substatus-3 {
+      /* Plausible */
+      background-position: $default-col $plausible-row;
+      &.query-Q {
+        background-position: $queried-col $plausible-row;
+      }
+      &.query-A {
+        background-position: $answered-col $plausible-row;
+      }
+    }
+  }
+  &.status-R {
+    /* Not accepted */
+    background-position: $default-col $not-accepted-row;
+    &.query-Q {
+      background-position: $queried-col $not-accepted-row;
+    }
+    &.query-A {
+      background-position: $answered-col $not-accepted-row;
+    }
+    &.substatus-5 {
+      /* Not accepted as incorrect */
+      background-position: $default-col $not-accepted-incorrect-row;
+      &.query-Q {
+        background-position: $queried-col $not-accepted-incorrect-row;
+      }
+      &.query-A {
+        background-position: $answered-col $not-accepted-incorrect-row;
+      }
+    }
+  }
+}
+
+/* New style font-awesome icons */
+
+@mixin fa-box($border-color, $fill-color, $color) {
+  border: solid $border-color 1px;
+  border-radius: 2px;
+  background-color: $fill-color;
+  color: $color;
+}
+
+.fas, .far {
+  margin: 3px;
+  padding: 1px;
+  &.fa-check-circle, &.fa-thumbs-up {
+    color: green;
+  }
+  &.fa-check-double {
+    @include fa-box(green, white, green);
+  }
+  &.fa-check {
+    @include fa-box(green, white, green);
+  }
+  &.fa-check-square {
+    color: orange;
+  }
+  &.fa-times-circle {
+    color: red;
+  }
+  &.fa-times {
+    @include fa-box(red, white, red);
+    &.status-R5 {
+      @include fa-box(red, red, white);
+    }
+  }
+  &.fa-thumbs-down, &.fa-exclamation, &.fa-exclamation-circle, &.fa-exclamation-triangle {
+    color: red;
+  }
+  &.fa-eye-slash, &.fa-cog, &.fa-clock {
+    color: silver;
+  }
+}

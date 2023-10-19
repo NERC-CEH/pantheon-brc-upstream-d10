@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * Cron task to clean up old imported files.
+ */
+function locations_shp_importer_cron() {
+  $folder = \Drupal::service('file_system')->realpath('public://locations_shp_importer/');
+  $timeout = 3600;
+  if (file_exists($folder)) {
+    $dir = opendir($folder);
+    // Skip certain file names
+    $exclude = array('.', '..', '.htaccess', 'web.config', '.gitignore');
+    if ($dir) {
+      while ($subdir = readdir($dir)) {
+        $fullPath = $folder . DIRECTORY_SEPARATOR . $subdir;
+        if (!in_array($subdir, $exclude) && is_dir($fullPath)) {
+          if (filemtime($fullPath) < time() - $timeout) {
+            array_map('unlink', array_filter((array) glob($fullPath . DIRECTORY_SEPARATOR . '*') ) );
+            locations_shp_importer_rmdir($fullPath);
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Recursive version of rmdir.
+ *
+ * @param string $src
+ *   Folder to cleanup.
+ */
+function locations_shp_importer_rmdir($src) {
+  $dir = opendir($src);
+  while(false !== ( $file = readdir($dir)) ) {
+    if (( $file != '.' ) && ( $file != '..' )) {
+      $full = $src . '/' . $file;
+      if ( is_dir($full) ) {
+        locations_shp_importer_rmdir($full);
+      }
+      else {
+        unlink($full);
+      }
+    }
+  }
+  closedir($dir);
+  rmdir($src);
+}

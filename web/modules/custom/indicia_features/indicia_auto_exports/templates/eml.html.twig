@@ -1,0 +1,274 @@
+<eml:eml xmlns:eml="https://eml.ecoinformatics.org/eml-2.2.0"
+         xmlns:dc="http://purl.org/dc/terms/"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://eml.ecoinformatics.org/eml-2.2.0 xsd/eml.xsd"
+         system="http://gbif.org"
+         scope="system"
+         xml:lang="{{ metadata_language }}">
+  <dataset>
+    {% for identifier in alternate_identifiers -%}
+      <alternateIdentifier>{{ identifier }}</alternateIdentifier>
+    {% endfor -%}
+    <title xml:lang="eng">{{ title }}</title>
+    {% for contact in resource_creators -%}
+      <creator>
+        {%- include 'eml-contact.html.twig' -%}
+      </creator>
+    {% endfor -%}
+    {% for contact in metadata_providers -%}
+      <metadataProvider>
+        {%- include 'eml-contact.html.twig' %}
+      </metadataProvider>
+    {% endfor -%}
+    {% for contact in resource_contacts -%}
+      <contact>
+        {%- include 'eml-contact.html.twig' %}
+      </contact>
+    {% endfor -%}
+    {% for contact in associated_parties -%}
+      <associatedParty>
+        {%- include 'eml-contact.html.twig' %}
+      </associatedParty>
+    {% endfor -%}
+    {% if date_last_published -%}
+      <pubDate>{{ date_last_published }}</pubDate>
+    {% endif -%}
+    <language>{{ data_language }}</language>
+    <abstract>
+      {% for para in description -%}
+        <para>{{ para }}</para>
+      {%- endfor %}
+    </abstract>
+    {% for set in keyword_sets -%}
+      <keywordSet>
+        {% for keyword in set.keywords|split(',') -%}
+          <keyword>{{ keyword|trim }}</keyword>
+        {% endfor -%}
+        <keywordThesaurus>{{ set.thesaurus_vocabulary }}</keywordThesaurus>
+      </keywordSet>
+    {% endfor -%}
+    {% if subtype -%}
+    <keywordSet>
+      <keyword>{{ subtype }}</keyword>
+      <keywordThesaurus>GBIF Dataset Subtype Vocabulary: http://rs.gbif.org/vocabulary/gbif/dataset_subtype.xml</keywordThesaurus>
+    </keywordSet>
+    {% endif -%}
+    <intellectualRights>
+      <para>
+        This work is licensed under a
+        <ulink url="{{ licence_url }}">
+          <citetitle>{{ licence_name }}</citetitle>
+        </ulink>.
+      </para>
+    </intellectualRights>
+    <distribution scope="document">
+      <online>
+        <url function="information">{{ resource_homepage }}</url>
+      </online>
+    </distribution>
+    <coverage>
+      <geographicCoverage>
+        <geographicDescription>{{ geographic_description }}</geographicDescription>
+        {% if west_coord and east_coord and north_coord and south_coord %}
+          <boundingCoordinates>
+            <westBoundingCoordinate>{{ west_coord }}</westBoundingCoordinate>
+            <eastBoundingCoordinate>{{ east_coord }}</eastBoundingCoordinate>
+            <northBoundingCoordinate>{{ north_coord }}</northBoundingCoordinate>
+            <southBoundingCoordinate>{{ south_coord }}</southBoundingCoordinate>
+          </boundingCoordinates>
+        {% endif %}
+      </geographicCoverage>
+      {% for date in temporal_coverage_single_date -%}
+      <singleDateTime>
+        <calendarDate>{{ date }}</calendarDate>
+      </singleDateTime>
+      {% endfor -%}
+      {% for range in temporal_coverage_date_range -%}
+        <temporalCoverage>
+          <rangeOfDates>
+            <beginDate>
+              <calendarDate>{{ range.start_date }}</calendarDate>
+            </beginDate>
+            <endDate>
+              <calendarDate>{{ range.end_date }}</calendarDate>
+            </endDate>
+          </rangeOfDates>
+        </temporalCoverage>
+      {% endfor -%}
+      {% for coverage in taxonomic_coverage_list -%}
+      <taxonomicCoverage>
+        {% if coverage.description -%}
+          <generalTaxonomicCoverage>{{ coverage.description }}</generalTaxonomicCoverage>
+        {% endif -%}
+        {% if coverage.taxon_list -%}
+          {% for taxon in coverage.taxon_list|split("\n") -%}
+            {% set parts = taxon|split(';') %}
+            <taxonomicClassification>
+            {% if parts[2] -%}
+              <taxonRankName>{{ parts[2]|trim }}</taxonRankName>
+            {% endif -%}
+            <taxonRankValue>{{ parts[0]|trim  }}</taxonRankValue>
+            {% if parts[1] -%}
+              <commonName>{{ parts[1]|trim  }}</commonName>
+            {% endif -%}
+          </taxonomicClassification>
+          {% endfor -%}
+        {% endif -%}
+      </taxonomicCoverage>
+      {% endfor -%}
+    </coverage>
+    <purpose>
+      <para>{{ dataset_purpose }}</para>
+    </purpose>
+    <maintenance>
+      {% if maintenance_description -%}
+        <description>
+          <para>{{ maintenance_description }}</para>
+        </description>
+      {% endif -%}
+      <maintenanceUpdateFrequency>{{ update_frequency }}</maintenanceUpdateFrequency>
+    </maintenance>
+    <methods>
+    {% for step in step_descriptions -%}
+      <methodStep>
+        <description>
+          <para>{{ step }}</para>
+        </description>
+      </methodStep>
+    {% endfor -%}
+      <sampling>
+        <studyExtent>
+          <description>
+            <para>{{ study_extent }}</para>
+          </description>
+        </studyExtent>
+        <samplingDescription>
+          <para>{{ sampling_description }}</para>
+        </samplingDescription>
+      </sampling>
+      {% if quality_control -%}
+      <qualityControl>
+        <description>
+          <para>{{ quality_control }}</para>
+        </description>
+      </qualityControl>
+      {% endif -%}
+    </methods>
+    <project{% if project_identifier %} id="{{ project_identifier }}"{% endif %}>
+      <title>{{ project_title }}</title>
+      {% for person in project_personnel -%}
+      <personnel>
+        <individualName>
+          {% if person.first_name -%}
+            <givenName>{{ person.first_name }}</givenName>
+          {% endif -%}
+          <surName>{{ person.surname }}</surName>
+        </individualName>
+        {% if person.personnel_directory and person.personnel_identifier -%}
+          <userId directory="{{ person.personnel_directory }}">{{ person.personnel_identifier }}</userId>
+        {% endif -%}
+        <role>author</role>
+      </personnel>
+      {% endfor %}
+      {% if project_description -%}
+      <abstract>
+        <para>{{ project_description }}</para>
+      </abstract>
+      {% endif -%}
+      {% if project_funding -%}
+      <funding>
+        <para>{{ project_funding }}</para>
+      </funding>
+      {%- endif %}
+      {% if project_study_area_description -%}
+      <studyAreaDescription>
+        <descriptor name="generic" citableclassificationsystem="false">
+          <descriptorValue>{{ project_study_area_description }}</descriptorValue>
+        </descriptor>
+      </studyAreaDescription>
+      {%- endif %}
+      {% if project_design_description -%}
+      <designDescription>
+        <description>
+          <para>{{ project_design_description }}</para>
+        </description>
+      </designDescription>
+      {%- endif %}
+    </project>
+  </dataset>
+  <additionalMetadata>
+    <metadata>
+      <gbif>
+        <citation{% if resource_citation_identifier %} identifer="{{ resource_citation_identifier }}"{% endif %}>{{ resource_citation }}</citation>
+        {% if bibliographic_citations -%}
+          <bibliography>
+          {% for citation in bibliographic_citations -%}
+            <citation{% if citation.citation_identifier %} identifer="{{ citation.citation_identifier }}"{% endif %}>{{ citation.citation }}</citation>
+          {%- endfor %}
+          </bibliography>
+        {% endif -%}
+        {% for format in other_data_formats -%}
+        <physical>
+          <objectName>{{ format.name }}</objectName>
+          <characterEncoding>{{ format.character_set }}</characterEncoding>
+          <dataFormat>
+            <externallyDefinedFormat>
+              <formatName>{{ format.data_format }}</formatName>
+              {% if format.data_format_version -%}
+              <formatVersion>{{ format.data_format_version }}</formatVersion>
+              {%- endif %}
+            </externallyDefinedFormat>
+          </dataFormat>
+          <distribution>
+            <online>
+              <url function="download">{{ format.download_url }}</url>
+            </online>
+          </distribution>
+        </physical>
+        {%- endfor %}
+        {% for collection in collections -%}
+        <collection>
+          {% if collection.parent_collection_identifier -%}
+          <parentCollectionIdentifier>{{ collection.parent_collection_identifier }}</parentCollectionIdentifier>
+          {% endif -%}
+          {% if collection.collection_identifier -%}
+          <collectionIdentifier>{{ collection.collection_identifier }}</collectionIdentifier>
+          {% endif -%}
+          <collectionName>{{ collection.collection_name }}</collectionName>
+        </collection>
+        {%- endfor %}
+        {% for period in temporaral_coverage_formation_period -%}
+          <formationPeriod>{{ period }}</formationPeriod>
+        {%- endfor %}
+        {% for method in specimen_preservation_methods -%}
+          <specimenPreservationMethod>{{ method.method }}</specimenPreservationMethod>
+        {%- endfor %}
+        {% for period in temporaral_coverage_living_time_period -%}
+          <livingTimePeriod>{{ period }}</livingTimePeriod>
+        {%- endfor %}
+        {% if resource_logo_url -%}
+          <resourceLogoUrl>http://ibif.gov.in:8080/ipt/logo.do?r=wii1</resourceLogoUrl>
+        {% endif -%}
+        {% for unit in curatorial_units_count_with_uncertainty -%}
+        <jgtiCuratorialUnit>
+          {% if unit.unit_type -%}
+          <jgtiUnitType>{{ unit.unit_type }}</jgtiUnitType>
+          {%- endif %}
+          <jgtiUnits {% if unit.plus_minus %}uncertaintyMeasure="{{ unit.plus_minus }}"{% endif %}>{{ unit.count }}</jgtiUnits>
+        </jgtiCuratorialUnit>
+        {%- endfor %}
+        {% for unit in curatorial_units_count_range -%}
+        <jgtiCuratorialUnit>
+          {% if unit.unit_type -%}
+          <jgtiUnitType>{{ unit.unit_type }}</jgtiUnitType>
+          {%- endif %}
+          <jgtiUnitRange>
+            <beginRange>{{ unit.count_low }}</beginRange>
+            <endRange>{{ unit.count_high }}</endRange>
+          </jgtiUnitRange>
+        </jgtiCuratorialUnit>
+        {%- endfor %}
+      </gbif>
+    </metadata>
+  </additionalMetadata>
+</eml:eml>

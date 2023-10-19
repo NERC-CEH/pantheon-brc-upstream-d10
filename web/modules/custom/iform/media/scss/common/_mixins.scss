@@ -1,0 +1,27 @@
+@mixin grid-rows {
+  /* Alternate row colouration */
+  &:nth-child(even), &:nth-child(even) td {
+    background-color: $colour-even-row;
+  }
+  &:nth-child(odd), &:nth-child(odd) td {
+    background-color: $colour-odd-row;
+  }
+  &.disabled td:not(.footable-toggle-col) {
+    opacity: 0.3;
+  }
+  &:hover:not(.disabled), &:hover:not(.disabled) td {
+    color: $colour-hover-row;
+    background-color: $colour-hover-row-bg;
+  }
+  /* Disable hover highlight for row shown when no data available */
+  &.empty-row, &.empty-row:hover, &.empty-row td, &.empty-row:hover td {
+    background-color: $colour-even-row;
+  }
+  &.selected:not(.disabled), &.selected:not(.disabled) td {
+    color: $colour-select-row;
+    background-color: $colour-select-row-bg;
+  }
+  &.zero-abundance, &.zero-t {
+    text-decoration: line-through;
+  }
+}

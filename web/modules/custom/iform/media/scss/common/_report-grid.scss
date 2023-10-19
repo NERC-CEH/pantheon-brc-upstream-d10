@@ -1,0 +1,28 @@
+table.report-grid {
+  /* Ensure height enough for spinner. For tables, height acts as min-height
+  as long as display not altered from browser default. */
+  height: 140px;
+  display: table;
+  tbody tr {
+    @include grid-rows;
+    /* Workflow related styling */
+    &.overdue {
+      border-left: solid 8px $colour-range-1-a;
+    }
+    &.overdue-soon {
+      border-left: solid 8px $colour-range-1-b;
+    }
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  /* Sizing of thumbnails in image columns */
+  .single img {
+    width: 100px;
+    margin: 2px;
+  }
+  .multi img {
+    width: 50px;
+    margin: 1px;
+  }
+}

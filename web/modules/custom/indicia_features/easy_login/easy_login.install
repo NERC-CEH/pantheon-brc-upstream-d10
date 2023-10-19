@@ -1,0 +1,61 @@
+<?php
+
+use Drupal\field\Entity\FieldConfig;
+
+/**
+ * Implements hook_install.
+ * Adds new fields to existing configuration for the user form and default view mode.
+ */
+function easy_login_install() {
+
+  // Add new fields to the user form
+  \Drupal::entityTypeManager()
+    ->getStorage('entity_form_display')
+    ->load('user.user.default')
+    ->setComponent('field_first_name', [
+        'type' => 'string_textfield',
+        'weight' => 1,
+        'settings' => [
+          'size' => 60,
+          'placeholder' => ''
+        ],
+        'third_party_settings' => [],
+    ])
+    ->setComponent('field_last_name', [
+      'type' => 'string_textfield',
+      'weight' => 2,
+      'settings' => [
+        'size' => 60,
+        'placeholder' => ''
+      ],
+      'third_party_settings' => [],
+    ])
+    ->setComponent('field_taxon_groups', [
+      'type' => 'options_buttons',
+    ])
+    ->save();
+
+  // Add new fields to the user view
+  \Drupal::entityTypeManager()
+    ->getStorage('entity_view_display')
+    ->load('user.user.default')
+    ->setComponent('field_first_name', array(
+      'type' => 'string',
+      'weight' => -2,
+      'label' => 'above',
+      'settings' => array (
+        'link_to_entity' => false
+      ),
+      'third_party_settings' => array ( )
+    ))
+    ->setComponent('field_last_name', array(
+      'type' => 'string',
+      'weight' => -1,
+      'label' => 'above',
+      'settings' => array (
+        'link_to_entity' => false
+      ),
+      'third_party_settings' => array ( )
+    ))
+    ->save();
+}

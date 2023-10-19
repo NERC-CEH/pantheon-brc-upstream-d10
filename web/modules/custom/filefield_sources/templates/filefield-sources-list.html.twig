@@ -1,0 +1,20 @@
+{#
+/**
+ * @file
+ * Theme filefield-sources-list.
+ *
+ * Available variables:
+ * - id: element id.
+ * - sources: Array of sources keyed by name, with label & description values.
+ *
+ * @ingroup themeable
+ */
+#}
+<div class="filefield-sources-list">
+  {% for name, source in sources %}
+    {% if not loop.first %} | {% endif %}
+    <a href="#" onclick="return false;" title="{{ source.description }}" id="{{ id }}-{{ name }}-source" class="filefield-source filefield-source-{{ name }}">
+      {{ source.label }}
+    </a>
+  {% endfor %}
+</div>

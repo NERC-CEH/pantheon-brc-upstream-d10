@@ -1,0 +1,132 @@
+.dm-uploader {
+  margin-bottom: $spacer;
+  padding: $spacer;
+  border: dashed silver 3px;
+  &.active {
+    border-color: lightcoral;
+  }
+  .btn {
+    float: left;
+    margin-right: $spacer;
+  }
+}
+$icon-size: 16px;
+$icon-padding: 6px;
+$total-icon-size: $icon-size + $icon-padding * 2;
+#uploaded-files {
+  position: relative;
+  .remove-file {
+    position: absolute;
+    top: $icon-padding;
+    /* x 3 to allow for file icon which is also padded - we want to move inside the edge. */
+    left: $icon-padding * 3;
+    height: $total-icon-size;
+    width: $total-icon-size;
+    border: solid darkgray 2px;
+    color: darkgrey;
+    border-radius: calc($total-icon-size / 2);
+    background-color: white;
+    padding: $icon-padding;
+    cursor: pointer;
+    &:hover {
+      border-color: lightcoral;
+      background-color: silver;
+      color: black;
+    }
+  }
+}
+#file-upload-form {
+  margin-bottom: $spacer;
+}
+#matching-area {
+  margin-bottom: $spacer;
+  tr.unmatched {
+    background-color: #ffdddd;
+  }
+}
+#required-fields {
+  li {
+    list-style-type: none;
+  }
+  .required-checkbox.far.fa-check-square {
+    color: green;
+  }
+}
+.background-processing {
+  .panel-heading {
+    progress {
+      margin-bottom: 0;
+    }
+  }
+  .panel-body {
+    height: 150px;
+    overflow-y: auto;
+    p {
+      margin-bottom: 4px;
+    }
+  }
+}
+#summary-form {
+  dl {
+    margin: $spacer;
+    max-width: 700px;
+    dt, dd {
+      margin: 8px 1%;
+      display: inline-block;
+      vertical-align: top;
+      table {
+        thead th {
+          padding-top: 0;
+        }
+      }
+    }
+    dt {
+      width: 38%;
+    }
+    dd {
+      width: 58%;
+    }
+  }
+  .fa-stop, .fa-triangle-exclamation {
+    color: #770000;
+  }
+  .fa-play {
+    color: #007700;
+  }
+  .body-title {
+    background: #e7e7e7;
+  }
+}
+/* Import complete page */
+#error-info {
+  a.btn {
+    margin-top: 15px;
+  }
+}
+/* Tidy dialogs */
+div.fancybox-content {
+  padding: $spacer;
+  h2 {
+    margin-top: 0;
+    font-size: 2rem;
+  }
+}
+div.choice-card {
+  border: solid silver 1px;
+  border-radius: 4px;
+  padding: 8px;
+  margin: 8px;
+  display: inline-block;
+  vertical-align: top;
+  cursor: pointer;
+  &:hover {
+    border: solid grey 1px;
+    background: #f7f7f7;
+  }
+  &.active {
+    background: #e7ffe7;
+  }
+  .card-name {
+    font-weight: bold;
+  }
+}

@@ -1,0 +1,10 @@
+name: Rewrite Field
+type: module
+description: It provides a new field formatter to rewrite output.
+core: 8.x
+core_version_requirement: ^8 || ^9 ||^10
+
+# Information added by Drupal.org packaging script on 2020-05-24
+version: '2.0.2'
+project: 'rewrite_field'
+datestamp: 1590325840

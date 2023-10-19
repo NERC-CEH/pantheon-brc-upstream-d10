@@ -1,0 +1,15 @@
+
+#controls-table {
+  margin-bottom: 3px;
+}
+.controls-table {
+  width: 100%;
+}
+.controls-table label {
+  width: auto;
+}
+
+.waiting {
+  background: transparent url(/misc/throbber.gif) no-repeat 50% -12px !important;
+}
+

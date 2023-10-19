@@ -1,0 +1,10 @@
+es-blocks:
+  version: VERSION
+  js:
+    js/es_blocks.js: {}
+  css:
+    component:
+      css/es_blocks.css: {}
+  dependencies:
+    - iform/base
+    - iform/datacomponents

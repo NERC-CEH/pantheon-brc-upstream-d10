@@ -1,0 +1,102 @@
+/* Allow for wide screens to make good use of available space. */
+body {
+  max-width: 1600px;
+  margin: auto; }
+
+@media (min-width: 1600px) {
+  .container {
+    width: 1570px; } }
+/* Banner style. */
+#banner {
+  background: #000000 url(../images/warehouse-banner.jpg) no-repeat top right;
+  color: #FEFEFE;
+  height: 126px; }
+  #banner #logo {
+    margin: 12px; }
+
+/* Footer style. */
+#footer {
+  padding: 15px 0; }
+
+/* Ensure ui-front overrides Fancybox z-index */
+body .ui-front {
+  z-index: 9999; }
+
+.report-grid {
+  width: 100%;
+  margin-bottom: 15px; }
+
+#metadata {
+  display: none;
+  font-size: 14px; }
+  #metadata .list-group-item {
+    padding: 3px 10px;
+    border: none; }
+
+#attribute-by-survey-index li {
+  list-style-type: none; }
+#attribute-by-survey-index input.caption {
+  padding: 2px;
+  border: solid #AAAAAA 1px; }
+#attribute-by-survey-index .ui-droppable {
+  border: dotted #aaaaaa 1px; }
+#attribute-by-survey-index .btn {
+  margin: 0 4px; }
+
+ul#top-blocks li, ul#top-blocks ul li, ul.control-list li {
+  margin: 0.2em;
+  padding: 0.3em; }
+
+ul#top-blocks ul {
+  margin-left: 1em; }
+
+.drop-active {
+  background-color: #ffccaa; }
+
+.grid-action {
+  color: #000070;
+  margin: 0 0.5em; }
+
+.handle {
+  float: left;
+  margin-right: 1em;
+  background: url(../images/drag-handle.png) no-repeat 0 0;
+  width: 26px;
+  height: 24px;
+  cursor: move; }
+
+.draggable-control .caption, .draggable-block .caption {
+  float: left; }
+
+.draggable-block {
+  border: dotted 1px silver; }
+
+.deleted {
+  opacity: 0.4;
+  border: dotted red 1px; }
+
+#layout-change-form, #actions-new-block {
+  margin: 0.5em 0; }
+
+.ui-droppable {
+  border: dotted #aaaaaa 1px; }
+
+.block-list input.caption {
+  padding: 2px;
+  border: solid #AAAAAA 1px; }
+
+.rename-apply {
+  padding: 2px;
+  margin-left: 2px; }
+
+.block-list span.caption {
+  margin: 3px 2px; }
+
+fieldset.validation-rules .form-inline, fieldset.validation-rules .checkbox {
+  min-height: 35px;
+  margin-top: 8px;
+  margin-bottom: 8px; }
+  fieldset.validation-rules .form-inline label, fieldset.validation-rules .checkbox label {
+    min-width: 280px; }
+
+/*# sourceMappingURL=warehouse.css.map */

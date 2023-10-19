@@ -1,0 +1,22 @@
+/* Styling for the list of uploaded files. */
+.filelist {
+  // Minimise space used by caption label etc.
+  label {
+    width: auto;
+  }
+  /* Highlight drop target if dropping enabled */
+  &.image-drop {
+    margin: 1em;
+    padding: 0.5em;
+    vertical-align: top;
+    border: dashed 1px silver;
+    min-width: 60px;
+    min-height: 160px;
+    border-radius: 4px;
+    color: gray;
+  }
+  /* Anchor image delete button to right */
+  .delete-file {
+    float: right;
+  }
+}

@@ -1,0 +1,128 @@
+.input-group-addon {
+  > * {
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+.ctrl-wrap {
+  &.not-full-width-sm * {
+    max-width: 200px;
+  }
+  &.not-full-width-md * {
+    max-width: 400px;
+  }
+  &.not-full-width-lg * {
+    max-width: 600px;
+  }
+}
+
+.helpText, .helpTextLeft {
+  color:gray;
+  font-size: 90%;
+  margin: 4px 0 8px 0px;
+}
+
+@mixin buttonInsideInput {
+  position: absolute;
+  z-index: 999;
+  opacity: 0.5;
+  margin: 0;
+  padding: 0;
+  right: 4px;
+  top: 50%;
+  transform: translate(0, -50%);
+  &:hover {
+    opacity: 0.8;
+  }
+}
+
+.add-new-taxon {
+  @include buttonInsideInput();
+}
+
+.species-checklist-wrap {
+  margin-bottom: 15px;
+}
+
+/* Set the species checklist entry grid width to 100% */
+table.species-grid {
+  width: 100%;
+  th button {
+    padding: 0;
+    margin: 0 0.5em;
+  }
+  td {
+    padding: 0;
+  }
+  .hidden-by-dynamic-attr {
+    display: none;
+  }
+  .scPresenceCell {
+    text-align: center;
+    padding-left: 1em;
+    padding-right: 1em;
+  }
+  /* Inside control button alignment. */
+  .scTaxonCell, .scSpatialRefCell {
+    position: relative;
+  }
+  .scSpatialRefFromMap {
+    @include buttonInsideInput();
+
+    &.active {
+      opacity: 1;
+      background-color: lightyellow;
+    }
+  }
+  .row-buttons {
+    border-bottom: solid silver 1px;
+    .action-button {
+      opacity: 0.5;
+      padding: 2px;
+      border-radius: 2px;
+      margin: 1px;
+      &:hover {
+        opacity: 1;
+        background-color: #ccc;
+      }
+    }
+  }
+  tr.selected-row {
+    input, select, td {
+      background-color: lightyellow;
+    }
+  }
+  tr td input, tr td select {
+    width: 100%;
+    margin: 0;
+    vertical-align: middle;
+    padding: 3px 0;
+  }
+}
+
+#new-taxon-form {
+  max-width: 600px;
+}
+
+.attrs-container {
+  /* Indent contents */
+  padding-left: 30px;
+  legend {
+    font-size: 150%;
+    /* Undo indentation for legend */
+    margin-left: -30px;
+  }
+  .attrs-container {
+    legend {
+      font-size: 120%;
+    }
+  }
+}
+
+.complex-attr-grid {
+  margin-bottom: 15px;
+  tfoot {
+    background: none;
+  }
+}

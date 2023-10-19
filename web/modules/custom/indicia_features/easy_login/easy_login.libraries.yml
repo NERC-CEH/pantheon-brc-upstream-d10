@@ -1,0 +1,5 @@
+user-form:
+  version: VERSION
+  css:
+    component:
+      css/user-form.css: {}

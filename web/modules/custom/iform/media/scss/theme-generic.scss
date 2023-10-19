@@ -1,0 +1,22 @@
+/* Theme extension to the default_site.css file which provides the default Indicia style output */
+@import "common/variables";
+@import "common/mixins";
+@import "generic/variables";
+@import "common/form-controls";
+@import "common/toggle-slider";
+@import "common/sort-handle";
+@import "common/map-controls";
+@import "common/report-grid";
+@import "common/uploader";
+@import "common/media";
+@import "common/status-icons";
+@import "common/tooltip";
+@import "common/licence-icons";
+@import "common/indicia-datacomponents";
+@import "common/progress-circle";
+@import "generic/form-controls";
+@import "common/loading-spinner";
+@import "common/ol2-map";
+@import "common/import-helper-2";
+@import "common/fancy-dialog";
+@import "generic/bootstrapify";

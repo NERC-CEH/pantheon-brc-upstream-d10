@@ -1,0 +1,40 @@
+
+      <individualName>
+        {% if contact.first_name -%}
+          <givenName>{{ contact.first_name }}</givenName>
+        {% endif -%}
+        <surName>{{ contact.surname }}</surName>
+      </individualName>
+      <organizationName>{{ contact.organisation }}</organizationName>
+      <positionName>{{contact.position }}</positionName>
+      {% if contact.address or contact.city or contact.county_state_province or contact.postcode or contact.country -%}
+      <address>
+        {% if contact.address -%}
+          <deliveryPoint>{{ contact.address }}</deliveryPoint>
+        {% endif -%}
+        {% if contact.city -%}
+          <city>{{ contact.city }}</city>
+        {% endif -%}
+        {% if contact.county_state_province -%}
+          <administrativeArea>{{ contact.county_state_province }}</administrativeArea>
+        {% endif -%}
+        {% if contact.postcode -%}
+          <postalCode>{{ contact.postcode }}</postalCode>
+        {% endif -%}
+        {% if contact.country -%}
+          <country>{{ contact.country }}</country>
+        {% endif -%}
+      </address>
+      {% endif %}
+      {% if contact.email -%}
+        <electronicMailAddress>{{ contact.email }}</electronicMailAddress>
+      {% endif -%}
+      {% if contact.home_page -%}
+        <onlineUrl>{{ contact.home_page }}</onlineUrl>
+      {% endif -%}
+      {% if contact.user_directory and contact.user_id -%}
+        <userId directory="{{ contact.user_directory }}">{{ contact.user_id }}</userId>
+      {% endif -%}
+      {% if contact.role -%}
+        <role>{{ contact.role }}</role>
+      {% endif -%}

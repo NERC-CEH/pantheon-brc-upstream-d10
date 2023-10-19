@@ -1,0 +1,8 @@
+access iform content:
+  title: 'Access Indicia Iform web pages'
+  description: 'Access Indicia Iform entry form and report web pages.'
+admin iform:
+  title: 'Administer Indicia Iform web pages'
+  description: 'Manage settings for Indicia Iform entry form and report web pages.'
+permission_callbacks:
+  - Drupal\iform\IformPermissions::permissions

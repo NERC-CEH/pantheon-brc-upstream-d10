@@ -1,0 +1,28 @@
+# core iform libraries
+base:
+  version: VERSION
+  js:
+    media/js/indicia.functions.js: {}
+  css:
+    component:
+      media/css/default_site.css: {}
+  dependencies:
+    - core/jquery
+    - core/jquery.form
+    - core/jquery.ui.dialog
+    - jquery_ui_tabs/tabs
+    - core/drupal.tableheader
+admin:
+  version: VERSION
+  js:
+    iform.admin.js: {}
+theme.generic:
+  version: VERSION
+  css:
+    component:
+      media/css/theme-generic.css: {}
+theme.bootstrap-3:
+  version: VERSION
+  css:
+    component:
+      media/css/theme-bootstrap-3.css: {}

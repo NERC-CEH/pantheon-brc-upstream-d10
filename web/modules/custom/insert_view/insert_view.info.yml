@@ -1,0 +1,12 @@
+name: 'Insert view'
+type: module
+description: 'Input filter which allows to embed views.'
+dependencies:
+  - drupal:views
+package: 'Input filters'
+core_version_requirement: ^8.8 || ^9 || ^10
+
+# Information added by Drupal.org packaging script on 2022-09-29
+version: '2.0.1'
+project: 'insert_view'
+datestamp: 1664469525

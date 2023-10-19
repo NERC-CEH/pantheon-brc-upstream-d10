@@ -1,0 +1,7 @@
+services:
+  plugin.manager.remote_recording_system_api:
+    class: Drupal\recording_system_links\RemoteRecordingSystemApiManager
+    parent: default_plugin_manager
+  recording_system_links.recording_system_utils:
+    class: Drupal\recording_system_links\RecordingSystemUtils
+    arguments: ['@string_translation', '@messenger', '@logger.factory', '@database']
