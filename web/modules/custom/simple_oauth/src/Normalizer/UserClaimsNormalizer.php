@@ -87,6 +87,7 @@ class UserClaimsNormalizer extends NormalizerBase implements NormalizerInterface
     $profile_url = $account->toUrl('canonical', ['absolute' => TRUE])
       ->toString();
     $claim_values = [
+      'sub' => $account->id(),
       'name' => $account->getDisplayName(),
       'preferred_username' => $account->getAccountName(),
       'email' => $account->getEmail(),

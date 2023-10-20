@@ -1,7 +1,8 @@
 <?php
 
-namespace Drupal\simple_oauth\Commands;
+namespace Drupal\simple_oauth\Drush\Commands;
 
+use Drupal\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\simple_oauth\Service\Exception\ExtensionNotLoadedException;
 use Drupal\simple_oauth\Service\Exception\FilesystemValidationException;
@@ -33,6 +34,13 @@ class SimpleOauthCommands extends DrushCommands {
   public function __construct(KeyGeneratorService $keygen, FileSystemInterface $file_system) {
     $this->keygen = $keygen;
     $this->fileSystem = $file_system;
+  }
+
+  public static function create(ContainerInterface $container): self {
+    return new static(
+      $container->get('simple_oauth.key.generator'),
+      $container->get('file.system')
+    );
   }
 
   /**

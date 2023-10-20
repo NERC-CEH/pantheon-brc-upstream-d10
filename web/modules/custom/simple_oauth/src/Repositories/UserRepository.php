@@ -34,8 +34,7 @@ class UserRepository implements UserRepositoryInterface {
       if ($user) {
         $username = $user->getAccountName();
       }
-    }
-    
+    }	  
     // TODO: Use authenticateWithFloodProtection when #2825084 lands.
     if ($uid = $this->userAuth->authenticate($username, $password)) {
       $user = new UserEntity();
