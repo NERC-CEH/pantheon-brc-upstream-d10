@@ -117,6 +117,13 @@ a.btn {
   margin: 0;
 }
 
+.form-inline {
+  display: inline-block;
+  vertical-align: middle;
+  width: auto;
+  margin-left: 0;
+}
+
 .thumbnail {
   border: solid silver 1px;
   border-radius: 3px;
@@ -159,4 +166,9 @@ progress.progress::-webkit-progress-value {
 progress.progress::-moz-progress-bar {
   background-color: #337ab7;
   border-radius: 4px;
+}
+
+.table {
+  width: 100%;
+  max-width: 100%;
 }

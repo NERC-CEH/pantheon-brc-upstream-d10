@@ -306,7 +306,9 @@ if (typeof window.indiciaData === 'undefined') {
 
   /**
    * Utility function, equivalent to htmlspecialchars in PHP.
+   *
    * @param string text
+   *
    * @returns string
    */
   indiciaFns.escapeHtml = function (text) {
@@ -324,9 +326,12 @@ if (typeof window.indiciaData === 'undefined') {
   indiciaFns.locationControl = [];
 
   /**
-   * Function which uses the ID of the currently selected location ID to grab any previously input sample attribute
-   * values by the same user and populate them into the relevant controls.
-   * For example, a user picks their local nature reserve as a location and provides a habitat. The next time the
+   * Copies location related sample attributes to a new sample.
+   *
+   * Function which uses the ID of the currently selected location ID to grab
+   * any previously input sample attribute values by the same user and populate
+   * them into the relevant controls. For example, a user picks their local
+   * nature reserve as a location and provides a habitat. The next time the
    * same location is picked by that user, the same habitat is auto-filled in.
    */
   indiciaFns.locationControl.fetchLocationAttributesIntoSample = function (locCntrlId, warehouseUserId) {
@@ -641,9 +646,11 @@ if (typeof window.indiciaData === 'undefined') {
             childSelect.append('<option value="">&lt;Please select&gt;</option>');
           }
           $.each(data, function eachData() {
-            var selected = typeof indiciaData['default' + options.escapedId] !== 'undefined' && indiciaData['default' + options.escapedId] === this[options.valueField] ? '" selected="selected' : '';
-            childSelect.append('<option value="' + this[options.valueField] + selected + '">' + this[options.captionField] + '</option>');
+            childSelect.append('<option value="' + this[options.valueField] + '">' + this[options.captionField] + '</option>');
           });
+          if (typeof indiciaData['default' + options.id] !== 'undefined') {
+            $(childSelect).find('option[value="' + indiciaData['default' + options.id] + '"]').attr('selected', true);
+          }
         } else {
           if (data.error) {
             ctrlLabel = $(childSelect).closest('.ctrl-wrap').find('label');

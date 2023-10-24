@@ -280,8 +280,8 @@ var checkSubmitInProgress = function () {
           {title : "Image files", extensions : fileTypes.join(',')}
         ],
         chunk_size: '1MB',
-        // limit the max file size to the Indicia limit, unless it is first resized.
-        max_file_size : resize ? '10mb' : plupload.formatSize(this.settings.maxUploadSize)
+        // Limit the max file size to the Indicia limit, unless it is first resized.
+        max_file_size : resize ? null : plupload.formatSize(this.settings.maxUploadSize)
       };
       enableDropIfDesktop(this, uploadOpts);
       this.uploader = new plupload.Uploader(uploadOpts);
@@ -337,6 +337,7 @@ var checkSubmitInProgress = function () {
             }
           });
           tmpl += div.settings.file_box_uploaded_extra_fieldsTemplate;
+          tmpl += div.settings.file_box_uploaded_licence_fieldTemplate;
           file.caption = file.caption === null ? '' : file.caption;
           $('#' + uniqueId + ' .media-wrapper').html(tmpl
                 .replace(/\{id\}/g, uniqueId)
@@ -358,6 +359,8 @@ var checkSubmitInProgress = function () {
                 .replace(/\{isNewValue\}/g, 'f')
                 .replace(/\{idField\}/g, div.settings.table + ':id:' + uniqueId)
                 .replace(/\{idValue\}/g, file.id) // If ID is set, the picture is uploaded to the server
+                .replace(/\{licenceIdField\}/g, div.settings.table + ':licence_id:' + uniqueId)
+                .replace(/\{licenceIdValue\}/g, file.licence_id === null ? '' : file.licence_id)
           );
         } else {
           existing = div.settings.file_box_initial_link_infoTemplate
@@ -417,7 +420,9 @@ var checkSubmitInProgress = function () {
         } else {
           alert(error.message);
         }
-        $('#' + error.file.id).remove();
+        if (error.file) {
+          $('#' + error.file.id).remove();
+        }
       });
 
       // On upload completion, check for errors, and show the uploaded file if OK.
@@ -536,7 +541,7 @@ var checkSubmitInProgress = function () {
 
         // The isNew field is a hidden input that marks up new and existing
         // files. It has an id like isNew-<id>
-        var isNew = $('#isNew-' + id).length === 0 || 
+        var isNew = $('#isNew-' + id).length === 0 ||
           $('#isNew-' + id).val() === 't';
 
         // Call any hooks prior to delete.
@@ -546,7 +551,7 @@ var checkSubmitInProgress = function () {
 
         // If this is a newly uploaded file or still uploading, we can simply
         // delete the div since all that has been done is an upload to the
-        // temp upload folder, which will get purged anyway. 
+        // temp upload folder, which will get purged anyway.
         if (isNew)
           $div.remove();
         else {

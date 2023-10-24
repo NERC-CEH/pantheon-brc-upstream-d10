@@ -352,6 +352,9 @@ var destroyAllFeatures;
             indiciaData.zoomedBounds = bounds;
           }
         }
+        if (indiciaData['zoomToAfterFetchingGoogleApiScript-' + div.map.id]) {
+          indiciaData['zoomToAfterFetchingGoogleApiScript-' + div.map.id] = div.map.getZoomForExtent(bounds);
+        }
       }
       return features.length === 1 ? features[0] : features;
     }

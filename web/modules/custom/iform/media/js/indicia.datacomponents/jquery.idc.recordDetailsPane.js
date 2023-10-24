@@ -187,9 +187,34 @@
               status: this.record_status,
               substatus: this.record_substatus,
               query: this.query === 't' ? 'Q' : null
-            }, 'fa-2x');
-            $('<div class="panel panel-info">' +
-              '<div class="panel-heading">' + statusIcon + this.person_name + ' ' + this.updated_on + '</div>' +
+            });
+            var action = this.record_status !== null
+              ? indiciaData.lang.recordDetails.verificationDecision
+              : (this.type === 'comment' ? indiciaData.lang.recordDetails.comment : indiciaData.lang.recordDetails.redetermination);
+            var title = indiciaData.lang.recordDetails.actionByPersonOnDate
+              .replace('{1}', action)
+              .replace('{2}', this.person_name)
+              .replace('{3}', new Date(this.updated_on).toLocaleString());
+            var panelType;
+            if (this.status === 'V') {
+              panelType = 'success';
+            } else if (this.status === 'R') {
+              panelType = 'danger';
+            } else if (this.type !== 'comment') {
+              panelType = 'default';
+            } else {
+              panelType = 'info';
+            }
+
+            if (statusIcon === '' && this.type === 'comment') {
+              statusIcon += ' <span class="far fa-comment"></span>';
+            }
+            else if (this.type !== 'comment') {
+              statusIcon += ' <span class="fas fa-tag"></span>';
+            }
+
+            $('<div class="panel panel-' + panelType + '">' +
+              '<div class="panel-heading">' + statusIcon + ' ' + title + '</div>' +
               '<div class="panel-body">' + this.comment + '</div>' +
               '</div').appendTo($(el).find('.comments'));
           });
@@ -216,6 +241,13 @@
         indiciaData.thisRecordEmail = false;
         $(attrsDiv).html('');
         $.each(combined, function eachHeading(title, attrs) {
+          if (title === 'auth') {
+            // Use auth section to refresh token, not for display.
+            indiciaData.read.auth_token = attrs.auth_token;
+            indiciaData.read.nonce = attrs.nonce;
+            $('#redet-species\\:taxon').setExtraParams(attrs);
+            return;
+          }
           var table;
           var tbody;
           $(attrsDiv).append('<h3>' + title + '</h3>');

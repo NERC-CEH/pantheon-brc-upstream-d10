@@ -521,13 +521,21 @@ var IdcEsDataSource;
           if ($(output).closest('.ui-tabs-panel:hidden').length > 0) {
             tab = $(output).closest('.ui-tabs-panel:hidden')[0];
             var tabSet = $(tab).closest('.ui-tabs');
+            let alreadyHandled = false;
             // This output does not want to be populated yet.
             populateThis = false;
             // Track the tab and source that needs population.
             if (!hiddenTabSources[tab.id]) {
               hiddenTabSources[tab.id] = [];
             }
-            hiddenTabSources[tab.id].push([src, onlyForControl ? onlyForControl : false]);
+            $.each(hiddenTabSources[tab.id], function() {
+              if (this[0].settings.id === src.settings.id) {
+                alreadyHandled = true;
+              }
+            });
+            if (!alreadyHandled) {
+              hiddenTabSources[tab.id].push([src, onlyForControl ? onlyForControl : false]);
+            }
             // Hook up a tab activation event handler.
             if ($(tabSet).prop('data-src-fn-bound') !== 'true') {
               indiciaFns.bindTabsActivate(tabSet, tabSelectFn);

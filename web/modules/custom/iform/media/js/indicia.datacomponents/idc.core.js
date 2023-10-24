@@ -176,83 +176,11 @@
   }
 
   /**
-     * Hides a row and moves to next row.
-     *
-     * When an action is taken on a row so it is no longer required in the grid
-     * this method hides the row and moves to the next row, for example after
-     * a verification accept.
-     *
-     * @todo Move this into a base class for dataGrid and cardGallery
-     */
-  indiciaFns.hideItemAndMoveNext = function hideItemAndMoveNext(el) {
-    var oldSelected = $(el).find('.selected');
-    var newSelectedId;
-    var pagerLabel = $(el).find('.showing');
-    var selectedIds = [];
-    var sourceSettings = el.settings.sourceObject.settings;
-    if ($(el).find('.multiselect-mode').length > 0) {
-      $.each($(el).find('input.multiselect:checked'), function eachRow() {
-        var item = $(this).closest('[data-row-id]');
-        selectedIds.push($(item).attr('[data-row-id]'));
-        item.remove();
-      });
-    } else {
-      if ($(oldSelected).next('[data-row-id]').length > 0) {
-        newSelectedId = $(oldSelected).next('[data-row-id]').attr('data-row-id');
-      } else if ($(oldSelected).prev('[data-row-id]').length > 0) {
-        newSelectedId = $(oldSelected).prev('[data-row-id]').attr('data-row-id');
-      }
-      selectedIds.push($(oldSelected).attr('data-row-id'));
-      $(oldSelected).remove();
-    }
-    // If the number of rows below 75% of page size, refresh the grid.
-    if ($(el).find('[data-row-id]').length < sourceSettings.size * 0.75) {
-      // As ES updates are not instant, we need a temporary must_not match
-      // filter to prevent the verified records reappearing.
-      if (!sourceSettings.filterBoolClauses) {
-        sourceSettings.filterBoolClauses = {};
-      }
-      if (!sourceSettings.filterBoolClauses.must_not) {
-        sourceSettings.filterBoolClauses.must_not = [];
-      }
-      sourceSettings.filterBoolClauses.must_not.push({
-        query_type: 'terms',
-        field: '_id',
-        value: JSON.stringify(selectedIds)
-      });
-      $(el)[0].settings.selectIdsOnNextLoad = [newSelectedId];
-      // Reload the page.
-      el.settings.sourceObject.populate(true);
-      // Clean up the temporary exclusion filter.
-      sourceSettings.filterBoolClauses.must_not.pop();
-      if (!sourceSettings.filterBoolClauses.must_not.length) {
-        delete sourceSettings.filterBoolClauses.must_not;
-      }
-    } else {
-      // Update the paging info if some rows left.
-      if (pagerLabel) {
-        indiciaFns.drawPager(
-          pagerLabel,
-          $(el).find('[data-row-id]').length,
-          el.settings.sourceObject.settings
-        );
-      }
-      // Immediately select the next row.
-      if (typeof newSelectedId !== 'undefined') {
-        $(el).find('[data-row-id="' + newSelectedId + '"]').addClass('selected').focus();
-      }
-      // Fire callbacks for selected row.
-      $.each(el.callbacks.itemSelect, function eachCallback() {
-        this($(el).find('.selected').length === 0 ? null : $(el).find('.selected')[0]);
-      });
-    }
-  },
-
-  /**
    * Takes a string and applies token replacement for field values.
    *
    * @param object el
-   *   The dataGrid element.
+   *   The dataGrid or cardGallery element. Optional. Enables use of normal
+   *   field names when using an aggregation source mode.
    * @param object doc
    *   The ES document for the row.
    * @param string text
@@ -278,8 +206,8 @@
       $.each(fieldOrList, function eachFieldName() {
         var fieldName = this;
         var fieldDef = {};
-        var srcSettings = el.settings.sourceObject.settings;
-        if ($.inArray(fieldName, el.settings.sourceObject.settings.fields) > -1) {
+        var srcSettings = el ? el.settings.sourceObject.settings : null;
+        if (el && $.inArray(fieldName, el.settings.sourceObject.settings.fields) > -1) {
           // Auto-locate aggregation fields in document.
           if (srcSettings.mode === 'termAggregation') {
             fieldDef.path = 'fieldlist.hits.hits.0._source';
@@ -818,6 +746,11 @@
       var key = entity === 'parent_event' ? 'parent_attributes' : 'attributes';
       // Tolerate sample or event for entity parameter.
       entity = $.inArray(entity, ['sample', 'event', 'parent_event']) > -1 ? 'event' : 'occurrence';
+      // When requesting an event attribute, allow the parent event attribute
+      // value to be used if necessary.
+      if (entity === 'event' && key === 'attributes' && !doc[entity][key] && doc[entity]['parent_attributes']) {
+        key = 'parent_attributes';
+      }
       if (doc[entity] && doc[entity][key]) {
         $.each(doc[entity][key], function eachAttr() {
           if (this.id === params[1]) {
@@ -826,6 +759,30 @@
         });
       }
       return output.join('; ');
+    },
+
+    /**
+     * Return the value of the first field in the list which is not empty.
+     *
+     * Takes a comma separated list of field names in the parameter.
+     */
+    coalesce: function coalesce(doc, params) {
+      if (params.length === 1) {
+        const fields = params[0].split(',');
+        let result = '';
+        let value;
+        $.each(fields, function() {
+          value = indiciaFns.getValueForField(doc, this);
+          if (value !== '') {
+            result = value;
+            return false;
+          }
+        });
+        return result;
+      }
+      else {
+        return '';
+      }
     },
 
     /**
@@ -1105,6 +1062,9 @@
       });
     },
 
+    /**
+     * A standardised label for the taxon.
+     */
     taxon_label: function taxonLabel(doc) {
       var acceptedName;
       if (doc.taxon.taxon_rank_sort_order >= 290) {
@@ -1117,6 +1077,24 @@
       } else {
         return '<h3>' + acceptedName + '</h3>';
       }
+    },
+
+    /**
+     * A templated output, where field tokens in square brackets are replaced by values.
+     */
+    template: function template(doc, params) {
+      let template = params[0];
+      let output = '';
+      if (params.length > 1) {
+        // 2nd parameter is a nested object path.
+        const objects = indiciaFns.getValueForField(doc, params[1]);
+        $.each(objects, function() {
+          output += indiciaFns.applyFieldReplacements(null, this, template);
+        });
+      } else {
+        output = template;
+      }
+      return indiciaFns.applyFieldReplacements(null, doc, output);
     }
   };
 
@@ -1774,11 +1752,16 @@
       } else if (source.settings.mode === 'mapGeoHash' && mapToFilterTo) {
         // Set geohash_grid precision.
         // See https://gis.stackexchange.com/questions/231719/calculating-optimal-geohash-precision-from-bounding-box
-        var viewportAreaSqDegrees = (bounds.getEast() - bounds.getWest()) * (bounds.getNorth() - bounds.getSouth());
-        var hashPrecisionAreas = [2025, 63.281, 1.97754, 0.061799, 0.0019311904, 0.0000603497028, 0.000001885928, 0.0000000589352567];
-        var precision = 1;
+        // We use the viewport cropped to a max 2:1 ratio for our calculations,
+        // otherwise a very tall or very wide map selects an inappropriate
+        // square size.
+        const shortestEdge = Math.min(bounds.getEast() - bounds.getWest(), bounds.getNorth() - bounds.getSouth());
+        const longEdgeForCalc = Math.min(shortestEdge * 2, Math.max(bounds.getEast() - bounds.getWest(), bounds.getNorth() - bounds.getSouth()));
+        const viewportCroppedAreaSqDegrees = shortestEdge * longEdgeForCalc;
+        const hashPrecisionAreas = [2025, 63.281, 1.97754, 0.061799, 0.0019311904, 0.0000603497028, 0.000001885928, 0.0000000589352567];
+        let precision = 1;
         for (var i = 8; i >= 1; i--) {
-          if (viewportAreaSqDegrees / hashPrecisionAreas[i - 1] < 10000) {
+          if (viewportCroppedAreaSqDegrees / hashPrecisionAreas[i - 1] < 10000) {
             precision = i;
             break;
           }
@@ -1888,7 +1871,7 @@ jQuery(document).ready(function docReady() {
     // Callback needs to handle the geometry filters.
     onLocationSelectChange(this, function callback(data) {
       if (data.length === 0) {
-        $('.es-location-select-geom').val('');
+        $('#' + changedSelect.id + '-geom').val('');
       }
       else {
         // Empty the location select geom controls, then set the one at the

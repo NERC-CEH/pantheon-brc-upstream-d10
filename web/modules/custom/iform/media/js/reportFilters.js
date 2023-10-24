@@ -233,19 +233,34 @@ jQuery(document).ready(function ($) {
     when: {
       getDescription: function (filterDef, sep) {
         var r = [];
-        var dateType = 'recorded';
+        var dateType = typeof filterDef.date_type === 'undefined' ? 'recorded' : filterDef.date_type;
         var dateFromField = 'date_from';
         var dateToField = 'date_to';
         var dateAgeField = 'date_age';
-        if (typeof filterDef.date_type !== 'undefined') {
-          dateType = filterDef.date_type;
-          if (dateType !== 'recorded') {
-            dateFromField = dateType + '_date_from';
-            dateToField = dateType + '_date_to';
-            dateAgeField = dateType + '_date_age';
+        if (filterDef.date_year_op && filterDef.date_year) {
+          if (filterDef.date_year_op === '=') {
+            dateFromField = 'date_year';
+            dateToField = 'date_year';
+          } else if (filterDef.date_year_op === '<=') {
+            // Disable the date from field.
+            dateFromField = 'not_used';
+            dateToField = 'date_year';
+          } else if (filterDef.date_year_op === '>=') {
+            dateFromField = 'date_year';
+            // Disable the date to field.
+            dateToField = 'not_used';
           }
         }
-        if (filterDef[dateFromField] && filterDef[dateToField]) {
+        if (dateType !== 'recorded') {
+          dateFromField = dateType + '_' + dateFromField;
+          dateToField = dateType + '_' + dateToField;
+          dateAgeField = dateType + '_' + dateAgeField;
+        }
+        if (filterDef[dateFromField] && filterDef[dateToField] && filterDef[dateFromField] === filterDef[dateToField]) {
+          // Correct grammar.
+          const inOrOn = filterDef.date_year_op && filterDef.date_year ? 'in' : 'on';
+          r.push('Records ' + dateType + ' ' + inOrOn + ' ' + filterDef[dateFromField]);
+        } else if (filterDef[dateFromField] && filterDef[dateToField]) {
           r.push('Records ' + dateType + ' between ' + filterDef[dateFromField] + ' and ' +
             filterDef[dateToField]);
         } else if (filterDef[dateFromField]) {
@@ -361,14 +376,14 @@ jQuery(document).ready(function ($) {
         var paramValue;
         if (filterDef.input_form_list) {
           $.each(filterDef.input_form_list.split(','), function (idx, id) {
-            list.push($('#check-form-' + indiciaData.formsList[id.replace(/'/g, '')]).next('label').html());
+            list.push(formPathToLabel(this));
           });
           r.push((filterDef.input_form_list_op === 'not in' ? 'Exclude ' : '') + list.join(', '));
         } else if (filterDef.survey_list) {
           paramValue = typeof filterDef.survey_list === 'string'
-            ? filterDef.survey_list.split(',') : [filterDef.survey_list ];
+            ? filterDef.survey_list.split(',') : [filterDef.survey_list];
           $.each(paramValue, function (idx, id) {
-            list.push($('#check-survey-' + id).next('label').html());
+            list.push(indiciaData.allSurveysList[id]);
           });
           r.push((filterDef.survey_list_op === 'not in' ? 'Exclude ' : '') + list.join(', '));
         } else if (filterDef.website_list) {
@@ -542,10 +557,10 @@ jQuery(document).ready(function ($) {
         if (typeof indiciaData.filter.def.date_type !== 'undefined' && indiciaData.filter.def.date_type !== 'recorded') {
           dateTypePrefix = indiciaData.filter.def.date_type + '_';
         }
-        if (context && (context.date_from || context.date_to || context.date_age ||
-          context.input_date_from || context.input_date_to || context.input_date_age ||
-          context.edited_date_from || context.edited_date_to || context.edited_date_age ||
-          context.verified_date_from || context.verified_date_to || context.verified_date_age)) {
+        if (context && (context.date_from || context.date_to || context.date_age || context.date_year ||
+          context.input_date_from || context.input_date_to || context.input_date_age || context.input_date_year ||
+          context.edited_date_from || context.edited_date_to || context.edited_date_age || context.edited_date_year ||
+          context.verified_date_from || context.verified_date_to || context.verified_date_age || context.verified_date_year)) {
           $('#controls-filter_when .context-instruct').show();
         }
         if (dateTypePrefix) {
@@ -559,6 +574,12 @@ jQuery(document).ready(function ($) {
           if (typeof indiciaData.filter.def[dateTypePrefix + 'date_age'] !== 'undefined') {
             $('#date_age').val(indiciaData.filter.def[dateTypePrefix + 'date_age']);
           }
+          if (typeof indiciaData.filter.def[dateTypePrefix + 'date_year'] !== 'undefined') {
+            $('#date_year').val(indiciaData.filter.def[dateTypePrefix + 'date_year']);
+          }
+          if (typeof indiciaData.filter.def[dateTypePrefix + 'date_year_op'] !== 'undefined') {
+            $('#date_year_op').val(indiciaData.filter.def[dateTypePrefix + 'date_year_op']);
+          }
         }
       },
       applyFormToDefinition: function () {
@@ -570,23 +591,33 @@ jQuery(document).ready(function ($) {
         delete indiciaData.filter.def.input_date_from;
         delete indiciaData.filter.def.input_date_to;
         delete indiciaData.filter.def.input_date_age;
+        delete indiciaData.filter.def.input_date_year;
+        delete indiciaData.filter.def.input_date_year_op;
         delete indiciaData.filter.def.edited_date_from;
         delete indiciaData.filter.def.edited_date_to;
         delete indiciaData.filter.def.edited_date_age;
+        delete indiciaData.filter.def.edited_date_year;
+        delete indiciaData.filter.def.edited_date_year_op;
         delete indiciaData.filter.def.verified_date_from;
         delete indiciaData.filter.def.verified_date_to;
         delete indiciaData.filter.def.verified_date_age;
+        delete indiciaData.filter.def.verified_date_year;
+        delete indiciaData.filter.def.verified_date_year_op;
         // if the date filter type needs a prefix on the parameter field names, then copy the values from the
         // date controls into the proper parameter field names
         if (dateTypePrefix) {
           indiciaData.filter.def[dateTypePrefix + 'date_from'] = indiciaData.filter.def.date_from;
           indiciaData.filter.def[dateTypePrefix + 'date_to'] = indiciaData.filter.def.date_to;
           indiciaData.filter.def[dateTypePrefix + 'date_age'] = indiciaData.filter.def.date_age;
+          indiciaData.filter.def[dateTypePrefix + 'date_year'] = indiciaData.filter.def.date_year;
+          indiciaData.filter.def[dateTypePrefix + 'date_year_op'] = indiciaData.filter.def.date_year_op;
           // the date control values must NOT apply to the field record date in this case - we are doing a different
           // type filter.
           delete indiciaData.filter.def.date_from;
           delete indiciaData.filter.def.date_to;
           delete indiciaData.filter.def.date_age;
+          delete indiciaData.filter.def.date_year;
+          delete indiciaData.filter.def.date_year_op;
         }
       }
     },
@@ -823,6 +854,8 @@ jQuery(document).ready(function ($) {
     },
     source: {
       loadForm: function (context) {
+        const loadingSurveyIds = typeof indiciaData.filter.def.survey_list === 'undefined' ? [] : indiciaData.filter.def.survey_list.split(',');
+        const loadingInputForms = typeof indiciaData.filter.def.input_form_list === 'undefined' ? [] : indiciaData.filter.def.input_form_list.split(',');
         if (context && ((context.website_list && context.website_list_op) ||
           (context.survey_list && context.survey_list_op) || (context.input_form_list && context.input_form_list_op))) {
           $('#controls-filter_source .context-instruct').show();
@@ -834,18 +867,9 @@ jQuery(document).ready(function ($) {
           $.each(indiciaData.filter.def.website_list.split(','), function (idx, id) {
             $('#check-website-' + id).prop('checked', true);
           });
-          updateWebsiteSelection();
         }
-        if (indiciaData.filter.def.survey_list) {
-          $.each(indiciaData.filter.def.survey_list.split(','), function (idx, id) {
-            $('#check-survey-' + id).prop('checked', true);
-          });
-        }
-        if (indiciaData.filter.def.input_form_list) {
-          $.each(indiciaData.filter.def.input_form_list.split(','), function (idx, form) {
-            $('#check-form-' + indiciaData.formsList[form.replace(/'/g, '')]).attr('checked', true);
-          });
-        }
+        populateSurveys(loadingSurveyIds);
+        populateInputForms(loadingSurveyIds, loadingInputForms);
         disableSourceControlsForContext('website', context, ['survey', 'input_form']);
         disableSourceControlsForContext('survey', context, ['input_form']);
         disableSourceControlsForContext('input_form', context, []);
@@ -1028,54 +1052,6 @@ jQuery(document).ready(function ($) {
   $('#site-type').change(function () {
     changeSiteType();
   });
-
-  function updateSurveySelection() {
-    var surveys = [];
-    $.each($('#filter-surveys input:checked'), function (idx, checkbox) {
-      surveys.push('.vis-survey-' + $(checkbox).val());
-    });
-    if (surveys.length === 0) {
-      // no websites picked, so can pick any survey
-      $('#filter-input_forms li').show();
-    } else if ($('#filter-surveys-mode').val() === 'in') {
-      // list only the forms that can be picked
-      $('#filter-input_forms li').filter(surveys.join(',')).removeClass('survey-hide');
-      $('#filter-input_forms li').not(surveys.join(',')).addClass('survey-hide');
-      $('#filter-input_forms li').not(surveys.join(',')).find('input').prop('checked', false);
-    } else {
-      // list only the forms that can be picked - based on an exclusion of surveys
-      $('#filter-input_forms li').filter(surveys.join(',')).addClass('survey-hide');
-      $('#filter-input_forms li').not(surveys.join(',')).removeClass('survey-hide');
-      $('#filter-input_forms li').filter(surveys.join(',')).find('input').prop('checked', false);
-    }
-  }
-
-  function updateWebsiteSelection() {
-    var websites = [];
-    var lis = $('#filter-surveys li, #filter-input_forms li');
-    $.each($('#filter-websites input:checked'), function (idx, checkbox) {
-      websites.push('.vis-website-' + $(checkbox).val());
-    });
-
-    if (websites.length === 0) {
-      // no websites picked, so can pick any survey
-      lis.removeClass('website-hide');
-    } else if ($('#filter-websites-mode').val() === 'in') {
-      // list only the surveys that can be picked
-      lis.filter(websites.join(',')).removeClass('website-hide');
-      lis.not(websites.join(',')).addClass('website-hide');
-      lis.not(websites.join(',')).find('input').prop('checked', false);
-    } else {
-      // list only the surveys that can be picked - based on an exclusion of websites
-      lis.filter(websites.join(',')).addClass('website-hide');
-      lis.not(websites.join(',')).removeClass('website-hide');
-      lis.filter(websites.join(',')).find('input').prop('checked', false);
-    }
-  }
-
-  $('#filter-websites :input').change(updateWebsiteSelection);
-
-  $('#filter-surveys :input').change(updateSurveySelection);
 
   $('#my_groups').click(function () {
     $.each(indiciaData.myGroups, function(idx, group) {
@@ -1568,6 +1544,16 @@ jQuery(document).ready(function ($) {
     $.fancybox.close();
   });
 
+  // Change the year date operation, fill in current year as default.
+  $('#date_year_op').change(function() {
+    if ($('#date_year_op option:selected').val() !== '' && $('#date_year').val() === '') {
+      $('#date_year').val(new Date().getFullYear());
+    } else if ($('#date_year_op option:selected').val() === '') {
+      // Blank the year if deselecting.
+      $('#date_year').val('');
+    }
+  });
+
   // Select a named location - deactivate the drawFeature and hide modifyFeature controls.
   $('#location_list\\:search\\:name').change(function () {
     $.each(indiciaData.mapdiv.map.controls, function () {
@@ -1780,4 +1766,256 @@ jQuery(document).ready(function ($) {
   if ($('form.filter-controls').validate) {
     $('form.filter-controls').validate();
   }
+
+  /**
+   * Utility function to convert a form path alias to a control HTML ID.
+   */
+  function formPathToId(form) {
+    return 'check-input_form-' + form
+      .replace(/^'(.+)'$/, '$1')
+      .replace(/[^a-z0-9]/, '-');
+  }
+
+  /**
+   * Utility function to convert a form path alias to a display label.
+   */
+  function formPathToLabel(form) {
+    let formLabel = indiciaFns.escapeHtml(form
+      .replace(/(http(s)?:\/\/)|[\/\-_]|(\?q=)/g, ' ')
+      .replace(/^'(.+)'$/, '$1'));
+    return formLabel.charAt(0).toUpperCase() + formLabel.slice(1);
+  }
+
+  /**
+   * Update the list of source surveys.
+   *
+   * @param array surveys
+   *   The list of surveys to load. If null then the list is left untouched.
+   * @param array surveyIdsToRetick
+   *   List of forms that were previously ticked, so should be reticked after
+   *   loading.
+   */
+  function updateSurveyList(surveys, surveyIdsToRetick) {
+    if (surveys !== null) {
+      $('#survey-list-checklist li').remove();
+      $.each(surveys, function() {
+        const surveyEscaped = indiciaFns.escapeHtml(this.title);
+        $('<li>' +
+          '<input type="checkbox" value="' + this.id + '" id="check-survey-' + this.id + '"/>' +
+          '<label for="check-survey-' + this.id + '">' + surveyEscaped + '</label></li>')
+          .appendTo($('#survey-list-checklist'));
+      });
+    }
+    $.each(surveyIdsToRetick, function() {
+      $('#check-survey-' + this).prop('checked', true);
+    });
+    if ($('#survey-list-checklist li').length === 0) {
+      $('#filter-surveys p.alert').show();
+    } else {
+      $('#filter-surveys p.alert').hide();
+    }
+    if (surveyIdsToRetick.length === 0 && $('#survey-list-checklist li').length > 0) {
+      $('#filter-input_forms p.alert').show();
+    } else {
+      $('#filter-input_forms p.alert').hide();
+    }
+  }
+
+  /**
+   * Populate the list of source surveys according to selected websites.
+   */
+  function populateSurveys(surveyIdsToRetick) {
+    let loadSurveysUsingWebsites = [];
+    // Grab list of websites to filter against, only in include mode.
+    if ($('#filter-websites-mode').val() === 'in') {
+      $.each($('#website-list-checklist :checked'), function() {
+        loadSurveysUsingWebsites.push($(this).val());
+      });
+    }
+    if (typeof surveyIdsToRetick === 'undefined') {
+      surveyIdsToRetick = [];
+      // Grab any existing checked surveys so we can keep them.
+      $.each($('#survey-list-checklist :checked'), function() {
+        surveyIdsToRetick.push($(this).val());
+      });
+    }
+    if (loadSurveysUsingWebsites.length) {
+      // We have some selected websites to load surveys for.
+      if (indiciaData.lastLoadedSurveysUsingWebsites.join(',') !== loadSurveysUsingWebsites.join(',')) {
+        $.getJSON(indiciaData.warehouseUrl + 'index.php/services/report/requestReport?' +
+          'report=library/surveys/surveys_list.xml' +
+          '&reportSource=local&orderby=fulltitle&website_ids=' + loadSurveysUsingWebsites.join(',') +
+          '&nonce=' + indiciaData.read.nonce + '&auth_token=' + indiciaData.read.auth_token +
+          '&mode=json&callback=?')
+        .done(function(data) {
+          $('#survey-list-checklist li').remove();
+          // Load the list of surveys into the UI.
+          let surveys = [];
+          $.each(data, function() {
+            let title = loadSurveysUsingWebsites.length > 1 ? this.fulltitle : this.title;
+            title = indiciaFns.escapeHtml(title);
+            surveys.push({
+              id: this.id,
+              title: title
+            });
+          });
+          updateSurveyList(surveys, surveyIdsToRetick);
+        });
+      } else {
+        updateSurveyList(null, surveyIdsToRetick);
+      }
+      indiciaData.lastLoadedSurveysUsingWebsites = loadSurveysUsingWebsites;
+    } else {
+      indiciaData.lastLoadedSurveysUsingWebsites = [];
+      updateSurveyList([], surveyIdsToRetick);
+    }
+  }
+
+  /**
+   * Update the list of source input forms.
+   *
+   * @param array inputForms
+   *   The list of input form names to load. If null then the list is left
+   *   untouched.
+   * @param array inputFormsToRetick
+   *   List of forms that were previously ticked, so should be reticked after
+   *   loading.
+   *
+   */
+  function updateInputFormList(inputForms, inputFormsToRetick) {
+    if (inputForms !== null) {
+      $('#input_form-list-checklist li').remove();
+      $.each(inputForms, function() {
+        const formId = formPathToId(this);
+        const formValue = indiciaFns.escapeHtml(this);
+        const formLabel = formPathToLabel(this);
+        $('<li>' +
+          '<input type="checkbox" value="' + formValue + '" id="' + formId + '"/>' +
+          '<label for="' + formId + '">' + formLabel + '</label></li>')
+          .appendTo($('#input_form-list-checklist'));
+      });
+    }
+    $.each(inputFormsToRetick, function() {
+      // If loaded from a filter def, the form names are wrapped in ''.
+      console.log(this + ' :: ' + formPathToId(this));
+      $('#' + formPathToId(this)).prop('checked', true);
+    });
+
+    if ($('#survey-list-checklist li').length > 0 && $('#survey-list-checklist li :checked').length === 0) {
+      $('#filter-input_forms p.alert').show();
+    } else {
+      $('#filter-input_forms p.alert').hide();
+    }
+  }
+
+  /**
+   * Populate the list of source input forms according to selected surveys.
+   */
+  function populateInputForms(loadInputFormsUsingSurveys, inputFormsToRetick) {
+    if (typeof loadInputFormsUsingSurveys === 'undefined') {
+      loadInputFormsUsingSurveys = [];
+      // Grab list of websites to filter against, only in include mode.
+      if ($('#filter-surveys-mode').val() === 'in') {
+        $.each($('#survey-list-checklist :checked'), function() {
+          loadInputFormsUsingSurveys.push($(this).val());
+        });
+      }
+    }
+    if (typeof inputFormsToRetick === 'undefined') {
+      inputFormsToRetick = [];
+      // Grab any existing checked surveys so we can keep them.
+      $.each($('#input_form-list-checklist :checked'), function() {
+        inputFormsToRetick.push($(this).val());
+      });
+    }
+    if (loadInputFormsUsingSurveys.length) {
+      // We have some selected surveys to load forms for.
+      if (indiciaData.lastLoadedInputFormsUsingSurveys.join(',') !== loadInputFormsUsingSurveys.join(',')) {
+        // Use Elasticsearch if available, as PG slow for getting input forms.
+        if (indiciaData.esProxyAjaxUrl) {
+          const url = indiciaData.esProxyAjaxUrl + '/searchbyparams/' + (indiciaData.nid || '0');
+          const request = {
+            proxyCacheTimeout: 3600,
+            size: 0,
+            bool_queries: [{
+              bool_clause: 'must',
+              field: 'metadata.survey.id',
+              query_type: 'terms',
+              value: JSON.stringify(loadInputFormsUsingSurveys)
+            }],
+            aggs: {
+              by_form: {
+                terms: {
+                  field: 'metadata.input_form'
+                }
+              }
+            }
+          };
+          $.ajax({
+            url: url,
+            type: 'post',
+            data: request
+          }).done(function(data) {
+            let forms = [];
+            $.each(data.aggregations.by_form.buckets, function() {
+              forms.push(this.key);
+            });
+            updateInputFormList(forms, inputFormsToRetick);
+          });
+        } else {
+          $.getJSON(indiciaData.warehouseUrl + 'index.php/services/report/requestReport?' +
+            'report=library/input_forms/input_forms_list.xml' +
+            '&reportSource=local&orderby=input_form&survey_ids=' + loadInputFormsUsingSurveys.join(',') +
+            '&nonce=' + indiciaData.read.nonce + '&auth_token=' + indiciaData.read.auth_token +
+            '&mode=json&callback=?')
+          .done(function(data) {
+            let forms = [];
+            $.each(data, function() {
+              forms.push(this.input_form);
+            });
+            updateInputFormList(forms, inputFormsToRetick);
+          });
+        }
+      } else {
+        updateInputFormList(null, inputFormsToRetick);
+      }
+      indiciaData.lastLoadedInputFormsUsingSurveys = loadInputFormsUsingSurveys;
+      return;
+    } else {
+      indiciaData.lastLoadedInputFormsUsingSurveys = [];
+      updateInputFormList([], inputFormsToRetick);
+    }
+  }
+
+  // Set some initial data for tracking loaded source info.
+  indiciaData.lastLoadedSurveysUsingWebsites = [];
+  indiciaData.lastLoadedInputFormsUsingSurveys = [];
+
+  indiciaFns.on('change', '#website-list-checklist input[type=checkbox], #filter-websites-mode', {}, function() {
+    populateSurveys();
+  });
+
+  indiciaFns.on('change', '#survey-list-checklist input[type=checkbox], #filter-surveys-mode', {}, function() {
+    populateInputForms();
+  });
+
+  /**
+   * Function for filtering source lists by search filter.
+   */
+  function sourceListFilterKeyHandler() {
+    const simplifiedSearchTerm = $(this).val().toLowerCase().replace(/[^0-9a-z]/, '');
+    $.each($(this).closest('.filter-popup-columns').find('li'), function() {
+      if ($(this).find('label').text().toLowerCase().replace(/[^0-9a-z]/, '').match(simplifiedSearchTerm)) {
+        $(this).show();
+      } else {
+        $(this).hide();
+      }
+    });
+  }
+
+  // Link source filter boxes handler to keyup for inputs.
+  $('#websites-search').keyup(sourceListFilterKeyHandler);
+  $('#surveys-search').keyup(sourceListFilterKeyHandler);
+  $('#input_forms-search').keyup(sourceListFilterKeyHandler);
+
 });

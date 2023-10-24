@@ -1,45 +1,23 @@
 #standard-params .header {
-  padding: 1px;
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+  margin-bottom: 0;
 }
 
-#standard-params .header > div:first-child, #standard-params span.changed {
-  float: left;
-  width: auto;
-}
 #standard-params .header > div:last-child {
-  float: right;
-  width: auto;
-  margin-left: 0.5em;
+  /* Acts like a float right inside flex */
+  margin-left: auto;
 }
 
-#standard-params .header * {
-  vertical-align: middle;
-  margin: 0 4px 0 0;
-  padding: 0;
-}
-
-#standard-params .header label {
-  width: auto;
-}
-
-#standard-params .header h2 {
-  margin: 0 4px 0;
-  display:-moz-inline-stack;
-  display:inline-block;
-  zoom:1;
-  *display:inline;
+#standard-params .header > div:last-child > * {
+  margin: 4px 4px 4px 0;
 }
 
 #standard-params .disabled {
   opacity: 0.3;
 }
 
-#standard-params .header select, #standard-params .toolbar select, #standard-params .toolbar button {
-  padding: 0;
-}
-#standard-params .header button, #standard-params .header input[type=button]{
-  padding: 0.1em 0.3em;
-}
 #standard-params #filter-panes {
   padding-right: 24px;
   box-sizing:border-box;
@@ -200,12 +178,15 @@
   padding: 0;
 }
 
-#filter-details .toolbar {
-  background: #f7f7f7;
+.save-controls {
+  margin-bottom: 8px;
+}
+.save-controls.form-inline input, .save-controls.form-inline button {
+  margin-right: 8px;
 }
 
-#filter-details .toolbar * {
-  vertical-align: middle;
+#filter\:title {
+  min-width: 250px;
 }
 
 img.button {
@@ -242,8 +223,6 @@ fieldset.inline fieldset label {
 
 div.filter-popup-columns {
   width: 250px;
-  max-height: 600px;
-  overflow: auto;
   border-right: solid silver 1px;
 }
 div.filter-popup-columns:last-child {
@@ -257,9 +236,29 @@ div.filter-popup-columns li {
 div.filter-popup-columns li:last-child {
   border: none;
 }
-div.filter-popup-columns * {
+div.filter-popup-columns ul * {
   vertical-align: middle;
   margin: 0 6px;
+}
+
+#controls-filter_source {
+  width: 800px;
+ }
+
+#controls-filter_source .filter-popup-columns ul {
+  overflow: auto;
+  height: 450px;
+  padding: 0;
+}
+
+/* Source search and operation controls */
+#controls-filter_source .filter-popup-columns .ctrl-wrap {
+  font-size: 90%;
+  margin-bottom: 4px;
+}
+
+#ctrl-wrap-taxon_rank_sort_order_op {
+  display: inline-block;
 }
 
 #what-tabs ul.inline {
@@ -303,22 +302,4 @@ input[disabled] {
 
 #controls-filter_occ_id {
   width: 400px;
-}
-
-#controls-filter_source {
- width: 860px;
-}
-
-#controls-filter_source .filter-popup-columns ul {
-  overflow: auto;
-  max-height: 500px;
-  padding: 0;
-}
-
-.survey-hide, .website-hide {
-  display: none;
-}
-
-#ctrl-wrap-taxon_rank_sort_order_op {
-  display: inline-block;
 }

@@ -1,3 +1,6 @@
+.form-inline {
+  margin-bottom: 8px;
+}
 .input-group-addon {
   > * {
     display: inline-block;
@@ -98,6 +101,13 @@ table.species-grid {
     margin: 0;
     vertical-align: middle;
     padding: 3px 0;
+  }
+  /* Tweak layout of extra row controls shown when using responsive Footable columns */
+  .footable-row-detail-value {
+    padding: 8px 0;
+  }
+  .footable-row-detail-name {
+      padding-left: 0.5em;
   }
 }
 

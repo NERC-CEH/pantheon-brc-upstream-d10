@@ -45,14 +45,20 @@ var addMediaRowOnClick;
   var resetSpeciesText;
 
   function showExistingSubsamplesOnMap() {
-    var samples;
+    var samples = {};
     var parser;
     var feature;
-    if ($('#existingSampleGeomsBySref').length) {
+    if ($('.existingSampleGeomsBySref').length) {
       parser = new OpenLayers.Format.WKT();
-      samples = JSON.parse($('#existingSampleGeomsBySref').val());
+      // If there are multiple species grids on the page, combine all the lists
+      // of existing geoms.
+      $.each($('.existingSampleGeomsBySref'), function() {
+        samples = {...samples, ...JSON.parse($(this).val())};
+      });
+
       $.each($('.scSpatialRef:not([value=""])'), function (idx) {
-        feature = parser.read(samples[$(this).val().toUpperCase()]);
+        var sref = $(this).val().toUpperCase();
+        feature = parser.read(samples[sref]);
         feature.id = 'subsample-' + idx;
         feature.attributes.type = 'subsample';
         indiciaData.mapdiv.map.editLayer.addFeatures([feature]);
@@ -63,7 +69,7 @@ var addMediaRowOnClick;
   $(document).ready(function () {
     // prevent validation of the clonable row
     $('.scClonableRow :input').addClass('inactive');
-    if ($('#existingSampleGeomsBySref').length) {
+    if ($('.existingSampleGeomsBySref').length) {
       mapInitialisationHooks.push(showExistingSubsamplesOnMap);
     }
 
@@ -544,7 +550,7 @@ var addMediaRowOnClick;
     indiciaData['gridCounter-' + gridId]++;
     return ctrl;
   };
-  
+
   // Track the species list used against each grid if multiple grids
   var gridLookupLists = {};
   indiciaFns.addRowToGrid = function (gridId, lookupListId) {
@@ -552,8 +558,10 @@ var addMediaRowOnClick;
       gridLookupLists[gridId] = lookupListId;
     }
     makeSpareRow(gridId, lookupListId, false);
-    // Deal with user clicking on edit taxon icon
-    indiciaFns.on('click', '.edit-taxon-name', {}, function (e) {
+    // Deal with user clicking on edit taxon icon. Provide a different handler
+    // for each grid as they may have different lookupListId.
+    var editSelector = '#' + gridId + ' .edit-taxon-name';
+    indiciaFns.on('click', editSelector, {}, function (e) {
       var gridId = $(e.target).closest('table').attr('id');
       // Multiple grids might mean different species lists used for each grid
       if (gridLookupLists[gridId]) {
@@ -700,7 +708,9 @@ var addMediaRowOnClick;
       maxUploadSize: '4000000', // 4mb
       container: ctrlId,
       autopick: true,
-      mediaTypes: mediaTypes
+      mediaTypes: mediaTypes,
+      resizeWidth: 1500,
+      resizeHeight: 1500
     };
     // Merge opts with evt.data (added so that fileClassifier.js can trigger
     // this function with additional options rather than duplicate it.)
@@ -716,7 +726,7 @@ var addMediaRowOnClick;
     if (typeof file_boxTemplate!=='undefined') { opts.file_boxTemplate=file_boxTemplate; }
     if (typeof file_box_initial_file_infoTemplate!=='undefined') { opts.file_box_initial_file_infoTemplate=file_box_initial_file_infoTemplate; }
     if (typeof file_box_uploaded_imageTemplate!=='undefined') { opts.file_box_uploaded_imageTemplate=file_box_uploaded_imageTemplate; }
-    imageRow.find('div').uploader(opts);
+    imageRow.find('div.file-box').uploader(opts);
     $(evt.target).hide();
   }
 
@@ -843,7 +853,7 @@ var addMediaRowOnClick;
     var feature;
     var system = $('#' + indiciaData.mapdiv.settings.srefSystemId).val();
     // Find numeric index of row from control ID.
-    var rowUniqueIdx = e.currentTarget.id.match(/^sc:species-grid-\d+-(\d+)/)[1];
+    var rowUniqueIdx = e.currentTarget.id.match(/(\d+):\d*:occurrence:spatialref$/)[1];
     var existingFeature = indiciaData.mapdiv.map.editLayer.getFeatureById('subsample-' + rowUniqueIdx);
     if (existingFeature) {
       indiciaData.mapdiv.map.editLayer.removeFeatures([existingFeature]);

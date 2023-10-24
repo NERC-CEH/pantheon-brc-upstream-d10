@@ -198,11 +198,17 @@
         type: typeof layerConfig.type === 'undefined' ? 'marker' : layerConfig.type,
         options: {}
       };
-      if (geom && sourceSettings.showGeomsAsTooClose) {
-        config.type = 'geom';
-      }
       if (typeof layerConfig.style !== 'undefined') {
         $.extend(config.options, layerConfig.style);
+      }
+      if (geom && sourceSettings.showGeomsAsTooClose) {
+        config.type = 'geom';
+        // If showing geoms as zoomed in, switch off any metric based on the aggregation count.
+        $.each(config.options, function(key, value) {
+          if (value === 'metric') {
+            delete config.options[key];
+          }
+        });
       }
       if (config.type === 'circle' || config.type === 'square' || config.type === 'geom') {
         config.options = $.extend({ radius: 'metric', fillOpacity: fillOpacity }, config.options);
@@ -577,6 +583,58 @@
   }
 
   /**
+   * Find if a point is inside a polygon (grid square).
+   */
+  function pointInPolygon(latlng, polygon) {
+    // from https://github.com/substack/point-in-polygon
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+      let xi = polygon[i][0];
+      let yi = polygon[i][1];
+      let xj = polygon[j][0];
+      let yj = polygon[j][1];
+      let intersect = ((yi > latlng.lat) !== (yj > latlng.lat)) &&
+                      (latlng.lng < (xj - xi) * (latlng.lat - yi) / (yj - yi) + xi);
+      if (intersect) {
+        inside = !inside;
+      }
+    }
+    return inside;
+  }
+
+  /**
+   * Obtain an array of filter values to retrieve all feature data under a click point.
+   *
+   * Returns filter value list (e.g. the record ID, or the grid square centre
+   * if aggregated) for all features under a click point. Allows an associated
+   * dataGrid to be re-populated applying this filter to show the clicked
+   * features.
+   */
+  function getFilterForClickedPoint(map, latlng, filterField) {
+    const clickBounds = L.latLngBounds(latlng, latlng);
+    let filterValues = [];
+    $.each(map._layers, function() {
+      const feature = this;
+      var bounds;
+      if (feature.getBounds) {
+        bounds = feature.getBounds();
+      } // What to do about points?
+      else if (feature._latlng) {
+        bounds = L.latLngBounds(feature._latlng, feature._latlng);
+      }
+      if (feature.options.filterField && feature.options.filterField === filterField && bounds && bounds._northEast && clickBounds.intersects(bounds)) {
+        // Intersects is using the outer bounding box of the square which is
+        // only rough as square may be at an angle. So do an accurate point in
+        // polygon test to confirm.
+        if (!feature.getBounds || pointInPolygon(latlng, feature.toGeoJSON().geometry.coordinates[0])) {
+          filterValues.push(feature.options.filterValue);
+        }
+      }
+    });
+    return filterValues;
+  }
+
+  /**
    * Declare public methods.
    */
   methods = {
@@ -691,6 +749,7 @@
                   $.each($('#' + el.settings.showSelectedRow)[0].settings.source, function eachSrc(src) {
                     var source = indiciaData.esSourceObjects[src];
                     var origFilter;
+                    let filterValues;
                     if (!source.settings.filterBoolClauses) {
                       source.settings.filterBoolClauses = { };
                     }
@@ -699,10 +758,20 @@
                     }
                     // Keep the old filter.
                     origFilter = $.extend(true, {}, source.settings.filterBoolClauses);
+                    if (e.layer.options.filterField === '_id') {
+                      // Document feature, so data not aggregated. Need to find
+                      // all features that intersect click.
+                      filterValues = getFilterForClickedPoint(el.map, e.latlng, e.layer.options.filterField);
+                    }
+                    else {
+                      // Aggregated data, so feature's filter will be
+                      // configured to select all its records.
+                      filterValues = [e.layer.options.filterValue];
+                    }
                     source.settings.filterBoolClauses.must.push({
-                      query_type: 'term',
+                      query_type: 'terms',
                       field: e.layer.options.filterField,
-                      value: e.layer.options.filterValue
+                      value: JSON.stringify(filterValues)
                     });
                     // Temporarily populate just the linked grid with the
                     // filter to show the selected row.
@@ -795,7 +864,10 @@
           geomCounts[this._source.location.point] = 0;
         }
         geomCounts[this._source.location.point]++;
-        fillOpacity = 0.3 / Math.pow(geomCounts[this._source.location.point], 2.5);
+        let allowForRepeats = Math.pow(geomCounts[this._source.location.point], 1.8);
+        // Also some allowance so large squares are more transparent and don't dominate.
+        let allowForSquareSize = Math.pow(this._source.location.coordinate_uncertainty_in_meters, 0.1);
+        fillOpacity = 0.50 / allowForRepeats / allowForSquareSize;
         addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, '_id', this._id, label);
       });
       // Are there aggregations to map?

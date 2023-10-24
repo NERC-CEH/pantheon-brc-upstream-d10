@@ -223,7 +223,11 @@
       src: $('#redet-form'),
       type: 'html',
       opts: {
-        modal: true
+        modal: true,
+        beforeClose: function () {
+          // Hide the species search dropdown if left in open state
+          $('.ac_results').hide();
+        }
       }
     });
   }
@@ -290,7 +294,7 @@
         $(listOutputControl).find('.multi-mode-table.active').removeClass('active');
         $(listOutputControl).find('.multi-mode-selected').addClass('active');
         // Table can be emptied.
-        $(listOutputControl).find('[data-row-id').remove();
+        $(listOutputControl).find('[data-row-id]').remove();
         $(listOutputControl).find('.showing').html('No hits');
       }
     ).always(function cleanup() {
@@ -328,6 +332,9 @@
       function onResponse(response) {
         if (typeof response.error !== 'undefined') {
           alert(response.error);
+        }
+        else if (response !== 'OK') {
+          alert(indiciaData.lang.verificationButtons.redetErrorMsg);
         }
       }
     ).always(cleanupAfterAjaxUpdate);
@@ -451,7 +458,7 @@
         null,
         'json'
       ).done((response) => {
-        const status = $(popupEl).data('status');
+        const status = $(popupEl).data('status') || $(popupEl).data('query');
         if (typeof response.error !== 'undefined') {
           $.fancyDialog({
             title: indiciaData.lang.verificationButtons.saveTemplateError,
@@ -534,7 +541,8 @@
       var ctrlWrap = $(this).closest('.comment-cntr');
       var textarea = ctrlWrap.find('textarea');
       var previewBox = ctrlWrap.find('.comment-preview');
-      previewBox.text(commentTemplateReplacements(textarea.val()));
+      var status = $(this).closest('.verification-popup').data('status') || $(this).closest('.verification-popup').data('query');
+      previewBox.text(commentTemplateReplacements($(listOutputControl).find('.selected'), textarea.val(), status));
       // Hide whilst leaving in place to occupy space.
       textarea.css('opacity', 0);
       $(previewBox).css('top', $(textarea).position().top + 'px');
@@ -578,7 +586,7 @@
     $('.save-template').click(function() {
       const ctrlWrap = $(this).closest('.comment-cntr');
       const popupEl = $(ctrlWrap).closest('.verification-popup');
-      const status = $(popupEl).data('status');
+      const status = $(popupEl).data('status') || $(popupEl).data('query');
       const templateName = $(ctrlWrap).find('[name="template-name"]').val().trim();
       const templateText = $(ctrlWrap).find('.comment-textarea').val().trim();
       const data = {
@@ -936,7 +944,7 @@
         $(listOutputControl).find('.multi-mode-table.active').removeClass('active');
         $(listOutputControl).find('.multi-mode-selected').addClass('active');
         // Table can be emptied.
-        $(listOutputControl).find('[data-row-id').remove();
+        $(listOutputControl).find('[data-row-id]').remove();
         $(listOutputControl).find('.showing').html('No hits');
       }
     ).always(function cleanup() {
@@ -986,9 +994,14 @@
         }
       ).always(cleanupAfterAjaxUpdate);
     } else if (status.query) {
+      const unprocessedComment = pgUpdates['occurrence_comment:comment'];
       // No bulk API for query updates at the moment, so process one at a time.
       $.each(occurrenceIds, function eachOccurrence() {
+        var item = $(listOutputControl).find('[data-row-id="' + indiciaData.idPrefix + this + '"],[data-row-id="' + indiciaData.idPrefix + this + '!"]');
         pgUpdates['occurrence_comment:occurrence_id'] = this;
+        // Using the standard data services API so comment template applied on
+        // client.
+        pgUpdates['occurrence_comment:comment'] = commentTemplateReplacements(item, unprocessedComment, 'Q');
         // Post update to Indicia.
         activeRequests++;
         $.post(
@@ -1068,6 +1081,8 @@
     var overallStatus = status.status ? status.status : status.query;
     var todoListInfo;
     var totalAsText;
+    var doc;
+    var request;
     // Form reset.
     if (!el.settings.lastCommentStatus || (el.settings.lastCommentStatus !== overallStatus)) {
       resetCommentForm('verification-form', '');
@@ -1092,10 +1107,24 @@
       heading = status.status
         ? 'Set status to <span class="status">' + indiciaData.statusMsgs[overallStatus].toLowerCase() + '</span>'
         : 'Query this record';
-      $('#verification-form .multiple-warning').hide();
+      $('#verification-form .multiple-warning').html('<i class="fas fa-exclamation-triangle"></i>').hide();
       if ($(el).find('.apply-to-parent-sample-contents:enabled').hasClass('active')) {
         // Accept all of this taxon in same parent sample is enabled, so warn.
-        $('#verification-form .multiple-in-parent-sample-warning').show();
+        // We need a count of affected records for the warning.
+        doc = JSON.parse($(listOutputControl).find('.selected').attr('data-doc-source'));
+        request = indiciaData.warehouseUrl + 'index.php/services/report/requestReport' +
+          '?mode=json' +
+          '&nonce=' + indiciaData.read.nonce +
+          '&auth_token=' + indiciaData.read.auth_token +
+          '&report=reports_for_prebuilt_forms/elasticsearch_verification/count_occurrences_in_parent_sample.xml' +
+          '&parent_sample_id=' + doc.event.parent_event_id +
+          '&wantRecords=0&wantCount=1' +
+          '&reportSource=local&callback=?';
+        $.getJSON(request).done(function(data) {
+          $('#verification-form .multiple-in-parent-sample-warning')
+            .html('<i class="fas fa-exclamation-triangle"></i> ' + indiciaData.lang.verificationButtons.updatingMultipleInParentSampleWarning.replace('{1}', data.count))
+            .show();
+        });
       } else {
         $('#verification-form .multiple-in-parent-sample-warning').hide();
       }
@@ -1211,28 +1240,7 @@
   }
 
   /**
-   * Get HTML for the query by comment tab's form.
-   */
-  function getQueryCommentTab(doc, commentInstruct, warning) {
-    var commentTab = $('<fieldset class="comment-popup" data-query="Q" />');
-    commentTab.data('ids', JSON.stringify([parseInt(doc.id, 10)]));
-    $('<legend><span class="fas fa-question-circle fa-2x"></span>' +
-      indiciaData.lang.verificationButtons.commentTabTitle + '</legend>')
-      .appendTo(commentTab);
-    $('<p class="alert ' + (warning ? 'alert-danger' : 'alert-info') + '">' +
-      commentInstruct + '</p>')
-      .appendTo(commentTab);
-    $('<div class="form-group">' +
-        '<label for="comment-textarea">Add the following comment:</label>' +
-        '<textarea id="comment-textarea" class="form-control" rows="6"></textarea>' +
-      '</div>').appendTo(commentTab);
-    $('<button class="' + indiciaData.templates.buttonHighlightedClass + ' save">' + indiciaData.lang.verificationButtons.addComment + '</button>').appendTo(commentTab);
-    $('<button class="' + indiciaData.templates.buttonDefaultClass + ' cancel">' + indiciaData.lang.verificationButtons.cancel + '</button>').appendTo(commentTab);
-    return commentTab;
-  }
-
-  /**
-   * Add the HTML inputs for a record query or expert email to a form.
+   * Add the HTML inputs for an expert email to a form.
    */
   function appendRecordEmailControls(form, emailTo, emailSubject, emailBody, recordData) {
     $('<div class="form-group">' +
@@ -1251,58 +1259,40 @@
     $('<button type="button" class="' + indiciaData.templates.buttonDefaultClass + ' cancel">' + indiciaData.lang.verificationButtons.cancel + '</button>').appendTo(form);
   }
 
-  /**
-   * Get HTML for the query by email tab's form.
-   */
-  function getQueryEmailTab(doc, emailTo, emailInstruct, warning) {
-    var emailTab = $('<fieldset class="query-popup" data-id="' + doc.id +
-      '" data-sample-id="' + doc.event.event_id + '" data-query="Q" />');
-    var emailSubject = replaceDocFields(indiciaData.lang.verificationButtons.emailQuerySubject, doc);
-    var emailBody = replaceDocFields(indiciaData.lang.verificationButtons.emailQueryBodyHeader, doc);
-    var recordData = getRecordDataForEmail(doc);
-    var form;
-    $('<legend><span class="fas fa-question-circle fa-2x"></span>' +
-      indiciaData.lang.verificationButtons.emailTabTitle + '</legend>')
-      .appendTo(emailTab);
-    form = $('<form />').appendTo(emailTab);
-    $('<p class="alert ' + (warning ? 'alert-danger' : 'alert-info') + '">' +
-      emailInstruct + '</p>')
-      .appendTo(form);
-    appendRecordEmailControls(form, emailTo, emailSubject, emailBody, recordData);
-    emailFormvalidator = $(form).validate({});
-    $(form).submit(processEmail);
-    return emailTab;
-  }
-
   function tabbedQueryPopup(doc, commentFirst, commentInstruct, emailInstruct, emailTo) {
-    var commentTab = getQueryCommentTab(doc, commentInstruct, !commentFirst);
-    var emailTab = getQueryEmailTab(doc, emailTo, emailInstruct, commentFirst);
-    var title1 = commentFirst ? 'Add comment' : 'Send email';
-    var title2 = commentFirst ? 'Send email' : 'Add comment';
-    var content = $('<div id="popup-tabs" class="verification-popup" />').append($('<ul>' +
-      '<li><a href="#tab-query-1">' + title1 + '</li>' +
-      '<li><a href="#tab-query-2">' + title2 + '</li>'
-    ));
+    const emailSubject = replaceDocFields(indiciaData.lang.verificationButtons.emailQuerySubject, doc);
+    const emailBody = replaceDocFields(indiciaData.lang.verificationButtons.emailQueryBodyHeader, doc);
+    const recordData = getRecordDataForEmail(doc);
     if (commentFirst) {
-      $(commentTab).attr('id', 'tab-query-1');
-      $(emailTab).attr('id', 'tab-query-2');
-      commentTab.appendTo(content);
-      emailTab.appendTo(content);
+      $('#tab-query-email-tab').insertAfter($('#tab-query-comment-tab'));
+      $('#query-form').tabs({active: 0});
     } else {
-      $(emailTab).attr('id', 'tab-query-1');
-      $(commentTab).attr('id', 'tab-query-2');
-      emailTab.appendTo(content);
-      commentTab.appendTo(content);
+      $('#tab-query-comment-tab').insertAfter($('#tab-query-email-tab'));
+      $('#query-form').tabs({active: 1});
     }
-    $(content).draggable();
+    // Reset form.
+    $('#query-comment-input').val('');
+    $('#query-template').val('')
+    // Comment tab supports a list of IDs.
+    $('#tab-query-comment').data('ids', JSON.stringify([parseInt(doc.id, 10)]));
+    // Email tab only supports 1 document at a time.
+    $('#tab-query-email').data('id', parseInt(doc.id, 10));
+    $('#tab-query-email').data('sample-id', doc.event.event_id);
+    // Set instruction messages.
+    $('#tab-query-comment .alert').html(commentInstruct);
+    $('#tab-query-email .alert').html(emailInstruct);
+    // Set default email to.
+    $('#email-to').val(emailTo);
+    $('#email-subject').val(emailSubject);
+    $('#email-body').val(emailBody + '\n\n' + recordData);
+
     $.fancybox.open({
-      src: content,
+      src: $('#query-form'),
       type: 'html',
       opts: {
-        modal: true
+        modal: true,
       }
     });
-    $('#popup-tabs').tabs();
   }
 
   /**
@@ -1312,6 +1302,9 @@
     var doc;
     if (doingQueryPopup) {
       return;
+    }
+    if (el.settings.verificationTemplates) {
+      loadVerificationTemplates('Q', '#query-template');
     }
     if (multiselectMode()) {
       // As there are multiple records possibly selected, sending an email
@@ -1733,27 +1726,30 @@
   /**
    * Replace tokens in a comment text.
    *
+   * @param object item
+   *   DOM item in the data grid or card gallery we are processing a comment for.
    * @param string text
    *   Comment text.
+   * @param string status
+   *   Status code, e.g. V or Q.
    *
    * @return string
    *   Text with tokens replaced by data values.
    */
-  function commentTemplateReplacements(text) {
-    var currentDoc = JSON.parse($(listOutputControl).find('.selected').attr('data-doc-source'));
-    var status = $('form.verification-popup:visible').data('status');
+  function commentTemplateReplacements(item, text, status) {
+    const doc = JSON.parse(item.attr('data-doc-source'));
     // Action term can be overridden due to language construct, e.g. plausible should be "marked as plausible".
     var actionTerm = typeof indiciaData.lang.verificationButtons[status] !== 'undefined' ? indiciaData.lang.verificationButtons[status] : indiciaData.statusMsgs[status].toLowerCase();
     var conversions = {
-      date: indiciaFns.fieldConvertors.event_date(currentDoc),
-      sref: currentDoc.location.output_sref,
-      taxon: currentDoc.taxon.taxon_name,
-      'common name': [currentDoc.taxon.vernacular_name, currentDoc.taxon.accepted_name, currentDoc.taxon.taxon_name],
-      'preferred name': [currentDoc.taxon.accepted_name, currentDoc.taxon.taxon_name],
-      'taxon full name': getTaxonNameLabel(currentDoc),
-      'rank': currentDoc.taxon.taxon_rank.charAt(0).toLowerCase() +  currentDoc.taxon.taxon_rank.slice(1),
+      date: indiciaFns.fieldConvertors.event_date(doc),
+      sref: doc.location.output_sref,
+      taxon: doc.taxon.taxon_name,
+      'common name': [doc.taxon.vernacular_name, doc.taxon.accepted_name, doc.taxon.taxon_name],
+      'preferred name': [doc.taxon.accepted_name, doc.taxon.taxon_name],
+      'taxon full name': getTaxonNameLabel(doc),
+      'rank': doc.taxon.taxon_rank.charAt(0).toLowerCase() +  doc.taxon.taxon_rank.slice(1),
       action: actionTerm,
-      'location name': currentDoc.location.verbatim_locality
+      'location name': doc.location.verbatim_locality
     };
     if (redetToTaxon) {
       conversions['new taxon full name'] = getTaxonNameLabel({
@@ -1846,7 +1842,11 @@
           $('#redet-species\\:taxon').setExtraParams({"taxon_list_id": doc.taxon.taxon_list.id});
           // If list used for search is not master list, then controls shown
           // to allow user to opt for master list instead.
-          if (doc.taxon.taxon_list.id === indiciaData.mainTaxonListId) {
+          // A value of mainTaxonListId = 0 signifies there is no master list.
+          if (
+            parseInt(doc.taxon.taxon_list.id) === parseInt(indiciaData.mainTaxonListId) ||
+            parseInt(indiciaData.mainTaxonListId) === 0
+          ) {
             $('.alt-taxon-list-controls').hide();
           }
           else {
@@ -1934,6 +1934,12 @@
           }, 200);
         });
       });
+
+      // Setup the query form.
+      $('#query-form').draggable();
+      $('#query-form').tabs();
+      emailFormvalidator = $('#tab-query-email form').validate({});
+      $('#tab-query-email form').submit(processEmail);
     },
 
     on: function on(event, handler) {

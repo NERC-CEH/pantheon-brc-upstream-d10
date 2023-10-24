@@ -203,29 +203,43 @@ body {
           height: 18px;
         }
       }
+      .multiselect-cntr {
+        position: absolute;
+        top: 6px;
+        right: 12px;
+        .multiselect {
+          transform: scale(1.4);
+        }
+      }
     }
     @media (min-width: 801px) {
       .card:not(.show-max-size) {
         flex-basis: 48%;
-      }
-      .card.big:not(.show-max-size) {
-        flex-basis: 98%;
+        &.big, &.x-big {
+          flex-basis: 98%;
+        }
       }
     }
     @media (min-width: 1201px) {
       .card:not(.show-max-size) {
         flex-basis: 31%;
-      }
-      .card.big:not(.show-max-size) {
-        flex-basis: 48%;
+        &.big {
+          flex-basis: 48%;
+        }
+        &.x-big {
+          flex-basis: 98%;
+        }
       }
     }
     @media (min-width: 1601px) {
       .card:not(.show-max-size) {
         flex-basis: 23%;
-      }
-      .card.big:not(.show-max-size) {
-        flex-basis: 48%;
+        &.big {
+          flex-basis: 48%;
+        }
+        &.x-big {
+          flex-basis: 98%;
+        }
       }
     }
   }
@@ -359,7 +373,7 @@ table.es-data-grid {
       /* even columns width , fix width of table too*/
       table-layout: fixed;
     }
-    .multiselect-cell {
+    .multiselect-cntr {
       padding: 0;
       width: 12px;
     }
@@ -503,14 +517,13 @@ table.es-data-grid {
 }
 
 .multiselect-mode {
+  .multiselect-switch {
+    color: black;
+  }
   .multi-only {
     display: initial;
     button {
       margin: 0;
-      &.active {
-        background: #cde;
-        border: #999;
-      }
     }
   }
   .single-only {
@@ -641,7 +654,7 @@ table.es-data-grid {
   }
 }
 
-#verification-form {
+#verification-form, #query-form {
   legend * {
     display: inline-block;
     vertical-align: baseline;
@@ -653,7 +666,7 @@ table.es-data-grid {
       font-style: italic;
     }
   }
-  #ctrl-wrap-verify-template {
+  .template-select {
     max-width: 400px;
     .fa-trash-alt {
       margin: 0;
@@ -662,6 +675,12 @@ table.es-data-grid {
         opacity: 0.2;
       }
     }
+  }
+}
+
+#query-form {
+  .alert {
+    max-width: 600px;
   }
 }
 

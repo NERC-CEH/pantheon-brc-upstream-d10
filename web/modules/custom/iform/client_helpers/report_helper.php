@@ -1645,11 +1645,11 @@ JS;
   private static function getDirectModeParamsForm($options) {
     global $indicia_templates;
     $reloadUrl = self::get_reload_link_parts();
-    $r = '<form action="'.$reloadUrl['path'].'" method="get" class="linear-form" id="filterForm-'.$options['id'].'">';
+    $r = '<form action="'.$reloadUrl['path'].'" method="get" class="form-inline" id="filterForm-'.$options['id'].'">';
     $r .= '<label for="filters" class="auto">' . lang::get('Filter for') . '</label> ';
     $value = (isset($_GET['filters'])) ? ' value="'.$_GET['filters'].'"' : '';
-    $r .= '<input type="text" name="filters" id="filters" class="filterInput"'.$value.'/> ';
-    $r .= '<label for="columns" class="auto">'.lang::get('in').'</label> <select name="columns" class="filterSelect" id="columns">';
+    $r .= '<input type="text" name="filters" id="filters" class="filterInput form-control"'.$value.'/> ';
+    $r .= '<label for="columns" class="auto">'.lang::get('in').'</label> <select name="columns" class="filterSelect form-control" id="columns">';
 
     foreach ($options['columns'] as $column) {
       if (isset($column['fieldname']) && isset($column['display']) && (!isset($column['visible']) || $column['visible']===false)) {
@@ -2711,10 +2711,14 @@ if (typeof mapSettingsHooks!=='undefined') {
     foreach ($row as $key=>$value) {
       $value = $value === NULL ? '' : $value;
       $jsReplacements[$key] = $value;
-      $jsReplacements["$key-escape-quote"] = str_replace("'", "\'", $value);
-      $jsReplacements["$key-escape-dblquote"] = str_replace('"', '\"', $value);
-      $jsReplacements["$key-escape-htmlquote"] = str_replace("'", "&#39;", $value);
-      $jsReplacements["$key-escape-htmldblquote"] = str_replace('"', '&quot;', $value);
+      $jsReplacements["$key-escape-quote"] =
+        isset($value) ? str_replace("'", "\'", $value) : NULL;
+      $jsReplacements["$key-escape-dblquote"] =
+        isset($value) ? str_replace('"', '\"', $value) : NULL;
+      $jsReplacements["$key-escape-htmlquote"] =
+        isset($value) ? str_replace("'", "&#39;", $value) : NULL;
+      $jsReplacements["$key-escape-htmldblquote"] =
+        isset($value) ? str_replace('"', '&quot;', $value) : NULL;
     }
     $links = [];
     $currentUrl = self::get_reload_link_parts(); // needed for params

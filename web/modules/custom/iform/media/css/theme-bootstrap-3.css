@@ -1,5 +1,9 @@
 /* Theme extension to the default_site.css file which provides Bootstrap 3 optimised style output */
 /* Accessible colour ranges from colorbrewer */
+.form-inline {
+  margin-bottom: 8px;
+}
+
 .input-group-addon > * {
   display: inline-block;
   vertical-align: middle;
@@ -43,6 +47,7 @@
 table.species-grid {
   width: 100%;
   /* Inside control button alignment. */
+  /* Tweak layout of extra row controls shown when using responsive Footable columns */
 }
 table.species-grid th button {
   padding: 0;
@@ -100,6 +105,12 @@ table.species-grid tr td input, table.species-grid tr td select {
   margin: 0;
   vertical-align: middle;
   padding: 3px 0;
+}
+table.species-grid .footable-row-detail-value {
+  padding: 8px 0;
+}
+table.species-grid .footable-row-detail-name {
+  padding-left: 0.5em;
 }
 
 #new-taxon-form {
@@ -773,11 +784,19 @@ body > .loading-spinner {
   /* Consistent height independent of border settings. */
   height: 18px;
 }
+.idc-cardGallery .es-card-gallery .card .multiselect-cntr {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+}
+.idc-cardGallery .es-card-gallery .card .multiselect-cntr .multiselect {
+  transform: scale(1.4);
+}
 @media (min-width: 801px) {
   .idc-cardGallery .es-card-gallery .card:not(.show-max-size) {
     flex-basis: 48%;
   }
-  .idc-cardGallery .es-card-gallery .card.big:not(.show-max-size) {
+  .idc-cardGallery .es-card-gallery .card:not(.show-max-size).big, .idc-cardGallery .es-card-gallery .card:not(.show-max-size).x-big {
     flex-basis: 98%;
   }
 }
@@ -785,16 +804,22 @@ body > .loading-spinner {
   .idc-cardGallery .es-card-gallery .card:not(.show-max-size) {
     flex-basis: 31%;
   }
-  .idc-cardGallery .es-card-gallery .card.big:not(.show-max-size) {
+  .idc-cardGallery .es-card-gallery .card:not(.show-max-size).big {
     flex-basis: 48%;
+  }
+  .idc-cardGallery .es-card-gallery .card:not(.show-max-size).x-big {
+    flex-basis: 98%;
   }
 }
 @media (min-width: 1601px) {
   .idc-cardGallery .es-card-gallery .card:not(.show-max-size) {
     flex-basis: 23%;
   }
-  .idc-cardGallery .es-card-gallery .card.big:not(.show-max-size) {
+  .idc-cardGallery .es-card-gallery .card:not(.show-max-size).big {
     flex-basis: 48%;
+  }
+  .idc-cardGallery .es-card-gallery .card:not(.show-max-size).x-big {
+    flex-basis: 98%;
   }
 }
 .idc-cardGallery .pager {
@@ -965,7 +990,7 @@ table.es-data-grid.fixed-header thead, table.es-data-grid.fixed-header tbody tr 
   /* even columns width , fix width of table too*/
   table-layout: fixed;
 }
-table.es-data-grid.fixed-header .multiselect-cell {
+table.es-data-grid.fixed-header .multiselect-cntr {
   padding: 0;
   width: 12px;
 }
@@ -1118,15 +1143,14 @@ table.es-data-grid tfoot button span {
   margin-bottom: 8px;
 }
 
+.multiselect-mode .multiselect-switch {
+  color: black;
+}
 .multiselect-mode .multi-only {
   display: initial;
 }
 .multiselect-mode .multi-only button {
   margin: 0;
-}
-.multiselect-mode .multi-only button.active {
-  background: #cde;
-  border: #999;
 }
 .multiselect-mode .single-only {
   display: none;
@@ -1251,26 +1275,30 @@ table.es-data-grid tfoot button span {
   min-width: 400px;
 }
 
-#verification-form legend * {
+#verification-form legend *, #query-form legend * {
   display: inline-block;
   vertical-align: baseline;
 }
-#verification-form legend *:first-child {
+#verification-form legend *:first-child, #query-form legend *:first-child {
   margin-right: 15px;
 }
-#verification-form legend *.status {
+#verification-form legend *.status, #query-form legend *.status {
   font-weight: bold;
   font-style: italic;
 }
-#verification-form #ctrl-wrap-verify-template {
+#verification-form .template-select, #query-form .template-select {
   max-width: 400px;
 }
-#verification-form #ctrl-wrap-verify-template .fa-trash-alt {
+#verification-form .template-select .fa-trash-alt, #query-form .template-select .fa-trash-alt {
   margin: 0;
   cursor: pointer;
 }
-#verification-form #ctrl-wrap-verify-template .fa-trash-alt.disabled {
+#verification-form .template-select .fa-trash-alt.disabled, #query-form .template-select .fa-trash-alt.disabled {
   opacity: 0.2;
+}
+
+#query-form .alert {
+  max-width: 600px;
 }
 
 .field-taxon--accepted-name, .field-taxon--species {

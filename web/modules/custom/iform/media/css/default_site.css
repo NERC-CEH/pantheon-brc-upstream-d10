@@ -355,16 +355,6 @@ td.row-buttons img {
   margin: 0 0 0 1em;
 }
 
-.linear-form * {
-  vertical-align: middle;
-  width: auto;
-  margin-left: 0;
-}
-
-.linear-form div:first-child label, .linear-form > label:first-child {
-  width: 160px;
-}
-
 table.jqplot-table-legend {
   width: auto;
   border: none;

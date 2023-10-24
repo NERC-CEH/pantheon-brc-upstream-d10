@@ -461,19 +461,17 @@
       var table = $(el).find('table');
       if ($(el).hasClass('multiselect-mode')) {
         $(el).removeClass('multiselect-mode');
-        $(table).find('.multiselect-cell').remove();
+        $(table).find('.multiselect-cntr').remove();
         $('.selection-buttons-placeholder').append($('.all-selected-buttons'));
       } else {
         $(el).addClass('multiselect-mode');
         $(table).find('thead tr').prepend(
-          '<th class="multiselect-cell" />'
+          '<th class="multiselect-cntr" />'
         );
         $(table).find('thead tr:first-child th:first-child').append(
           '<input type="checkbox" class="multiselect-all" />'
         );
-        $(table).find('tbody tr').prepend(
-          '<td class="multiselect-cell"><input type="checkbox" class="multiselect" /></td>'
-        );
+        $(table).find('tbody tr').prepend('<td class="multiselect-cntr"><input type="checkbox" title="' + indiciaData.lang.dataGrid.checkToIncludeInList + '" class="multiselect" /></td>');
         $(table).closest('div').prepend(
           $('.all-selected-buttons')
         );
@@ -612,7 +610,7 @@
   function getRowBehaviourCells(el) {
     var cells = [];
     if ($(el).hasClass('multiselect-mode')) {
-      cells.push('<td class="multiselect-cell"><input type="checkbox" class="multiselect" /></td>');
+      cells.push('<td class="multiselect-cntr"><input type="checkbox" title="' + indiciaData.lang.dataGrid.checkToIncludeInList + '" class="multiselect" /></td>');
     }
     if (el.settings.responsive) {
       cells.push('<td class="footable-toggle-col"></td>');
