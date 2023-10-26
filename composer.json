@@ -151,7 +151,7 @@
         "drupal/linked_field": "*",
         "drupal/login_emailusername": "*",
         "drupal/mailchimp": "*",
-        "drupal/mailsystem": "*",
+        "drupal/mailsystem": "^4.4",
         "drupal/media_bulk_upload": "*",
         "drupal/media_library_form_element": "*",
         "drupal/media_library_theme_reset": "*",
