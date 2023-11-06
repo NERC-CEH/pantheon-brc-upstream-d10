@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e0d8138d0215a90fd7b72fc0965f6639",
+    "content-hash": "f65756db1229f2302ce6dbd5d47f7e64",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -439,16 +439,16 @@
         },
         {
             "name": "citation-style-language/styles",
-            "version": "v0.0.322",
+            "version": "v0.0.324",
             "source": {
                 "type": "git",
                 "url": "https://github.com/citation-style-language/styles.git",
-                "reference": "010b77c19b0928db4cc046258d6797a937e0f460"
+                "reference": "503d3d5eb121056ef9ab562995b4144442a19714"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/010b77c19b0928db4cc046258d6797a937e0f460",
-                "reference": "010b77c19b0928db4cc046258d6797a937e0f460",
+                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/503d3d5eb121056ef9ab562995b4144442a19714",
+                "reference": "503d3d5eb121056ef9ab562995b4144442a19714",
                 "shasum": ""
             },
             "type": "library",
@@ -466,7 +466,7 @@
             "homepage": "http://citationstyles.org/",
             "support": {
                 "issues": "https://github.com/citation-style-language/styles/issues",
-                "source": "https://github.com/citation-style-language/styles/tree/v0.0.322"
+                "source": "https://github.com/citation-style-language/styles/tree/v0.0.324"
             },
             "funding": [
                 {
@@ -474,7 +474,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-10-20T23:33:01+00:00"
+            "time": "2023-11-01T04:10:07+00:00"
         },
         {
             "name": "commerceguys/addressing",
@@ -2384,58 +2384,6 @@
             }
         },
         {
-            "name": "drupal/addtoany",
-            "version": "2.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/addtoany.git",
-                "reference": "2.0.4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/addtoany-2.0.4.zip",
-                "reference": "2.0.4",
-                "shasum": "f206b4514d66da22743e99318c3331340326f542"
-            },
-            "require": {
-                "drupal/core": "^9.4 || ^10.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.4",
-                    "datestamp": "1685550122",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "AddToAny",
-                    "homepage": "https://www.drupal.org/user/2640913"
-                },
-                {
-                    "name": "micropat",
-                    "homepage": "https://www.drupal.org/user/260224"
-                }
-            ],
-            "description": "Share buttons for Drupal including the AddToAny universal share button, Facebook, Twitter, Pinterest, WhatsApp and many more.",
-            "homepage": "https://www.drupal.org/project/addtoany",
-            "keywords": [
-                "Drupal"
-            ],
-            "support": {
-                "source": "https://git.drupalcode.org/project/addtoany",
-                "issues": "https://www.drupal.org/project/issues/addtoany"
-            }
-        },
-        {
             "name": "drupal/admin_content_notification",
             "version": "4.1.0",
             "source": {
@@ -3102,6 +3050,51 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/bibcite",
                 "issues": "https://www.drupal.org/project/issues/bibcite"
+            }
+        },
+        {
+            "name": "drupal/bibcite_authors",
+            "version": "1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/bibcite_authors.git",
+                "reference": "1.0.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/bibcite_authors-1.0.5.zip",
+                "reference": "1.0.5",
+                "shasum": "ff82875c26da4c800c3cbb6b0e229f3e1e0b25cb"
+            },
+            "require": {
+                "drupal/bibcite": "*",
+                "drupal/core": "^8.8.0 || ^9.0 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.5",
+                    "datestamp": "1699026059",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "rfmarcelino",
+                    "homepage": "https://www.drupal.org/user/2476918"
+                }
+            ],
+            "description": "A simple field format to link authors to users.",
+            "homepage": "https://www.drupal.org/project/bibcite_authors",
+            "support": {
+                "source": "https://git.drupalcode.org/project/bibcite_authors"
             }
         },
         {
@@ -5918,17 +5911,17 @@
         },
         {
             "name": "drupal/csv_serialization",
-            "version": "3.0.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/csv_serialization.git",
-                "reference": "3.0.0"
+                "reference": "4.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/csv_serialization-3.0.0.zip",
-                "reference": "3.0.0",
-                "shasum": "7365f98428ab26b3f94527388583e4da8c9dc2fc"
+                "url": "https://ftp.drupal.org/files/projects/csv_serialization-4.0.0.zip",
+                "reference": "4.0.0",
+                "shasum": "90d429b044f7d6608d9075852285f37a97d5de6c"
             },
             "require": {
                 "drupal/core": "^10",
@@ -5940,8 +5933,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.0",
-                    "datestamp": "1681824255",
+                    "version": "4.0.0",
+                    "datestamp": "1698702085",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8693,57 +8686,6 @@
             "homepage": "https://www.drupal.org/project/inline_entity_form",
             "support": {
                 "source": "https://git.drupalcode.org/project/inline_entity_form"
-            }
-        },
-        {
-            "name": "drupal/insert",
-            "version": "3.0.0-beta1",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/insert.git",
-                "reference": "3.0.0-beta1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/insert-3.0.0-beta1.zip",
-                "reference": "3.0.0-beta1",
-                "shasum": "e13d143c1f8cbd961549d514655ebdca40cabffb"
-            },
-            "require": {
-                "drupal/core": "^10"
-            },
-            "require-dev": {
-                "drupal/colorbox": "*"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "3.0.0-beta1",
-                    "datestamp": "1690890130",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Beta releases are not covered by Drupal security advisories."
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "quicksketch",
-                    "homepage": "https://www.drupal.org/user/35821"
-                },
-                {
-                    "name": "Snater",
-                    "homepage": "https://www.drupal.org/user/3513717"
-                }
-            ],
-            "description": "Assists in inserting files, images, or other media into the body field as well as other editor and text areas.",
-            "homepage": "https://www.drupal.org/project/insert",
-            "support": {
-                "source": "https://git.drupalcode.org/project/insert"
             }
         },
         {
@@ -12690,63 +12632,6 @@
             }
         },
         {
-            "name": "drupal/simple_sitemap",
-            "version": "4.1.6",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/simple_sitemap.git",
-                "reference": "4.1.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/simple_sitemap-4.1.6.zip",
-                "reference": "4.1.6",
-                "shasum": "5ea5ee97ab4d59b43db86dd6279c3ac5ecbe69b9"
-            },
-            "require": {
-                "drupal/core": "^9.3 || ^10",
-                "ext-xmlwriter": "*"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "4.1.6",
-                    "datestamp": "1686288643",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                },
-                "drush": {
-                    "services": {
-                        "drush.services.yml": ">=9"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Pawel Ginalski (gbyte)",
-                    "homepage": "https://www.drupal.org/u/gbyte",
-                    "email": "contact@gbyte.dev",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "WalkingDexter",
-                    "homepage": "https://www.drupal.org/user/3251330"
-                }
-            ],
-            "description": "Creates a standard conform hreflang XML sitemap of the site content and provides a framework for developing other sitemap types.",
-            "homepage": "https://drupal.org/project/simple_sitemap",
-            "support": {
-                "source": "https://cgit.drupalcode.org/simple_sitemap",
-                "issues": "https://drupal.org/project/issues/simple_sitemap"
-            }
-        },
-        {
             "name": "drupal/sitemap",
             "version": "2.0.0-beta4",
             "source": {
@@ -14741,75 +14626,6 @@
             "homepage": "https://www.drupal.org/project/views_conditional",
             "support": {
                 "source": "https://git.drupalcode.org/project/views_conditional"
-            }
-        },
-        {
-            "name": "drupal/views_data_export",
-            "version": "1.3.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/views_data_export.git",
-                "reference": "8.x-1.3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_data_export-8.x-1.3.zip",
-                "reference": "8.x-1.3",
-                "shasum": "a8a5483e13787f2bb3eb66d9b0f19d96c0d8d7c1"
-            },
-            "require": {
-                "drupal/core": "^9 || ^10",
-                "drupal/csv_serialization": "~1.4 || ~2.0 || ~3"
-            },
-            "require-dev": {
-                "drupal/search_api": "~1.12",
-                "drupal/xls_serialization": "~1.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-1.3",
-                    "datestamp": "1679072666",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "amoebanath",
-                    "homepage": "https://www.drupal.org/user/2810799"
-                },
-                {
-                    "name": "james.williams",
-                    "homepage": "https://www.drupal.org/user/592268"
-                },
-                {
-                    "name": "jamsilver",
-                    "homepage": "https://www.drupal.org/user/476732"
-                },
-                {
-                    "name": "jhedstrom",
-                    "homepage": "https://www.drupal.org/user/208732"
-                },
-                {
-                    "name": "nerdstein",
-                    "homepage": "https://www.drupal.org/user/1557710"
-                },
-                {
-                    "name": "Steven Jones",
-                    "homepage": "https://www.drupal.org/user/99644"
-                }
-            ],
-            "description": "Plugin to export views data into various file formats.",
-            "homepage": "https://www.drupal.org/project/views_data_export",
-            "support": {
-                "source": "https://git.drupalcode.org/project/views_data_export"
             }
         },
         {
@@ -23349,6 +23165,58 @@
             "time": "2022-12-30T00:23:10+00:00"
         },
         {
+            "name": "drupal/addtoany",
+            "version": "2.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/addtoany.git",
+                "reference": "2.0.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/addtoany-2.0.5.zip",
+                "reference": "2.0.5",
+                "shasum": "b3b26968548c1605a641b12ff25d03edc8497df6"
+            },
+            "require": {
+                "drupal/core": "^9.4 || ^10.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.5",
+                    "datestamp": "1698825601",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "AddToAny",
+                    "homepage": "https://www.drupal.org/user/2640913"
+                },
+                {
+                    "name": "micropat",
+                    "homepage": "https://www.drupal.org/user/260224"
+                }
+            ],
+            "description": "Share buttons for Drupal including the AddToAny universal share button, Facebook, Mastodon, Pinterest, WhatsApp and many more.",
+            "homepage": "https://www.drupal.org/project/addtoany",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/addtoany",
+                "issues": "https://www.drupal.org/project/issues/addtoany"
+            }
+        },
+        {
             "name": "drupal/coder",
             "version": "8.3.22",
             "source": {
@@ -23401,16 +23269,16 @@
         },
         {
             "name": "drupal/core-dev",
-            "version": "10.1.5",
+            "version": "10.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-dev.git",
-                "reference": "e11a86bc8c037e67c7c5c974fbabe051bbcdcc81"
+                "reference": "5d02df4f05f5033e7d8bf4098efa55cc0847e2b9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-dev/zipball/e11a86bc8c037e67c7c5c974fbabe051bbcdcc81",
-                "reference": "e11a86bc8c037e67c7c5c974fbabe051bbcdcc81",
+                "url": "https://api.github.com/repos/drupal/core-dev/zipball/5d02df4f05f5033e7d8bf4098efa55cc0847e2b9",
+                "reference": "5d02df4f05f5033e7d8bf4098efa55cc0847e2b9",
                 "shasum": ""
             },
             "require": {
@@ -23418,7 +23286,7 @@
                 "behat/mink-browserkit-driver": "^2.1",
                 "behat/mink-selenium2-driver": "^1.4",
                 "colinodell/psr-testlogger": "^1.2",
-                "composer/composer": "^2.4",
+                "composer/composer": "^2.6.4",
                 "drupal/coder": "^8.3.10",
                 "instaclick/php-webdriver": "^1.4.1",
                 "justinrainbow/json-schema": "^5.2",
@@ -23449,9 +23317,186 @@
             ],
             "description": "require-dev dependencies from drupal/drupal; use in addition to drupal/core-recommended to run tests from drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-dev/tree/10.1.5"
+                "source": "https://github.com/drupal/core-dev/tree/10.1.6"
             },
-            "time": "2023-05-25T11:39:24+00:00"
+            "time": "2023-10-05T21:10:12+00:00"
+        },
+        {
+            "name": "drupal/insert",
+            "version": "3.0.0-beta2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/insert.git",
+                "reference": "3.0.0-beta2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/insert-3.0.0-beta2.zip",
+                "reference": "3.0.0-beta2",
+                "shasum": "19f779de9dee1bc7a4117874503e0732eedd48a8"
+            },
+            "require": {
+                "drupal/core": "^10"
+            },
+            "require-dev": {
+                "drupal/colorbox": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "3.0.0-beta2",
+                    "datestamp": "1698851036",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Beta releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "quicksketch",
+                    "homepage": "https://www.drupal.org/user/35821"
+                },
+                {
+                    "name": "Snater",
+                    "homepage": "https://www.drupal.org/user/3513717"
+                }
+            ],
+            "description": "Assists in inserting files, images, or other media into the body field as well as other editor and text areas.",
+            "homepage": "https://www.drupal.org/project/insert",
+            "support": {
+                "source": "https://git.drupalcode.org/project/insert"
+            }
+        },
+        {
+            "name": "drupal/simple_sitemap",
+            "version": "4.1.7",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/simple_sitemap.git",
+                "reference": "4.1.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/simple_sitemap-4.1.7.zip",
+                "reference": "4.1.7",
+                "shasum": "3d55ee386b0ebb81ed4c3461451a9e32a15d93d7"
+            },
+            "require": {
+                "drupal/core": "^9.3 || ^10",
+                "ext-xmlwriter": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "4.1.7",
+                    "datestamp": "1698936269",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                },
+                "drush": {
+                    "services": {
+                        "drush.services.yml": ">=9"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Pawel Ginalski (gbyte)",
+                    "homepage": "https://www.drupal.org/u/gbyte",
+                    "email": "contact@gbyte.dev",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "WalkingDexter",
+                    "homepage": "https://www.drupal.org/user/3251330"
+                }
+            ],
+            "description": "Creates a standard conform hreflang XML sitemap of the site content and provides a framework for developing other sitemap types.",
+            "homepage": "https://drupal.org/project/simple_sitemap",
+            "support": {
+                "source": "https://cgit.drupalcode.org/simple_sitemap",
+                "issues": "https://drupal.org/project/issues/simple_sitemap"
+            }
+        },
+        {
+            "name": "drupal/views_data_export",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/views_data_export.git",
+                "reference": "8.x-1.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/views_data_export-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "70dede9fdf50601232f068e67309d361341e88c5"
+            },
+            "require": {
+                "drupal/core": "^9 || ^10",
+                "drupal/csv_serialization": "~1.4 || ~2.0 || ~3 || ~4"
+            },
+            "require-dev": {
+                "drupal/search_api": "~1.12",
+                "drupal/xls_serialization": "~1.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.4",
+                    "datestamp": "1698948991",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "amoebanath",
+                    "homepage": "https://www.drupal.org/user/2810799"
+                },
+                {
+                    "name": "james.williams",
+                    "homepage": "https://www.drupal.org/user/592268"
+                },
+                {
+                    "name": "jamsilver",
+                    "homepage": "https://www.drupal.org/user/476732"
+                },
+                {
+                    "name": "jhedstrom",
+                    "homepage": "https://www.drupal.org/user/208732"
+                },
+                {
+                    "name": "nerdstein",
+                    "homepage": "https://www.drupal.org/user/1557710"
+                },
+                {
+                    "name": "Steven Jones",
+                    "homepage": "https://www.drupal.org/user/99644"
+                }
+            ],
+            "description": "Plugin to export views data into various file formats.",
+            "homepage": "https://www.drupal.org/project/views_data_export",
+            "support": {
+                "source": "https://git.drupalcode.org/project/views_data_export"
+            }
         },
         {
             "name": "instaclick/php-webdriver",
@@ -23588,16 +23633,16 @@
         },
         {
             "name": "mglaman/phpstan-drupal",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mglaman/phpstan-drupal.git",
-                "reference": "d721420086f146640acecebb7a678661a66e97d5"
+                "reference": "920c6b972a832046327f66dc6ff7448e3b5d6e4c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mglaman/phpstan-drupal/zipball/d721420086f146640acecebb7a678661a66e97d5",
-                "reference": "d721420086f146640acecebb7a678661a66e97d5",
+                "url": "https://api.github.com/repos/mglaman/phpstan-drupal/zipball/920c6b972a832046327f66dc6ff7448e3b5d6e4c",
+                "reference": "920c6b972a832046327f66dc6ff7448e3b5d6e4c",
                 "shasum": ""
             },
             "require": {
@@ -23672,7 +23717,7 @@
             "description": "Drupal extension and rules for PHPStan",
             "support": {
                 "issues": "https://github.com/mglaman/phpstan-drupal/issues",
-                "source": "https://github.com/mglaman/phpstan-drupal/tree/1.2.0"
+                "source": "https://github.com/mglaman/phpstan-drupal/tree/1.2.1"
             },
             "funding": [
                 {
@@ -23688,7 +23733,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-08-24T20:32:56+00:00"
+            "time": "2023-11-03T13:17:28+00:00"
         },
         {
             "name": "mikey179/vfsstream",
@@ -24292,16 +24337,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.39",
+            "version": "1.10.41",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4"
+                "reference": "c6174523c2a69231df55bdc65b61655e72876d76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d9dedb0413f678b4d03cbc2279a48f91592c97c4",
-                "reference": "d9dedb0413f678b4d03cbc2279a48f91592c97c4",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/c6174523c2a69231df55bdc65b61655e72876d76",
+                "reference": "c6174523c2a69231df55bdc65b61655e72876d76",
                 "shasum": ""
             },
             "require": {
@@ -24350,7 +24395,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-17T15:46:26+00:00"
+            "time": "2023-11-05T12:57:57+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -26400,16 +26445,16 @@
         },
         {
             "name": "symfony/lock",
-            "version": "v6.3.6",
+            "version": "v6.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/lock.git",
-                "reference": "714c52173dd3720ae63e564c4ec7fd03eb8a635a"
+                "reference": "7e5d1412827aa97e90f9af9495d452f0b9465a85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/lock/zipball/714c52173dd3720ae63e564c4ec7fd03eb8a635a",
-                "reference": "714c52173dd3720ae63e564c4ec7fd03eb8a635a",
+                "url": "https://api.github.com/repos/symfony/lock/zipball/7e5d1412827aa97e90f9af9495d452f0b9465a85",
+                "reference": "7e5d1412827aa97e90f9af9495d452f0b9465a85",
                 "shasum": ""
             },
             "require": {
@@ -26459,7 +26504,7 @@
                 "semaphore"
             ],
             "support": {
-                "source": "https://github.com/symfony/lock/tree/v6.3.6"
+                "source": "https://github.com/symfony/lock/tree/v6.3.7"
             },
             "funding": [
                 {
@@ -26475,7 +26520,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-10-12T15:02:41+00:00"
+            "time": "2023-10-28T23:55:27+00:00"
         },
         {
             "name": "symfony/phpunit-bridge",

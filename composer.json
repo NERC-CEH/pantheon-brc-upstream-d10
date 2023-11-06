@@ -16,8 +16,8 @@
     "require": {
         "pantheon-upstreams/upstream-configuration": "dev-main",
         "composer/installers": "^1.9",
-        "drupal/core-composer-scaffold": "*",
-        "drupal/core-recommended": "*",
+        "drupal/core-composer-scaffold": "^10.1",
+        "drupal/core-recommended": "^10.1",
         "pantheon-systems/drupal-integrations": "^10",
         "cweagans/composer-patches": "^1.7",
         "drush/drush": "^11 || ^12",
@@ -36,7 +36,6 @@
         "drupal/entity_legal": "4.0-alpha1",
         "drupal/feeds": "3.0-beta4",
         "drupal/inline_entity_form": "1.0-rc15",
-        "drupal/insert": "3.0-beta1",
         "drupal/insert_view_adv": "2.0-alpha2",
         "drupal/login_destination": "2.0-beta6",
         "drupal/markup": "2.0-beta6",
@@ -54,7 +53,6 @@
         "drupal/views_field_view": "1.0-beta5",
         "drupal/address": "*",
         "drupal/address_map_link": "*",
-        "drupal/addtoany": "*",
         "drupal/admin_content_notification": "*",
         "drupal/admin_toolbar": "*",
         "drupal/antibot": "*",
@@ -181,7 +179,6 @@
         "drupal/seckit": "*",
         "drupal/similarterms": "*",
         "drupal/simple_pass_reset": "*",
-        "drupal/simple_sitemap": "*",
         "drupal/smart_trim": "*",
         "drupal/smtp": "*",
         "drupal/social_media_links": "*",
@@ -211,7 +208,6 @@
         "drupal/views_bulk_operations": "*",
         "drupal/views_condition": "*",
         "drupal/views_conditional": "*",
-        "drupal/views_data_export": "*",
         "drupal/views_fieldsets": "*",
         "drupal/views_infinite_scroll": "*",
         "drupal/views_templates": "*",
@@ -228,10 +224,15 @@
         "drupal/simple_oauth": "5.2.4",
         "drupal/file_delete": "^2.0",
         "drupal/bootstrap_quicktabs": "1.0-alpha5",
-        "drupal/core-project-message": "*"
+        "drupal/core-project-message": "^10.1",
+        "drupal/bibcite_authors": "^1.0"
     },
     "require-dev": {
-        "drupal/core-dev": "^10"
+        "drupal/core-dev": "^10.1",
+        "drupal/addtoany": "^2.0",
+        "drupal/insert": "3.0-beta2",
+        "drupal/simple_sitemap": "^4.1",
+        "drupal/views_data_export": "^1.4"
     },
     "conflict": {
         "drupal/drupal": "*"
