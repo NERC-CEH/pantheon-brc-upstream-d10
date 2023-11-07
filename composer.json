@@ -225,14 +225,15 @@
         "drupal/file_delete": "^2.0",
         "drupal/bootstrap_quicktabs": "1.0-alpha5",
         "drupal/core-project-message": "^10.1",
-        "drupal/bibcite_authors": "^1.0"
-    },
-    "require-dev": {
-        "drupal/core-dev": "^10.1",
+        "drupal/bibcite_authors": "^1.0",
+        "drupal/insert_view": "^2.1",
+        "drupal/views_data_export": "^1.4",
         "drupal/addtoany": "^2.0",
         "drupal/insert": "3.0-beta2",
-        "drupal/simple_sitemap": "^4.1",
-        "drupal/views_data_export": "^1.4"
+        "drupal/simple_sitemap": "^4.1"
+    },
+    "require-dev": {
+        "drupal/core-dev": "^10.1"
     },
     "conflict": {
         "drupal/drupal": "*"
