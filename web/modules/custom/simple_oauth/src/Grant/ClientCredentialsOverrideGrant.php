@@ -77,7 +77,7 @@ class ClientCredentialsOverrideGrant extends ClientCredentialsGrant {
   protected function validateClient(ServerRequestInterface $request) {
     $client = parent::validateClient($request);
     // The client must also have a valid default user.
-    if (!$this->getDefaultUser($client)) {
+    if ($this->getDefaultUser($client) === NULL) {
       throw OAuthServerException::serverError('Invalid default user for client.');
     }
       return $client;

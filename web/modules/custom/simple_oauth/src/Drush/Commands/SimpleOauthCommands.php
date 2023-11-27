@@ -39,7 +39,7 @@ class SimpleOauthCommands extends DrushCommands {
   public static function create(ContainerInterface $container): self {
     return new static(
       $container->get('simple_oauth.key.generator'),
-      $container->get('file.system')
+      $container->get('file_system')
     );
   }
 
