@@ -16,8 +16,6 @@
     "require": {
         "pantheon-upstreams/upstream-configuration": "dev-main",
         "composer/installers": "^1.9",
-        "drupal/core-composer-scaffold": "^10.1",
-        "drupal/core-recommended": "^10.1",
         "pantheon-systems/drupal-integrations": "^10",
         "cweagans/composer-patches": "^1.7",
         "drush/drush": "^11 || ^12",
@@ -204,7 +202,7 @@
         "drupal/views_aggregator": "*",
         "drupal/views_autocomplete_filters": "*",
         "drupal/views_autosubmit": "*",
-        "drupal/views_bootstrap": "^5.4",
+        "drupal/views_bootstrap": "3.10",
         "drupal/views_bulk_operations": "^4.2",
         "drupal/views_condition": "*",
         "drupal/views_conditional": "^1.9",
@@ -223,7 +221,6 @@
         "drupal/ckeditor_accordion": "^2.1",
         "drupal/file_delete": "^2.0",
         "drupal/bootstrap_quicktabs": "1.0-alpha5",
-        "drupal/core-project-message": "^10.1",
         "drupal/bibcite_authors": "^1.0",
         "drupal/insert_view": "^2.1",
         "drupal/views_data_export": "^1.4",
@@ -233,7 +230,10 @@
         "drupal/simple_oauth": "^5.2"
     },
     "require-dev": {
-        "drupal/core-dev": "^10.1"
+        "drupal/core-dev": "*",
+        "drupal/core-recommended": "*",
+        "drupal/core-composer-scaffold": "*",
+        "drupal/core-project-message": "*"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -291,7 +291,8 @@
             "dealerdirect/phpcodesniffer-composer-installer": true,
             "phpstan/extension-installer": true,
             "pantheon-systems/upstream-management": true,
-            "drupal/core-project-message": true
+            "drupal/core-project-message": true,
+            "php-http/discovery": true
         }
     }
 }
