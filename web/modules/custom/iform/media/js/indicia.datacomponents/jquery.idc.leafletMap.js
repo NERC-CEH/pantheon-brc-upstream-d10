@@ -310,7 +310,9 @@
     if (typeof feature.setStyle !== 'undefined') {
       style = $.extend({}, el.settings.selectedFeatureStyle);
       if (!style.weight) {
-        style.weight = Math.min(20, Math.max(1, 20 - (el.map.getZoom())));
+        var diagonalPixels = el.map.latLngToLayerPoint(feature.getBounds().getNorthEast()).distanceTo(el.map.latLngToLayerPoint(feature.getBounds().getSouthWest()));
+        // Weight increased if the diagonal size of the feature too small to easily see.
+        style.weight = Math.max((30 - diagonalPixels) / 2, 1);
       }
       if (!style.opacity) {
         style.opacity = Math.min(1, Math.max(0.6, el.map.getZoom() / 18));
@@ -323,9 +325,10 @@
    * Converts a geom to a feature object with the supplied style.
    *
    * Returns an obj with 2 properties, obj - the feature, and type - the
-   * geometry type.
+   * geometry type. Uncertainty is in metres which will cause points to
+   * render as circles.
    */
-  function getFeatureFromGeom(geom, style) {
+  function getFeatureFromGeom(geom, uncertainty, style) {
     var wkt = new Wkt.Wkt();
     var objStyle = {
       color: '#0000FF',
@@ -333,10 +336,19 @@
       fillColor: '#0000FF',
       fillOpacity: 0.2
     };
-    wkt.read(geom);
     if (style) {
       $.extend(objStyle, style);
     }
+    if (geom.substr(0, 6) === 'POINT(' && uncertainty > 1) {
+      let lonLat = geom.substr(6, geom.length - 7).split(' ');
+      objStyle.radius = uncertainty;
+      return {
+        obj: L.circle([lonLat[1], lonLat[0]], objStyle),
+        type: 'circle',
+      };
+    }
+    // @todo if uncertainty set and a point or bigger than the grid square, show blur circle.
+    wkt.read(geom);
     return {
       obj: wkt.toObject(objStyle),
       type: wkt.type
@@ -346,15 +358,15 @@
   /**
    * Adds a Wkt geometry to the map.
    */
-  function showFeatureWkt(el, geom, zoom, maxZoom, style) {
+  function showFeatureWkt(el, geom, uncertainty, zoom, maxZoom, style) {
     var centre;
-    var feature = getFeatureFromGeom(geom, style);
+    var feature = getFeatureFromGeom(geom, uncertainty, style);
     feature.obj.addTo(el.map);
     centre = typeof feature.obj.getCenter === 'undefined' ? feature.obj.getLatLng() : feature.obj.getCenter();
     // Pan and zoom the map. Method differs for points vs polygons.
     if (!zoom) {
       el.map.panTo(centre);
-    } else if (feature.type === 'polygon' || feature.type === 'multipolygon') {
+    } else if (feature.type === 'polygon' || feature.type === 'multipolygon' || feature.type === 'circle') {
       el.map.fitBounds(feature.obj.getBounds(), { maxZoom: maxZoom });
     } else {
       // Incompatible geometry type so we guess the zoom.
@@ -376,9 +388,13 @@
     if (tr) {
       doc = JSON.parse($(tr).attr('data-doc-source'));
       if (doc.location) {
-        obj = showFeatureWkt(el, doc.location.geom, zoom, 11);
+        obj = showFeatureWkt(el, doc.location.geom, parseInt(doc.location.coordinate_uncertainty_in_meters, 10), zoom, 11);
         ensureFeatureClear(el, obj);
         selectedRowMarker = obj;
+        if (doc.location.input_sref !== doc.location.output_sref || doc.location.input_sref_system !== doc.location.output_sref_system) {
+          // @todo Also show the output sref if different.
+          // Can use warehouse sref request?
+        }
       }
     }
   }
@@ -807,7 +823,11 @@
       layersControl.addTo(el.map);
       el.map.on('zoomend', function zoomEnd() {
         if (selectedRowMarker !== null) {
-          ensureFeatureClear(el, selectedRowMarker);
+          // Timeout needed as Leaflet objects not placed correctly until after
+          // zoom complete.
+          setTimeout(function() {
+            ensureFeatureClear(el, selectedRowMarker);
+          }, 100);
         }
       });
       el.map.on('moveend', function moveEnd() {
@@ -943,7 +963,7 @@
         selectedFeature.removeFrom(this.map);
         selectedFeature = null;
       }
-      selectedFeature = showFeatureWkt(this, geom, zoom, 14, {
+      selectedFeature = showFeatureWkt(this, geom, 0, zoom, 14, {
         color: '#3333DD',
         fillColor: '#4444CC',
         fillOpacity: 0.05

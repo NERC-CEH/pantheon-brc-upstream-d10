@@ -33,6 +33,11 @@
   var occurrenceId;
 
   /**
+   * Selected row sensitive or private.
+   */
+  var sensitiveOrPrivate;
+
+  /**
    * Additional useful field values.
    */
   var extraFieldValues;
@@ -237,9 +242,18 @@
         var attrsDiv = $(el).find('.record-details .attrs');
         // Make sure standard headings are present.
         var combined = $.extend({ 'Additional occurrence attributes': [] }, response);
+        var publicGeom = response.public_geom;
+        delete combined.public_geom;
         // False indicates record loaded but email not yet found.
         indiciaData.thisRecordEmail = false;
         $(attrsDiv).html('');
+        if (sensitiveOrPrivate) {
+          $.each($('.idc-leafletMap'), function eachMap() {
+            $(this).idcLeafletMap('showFeature', publicGeom, false);
+          });
+          $('.record-details table:first-child tbody').append('<tr><th>Map legend</th><td><span class="far fa-square" style="color: blue"></span>Publicly visible grid square' +
+            '&nbsp;&nbsp;<span class="far fa-square" style="color: red; opacity: 0.7;"></span>Precise location</td></tr');
+        }
         $.each(combined, function eachHeading(title, attrs) {
           if (title === 'auth') {
             // Use auth section to refresh token, not for display.
@@ -469,6 +483,7 @@
     if (tr) {
       doc = JSON.parse($(tr).attr('data-doc-source'));
       occurrenceId = doc.id;
+      sensitiveOrPrivate = doc.metadata.sensitivity_blur === 'F';
       anAnnotation = doc.taxon.taxon_name === doc.taxon.accepted_name ? ' (as entered)' : '';
       vnAnnotation = doc.taxon.taxon_name === doc.taxon.vernacular_name ? ' (as entered)' : '';
       addRow(rows, doc, 'ID|status|checks', ['id', '#status_icons#', '#data_cleaner_icons#'], ' | ');

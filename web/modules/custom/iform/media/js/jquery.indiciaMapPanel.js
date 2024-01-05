@@ -2141,6 +2141,7 @@ var destroyAllFeatures;
       var point = new OpenLayers.Geometry.Point(lonlat.lon, lonlat.lat);
       var polygon;
       var plotShape;
+      var system;
       if (div.settings.clickForPlot) {
         // Get plot shape using jQuery or fall back on form structure option
         if ($('#' + div.settings.plotShapeId).val()) {
@@ -2198,14 +2199,16 @@ var destroyAllFeatures;
           plot.wkt = feature.geometry.transform(div.map.projection, div.indiciaProjection).toString();
         }
         var precision = div.settings.plotPrecision;
+        system = chooseBestSystem(div, point, _getSystem());
+        $('select#' + opts.srefSystemId).val(system);
         // Request sref of point that was clicked
-        pointToSref(div, point, _getSystem(), function (data) {
+        pointToSref(div, point, system, function (data) {
           plot.sref = data.sref;
           handleSelectedPositionOnMap(lonlat, div, plot);
         }, undefined, precision);
       } else {
         // Clicking to locate an sref (eg an OSGB grid square)
-        var system = chooseBestSystem(div, point, _getSystem());
+        system = chooseBestSystem(div, point, _getSystem());
         $('select#' + opts.srefSystemId).val(system);
         pointToSref(div, point, system, function(data) {
           handleSelectedPositionOnMap(lonlat, div, data);
