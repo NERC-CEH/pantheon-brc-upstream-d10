@@ -1,0 +1,15 @@
+#redet-form {
+  .helpText {
+    margin: 0;
+  }
+  .form-control {
+    /* Allow space for required * */
+    width: 95%;
+  }
+  label {
+    width: auto;
+  }
+  input[type="checkbox"] {
+    margin: 10px 8px;
+  }
+}

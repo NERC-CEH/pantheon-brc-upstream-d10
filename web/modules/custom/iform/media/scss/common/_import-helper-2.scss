@@ -130,3 +130,15 @@ div.choice-card {
     font-weight: bold;
   }
 }
+div.inline {
+  * {
+    vertical-align: middle;
+  }
+  label {
+    margin-left: 4px;
+    margin-right: 8px;
+  }
+  &.disabled {
+    opacity: 0.7;
+  }
+}

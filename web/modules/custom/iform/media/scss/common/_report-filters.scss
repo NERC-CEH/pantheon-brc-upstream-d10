@@ -1,0 +1,39 @@
+/* Quality filter custom select */
+.quality-cntr {
+
+  #ctrl-wrap-quality {
+    position: relative;
+    overflow: visible;
+  }
+
+  /* Drop down quality pane */
+  .quality-pane {
+    box-shadow: 4px 4px calc(8px) #c7c7c7;
+    border: solid silver 1px;
+    border-radius: 4px;
+    background: white;
+    z-index: 1000;
+    position: absolute;
+    padding: 8px;
+    /* Include/Exclude inline */
+    #quality_op, #quality_op--standalone {
+      li {
+        display: inline-block;
+      }
+    }
+    input.indent {
+      margin-left: 30px !important;
+    }
+  }
+}
+
+/* Reset */
+#filter-bar .quality-pane .ctrl-wrap {
+  display: block;
+}
+
+.filter-popup {
+  button[type="submit"] {
+    margin-left: 8px;
+  }
+}

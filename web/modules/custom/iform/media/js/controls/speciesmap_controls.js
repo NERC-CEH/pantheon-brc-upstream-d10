@@ -278,8 +278,8 @@ var control_speciesmap_addcontrols;
       $('#' + indiciaData.control_speciesmap_opts.messageId).empty().append(indiciaData.lang.speciesMap.AddDataMessage);
       $('#' + indiciaData.control_speciesmap_opts.buttonsId).each(function () {window.scroll(0, $(this).offset().top); });
       showButtons(['cancel', 'finish']);
-      if (typeof indiciaData.control_speciesmap_opts.sampleMethodId !== "undefined" && indiciaData.control_speciesmap_opts.sampleMethodId !== '') {
-        $('<input type="hidden" name="sc:' + gridIdx + '::sample:sample_method_id" value="' + indiciaData.control_speciesmap_opts.sampleMethodId + '" />')
+      if (typeof indiciaData.control_speciesmap_opts.sample_method_id !== "undefined" && indiciaData.control_speciesmap_opts.sample_method_id !== '') {
+        $('<input type="hidden" name="sc:' + gridIdx + '::sample:sample_method_id" value="' + indiciaData.control_speciesmap_opts.sample_method_id + '" />')
           .appendTo(subsampleBlock);
         sampleControlsDiv = $('#' + indiciaData.control_speciesmap_opts.id + '-subsample-ctrls')
           .clone(true, true)

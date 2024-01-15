@@ -270,6 +270,40 @@ input:checked + .slider:before {
   font-size: 9px;
 }
 
+/* Quality filter custom select */
+.quality-cntr {
+  /* Drop down quality pane */
+}
+.quality-cntr #ctrl-wrap-quality {
+  position: relative;
+  overflow: visible;
+}
+.quality-cntr .quality-pane {
+  box-shadow: 4px 4px 8px #c7c7c7;
+  border: solid silver 1px;
+  border-radius: 4px;
+  background: white;
+  z-index: 1000;
+  position: absolute;
+  padding: 8px;
+  /* Include/Exclude inline */
+}
+.quality-cntr .quality-pane #quality_op li, .quality-cntr .quality-pane #quality_op--standalone li {
+  display: inline-block;
+}
+.quality-cntr .quality-pane input.indent {
+  margin-left: 30px !important;
+}
+
+/* Reset */
+#filter-bar .quality-pane .ctrl-wrap {
+  display: block;
+}
+
+.filter-popup button[type=submit] {
+  margin-left: 8px;
+}
+
 table.report-grid {
   /* Ensure height enough for spinner. For tables, height acts as min-height
   as long as display not altered from browser default. */
@@ -1824,6 +1858,17 @@ div.choice-card .card-name {
   font-weight: bold;
 }
 
+div.inline * {
+  vertical-align: middle;
+}
+div.inline label {
+  margin-left: 4px;
+  margin-right: 8px;
+}
+div.inline.disabled {
+  opacity: 0.7;
+}
+
 .fancy-dialog-button {
   margin: 8px 15px 0 0;
 }
@@ -1993,6 +2038,28 @@ progress.progress::-moz-progress-bar {
 .table {
   width: 100%;
   max-width: 100%;
+}
+
+.pull-right {
+  float: right;
+}
+
+.pull-left {
+  float: left;
+}
+
+#redet-form .helpText {
+  margin: 0;
+}
+#redet-form .form-control {
+  /* Allow space for required * */
+  width: 95%;
+}
+#redet-form label {
+  width: auto;
+}
+#redet-form input[type=checkbox] {
+  margin: 10px 8px;
 }
 
 /*# sourceMappingURL=theme-generic.css.map */

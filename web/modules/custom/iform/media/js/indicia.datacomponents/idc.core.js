@@ -746,13 +746,17 @@
       var key = entity === 'parent_event' ? 'parent_attributes' : 'attributes';
       // Tolerate sample or event for entity parameter.
       entity = $.inArray(entity, ['sample', 'event', 'parent_event']) > -1 ? 'event' : 'occurrence';
-      // When requesting an event attribute, allow the parent event attribute
-      // value to be used if necessary.
-      if (entity === 'event' && key === 'attributes' && !doc[entity][key] && doc[entity]['parent_attributes']) {
-        key = 'parent_attributes';
-      }
       if (doc[entity] && doc[entity][key]) {
         $.each(doc[entity][key], function eachAttr() {
+          if (this.id === params[1]) {
+            output.push(this.value);
+          }
+        });
+      }
+      // When requesting an event attribute, allow the parent event attribute
+      // value to be used if necessary.
+      if (doc[entity] && output.length === 0 && entity === 'event' && key === 'attributes' && doc[entity]['parent_attributes']) {
+        $.each(doc[entity]['parent_attributes'], function eachAttr() {
           if (this.id === params[1]) {
             output.push(this.value);
           }

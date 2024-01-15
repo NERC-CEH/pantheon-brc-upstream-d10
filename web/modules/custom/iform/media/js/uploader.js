@@ -267,6 +267,177 @@ jQuery(document).ready(function($) {
   });
 
   /**
+   * Map import columns page code.
+   */
+
+  /**
+   * Tests if a required field key is covered by one of the global values.
+   *
+   * @param string
+   *   Key to check.
+   */
+  function inGlobalValues(key) {
+    // If there are several options of how to search a single lookup then they
+    // are identified by a 3rd token, e.g. occurrence:fk_taxa_taxon_list:search_code.
+    // These cases fulfil the needs of a required field so we can remove them.
+    var fieldTokens = key.split(':');
+    var found;
+    var parts;
+    if (fieldTokens.length > 2) {
+      fieldTokens.pop();
+      key = fieldTokens.join(':');
+    }
+    found = typeof indiciaData.globalValues[key] !== 'undefined';
+    // Global values also works if not entity specific.
+    parts = key.split(':');
+    if (parts.length > 1) {
+      found = found || typeof indiciaData.globalValues[parts[1]] !== 'undefined';
+    }
+    return found;
+  }
+
+  /**
+   * Ensure groups of related fields are complete.
+   *
+   * E.g. date type, date start and date end are all required if one present.
+   * Adds warnings to the UI if incomplete groups found.
+   */
+  function checkGroupsOfRelatedFields() {
+    // Regexes for fields where if one mapping is present, others are required.
+    const groupedFields = [
+      '^occurrence:fk_taxa_taxon_list:(genus|specific)$',
+      ':date_(type|start|end)$'
+    ];
+    let messages = [];
+    // First, check if any required checkbox is for a field in a field
+    // group where checking 1 means the others are also required.
+    $.each(groupedFields, function() {
+      let matchExpr = new RegExp(this);
+      const ticked = $('.mapped-field option:selected').filter(function() {
+        return this.value.match(matchExpr);
+      });
+      if (ticked.length > 0) {
+        const shouldTick = $('.mapped-field:first option').filter(function() {
+          return this.value.match(matchExpr);
+        });
+        if (shouldTick.length > ticked.length) {
+          const tickedArr = $.map(ticked, el => [el.text]);
+          const shouldTickArr = $.map(shouldTick, el => [el.text]);
+          const missing = shouldTickArr.filter(value => !tickedArr.includes(value));
+
+          messages.push('<p>' +
+            indiciaData.lang.import_helper_2.incompleteFieldGroupSelected
+              .replace('{1}', '<ul>' + $.map(tickedArr, label => '<li>' + label + '</li>').join('') + '</ul>') +
+            indiciaData.lang.import_helper_2.incompleteFieldGroupRequired
+              .replace('{2}', '<ul>' + $.map(missing, label => '<li>' + label + '</li>').join('') + '</ul>') +
+          '</p>');
+        }
+      }
+    });
+    if (messages.length) {
+      $('#required-messages').html(messages.join('<br/>'));
+      $('#required-messages').fadeIn();
+    } else {
+      $('#required-messages').fadeOut();
+    }
+  }
+
+  /**
+   * Check that required fields are mapped. Set checkbox ticked state in UI.
+   */
+  function checkRequiredFields() {
+    checkGroupsOfRelatedFields();
+    $.each($('.required-checkbox'), function() {
+      var checkbox = $(this);
+      var checkboxKeyList = checkbox.data('key');
+      var foundInMapping = false;
+      // When there is a choice of one of several, keys are separated by '|'.
+      var keys = checkboxKeyList.split('|');
+      $.each(keys, function() {
+        // Field can be populated from global values.
+        var foundInGlobalValues = inGlobalValues(this);
+        // *_id global values fill in FK fields.
+        if (this.match(/\bfk_/)) {
+          foundInGlobalValues = foundInGlobalValues || inGlobalValues(this.replace(/\bfk_/, '') + '_id');
+        }
+        // No need to show required fields that are filled in by global values
+        // at this point.
+        if (foundInGlobalValues) {
+          $(checkbox).closest('li').hide();
+        }
+        // Or field can be populated by a mapping. A 2 part required field
+        // (table:field) can be fulfilled by a 3 part mapped field
+        // (table:field:subtype), e.g.
+        // occurrence:fk_taxa_taxon_list:searchcode.
+        foundInMapping = foundInMapping
+          || $('.mapped-field option:selected[value="' + this + '"]').length > 0
+          || $('.mapped-field option:selected[value^="' + this + ':"]').length > 0;
+        // Date field is a special case that can be fulfulled by date_start,
+        // date_end and date_type.
+        foundInMapping = foundInMapping || (this.match(/:date$/)
+          && $('.mapped-field option:selected[value="' + this + '_start"]').length > 0
+          && $('.mapped-field option:selected[value="' + this + '_end"]').length > 0
+          && $('.mapped-field option:selected[value="' + this + '_type"]').length > 0);
+      });
+      if (foundInMapping) {
+        $(checkbox).removeClass('fa-square');
+        $(checkbox).addClass('fa-check-square');
+      } else {
+        $(checkbox).removeClass('fa-check-square');
+        $(checkbox).addClass('fa-square');
+      }
+    });
+    $('input[type="submit"]').attr('disabled', $('.required-checkbox.fa-square:visible').length > 0);
+    // Also disable the standard/advanced selector.
+    const onlyStandardFieldsSelected = $('option.advanced:selected').length === 0;
+    if (onlyStandardFieldsSelected) {
+      $('[name="field-type-toggle"]').removeAttr('disabled');
+      $('.field-type-selector').removeClass('disabled');
+    } else {
+      $('[name="field-type-toggle"]').attr('disabled', true);
+      $('.field-type-selector').addClass('disabled');
+      $('[name="field-type-toggle"][value="advanced"]').attr('checked', true);
+    }
+  }
+
+  /**
+   * Click a link on the suggested column mappings auto-selects the option.
+   */
+  function applySuggestion(e) {
+    $(e.currentTarget).closest('td').find('option[value="' + $(e.currentTarget).data('value') + '"]').prop('selected', true);
+    checkRequiredFields();
+  }
+
+  /**
+   * Either show just standard import fields, or also show advanced.
+   *
+   * Depending on mode. If advanced fields are hidden, the original HTML for the
+   * columns set is stored in a data attribute so it can be reset.
+   */
+  function showOrHideAdvancedFields() {
+    const standardFieldsMode = $('[name="field-type-toggle"]:checked').val() === 'standard';
+    const onlyStandardFieldsSelected = $('option.advanced:selected').length === 0;
+    if (standardFieldsMode && onlyStandardFieldsSelected) {
+      let parents = $('option.advanced').parents();
+      $('option.advanced').remove();
+      // Also remove parent option groups if now empty.
+      $.each(parents, function() {
+        if ($(this).find('option').length === 0) {
+          $(this).remove();
+        }
+      });
+    } else {
+      $.each($('select.mapped-field'), function() {
+        if (typeof indiciaData.fullImportFieldOptionsHtml !== 'undefined') {
+          let originalValue = $(this).val();
+          $(this).html(indiciaData.fullImportFieldOptionsHtml );
+          $(this).val(originalValue);
+        }
+      });
+    }
+  }
+
+  /**
    * Lookup matching page code.
    */
 
@@ -746,134 +917,6 @@ jQuery(document).ready(function($) {
   });
 
   /**
-   * Tests if a required field key is covered by one of the global values.
-   *
-   * @param string
-   *   Key to check.
-   */
-  function inGlobalValues(key) {
-    // If there are several options of how to search a single lookup then they
-    // are identified by a 3rd token, e.g. occurrence:fk_taxa_taxon_list:search_code.
-    // These cases fulfil the needs of a required field so we can remove them.
-    var fieldTokens = key.split(':');
-    var found;
-    var parts;
-    if (fieldTokens.length > 2) {
-      fieldTokens.pop();
-      key = fieldTokens.join(':');
-    }
-    found = typeof indiciaData.globalValues[key] !== 'undefined';
-    // Global values also works if not entity specific.
-    parts = key.split(':');
-    if (parts.length > 1) {
-      found = found || typeof indiciaData.globalValues[parts[1]] !== 'undefined';
-    }
-    return found;
-  }
-
-  /**
-   * Ensure groups of related fields are complete.
-   *
-   * E.g. date type, date start and date end are all required if one present.
-   * Adds warnings to the UI if incomplete groups found.
-   */
-  function checkGroupsOfRelatedFields() {
-    // Regexes for fields where if one mapping is present, others are required.
-    const groupedFields = [
-      '^occurrence:fk_taxa_taxon_list:(genus|specific)$',
-      ':date_(type|start|end)$'
-    ];
-    let messages = [];
-    // First, check if any required checkbox is for a field in a field
-    // group where checking 1 means the others are also required.
-    $.each(groupedFields, function() {
-      let matchExpr = new RegExp(this);
-      const ticked = $('.mapped-field option:selected').filter(function() {
-        return this.value.match(matchExpr);
-      });
-      if (ticked.length > 0) {
-        const shouldTick = $('.mapped-field:first option').filter(function() {
-          return this.value.match(matchExpr);
-        });
-        if (shouldTick.length > ticked.length) {
-          const tickedArr = $.map(ticked, el => [el.text]);
-          const shouldTickArr = $.map(shouldTick, el => [el.text]);
-          const missing = shouldTickArr.filter(value => !tickedArr.includes(value));
-
-          messages.push('<p>' +
-            indiciaData.lang.import_helper_2.incompleteFieldGroupSelected
-              .replace('{1}', '<ul>' + $.map(tickedArr, label => '<li>' + label + '</li>').join('') + '</ul>') +
-            indiciaData.lang.import_helper_2.incompleteFieldGroupRequired
-              .replace('{2}', '<ul>' + $.map(missing, label => '<li>' + label + '</li>').join('') + '</ul>') +
-          '</p>');
-        }
-      }
-    });
-    if (messages.length) {
-      $('#required-messages').html(messages.join('<br/>'));
-      $('#required-messages').fadeIn();
-    } else {
-      $('#required-messages').fadeOut();
-    }
-  }
-
-  /**
-   * Check that required fields are mapped. Set checkbox ticked state in UI.
-   */
-  function checkRequiredFields() {
-    checkGroupsOfRelatedFields();
-    $.each($('.required-checkbox'), function() {
-      var checkbox = $(this);
-      var checkboxKeyList = checkbox.data('key');
-      var foundInMapping = false;
-      // When there is a choice of one of several, keys are separated by '|'.
-      var keys = checkboxKeyList.split('|');
-      $.each(keys, function() {
-        // Field can be populated from global values.
-        var foundInGlobalValues = inGlobalValues(this);
-        // *_id global values fill in FK fields.
-        if (this.match(/\bfk_/)) {
-          foundInGlobalValues = foundInGlobalValues || inGlobalValues(this.replace(/\bfk_/, '') + '_id');
-        }
-        // No need to show required fields that are filled in by global values
-        // at this point.
-        if (foundInGlobalValues) {
-          $(checkbox).closest('li').hide();
-        }
-        // Or field can be populated by a mapping. A 2 part required field
-        // (table:field) can be fulfilled by a 3 part mapped field
-        // (table:field:subtype), e.g.
-        // occurrence:fk_taxa_taxon_list:searchcode.
-        foundInMapping = foundInMapping
-          || $('.mapped-field option:selected[value="' + this + '"]').length > 0
-          || $('.mapped-field option:selected[value^="' + this + ':"]').length > 0;
-        // Date field is a special case that can be fulfulled by date_start,
-        // date_end and date_type.
-        foundInMapping = foundInMapping || (this.match(/:date$/)
-          && $('.mapped-field option:selected[value="' + this + '_start"]').length > 0
-          && $('.mapped-field option:selected[value="' + this + '_end"]').length > 0
-          && $('.mapped-field option:selected[value="' + this + '_type"]').length > 0);
-      });
-      if (foundInMapping) {
-        $(checkbox).removeClass('fa-square');
-        $(checkbox).addClass('fa-check-square');
-      } else {
-        $(checkbox).removeClass('fa-check-square');
-        $(checkbox).addClass('fa-square');
-      }
-    });
-    $('input[type="submit"]').attr('disabled', $('.required-checkbox.fa-square:visible').length > 0);
-  }
-
-  /**
-   * Click a link on the suggested column mappings auto-selects the option.
-   */
-  function applySuggestion(e) {
-    $(e.currentTarget).closest('td').find('option[value="' + $(e.currentTarget).data('value') + '"]').prop('selected', true);
-    checkRequiredFields();
-  }
-
-  /**
    * Preprocessing page code.
    */
 
@@ -1163,6 +1206,10 @@ jQuery(document).ready(function($) {
     indiciaFns.on('change', '.mapped-field', {}, checkRequiredFields);
     indiciaFns.on('click', '.apply-suggestion', {}, applySuggestion);
     checkRequiredFields();
+    $('[name="field-type-toggle"]').change(showOrHideAdvancedFields);
+    // Capture the full field option HTML so selects can be reset as required.
+    indiciaData.fullImportFieldOptionsHtml = $('select.mapped-field:first').html();
+    showOrHideAdvancedFields();
   } else if (indiciaData.step === 'lookupMatchingForm') {
     // If on the lookup matching page, then trigger the process.
     logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.findingLookupFieldsThatNeedMatching);

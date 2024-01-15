@@ -147,8 +147,8 @@ jQuery(document).ready(function ($) {
             // Use the myGroups list to look them up
             $.each(indiciaData.myGroups, function () {
               if (this[0] === parseInt(groupId)) {
-                foundIds.push(this[0]);
-                foundNames.push(this[1]);
+                foundIds.push(this['id']);
+                foundNames.push(this['title']);
               }
             });
           });
@@ -275,6 +275,26 @@ jQuery(document).ready(function ($) {
       },
     },
     where: {
+      loadFilter: function () {
+        var filter;
+        var locationsToLoad;
+        if (typeof indiciaData.mapdiv !== 'undefined') {
+          filter = indiciaData.filter.def;
+          if (filter.searchArea) {
+            loadPolygon(filter.searchArea);
+          } else if (filter.location_id || filter.location_list || filter.indexed_location_id || filter.indexed_location_list) {
+            // need to load filter location boundaries onto map. Location_id variants are for legacy
+            if (filter.location_id && !filter.location_list) {
+              filter.location_list = filter.location_id;
+            }
+            if (filter.indexed_location_id && !filter.indexed_location_list) {
+              filter.indexed_location_list = filter.indexed_location_id;
+            }
+            locationsToLoad = filter.indexed_location_list ? filter.indexed_location_list : filter.location_list;
+            loadSites(locationsToLoad);
+          }
+        }
+      },
       getDescription: function (filterDef) {
         if (filterDef.remembered_location_name) {
           return 'Records in ' + filterDef.remembered_location_name;
@@ -296,11 +316,17 @@ jQuery(document).ready(function ($) {
     },
     who: {
       getDescription: function (filterDef) {
-        if (filterDef.my_records) {
-          return indiciaData.lang.reportFilterParser.MyRecords;
-        } else {
-          return '';
+        let phrases = [];
+        if (filterDef.my_records && filterDef.my_records === '1') {
+          phrases.push(indiciaData.lang.reportFilterParser.MyRecords);
+        } else if (filterDef.my_records && filterDef.my_records === '0') {
+          phrases.push(indiciaData.lang.reportFilterParser.NotMyRecords);
         }
+        if (filterDef.recorder_name) {
+          let nameList = filterDef.recorder_name.replace(/\s+/g, indiciaData.lang.reportFilterParser.ListJoin);
+          phrases.push(indiciaData.lang.reportFilterParser.RecorderNameContains.replace('{1}', nameList));
+        }
+        return phrases.join('<br/>');
       },
     },
     occ_id: {
@@ -331,28 +357,75 @@ jQuery(document).ready(function ($) {
       },
     },
     quality: {
+      statusDescriptionFromFilter: function (quality, quality_op) {
+        if (typeof quality === 'undefined') {
+          quality = 'all';
+        } else {
+          quality = typeof quality === 'string' ? quality : quality.toString();
+        }
+        if (typeof quality_op === 'undefined') {
+          quality_op = 'in';
+        }
+        let statuses = typeof quality === 'object' ? quality : quality.split(',');
+        let statusTerms = [];
+        $.each(statuses, function () {
+          if (this !== 'all' && statuses.indexOf('all') > -1) {
+            // If all checked, only interested in the all option.
+            return true;
+          }
+          if (this.match(/^[RV][1245]$/) && statuses.indexOf(this.substring(0, 1)) > -1) {
+            // If V or R checked, can skip the 2nd levels.
+            return true;
+          }
+          statusTerms.push(indiciaData.lang.reportFilters['quality:' + this]);
+        });
+        // Update all copies of the inputs with the text and the hidden filter value.
+        return indiciaData.lang.reportFilters['quality_op:' + quality_op] + ' ' + statusTerms.join(', ');
+      },
+      fixLegacyFilter: function(filterDef) {
+        // Handle some legacy filter options. Note that Trusted is not supported on ES currently.
+        if (filterDef.quality === '!R') {
+          filterDef.quality = 'R';
+          filterDef.quality_op = 'not in';
+        } else if (filterDef.quality === '!D') {
+          filterDef.quality = 'D';
+          filterDef.quality_op = 'not in';
+        } else if (filterDef.quality === '-3') {
+          filterDef.quality = 'C3,V';
+          filterDef.quality_op = 'in';
+        } else if (filterDef.quality === 'C') {
+          filterDef.quality = 'R';
+          filterDef.quality_op = 'not in';
+          filterDef.certainty = 'C';
+        } else if (filterDef.quality === 'L') {
+          filterDef.quality = 'R';
+          filterDef.quality_op = 'not in';
+          filterDef.certainty = 'L';
+        } else if (filterDef.quality === 'DR') {
+          filterDef.quality = 'D,R';
+          filterDef.quality_op = 'in';
+        }
+        // Autochecks and autocheck_rule now merged into 1.
+        if (filterDef.autocheck_rule) {
+          filterDef.autochecks = filterDef.autocheck_rule;
+          delete filterDef.autocheck_rule;
+        }
+      },
       getDescription: function (filterDef, sep) {
         var r = [];
         var op;
-        var quality;
-        if (typeof filterDef.quality === 'undefined') {
-          quality = 'all';
-        } else {
-          quality = typeof filterDef.quality === 'string'
-            ? filterDef.quality : filterDef.quality.toString();
+        if (typeof filterDef.quality !== 'undefined' && filterDef.quality !== 'all') {
+          r.push(indiciaData.filterParser.quality.statusDescriptionFromFilter(filterDef.quality, filterDef.quality_op));
         }
-        if (quality !== 'all') {
-          r.push($('#quality-filter option[value=' + quality.replace('!', '\\!') + ']').html());
+        let certainties = [];
+        $.each($('#certainty-filter :checked'), function() {
+          certainties.push($('label[for="' + this.id + '"]').text().toLowerCase());
+        });
+        if (certainties.length > 0) {
+          r.push(indiciaData.lang.reportFilters.recorderCertaintyWas + ' ' + certainties.join(indiciaData.lang.reportFilters.orListJoin));
         }
         if (filterDef.autochecks) {
-          r.push(indiciaData.lang.reportFilterParser['Autochecks' + filterDef.autochecks]);
-        }
-        if (filterDef.autocheck_rule) {
-          if (typeof indiciaData.lang.reportFilterParser['Rule_' + filterDef.autocheck_rule] !== 'undefined') {
-            r.push(indiciaData.lang.reportFilterParser['Rule_' + filterDef.autocheck_rule]);
-          } else {
-            r.push(filterDef.autocheck_rule);
-          }
+          r.push(indiciaData.lang.reportFilterParser['Autochecks_' + filterDef.autochecks]);
         }
         if (filterDef.identification_difficulty) {
           op = typeof filterDef.identification_difficulty_op === 'undefined' ?
@@ -366,6 +439,29 @@ jQuery(document).ready(function ($) {
         } else if (filterDef.has_photos && filterDef.has_photos === '0') {
           r.push(indiciaData.lang.reportFilterParser.HasNoPhotos);
         }
+        if ($('#licences :checked').length > 0 && $('#licences :checked').length < 3) {
+          let licences = [];
+          $.each($('#licences :checked'), function() {
+            licences.push($('label[for="' + this.id + '"]').text().toLowerCase());
+          });
+          r.push(indiciaData.lang.reportFilters.licenceIs + ' ' + licences.join(indiciaData.lang.reportFilters.orListJoin));
+        }
+        if ($('#media_licences :checked').length > 0 && $('#media_licences :checked').length < 3) {
+          let licences = [];
+          $.each($('#media_licences :checked'), function() {
+            licences.push($('label[for="' + this.id + '"]').text().toLowerCase());
+          });
+          r.push(indiciaData.lang.reportFilters.mediaLicenceIs + ' ' + licences.join(indiciaData.lang.reportFilters.orListJoin));
+        }
+        if (filterDef.coordinate_precision) {
+          const op = {
+            '<=': indiciaData.lang.reportFilters.sameAsOrBetterThan,
+            '>': indiciaData.lang.reportFilters.worseThan,
+            '=': indiciaData.lang.reportFilters.equalTo,
+          }[filterDef.coordinate_precision_op ? filterDef.coordinate_precision_op : '<='];
+          r.push(indiciaData.lang.reportFilters.coordinatePrecisionIs + ' ' + op + ' ' + (filterDef.coordinate_precision / 1000) + 'km');
+        }
+        // @todo Block saving a filter with zero licence boxes ticked
         return r.join(sep);
       },
     },
@@ -776,38 +872,15 @@ jQuery(document).ready(function ($) {
           $('#controls-filter_where legend').show();
         }
       },
-      loadFilter: function () {
-        var filter;
-        var map;
-        var locationsToLoad;
-        if (typeof indiciaData.mapdiv !== 'undefined') {
-          filter = indiciaData.filter.def;
-          map = indiciaData.mapdiv.map;
-          if (filter.searchArea) {
-            loadPolygon(filter.searchArea);
-          } else if (filter.location_id || filter.location_list || filter.indexed_location_id || filter.indexed_location_list) {
-            // need to load filter location boundaries onto map. Location_id variants are for legacy
-            if (filter.location_id && !filter.location_list) {
-              filter.location_list = filter.location_id;
-            }
-            if (filter.indexed_location_id && !filter.indexed_location_list) {
-              filter.indexed_location_list = filter.indexed_location_id;
-            }
-            locationsToLoad = filter.indexed_location_list ? filter.indexed_location_list : filter.location_list;
-            loadSites(locationsToLoad);
-          }
-        }
-      }
     },
     who: {
       loadForm: function (context) {
         if (context && context.my_records) {
           $('#my_records').prop('disabled', true);
           $('#controls-filter_who .context-instruct').show();
-          $('#controls-filter_who button').hide();
         } else {
           $('#my_records').prop('disabled', false);
-          $('#controls-filter_who button').show();
+          $('#controls-filter_who .context-instruct').hide();
         }
       }
     },
@@ -821,36 +894,92 @@ jQuery(document).ready(function ($) {
     },
     quality: {
       loadForm: function (context) {
+        // Disable quality options if defined by context.
         if (context && context.quality && context.quality !== 'all') {
-          $('#quality-filter').prop('disabled', true);
+          $('.quality-filter').prop('disabled', true);
         } else {
-          $('#quality-filter').prop('disabled', false);
+          $('.quality-filter').prop('disabled', false);
         }
-        if (context && context.autochecks) {
-          $('#autochecks').prop('disabled', true);
-          // Autocheck context also blocks use of individual rule filters.
-          $('#autocheck_rule').prop('disabled', true);
-        } else {
-          $('#autochecks').prop('disabled', false);
-          $('#autocheck_rule').prop('disabled', context && context.autocheck_rule);
+        $('.quality-filter').val(indiciaData.filterParser.quality.statusDescriptionFromFilter(
+          indiciaData.filter.def.quality, indiciaData.filter.def.quality_op));
+        if (context) {
+          // If certainty context length is 4, all options are ticked so no need to disable.
+          if (context.certainty) {
+            if (context.certainty.split(',').length !== 4) {
+              $('[name="certainty\[\]"]').prop('disabled', true);
+            } else {
+              $('[name="certainty\[\]"]').prop('disabled', false);
+            }
+          }
+          if (context.autochecks) {
+            $('#autochecks').prop('disabled', true);
+          } else {
+            $('#autochecks').prop('disabled', false);
+          }
+          if (context.identification_difficulty) {
+            $('#identification_difficulty').prop('disabled', true);
+            $('#identification_difficulty_op').prop('disabled', true);
+          } else {
+            $('#identification_difficulty').prop('disabled', false);
+            $('#identification_difficulty_op').prop('disabled', false);
+          }
+          if (context.has_photos) {
+            $('#has_photos').prop('disabled', true);
+          } else {
+            $('#has_photos').prop('disabled', false);
+          }
+          if (context.coordinate_precision) {
+            $('#coordinate_precision_op').prop('disabled', true);
+            $('#coordinate_precision').prop('disabled', true);
+          } else {
+            $('#coordinate_precision_op').prop('disabled', false);
+            $('#coordinate_precision').prop('disabled', false);
+          }
+          if ((context.quality && context.quality !== 'all') ||
+              (context.certainty && context.certainty.split(',').length !== 4) ||
+              context.autochecks || context.identification_difficulty || context.has_photos ||
+              context.licences || context.media_licences || context.coordinate_precision
+            ) {
+            $('#controls-filter_quality .context-instruct').show();
+          }
         }
-        if (context && context.identification_difficulty) {
-          $('#identification_difficulty').prop('disabled', true);
-          $('#identification_difficulty_op').prop('disabled', true);
-        } else {
-          $('#identification_difficulty').prop('disabled', false);
-          $('#identification_difficulty_op').prop('disabled', false);
+        // If no licences are selected, tick them all as that's the unfiltered
+        // state.
+        if (!indiciaData.filter.def.licences) {
+          $('#licences :checkbox').prop('checked', true);
         }
-        if (context && context.has_photos) {
-          $('#has_photos').prop('disabled', true);
-        } else {
-          $('#has_photos').prop('disabled', false);
+        if (!indiciaData.filter.def.media_licences) {
+          $('#media_licences :checkbox').prop('checked', true);
         }
-        if (context && ((context.quality && context.quality !== 'all') ||
-          context.autochecks || context.autocheck_rule || context.identification_difficulty || context.has_photos)) {
-          $('#controls-filter_quality .context-instruct').show();
+        if (!indiciaData.filter.def.coordinate_precision) {
+          // If no coordinate precision selected, tick the not filtered option.
+          $('#coordinate_precision_op input').prop('checked', false);
+          $('#coordinate_precision input[value=""]').prop('checked', true);
         }
-      }
+        else if (!indiciaData.filter.def.coordinate_precision) {
+          // Precision in filter, but not the op, so set a default.
+          $('#coordinate_precision_op input[value="<="]').prop('checked', true);
+        }
+        // Trigger change to update hidden controls in UI.
+        $('#autochecks').change();
+      },
+      applyFormToDefinition: function() {
+        // Map the checked boxes to a comma-separated value.
+        const checkedStatuses = $('.filter-controls .quality-pane input[type="checkbox"]:checked');
+        let statusCodes = [];
+        $.each(checkedStatuses, function () {
+          statusCodes.push($(this).val());
+        });
+        indiciaData.filter.def.quality = statusCodes.filter(function(value) {
+          if (value !== 'all' & statusCodes.indexOf('all') >= 0) {
+            return false;
+          }
+          if (value.match(/^[RV][1245]$/) && statusCodes.indexOf(value.substring(0, 1)) >= 0) {
+            return false;
+          }
+          return true;
+        }).join(',');
+      },
     },
     source: {
       loadForm: function (context) {
@@ -949,6 +1078,21 @@ jQuery(document).ready(function ($) {
     });
   });
 
+  // Show all taxon groups link.
+  $('#show-species-groups').click(function() {
+    $('.filter-controls').hide();
+    let cntr = $('<div>').insertAfter($('.filter-controls'));
+    let ul = $('<ul style="columns: 4">').appendTo(cntr);
+    $.each(indiciaData.allTaxonGroups, function() {
+      ul.append('<li>' + this.title + '</li>');
+    });
+    let btn = $('<button class="btn btn-primary">' + indiciaData.lang.reportFilters.back + '</button>').appendTo(cntr);
+    btn.click(function() {
+      cntr.remove();
+      $('.filter-controls').show();
+    });
+  });
+
   function clearSites(all) {
     var map = indiciaData.mapdiv.map;
     $('#location_list\\:sublist').children().remove();
@@ -989,6 +1133,7 @@ jQuery(document).ready(function ($) {
       data: 'mode=json&view=list&orderby=name&auth_token=' + indiciaData.read.auth_token +
       '&nonce=' + indiciaData.read.nonce + '&query=' + idQuery + '&view=detail&callback=?',
       success: function (data) {
+        // @todo Update this code to also work with the ES Leaflet map.
         var features = [];
         var feature;
         var geomwkt;
@@ -1055,9 +1200,9 @@ jQuery(document).ready(function ($) {
 
   $('#my_groups').click(function () {
     $.each(indiciaData.myGroups, function(idx, group) {
-      if ($('#taxon_group_list\\:sublist input[value=' + group[0] + ']').length === 0) {
-        $('#taxon_group_list\\:sublist').append('<li><span class="ind-delete-icon"> </span>' + group[1] +
-          '<input type="hidden" value="' + group[0] + '" name="taxon_group_list[]"></li>');
+      if ($('#taxon_group_list\\:sublist input[value=' + group['id'] + ']').length === 0) {
+        $('#taxon_group_list\\:sublist').append('<li><span class="ind-delete-icon"> </span>' + group['title'] +
+          '<input type="hidden" value="' + group['id'] + '" name="taxon_group_list[]"></li>');
       }
     });
   });
@@ -1103,8 +1248,10 @@ jQuery(document).ready(function ($) {
         obj.refreshFilter();
       }
     });
-    //Ensure that any other quality-filter controls on the page are kept in line
-    $('.standalone-quality-filter select').val(indiciaData.filter.def.quality);
+    //Ensure that any other quality-filter controls on the page are kept in line.
+    $('.quality-filter').val(indiciaData.filterParser.quality.statusDescriptionFromFilter(
+      indiciaData.filter.def.quality, indiciaData.filter.def.quality_op));
+    $('.standalone-media-filter select').val(indiciaData.filter.def.has_photos);
   };
 
   function codeToSharingTerm(code) {
@@ -1195,7 +1342,7 @@ jQuery(document).ready(function ($) {
     // clear any sublists
     $('.ind-sub-list li').remove();
     indiciaFns.updateFilterDescriptions();
-    $('#filter-build').html(indiciaData.lang.reportFilters.CreateAFilter);
+    $('#filter-build').html(indiciaData.lang.reportFilters.createAFilter);
     $('#filter-reset').addClass('disabled');
     $('#filter-delete').addClass('disabled');
     $('#filter-apply').addClass('disabled');
@@ -1230,6 +1377,12 @@ jQuery(document).ready(function ($) {
     indiciaData.filter.id = data[0].id;
     indiciaData.filter.title = data[0].title;
     $('#filter\\:title').val(data[0].title);
+    $.each($('#filter-panes .pane'), function (idx, pane) {
+      var name = pane.id.replace(/^pane-filter_/, '');
+      if (indiciaData.filterParser[name].fixLegacyFilter) {
+        indiciaData.filterParser[name].fixLegacyFilter(indiciaData.filter.def);
+      }
+    });
     indiciaFns.applyFilterToReports();
     $('#filter-reset').removeClass('disabled');
     $('#filter-delete').removeClass('disabled');
@@ -1241,7 +1394,7 @@ jQuery(document).ready(function ($) {
       }
     });
     indiciaFns.updateFilterDescriptions();
-    $('#filter-build').html(indiciaData.lang.reportFilters.ModifyFilter);
+    $('#filter-build').html(indiciaData.lang.reportFilters.modifyFilter);
     $('#standard-params .header span.changed').hide();
     // can't delete a filter you didn't create.
     if (data[0].created_by_id === indiciaData.user_id || indiciaData.admin === "1") {
@@ -1255,38 +1408,38 @@ jQuery(document).ready(function ($) {
     var def;
     filterOverride = getParams;
     if ($('#standard-params .header span.changed:visible').length === 0
-        || confirm(indiciaData.lang.reportFilters.ConfirmFilterChangedLoad)) {
+        || confirm(indiciaData.lang.reportFilters.confirmFilterChangedLoad)) {
       def = false;
       switch (id) {
         case 'all-records':
           def = '{"quality": "all"}';
           break;
         case 'my-records':
-          def = '{"quality": "all", "my_records": 1}';
+          def = '{"quality": "all", "my_records": "1"}';
           break;
         case 'my-queried-records':
-          def = '{"quality": "D", "my_records": 1}';
+          def = '{"quality": "D", "my_records": "1"}';
           break;
         case 'my-queried-or-not-accepted-records':
         case 'my-queried-rejected-records':
-          def = '{"quality": "DR", "my_records": 1}';
+          def = '{"quality": "D,R", "my_records": "1"}';
           break;
         case 'my-not-reviewed-records':
         case 'my-pending-records':
-          def = '{"quality": "P", "my_records": 1}';
+          def = '{"quality": "P", "my_records": "1"}';
           break;
         case 'my-accepted-records':
         case 'my-verified-records':
-          def = '{"quality": "V", "my_records": 1}';
+          def = '{"quality": "V", "my_records": "1"}';
           break;
         case 'my-groups':
-          def = '{"quality": "all", "my_records": 0, "taxon_group_list": ' + indiciaData.userPrefsTaxonGroups + '}';
+          def = '{"quality": "all", "my_records": "", "taxon_group_list": ' + indiciaData.userPrefsTaxonGroups + '}';
           break;
         case 'my-locality':
-          def = '{"quality": "all", "my_records": 0, "indexed_location_id": ' + indiciaData.userPrefsLocation + '}';
+          def = '{"quality": "all", "my_records": "", "indexed_location_id": ' + indiciaData.userPrefsLocation + '}';
           break;
         case 'my-groups-locality':
-          def = '{"quality": "all", "my_records": 0, "taxon_group_list": ' + indiciaData.userPrefsTaxonGroups +
+          def = '{"quality": "all", "my_records": "", "taxon_group_list": ' + indiciaData.userPrefsTaxonGroups +
             ', "indexed_location_id": ' + indiciaData.userPrefsLocation + '}';
           break;
         case 'queried-records':
@@ -1359,7 +1512,7 @@ jQuery(document).ready(function ($) {
     var attrName;
     var option;
     // regexp extracts the pane ID from the href. Loop through the controls in the pane
-    $.each(pane.find(':input').not('#imp-sref-system,:checkbox,[type=button],[name="location_list[]"],.precise-date-picker'),
+    $.each(pane.find(':input').not('#imp-sref-system,:checkbox,:radio,[type=button],[name="location_list[]"],.precise-date-picker'),
       function (idx, ctrl) {
         var value;
         // set control value to the stored filter setting
@@ -1381,6 +1534,10 @@ jQuery(document).ready(function ($) {
         }
       }
     );
+    $.each(pane.find('[type="radio"]'), function (idx, ctrl) {
+      $(ctrl).prop('checked', typeof indiciaData.filter.def[$(ctrl).attr('name')] !== 'undefined'
+            && indiciaData.filter.def[$(ctrl).attr('name')] === $(ctrl).val());
+    });
     $.each(pane.find(':checkbox'), function (idx, ctrl) {
       var tokens;
       var type;
@@ -1394,9 +1551,16 @@ jQuery(document).ready(function ($) {
           $(ctrl).prop('checked', $.inArray($(ctrl).val(), ids) > -1);
         }
       } else {
-        // other checkboxes are simple on/off flags for filter parameters.
-        $(ctrl).prop('checked', typeof indiciaData.filter.def[$(ctrl).attr('name')] !== 'undefined'
-          && indiciaData.filter.def[$(ctrl).attr('name')] === $(ctrl).val());
+        if ($(ctrl).attr('name').match(/\[\]$/) && typeof indiciaData.filter.def[$(ctrl).attr('name').replace('[]', '')] !== 'undefined') {
+          // An array mapped to a set of checkboxes.
+          var field = $(ctrl).attr('name').replace('[]', '');
+          var checkValues = indiciaData.filter.def[field].split(',');
+          $(ctrl).prop('checked', checkValues.indexOf($(ctrl).val()) !== -1);
+        } else {
+          // other checkboxes are simple on/off flags for filter parameters.
+          $(ctrl).prop('checked', typeof indiciaData.filter.def[$(ctrl).attr('name')] !== 'undefined'
+            && indiciaData.filter.def[$(ctrl).attr('name')] === $(ctrl).val());
+        }
       }
     });
   }
@@ -1512,7 +1676,7 @@ jQuery(document).ready(function ($) {
     if ($(e.currentTarget).hasClass('disabled')) {
       return;
     }
-    if (confirm(indiciaData.lang.reportFilters.ConfirmFilterDelete.replace('{title}', indiciaData.filter.title))) {
+    if (confirm(indiciaData.lang.reportFilters.confirmFilterDelete.replace('{title}', indiciaData.filter.title))) {
       filter = {
         id: indiciaData.filter.id,
         website_id: indiciaData.website_id,
@@ -1523,7 +1687,7 @@ jQuery(document).ready(function ($) {
         filter,
         function (data) {
           if (typeof data.error === 'undefined') {
-            alert(indiciaData.lang.reportFilters.FilterDeleted);
+            alert(indiciaData.lang.reportFilters.filterDeleted);
             $('#select-filter').val('');
             $('#select-filter').find('option[value="' + indiciaData.filter.id + '"]').remove();
             resetFilter();
@@ -1606,9 +1770,11 @@ jQuery(document).ready(function ($) {
     }
     $(e.currentTarget).find('.fb-apply').data('clicked', true);
     // persist each control value into the stored settings
-    $.each($(e.currentTarget).find(':input[name]'), function (idx, ctrl) {
-      if (!$(ctrl).hasClass('olButton')) { // skip open layers switcher
-        if ($(ctrl).attr('type') !== 'checkbox' || $(ctrl).is(':checked')) {
+    $.each($(e.currentTarget).find(':input[name]').not('.filter-exclude'), function (idx, ctrl) {
+      // Skip open layers switcher.
+      if (!$(ctrl).hasClass('olButton')) {
+        // Skip radio/checkboxes unless checked.
+        if (($(ctrl).attr('type') !== 'checkbox' && $(ctrl).attr('type') !== 'radio') || $(ctrl).is(':checked')) {
           // array control?
           if ($(ctrl).attr('name').match(/\[\]$/)) {
             // store array control data to handle later
@@ -1621,9 +1787,6 @@ jQuery(document).ready(function ($) {
             // normal control
             indiciaData.filter.def[$(ctrl).attr('name')] = $(ctrl).val();
           }
-        } else {
-          // an unchecked checkbox so clear it's value
-          indiciaData.filter.def[$(ctrl).attr('name')] = '';
         }
       }
     });
@@ -1685,7 +1848,7 @@ jQuery(document).ready(function ($) {
       function (data) {
         var handled;
         if (typeof data.error === 'undefined') {
-          alert(indiciaData.lang.reportFilters.FilterSaved);
+          alert(indiciaData.lang.reportFilters.filterSaved);
           indiciaData.filter.id = data.outer_id;
           indiciaData.filter.title = $('#filter\\:title').val();
           $('#active-filter-label').html('Active filter: ' + $('#filter\\:title').val());
@@ -1704,7 +1867,7 @@ jQuery(document).ready(function ($) {
           if (typeof data.errors !== 'undefined') {
             $.each(data.errors, function (key, msg) {
               if (msg.indexOf('duplicate') > -1) {
-                if (confirm(indiciaData.lang.reportFilters.FilterExistsOverwrite)) {
+                if (confirm(indiciaData.lang.reportFilters.filterExistsOverwrite)) {
                   // need to load the existing filter to get it's ID, then resave
                   $.getJSON(indiciaData.read.url + 'index.php/services/data/filter?created_by_id=' +
                     indiciaData.user_id + '&title=' + encodeURIComponent($('#filter\\:title').val()) + '&sharing=' +
@@ -1724,22 +1887,29 @@ jQuery(document).ready(function ($) {
           }
         }
         saving = false;
-        $('#filter-build').html(indiciaData.lang.reportFilters.ModifyFilter);
+        $('#filter-build').html(indiciaData.lang.reportFilters.modifyFilter);
         $('#filter-reset').removeClass('disabled');
       },
       'json'
     );
   };
 
-  // Standalone quality filter select change event
-  $('.standalone-quality-filter select').change(function() {
-    indiciaData.filter.def.quality= $(this).val();
+  /**
+   * Refresh after a standalone filter control changed.
+   */
+  function updateStandaloneFilter() {
     // If there is a standard params control update the quality drop-down to reflect
     // the value selected in this control.
     indiciaFns.updateFilterDescriptions();
     filterParamsChanged();
     // Update reports
     indiciaFns.applyFilterToReports();
+  }
+
+  // Standalone quality media filters select change event.
+  $('.standalone-media-filter select').change(function() {
+    indiciaData.filter.def.has_photos = $(this).val();
+    updateStandaloneFilter();
   });
 
   // Interactions betweem mutually exclusive filters.
@@ -2017,5 +2187,181 @@ jQuery(document).ready(function ($) {
   $('#websites-search').keyup(sourceListFilterKeyHandler);
   $('#surveys-search').keyup(sourceListFilterKeyHandler);
   $('#input_forms-search').keyup(sourceListFilterKeyHandler);
+
+  /* Code for the custom quality filter select control. */
+  function closeQualityPane(e) {
+    const clickedOn = $(e.target);
+    if ((clickedOn.is('button') || !clickedOn.closest('.quality-pane').length) && $('.quality-pane').is(':visible')) {
+      $('.quality-pane').hide();
+      document.removeEventListener('click', closeQualityPane);
+    }
+  }
+
+  /**
+   * OK button handler for the quality pane.
+   */
+  function saveAndCloseQualityPane(e) {
+    const pane = $(e.currentTarget).closest('.quality-pane');
+    const checkedStatuses = $(pane).find('input[type="checkbox"]:checked');
+    let statusCodes = [];
+    $.each(checkedStatuses, function () {
+      statusCodes.push($(this).val());
+    });
+    $('input.quality-filter').val(indiciaData.filterParser.quality.statusDescriptionFromFilter(statusCodes, $('[name="quality_op"]:checked').val()));
+    if ($(e.currentTarget).closest('.standalone-quality-filter').length !== 0) {
+      // If standalone, this updates the filter immediately.
+      indiciaData.filter.def.quality = statusCodes.filter(function(value) {
+        if (value !== 'all' & statusCodes.indexOf('all') >= 0) {
+          return false;
+        }
+        if (value.match(/^[RV][1245]$/) && statusCodes.indexOf(value.substring(0, 1)) >= 0) {
+          return false;
+        }
+        return true;
+      }).join(',');
+      indiciaData.filter.def.quality_op = $(pane).find('[name="quality_op"]:checked').val();
+      let desc = indiciaData.filterParser.quality.getDescription(indiciaData.filter.def, '<br/>');
+      if (desc === '') {
+        desc = indiciaData.lang.reportFiltersNoDescription[name];
+      }
+      $('#pane-filter_quality span.filter-desc').html(desc);
+      updateStandaloneFilter();
+    }
+    closeQualityPane(e);
+  }
+
+  // Show the custom quality panel drop-down div.
+  $('.quality-filter').click(function(e) {
+    var wrap = $(e.currentTarget).closest('.quality-cntr');
+    var pane = wrap.find('.quality-pane');
+    var input = wrap.find('.quality-filter');
+    var inputPos = input.position();
+    var inputHeight = input.outerHeight();
+    if (pane.is(':visible')) {
+      closeQualityPane(e);
+    } else {
+      // If a standalone, need to load the currrent filter into the controls.
+      if ($(e.currentTarget).closest('.standalone-quality-filter').length > 0) {
+        const inChecked = typeof indiciaData.filter.def.quality_op === 'undefined' || indiciaData.filter.def.quality_op === 'in';
+        // Include.
+        $('#quality_op--standalone\\:0').prop('checked', inChecked);
+        // Exclude.
+        $('#quality_op--standalone\\:1').prop('checked', !inChecked);
+        // Statuses
+        const statuses = indiciaData.filter.def.quality.split(',');
+        $('.quality-pane input[type="checkbox"]').prop('checked', false);
+        $.each(statuses, function() {
+          $('.quality-pane input[type="checkbox"][value="' + this + '"]').prop('checked', true);
+        });
+      }
+      // Adjust for select control margin.
+      $(pane).css('top', (inputPos.top + inputHeight + parseInt( + $(input).css('margin-top').replace('px', ''), 10)) + 'px');
+      $(pane).css('left', inputPos.left + parseInt($(input).css('margin-left').replace('px', ''), 10) + 'px');
+      pane.show();
+      document.addEventListener('click', closeQualityPane);
+    }
+    e.preventDefault();
+    return false;
+  });
+
+  // Indent level 2 verification items hierarchical behaviour.
+  $('.quality-pane').find('input[value="V1"], input[value="V2"], input[value="R4"], input[value="R5"]').addClass('indent');
+  $('.quality-pane input.indent').change((e) => {
+    const pane = $(e.currentTarget).closest('.quality-pane');
+    const status = $(e.currentTarget).val().substring(0, 1);
+    const l1Checkbox = $(pane).find('input[value="' + status + '"]');
+    const l2Checkboxes = $(pane).find('input.indent[value^="' + status + '"]');
+    const l2CheckboxesChecked = $(pane).find('input.indent[value^="' + status + '"]:checked');
+    l1Checkbox.prop('checked', l2Checkboxes.length === l2CheckboxesChecked.length);
+  });
+
+  /**
+   * Cascade level-1 status checkboxes to level 2, e.g. V ticks V1 and V2.
+   */
+  $('.quality-pane').find('input[value="V"], input[value="R"]').change((e) => {
+    const pane = $(e.currentTarget).closest('.quality-pane');
+    const status = $(e.currentTarget).val();
+    const l1Checkbox = $(pane).find('input[value="' + status + '"]');
+    const l2Checkboxes = $(pane).find('input.indent[value^="' + status + '"]');
+    l2Checkboxes.prop('checked', l1Checkbox.is(':checked'));
+  });
+
+  /**
+   * Cascade ticking all to the other checkboxes.
+   */
+  $('.quality-pane').find('input[value="all"]').change((e) => {
+    const pane = $(e.currentTarget).closest('.quality-pane');
+    const checkboxes = $(pane).find('input[type="checkbox"]').not('[value="all"]');
+    checkboxes.prop('checked', $(e.currentTarget).is(':checked'));
+  });
+
+  /**
+   * Uncheck all if another checkbox is unchecked.
+   */
+  $('.quality-pane').find('input[type="checkbox"]').not('[value="all"]').change((e) => {
+    if (!$(e.currentTarget).is(':checked')) {
+      const pane = $(e.currentTarget).closest('.quality-pane');
+      const allCheckbox = $(pane).find('input[type="checkbox"][value="all"]');
+      $(allCheckbox).prop('checked', false);
+    }
+  });
+
+  $('#identification_difficulty').change(function() {
+    if ($('#identification_difficulty').val() === '') {
+      // Unsetting the ID diff filter, so set the op to = as makes more sense.
+      $('#identification_difficulty_op').val('=');
+    }
+  });
+
+  $('#coordinate_precision_op').change(function() {
+    if ($('#coordinate_precision_op input:checked').length > 0 && $('#coordinate_precision input:checked').val() === '') {
+      // Setting a coordinate precision op, so set the default precision to 1km
+      // if not already set.
+      $('#coordinate_precision input[value="1000"]').prop('checked', true);
+    }
+  });
+
+  $('#coordinate_precision').change(function() {
+    if ($('#coordinate_precision input:checked').val() === '') {
+      // Unsetting the coord precision filter, so remove the op.
+      $('#coordinate_precision_op input').prop('checked', false);
+    }
+    else if ($('#coordinate_precision_op input:checked').length === 0) {
+      // Setting a coordinate precision, so set the default op to <= if not
+      // already set.
+      $('#coordinate_precision_op input[value="<="]').prop('checked', true);
+    }
+  });
+
+
+  $('#controls-filter_quality form').validate({
+    rules: {
+      "licences[]": {
+        required: true,
+        minlength: 1
+      },
+      "media_licences[]": {
+        required: true,
+        minlength: 1
+      }
+    },
+    messages: {
+      "licences[]": indiciaData.lang.reportFilters.cannotDeselectAllLicences,
+      "media_licences[]": indiciaData.lang.reportFilters.cannotDeselectAllMediaLicences,
+    },
+    errorPlacement: function(error, element) {
+      var placement = $(element).closest('.control-box');
+      if (placement) {
+        $(placement).append(error)
+      } else {
+        error.insertAfter(element);
+      }
+    },
+    errorClass: indiciaData.templates.jQueryValidateErrorClass,
+  });
+
+  $('.quality-pane button.cancel').click(closeQualityPane);
+
+  $('.quality-pane button.ok').click(saveAndCloseQualityPane);
 
 });
