@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5e94d3415763946fa5cbed27d15122f9",
+    "content-hash": "bcd3ed9f11318bf6fd831f3d1f6b3d08",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -6794,17 +6794,17 @@
         },
         {
             "name": "drupal/entity_reference_revisions",
-            "version": "1.10.0",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/entity_reference_revisions.git",
-                "reference": "8.x-1.10"
+                "reference": "8.x-1.11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_reference_revisions-8.x-1.10.zip",
-                "reference": "8.x-1.10",
-                "shasum": "edd23b91c4a34db65ea22c4db54b7458edc7513b"
+                "url": "https://ftp.drupal.org/files/projects/entity_reference_revisions-8.x-1.11.zip",
+                "reference": "8.x-1.11",
+                "shasum": "de21cbb0d8a0344dc3496addcad4ed536747cec5"
             },
             "require": {
                 "drupal/core": "^9 || ^10"
@@ -6815,8 +6815,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.10",
-                    "datestamp": "1660664712",
+                    "version": "8.x-1.11",
+                    "datestamp": "1705140721",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -11335,17 +11335,17 @@
         },
         {
             "name": "drupal/quick_node_clone",
-            "version": "1.16.0",
+            "version": "1.17.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/quick_node_clone.git",
-                "reference": "8.x-1.16"
+                "reference": "8.x-1.17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/quick_node_clone-8.x-1.16.zip",
-                "reference": "8.x-1.16",
-                "shasum": "44cc517788cf2d9613fd2070b1aa9e62627c5e1c"
+                "url": "https://ftp.drupal.org/files/projects/quick_node_clone-8.x-1.17.zip",
+                "reference": "8.x-1.17",
+                "shasum": "435a97e238c460389ccdfcc2a93e3a22fc2d2163"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9 || ^10"
@@ -11356,8 +11356,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.16",
-                    "datestamp": "1678754974",
+                    "version": "8.x-1.17",
+                    "datestamp": "1705072199",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12815,17 +12815,17 @@
         },
         {
             "name": "drupal/spammaster",
-            "version": "2.11.0",
+            "version": "2.12.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.11"
+                "reference": "8.x-2.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.11.zip",
-                "reference": "8.x-2.11",
-                "shasum": "771f984f3f10fb8c34d9d22ec8928d276784e481"
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.12.zip",
+                "reference": "8.x-2.12",
+                "shasum": "8fce9799d63da0446210735042464a064793c63d"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10"
@@ -12833,8 +12833,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.11",
-                    "datestamp": "1703324967",
+                    "version": "8.x-2.12",
+                    "datestamp": "1704891923",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
