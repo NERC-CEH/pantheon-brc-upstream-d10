@@ -99,9 +99,9 @@
         "drupal/domain_registration": "*",
         "drupal/draggableviews": "*",
         "drupal/dropzonejs": "*",
-        "drupal/ds": "^3.17",
+        "drupal/ds": "^3.18",
         "drupal/editor_advanced_link": "*",
-        "drupal/editor_file": "*",
+        "drupal/editor_file": "^1.8",
         "drupal/embed": "*",
         "drupal/entity": "*",
         "drupal/entity_embed": "^1.5",
@@ -194,7 +194,7 @@
         "drupal/token_filter": "^2.1",
         "drupal/user_csv_import": "*",
         "drupal/user_registrationpassword": "*",
-        "drupal/variationcache": "^1.4",
+        "drupal/variationcache": "^1.5",
         "drupal/video_embed_field": "*",
         "drupal/view_password": "*",
         "drupal/view_unpublished": "*",
@@ -226,13 +226,13 @@
         "drupal/addtoany": "^2.0",
         "drupal/insert": "3.0-beta3",
         "drupal/simple_sitemap": "^4.1",
-        "drupal/simple_oauth": "^5.2"
-    },
-    "require-dev": {
-        "drupal/core-dev": "^10.2",
-        "drupal/core-recommended": "^10.2",
+        "drupal/simple_oauth": "^5.2",
+        "drupal/core-recommended": "dev-default",
         "drupal/core-composer-scaffold": "^10.2",
         "drupal/core-project-message": "^10.2"
+    },
+    "require-dev": {
+        "drupal/core-dev": "^10.2"
     },
     "conflict": {
         "drupal/drupal": "*"

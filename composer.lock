@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "eddf004a1c30d503849f5dd0da963b67",
+    "content-hash": "e9f32a99059c6a1b5dd5e6cdf35985fb",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -5349,16 +5349,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "10.2.1",
+            "version": "10.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "0050280087b8ed1fb145fcf22e01ad53c85931db"
+                "reference": "fc9abad1ab687635a5eddec00aa1a5f2a29a23bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/0050280087b8ed1fb145fcf22e01ad53c85931db",
-                "reference": "0050280087b8ed1fb145fcf22e01ad53c85931db",
+                "url": "https://api.github.com/repos/drupal/core/zipball/fc9abad1ab687635a5eddec00aa1a5f2a29a23bd",
+                "reference": "fc9abad1ab687635a5eddec00aa1a5f2a29a23bd",
                 "shasum": ""
             },
             "require": {
@@ -5506,9 +5506,126 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/10.2.1"
+                "source": "https://github.com/drupal/core/tree/10.2.2"
             },
-            "time": "2024-01-05T09:27:16+00:00"
+            "time": "2024-01-16T21:10:58+00:00"
+        },
+        {
+            "name": "drupal/core-composer-scaffold",
+            "version": "10.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/drupal/core-composer-scaffold.git",
+                "reference": "97bd91856535a354e9b1b815f0957893e26b6622"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/drupal/core-composer-scaffold/zipball/97bd91856535a354e9b1b815f0957893e26b6622",
+                "reference": "97bd91856535a354e9b1b815f0957893e26b6622",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2",
+                "php": ">=7.3.0"
+            },
+            "conflict": {
+                "drupal-composer/drupal-scaffold": "*"
+            },
+            "require-dev": {
+                "composer/composer": "^1.8@stable"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Drupal\\Composer\\Plugin\\Scaffold\\Plugin",
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Drupal\\Composer\\Plugin\\Scaffold\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "A flexible Composer project scaffold builder.",
+            "homepage": "https://www.drupal.org/project/drupal",
+            "keywords": [
+                "drupal"
+            ],
+            "support": {
+                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.2.2"
+            },
+            "time": "2023-11-15T23:23:28+00:00"
+        },
+        {
+            "name": "drupal/core-project-message",
+            "version": "10.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/drupal/core-project-message.git",
+                "reference": "d1da83722735cb0f7ccabf9fef7b5607b442c3a8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/drupal/core-project-message/zipball/d1da83722735cb0f7ccabf9fef7b5607b442c3a8",
+                "reference": "d1da83722735cb0f7ccabf9fef7b5607b442c3a8",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2",
+                "php": ">=7.3.0"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Drupal\\Composer\\Plugin\\ProjectMessage\\MessagePlugin"
+            },
+            "autoload": {
+                "psr-4": {
+                    "Drupal\\Composer\\Plugin\\ProjectMessage\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Adds a message after Composer installation.",
+            "homepage": "https://www.drupal.org/project/drupal",
+            "keywords": [
+                "drupal"
+            ],
+            "support": {
+                "source": "https://github.com/drupal/core-project-message/tree/10.2.2"
+            },
+            "time": "2023-07-24T07:55:25+00:00"
+        },
+        {
+            "name": "drupal/core-recommended",
+            "version": "dev-default",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/drupal/core-recommended.git",
+                "reference": "91e393ab0433a83d1abc69374f400c9e76c86fb0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/91e393ab0433a83d1abc69374f400c9e76c86fb0",
+                "reference": "91e393ab0433a83d1abc69374f400c9e76c86fb0",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "metapackage",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "description": "Locked core dependencies; require this project INSTEAD OF drupal/core.",
+            "support": {
+                "source": "https://github.com/drupal/core-recommended/tree/default"
+            },
+            "time": "2020-08-17T16:45:14+00:00"
         },
         {
             "name": "drupal/cshs",
@@ -6192,17 +6309,17 @@
         },
         {
             "name": "drupal/ds",
-            "version": "3.17.0",
+            "version": "3.18.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ds.git",
-                "reference": "8.x-3.17"
+                "reference": "8.x-3.18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ds-8.x-3.17.zip",
-                "reference": "8.x-3.17",
-                "shasum": "9d05652eecf71a5c418bfabfc914701292c298dd"
+                "url": "https://ftp.drupal.org/files/projects/ds-8.x-3.18.zip",
+                "reference": "8.x-3.18",
+                "shasum": "1e2a8f48e48df54b3663c5aa58a1560e64b7b292"
             },
             "require": {
                 "drupal/core": "^10"
@@ -6214,8 +6331,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.17",
-                    "datestamp": "1705337100",
+                    "version": "8.x-3.18",
+                    "datestamp": "1705507467",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -6310,17 +6427,17 @@
         },
         {
             "name": "drupal/editor_file",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/editor_file.git",
-                "reference": "8.x-1.7"
+                "reference": "8.x-1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/editor_file-8.x-1.7.zip",
-                "reference": "8.x-1.7",
-                "shasum": "ec9cf94322dfa0ff0d3c237a34eebacb398ab13b"
+                "url": "https://ftp.drupal.org/files/projects/editor_file-8.x-1.8.zip",
+                "reference": "8.x-1.8",
+                "shasum": "13e893db9089c09355fab6f373e79893552f0178"
             },
             "require": {
                 "drupal/ckeditor": "*",
@@ -6329,8 +6446,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.7",
-                    "datestamp": "1671450425",
+                    "version": "8.x-1.8",
+                    "datestamp": "1705484081",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13861,17 +13978,17 @@
         },
         {
             "name": "drupal/variationcache",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/variationcache.git",
-                "reference": "8.x-1.4"
+                "reference": "8.x-1.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/variationcache-8.x-1.4.zip",
-                "reference": "8.x-1.4",
-                "shasum": "b9796b1ec71862a5fd84611642783a757045aa98"
+                "url": "https://ftp.drupal.org/files/projects/variationcache-8.x-1.5.zip",
+                "reference": "8.x-1.5",
+                "shasum": "6165baee8c6fe5a7773f3499896e8fb464607a32"
             },
             "require": {
                 "drupal/core": "^9.5 || ^10"
@@ -13879,8 +13996,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.4",
-                    "datestamp": "1701774123",
+                    "version": "8.x-1.5",
+                    "datestamp": "1705485386",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17368,16 +17485,16 @@
         },
         {
             "name": "mck89/peast",
-            "version": "v1.15.4",
+            "version": "v1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mck89/peast.git",
-                "reference": "1df4dc28a6b5bb7ab117ab073c1712256e954e18"
+                "reference": "63dee902bd281c792f1dd760b6df268682032ed0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mck89/peast/zipball/1df4dc28a6b5bb7ab117ab073c1712256e954e18",
-                "reference": "1df4dc28a6b5bb7ab117ab073c1712256e954e18",
+                "url": "https://api.github.com/repos/mck89/peast/zipball/63dee902bd281c792f1dd760b6df268682032ed0",
+                "reference": "63dee902bd281c792f1dd760b6df268682032ed0",
                 "shasum": ""
             },
             "require": {
@@ -17390,7 +17507,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.15.4-dev"
+                    "dev-master": "1.16.0-dev"
                 }
             },
             "autoload": {
@@ -17411,9 +17528,9 @@
             "description": "Peast is PHP library that generates AST for JavaScript code",
             "support": {
                 "issues": "https://github.com/mck89/peast/issues",
-                "source": "https://github.com/mck89/peast/tree/v1.15.4"
+                "source": "https://github.com/mck89/peast/tree/v1.16.0"
             },
-            "time": "2023-08-12T08:29:29+00:00"
+            "time": "2024-01-11T14:36:12+00:00"
         },
         {
             "name": "mobiledetect/mobiledetectlib",
@@ -21913,24 +22030,23 @@
         },
         {
             "name": "symfony/var-exporter",
-            "version": "v6.4.2",
+            "version": "v7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-exporter.git",
-                "reference": "5fe9a0021b8d35e67d914716ec8de50716a68e7e"
+                "reference": "345c62fefe92243c3a06fc0cc65f2ec1a47e0764"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/5fe9a0021b8d35e67d914716ec8de50716a68e7e",
-                "reference": "5fe9a0021b8d35e67d914716ec8de50716a68e7e",
+                "url": "https://api.github.com/repos/symfony/var-exporter/zipball/345c62fefe92243c3a06fc0cc65f2ec1a47e0764",
+                "reference": "345c62fefe92243c3a06fc0cc65f2ec1a47e0764",
                 "shasum": ""
             },
             "require": {
-                "php": ">=8.1",
-                "symfony/deprecation-contracts": "^2.5|^3"
+                "php": ">=8.2"
             },
             "require-dev": {
-                "symfony/var-dumper": "^5.4|^6.0|^7.0"
+                "symfony/var-dumper": "^6.4|^7.0"
             },
             "type": "library",
             "autoload": {
@@ -21968,7 +22084,7 @@
                 "serialize"
             ],
             "support": {
-                "source": "https://github.com/symfony/var-exporter/tree/v6.4.2"
+                "source": "https://github.com/symfony/var-exporter/tree/v7.0.2"
             },
             "funding": [
                 {
@@ -21984,7 +22100,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-27T08:18:35+00:00"
+            "time": "2023-12-27T08:42:13+00:00"
         },
         {
             "name": "symfony/yaml",
@@ -23300,56 +23416,6 @@
             "time": "2023-10-15T09:55:50+00:00"
         },
         {
-            "name": "drupal/core-composer-scaffold",
-            "version": "10.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/drupal/core-composer-scaffold.git",
-                "reference": "97bd91856535a354e9b1b815f0957893e26b6622"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-composer-scaffold/zipball/97bd91856535a354e9b1b815f0957893e26b6622",
-                "reference": "97bd91856535a354e9b1b815f0957893e26b6622",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^2",
-                "php": ">=7.3.0"
-            },
-            "conflict": {
-                "drupal-composer/drupal-scaffold": "*"
-            },
-            "require-dev": {
-                "composer/composer": "^1.8@stable"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "Drupal\\Composer\\Plugin\\Scaffold\\Plugin",
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Drupal\\Composer\\Plugin\\Scaffold\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "description": "A flexible Composer project scaffold builder.",
-            "homepage": "https://www.drupal.org/project/drupal",
-            "keywords": [
-                "drupal"
-            ],
-            "support": {
-                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.2.1"
-            },
-            "time": "2023-11-15T23:23:28+00:00"
-        },
-        {
             "name": "drupal/core-dev",
             "version": "10.2.1",
             "source": {
@@ -23404,132 +23470,6 @@
                 "source": "https://github.com/drupal/core-dev/tree/10.2.1"
             },
             "time": "2023-12-12T22:01:45+00:00"
-        },
-        {
-            "name": "drupal/core-project-message",
-            "version": "10.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/drupal/core-project-message.git",
-                "reference": "d1da83722735cb0f7ccabf9fef7b5607b442c3a8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-project-message/zipball/d1da83722735cb0f7ccabf9fef7b5607b442c3a8",
-                "reference": "d1da83722735cb0f7ccabf9fef7b5607b442c3a8",
-                "shasum": ""
-            },
-            "require": {
-                "composer-plugin-api": "^2",
-                "php": ">=7.3.0"
-            },
-            "type": "composer-plugin",
-            "extra": {
-                "class": "Drupal\\Composer\\Plugin\\ProjectMessage\\MessagePlugin"
-            },
-            "autoload": {
-                "psr-4": {
-                    "Drupal\\Composer\\Plugin\\ProjectMessage\\": "."
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "description": "Adds a message after Composer installation.",
-            "homepage": "https://www.drupal.org/project/drupal",
-            "keywords": [
-                "drupal"
-            ],
-            "support": {
-                "source": "https://github.com/drupal/core-project-message/tree/10.2.1"
-            },
-            "time": "2023-07-24T07:55:25+00:00"
-        },
-        {
-            "name": "drupal/core-recommended",
-            "version": "10.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/drupal/core-recommended.git",
-                "reference": "e4809a6155daf96eb927f59d44e9f26fb5607dbe"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/e4809a6155daf96eb927f59d44e9f26fb5607dbe",
-                "reference": "e4809a6155daf96eb927f59d44e9f26fb5607dbe",
-                "shasum": ""
-            },
-            "require": {
-                "asm89/stack-cors": "~v2.2.0",
-                "composer/semver": "~3.4.0",
-                "doctrine/annotations": "~1.14.3",
-                "doctrine/deprecations": "~1.1.2",
-                "doctrine/lexer": "~2.1.0",
-                "drupal/core": "10.2.1",
-                "egulias/email-validator": "~4.0.2",
-                "guzzlehttp/guzzle": "~7.8.1",
-                "guzzlehttp/promises": "~2.0.2",
-                "guzzlehttp/psr7": "~2.6.2",
-                "masterminds/html5": "~2.8.1",
-                "mck89/peast": "~v1.15.4",
-                "pear/archive_tar": "~1.4.14",
-                "pear/console_getopt": "~v1.4.3",
-                "pear/pear-core-minimal": "~v1.10.14",
-                "pear/pear_exception": "~v1.0.2",
-                "psr/cache": "~3.0.0",
-                "psr/container": "~2.0.2",
-                "psr/event-dispatcher": "~1.0.0",
-                "psr/http-client": "~1.0.3",
-                "psr/http-factory": "~1.0.2",
-                "psr/log": "~3.0.0",
-                "ralouphie/getallheaders": "~3.0.3",
-                "sebastian/diff": "~4.0.5",
-                "symfony/console": "~v6.4.1",
-                "symfony/dependency-injection": "~v6.4.1",
-                "symfony/deprecation-contracts": "~v3.4.0",
-                "symfony/error-handler": "~v6.4.0",
-                "symfony/event-dispatcher": "~v6.4.0",
-                "symfony/event-dispatcher-contracts": "~v3.4.0",
-                "symfony/filesystem": "~v6.4.0",
-                "symfony/finder": "~v6.4.0",
-                "symfony/http-foundation": "~v6.4.0",
-                "symfony/http-kernel": "~v6.4.1",
-                "symfony/mailer": "~v6.4.0",
-                "symfony/mime": "~v6.4.0",
-                "symfony/polyfill-ctype": "~v1.28.0",
-                "symfony/polyfill-iconv": "~v1.28.0",
-                "symfony/polyfill-intl-grapheme": "~v1.28.0",
-                "symfony/polyfill-intl-idn": "~v1.28.0",
-                "symfony/polyfill-intl-normalizer": "~v1.28.0",
-                "symfony/polyfill-mbstring": "~v1.28.0",
-                "symfony/polyfill-php83": "~v1.28.0",
-                "symfony/process": "~v6.4.0",
-                "symfony/psr-http-message-bridge": "~v6.4.0",
-                "symfony/routing": "~v6.4.1",
-                "symfony/serializer": "~v6.4.1",
-                "symfony/service-contracts": "~v3.4.0",
-                "symfony/string": "~v6.4.0",
-                "symfony/translation-contracts": "~v3.4.0",
-                "symfony/validator": "~v6.4.0",
-                "symfony/var-dumper": "~v6.4.0",
-                "symfony/var-exporter": "~v6.4.1",
-                "symfony/yaml": "~v6.4.0",
-                "twig/twig": "~v3.8.0"
-            },
-            "conflict": {
-                "webflo/drupal-core-strict": "*"
-            },
-            "type": "metapackage",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "description": "Core and its dependencies with known-compatible minor versions. Require this project INSTEAD OF drupal/core.",
-            "support": {
-                "source": "https://github.com/drupal/core-recommended/tree/10.2.1"
-            },
-            "time": "2024-01-05T09:27:16+00:00"
         },
         {
             "name": "google/protobuf",
@@ -24841,16 +24781,16 @@
         },
         {
             "name": "phpdocumentor/type-resolver",
-            "version": "1.7.3",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpDocumentor/TypeResolver.git",
-                "reference": "3219c6ee25c9ea71e3d9bbaf39c67c9ebd499419"
+                "reference": "fad452781b3d774e3337b0c0b245dd8e5a4455fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/3219c6ee25c9ea71e3d9bbaf39c67c9ebd499419",
-                "reference": "3219c6ee25c9ea71e3d9bbaf39c67c9ebd499419",
+                "url": "https://api.github.com/repos/phpDocumentor/TypeResolver/zipball/fad452781b3d774e3337b0c0b245dd8e5a4455fc",
+                "reference": "fad452781b3d774e3337b0c0b245dd8e5a4455fc",
                 "shasum": ""
             },
             "require": {
@@ -24893,9 +24833,9 @@
             "description": "A PSR-5 based resolver of Class names, Types and Structural Element Names",
             "support": {
                 "issues": "https://github.com/phpDocumentor/TypeResolver/issues",
-                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.7.3"
+                "source": "https://github.com/phpDocumentor/TypeResolver/tree/1.8.0"
             },
-            "time": "2023-08-12T11:01:26+00:00"
+            "time": "2024-01-11T11:49:22+00:00"
         },
         {
             "name": "phpspec/prophecy",
