@@ -898,7 +898,7 @@
         totalCols = el.settings.columns.length
           + (el.settings.responsive ? 1 : 0)
           + (el.settings.actions.length > 0 ? 1 : 0);
-        $('<tfoot><tr class="footer"><td colspan="' + totalCols + '">' + indiciaFns.getFooterControls(el) + '</td></tr></tfoot>').appendTo(table);
+        $('<tfoot><tr class="footer form-inline"><td colspan="' + totalCols + '">' + indiciaFns.getFooterControls(el) + '</td></tr></tfoot>').appendTo(table);
       }
       setTableHeight(el);
       // Add tool icons for table settings, full screen and multiselect mode.

@@ -1585,10 +1585,10 @@
         dataType: 'json'
       })
       .done(function handleResponse(response) {
-          email.body = email.body.replace('\n', '<br/>');
+          // Insert media and comment data into template tokens.
           email.body = email.body.replace(/\{{ photos }}/g, response.media);
           email.body = email.body.replace(/\{{ comments }}/g, response.comments);
-          // save a comment to indicate that the mail was sent
+          // Save a comment to indicate that the mail was sent.
           saveVerifyComment(
             [occurrenceId],
             { query: 'Q' },

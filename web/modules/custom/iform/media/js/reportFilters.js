@@ -1997,7 +1997,7 @@ jQuery(document).ready(function ($) {
   function populateSurveys(surveyIdsToRetick) {
     let loadSurveysUsingWebsites = [];
     // Grab list of websites to filter against, only in include mode.
-    if ($('#filter-websites-mode').val() === 'in') {
+    if ($('#filter-websites-mode').length === 0 || $('#filter-websites-mode').val() === 'in') {
       $.each($('#website-list-checklist :checked'), function() {
         loadSurveysUsingWebsites.push($(this).val());
       });

@@ -86,7 +86,7 @@
         var selected = this === sourceSize ? ' selected="selected"' : '';
         opts.push('<option value="' + this + '"' + selected + '>' + this + '</option>');
       });
-      return '<span class="rows-per-page">Rows per page: <select>' + opts.join('') + '</select>';
+      return '<span class="rows-per-page">Rows per page: <select class="form-control input-sm">' + opts.join('') + '</select>';
     }
     return '';
   }
@@ -99,7 +99,10 @@
    */
   indiciaFns.getFooterControls = function getFooterControls(el) {
     return '<span class="showing"></span> ' +
-      '<span class="buttons"><button class="prev">Previous</button><button class="next">Next</button></span> ' +
+      '<span class="buttons">' +
+        '<button class="prev ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">Previous</button> ' +
+        '<button class="next ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">Next</button>' +
+      '</span> ' +
       getRowsPerPageControl(el);
   }
 

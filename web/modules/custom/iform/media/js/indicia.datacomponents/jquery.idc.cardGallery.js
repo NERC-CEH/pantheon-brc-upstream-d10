@@ -495,7 +495,7 @@
 
       $('<div class="es-card-gallery">').appendTo(el);
       if (el.settings.includePager) {
-        $('<div class="footer">' + indiciaFns.getFooterControls(el) + '</div>').appendTo(el);
+        $('<div class="footer form-inline">' + indiciaFns.getFooterControls(el) + '</div>').appendTo(el);
       }
       // Add tool icons for full screen and multiselect mode.
       if (el.settings.includeMultiSelectTool) {
