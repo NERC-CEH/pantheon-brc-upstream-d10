@@ -40,7 +40,7 @@
         "drupal/masquerade": "2.0-rc4",
         "drupal/notify": "2.0-beta1",
         "drupal/quicktabs": "3.0-alpha7",
-        "drupal/pathologic": "2.0-alpha1",
+        "drupal/pathologic": "2.0-alpha2",
         "drupal/rules": "3.0-alpha8",
         "drupal/serial": "2.0-beta2",
         "drupal/shs": "2.0-rc4",
@@ -179,7 +179,7 @@
         "drupal/smart_trim": "*",
         "drupal/smtp": "*",
         "drupal/social_media_links": "*",
-        "drupal/spammaster": "^2.13",
+        "drupal/spammaster": "^2.20",
         "drupal/state_machine": "^1.9",
         "drupal/super_login": "*",
         "drupal/superfish": "*",
@@ -229,7 +229,8 @@
         "drupal/simple_oauth": "^5.2",
         "drupal/core-recommended": "dev-default",
         "drupal/core-composer-scaffold": "^10.2",
-        "drupal/core-project-message": "^10.2"
+        "drupal/core-project-message": "^10.2",
+        "drupal/ckeditor_media_resize": "^1.0@beta"
     },
     "require-dev": {
         "drupal/core-dev": "^10.2"
