@@ -230,7 +230,9 @@
         "drupal/core-recommended": "dev-default",
         "drupal/core-composer-scaffold": "^10.2",
         "drupal/core-project-message": "^10.2",
-        "drupal/ckeditor_media_resize": "^1.0@beta"
+        "drupal/ckeditor_media_resize": "^1.0@beta",
+        "drupal/flmngr": "^2.13",
+        "drupal/image_resize_filter": "^1.2"
     },
     "require-dev": {
         "drupal/core-dev": "^10.2"

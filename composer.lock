@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e28e5814a3c50def124cda74d55f72f8",
+    "content-hash": "b8439c3d5209115bf73e95992b981c32",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -7788,6 +7788,61 @@
             }
         },
         {
+            "name": "drupal/flmngr",
+            "version": "2.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/flmngr.git",
+                "reference": "8.x-2.13"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/flmngr-8.x-2.13.zip",
+                "reference": "8.x-2.13",
+                "shasum": "fc35576b13b68f95934b33768119eebeede6785f"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10",
+                "drupal/n1ed": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-2.13",
+                    "datestamp": "1701869675",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitriy Komarov",
+                    "homepage": "https://flmngr.com",
+                    "email": "support@helpdesk.edsdk.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "EdSDK",
+                    "homepage": "https://www.drupal.org/user/3606953"
+                },
+                {
+                    "name": "Olga Tarkova",
+                    "homepage": "https://www.drupal.org/user/3627488"
+                }
+            ],
+            "description": "File Manager for Drupal",
+            "homepage": "https://drupal.org/project/flmngr",
+            "support": {
+                "source": "https://git.drupalcode.org/project/flmngr"
+            }
+        },
+        {
             "name": "drupal/font_iconpicker",
             "version": "1.1.0",
             "source": {
@@ -8438,6 +8493,66 @@
             "homepage": "http://drupal.org/project/iframe",
             "support": {
                 "source": "https://git.drupalcode.org/project/iframe"
+            }
+        },
+        {
+            "name": "drupal/image_resize_filter",
+            "version": "1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/image_resize_filter.git",
+                "reference": "8.x-1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/image_resize_filter-8.x-1.2.zip",
+                "reference": "8.x-1.2",
+                "shasum": "4d42350e60a3b60d6510fdde2e3a7fff17108ed8"
+            },
+            "require": {
+                "drupal/ckeditor": "^1.0",
+                "drupal/core": "^9.3 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.2",
+                    "datestamp": "1698272648",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "David Valdez (gnuget)",
+                    "homepage": "https://www.drupal.org/u/gnuget",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Ra Mänd (ram4nd)",
+                    "homepage": "https://www.drupal.org/u/ram4nd",
+                    "role": "Co-maintainer"
+                },
+                {
+                    "name": "quicksketch",
+                    "homepage": "https://www.drupal.org/user/35821"
+                },
+                {
+                    "name": "ram4nd",
+                    "homepage": "https://www.drupal.org/user/601534"
+                }
+            ],
+            "description": "Resizes images based on width and height attributes and optionally link to the original image.",
+            "homepage": "https://www.drupal.org/project/image_resize_filter",
+            "support": {
+                "source": "https://git.drupalcode.org/project/image_resize_filter",
+                "issues": "https://www.drupal.org/project/issues/image_resize_filter"
             }
         },
         {
@@ -10870,6 +10985,65 @@
                 "source": "http://cgit.drupalcode.org/mobile_detect",
                 "issues": "http://drupal.org/project/mobile_detect",
                 "irc": "irc://irc.freenode.org/drupal-contribute"
+            }
+        },
+        {
+            "name": "drupal/n1ed",
+            "version": "2.66.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/n1ed.git",
+                "reference": "8.x-2.66"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/n1ed-8.x-2.66.zip",
+                "reference": "8.x-2.66",
+                "shasum": "b629f0cd56a31eaa12eb5870ce48f429c7d794e7"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10",
+                "ext-curl": "*",
+                "ext-gd": "*",
+                "ext-json": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-2.66",
+                    "datestamp": "1703512208",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Dmitriy Komarov",
+                    "homepage": "https://n1ed.com",
+                    "email": "support@helpdesk.edsdk.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Ilia Kandaurov",
+                    "homepage": "https://www.drupal.org/user/3606953",
+                    "email": "ilia@kandaurov.su",
+                    "role": "Contributor"
+                },
+                {
+                    "name": "Olga Tarkova",
+                    "homepage": "https://www.drupal.org/user/3627488"
+                }
+            ],
+            "description": "Multiplugin for CKEditor 4. Includes Bootstrap editor, file manager, image editor, etc..",
+            "homepage": "https://drupal.org/project/n1ed",
+            "support": {
+                "source": "https://git.drupalcode.org/project/n1ed"
             }
         },
         {
@@ -27664,7 +27838,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "pantheon-upstreams/upstream-configuration": 20,
-        "drupal/core-recommended": 20
+        "drupal/core-recommended": 20,
+        "drupal/ckeditor_media_resize": 10
     },
     "prefer-stable": true,
     "prefer-lowest": false,
