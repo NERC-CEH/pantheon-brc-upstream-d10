@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b8439c3d5209115bf73e95992b981c32",
+    "content-hash": "f537cdf8149eb04265056f42baee9c95",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -3331,86 +3331,6 @@
             }
         },
         {
-            "name": "drupal/bootstrap_horizontal_tabs",
-            "version": "2.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs.git",
-                "reference": "2.0.5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_horizontal_tabs-2.0.5.zip",
-                "reference": "2.0.5",
-                "shasum": "31835f451773e0dfb93654650d4e826345d02f47"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.5",
-                    "datestamp": "1703281205",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "bjc2265",
-                    "homepage": "https://www.drupal.org/user/3759740"
-                },
-                {
-                    "name": "daddison",
-                    "homepage": "https://www.drupal.org/user/51447"
-                },
-                {
-                    "name": "gravelpot",
-                    "homepage": "https://www.drupal.org/user/748208"
-                },
-                {
-                    "name": "Jeff Cardwell",
-                    "homepage": "https://www.drupal.org/user/2913129"
-                },
-                {
-                    "name": "lreynaga",
-                    "homepage": "https://www.drupal.org/user/3400232"
-                },
-                {
-                    "name": "mark_fullmer",
-                    "homepage": "https://www.drupal.org/user/2612816"
-                },
-                {
-                    "name": "mmarler",
-                    "homepage": "https://www.drupal.org/user/500192"
-                },
-                {
-                    "name": "ricksta",
-                    "homepage": "https://www.drupal.org/user/311042"
-                },
-                {
-                    "name": "texas_tater",
-                    "homepage": "https://www.drupal.org/user/753614"
-                },
-                {
-                    "name": "utexas",
-                    "homepage": "https://www.drupal.org/user/3716409"
-                }
-            ],
-            "description": "Provides a custom field type displayed as horizontal tabs",
-            "homepage": "https://www.drupal.org/project/bootstrap_horizontal_tabs",
-            "support": {
-                "source": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs"
-            }
-        },
-        {
             "name": "drupal/bootstrap_layout_builder",
             "version": "2.1.2",
             "source": {
@@ -6361,6 +6281,73 @@
             }
         },
         {
+            "name": "drupal/dropzonejs_eb_widget",
+            "version": "2.8.0",
+            "require": {
+                "drupal/core": "^9.3 || ^10",
+                "drupal/dropzonejs": "*",
+                "drupal/entity_browser": "*"
+            },
+            "type": "metapackage",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-2.8",
+                    "datestamp": "1676965468",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Berdir",
+                    "homepage": "https://www.drupal.org/user/214652"
+                },
+                {
+                    "name": "chr.fritsch",
+                    "homepage": "https://www.drupal.org/user/2103716"
+                },
+                {
+                    "name": "Drupal media CI",
+                    "homepage": "https://www.drupal.org/user/3057985"
+                },
+                {
+                    "name": "Drupal Media Team",
+                    "homepage": "https://www.drupal.org/user/3260690"
+                },
+                {
+                    "name": "jungle",
+                    "homepage": "https://www.drupal.org/user/2919723"
+                },
+                {
+                    "name": "Primsi",
+                    "homepage": "https://www.drupal.org/user/282629"
+                },
+                {
+                    "name": "slashrsm",
+                    "homepage": "https://www.drupal.org/user/744628"
+                },
+                {
+                    "name": "wouters_f",
+                    "homepage": "https://www.drupal.org/user/721548"
+                },
+                {
+                    "name": "zkday",
+                    "homepage": "https://www.drupal.org/user/888644"
+                }
+            ],
+            "description": "DropzoneJS Entity browser widget.",
+            "homepage": "https://www.drupal.org/project/dropzonejs",
+            "support": {
+                "source": "https://git.drupalcode.org/project/dropzonejs"
+            }
+        },
+        {
             "name": "drupal/ds",
             "version": "3.18.0",
             "source": {
@@ -6657,6 +6644,100 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/entity",
                 "issues": "https://www.drupal.org/project/issues/entity"
+            }
+        },
+        {
+            "name": "drupal/entity_browser",
+            "version": "2.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/entity_browser.git",
+                "reference": "8.x-2.10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/entity_browser-8.x-2.10.zip",
+                "reference": "8.x-2.10",
+                "shasum": "d52548ea66dc56108c2e211aeaff6e1cc0522e85"
+            },
+            "require": {
+                "drupal/core": "^9.5 || ^10"
+            },
+            "conflict": {
+                "drupal/media_entity": "1.*"
+            },
+            "require-dev": {
+                "drupal/ckeditor": "^1.0",
+                "drupal/embed": "^1.0",
+                "drupal/entity_embed": "^1.0",
+                "drupal/entity_reference_revisions": "^1.0",
+                "drupal/entityqueue": "^1.0",
+                "drupal/inline_entity_form": "^1.0@rc",
+                "drupal/paragraphs": "^1.0",
+                "drupal/token": "^1.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-2.10",
+                    "datestamp": "1702325310",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Janez Urevc",
+                    "homepage": "https://github.com/slashrsm",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Primoz Hmeljak",
+                    "homepage": "https://github.com/primsi",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "See other contributors",
+                    "homepage": "https://www.drupal.org/node/1943336/committers",
+                    "role": "contributor"
+                },
+                {
+                    "name": "Drupal Media Team",
+                    "homepage": "https://www.drupal.org/user/3260690"
+                },
+                {
+                    "name": "marcingy",
+                    "homepage": "https://www.drupal.org/user/77320"
+                },
+                {
+                    "name": "oknate",
+                    "homepage": "https://www.drupal.org/user/471638"
+                },
+                {
+                    "name": "Primsi",
+                    "homepage": "https://www.drupal.org/user/282629"
+                },
+                {
+                    "name": "samuel.mortenson",
+                    "homepage": "https://www.drupal.org/user/2582268"
+                },
+                {
+                    "name": "slashrsm",
+                    "homepage": "https://www.drupal.org/user/744628"
+                }
+            ],
+            "description": "Entity browsing and selecting component.",
+            "homepage": "https://drupal.org/project/entity_browser",
+            "support": {
+                "source": "https://git.drupalcode.org/project/entity_browser",
+                "issues": "https://www.drupal.org/project/issues/entity_browser",
+                "irc": "irc://irc.freenode.org/drupal-contribute"
             }
         },
         {
@@ -7683,6 +7764,58 @@
             }
         },
         {
+            "name": "drupal/file_browser",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/file_browser.git",
+                "reference": "8.x-1.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/file_browser-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "e781413c5aaa8d5549bfdc9d1b4c12561708b36a"
+            },
+            "require": {
+                "drupal/core": "~8 || ~9 || ~10",
+                "drupal/dropzonejs": "^2",
+                "drupal/dropzonejs_eb_widget": "*",
+                "drupal/embed": "^1",
+                "drupal/entity_browser": "^2 || ^1",
+                "drupal/entity_embed": "^1"
+            },
+            "require-dev": {
+                "drupal/coder": "~8.3"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.4",
+                    "datestamp": "1670988445",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "samuel.mortenson",
+                    "homepage": "https://www.drupal.org/user/2582268"
+                }
+            ],
+            "description": "This module provides a default Entity Browser that lets you browse and select your files in a nice-looking, mobile-ready Masonry based interface, and upload files using the Dropzonejs module.",
+            "homepage": "https://www.drupal.org/project/file_browser",
+            "support": {
+                "source": "https://git.drupalcode.org/project/file_browser"
+            }
+        },
+        {
             "name": "drupal/file_delete",
             "version": "2.0.0",
             "source": {
@@ -7785,61 +7918,6 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/flexible_permissions",
                 "issues": "https://drupal.org/project/issues/flexible_permissions"
-            }
-        },
-        {
-            "name": "drupal/flmngr",
-            "version": "2.13.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/flmngr.git",
-                "reference": "8.x-2.13"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/flmngr-8.x-2.13.zip",
-                "reference": "8.x-2.13",
-                "shasum": "fc35576b13b68f95934b33768119eebeede6785f"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10",
-                "drupal/n1ed": "*"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-2.13",
-                    "datestamp": "1701869675",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Dmitriy Komarov",
-                    "homepage": "https://flmngr.com",
-                    "email": "support@helpdesk.edsdk.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "EdSDK",
-                    "homepage": "https://www.drupal.org/user/3606953"
-                },
-                {
-                    "name": "Olga Tarkova",
-                    "homepage": "https://www.drupal.org/user/3627488"
-                }
-            ],
-            "description": "File Manager for Drupal",
-            "homepage": "https://drupal.org/project/flmngr",
-            "support": {
-                "source": "https://git.drupalcode.org/project/flmngr"
             }
         },
         {
@@ -8496,66 +8574,6 @@
             }
         },
         {
-            "name": "drupal/image_resize_filter",
-            "version": "1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/image_resize_filter.git",
-                "reference": "8.x-1.2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/image_resize_filter-8.x-1.2.zip",
-                "reference": "8.x-1.2",
-                "shasum": "4d42350e60a3b60d6510fdde2e3a7fff17108ed8"
-            },
-            "require": {
-                "drupal/ckeditor": "^1.0",
-                "drupal/core": "^9.3 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-1.2",
-                    "datestamp": "1698272648",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "David Valdez (gnuget)",
-                    "homepage": "https://www.drupal.org/u/gnuget",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Ra Mänd (ram4nd)",
-                    "homepage": "https://www.drupal.org/u/ram4nd",
-                    "role": "Co-maintainer"
-                },
-                {
-                    "name": "quicksketch",
-                    "homepage": "https://www.drupal.org/user/35821"
-                },
-                {
-                    "name": "ram4nd",
-                    "homepage": "https://www.drupal.org/user/601534"
-                }
-            ],
-            "description": "Resizes images based on width and height attributes and optionally link to the original image.",
-            "homepage": "https://www.drupal.org/project/image_resize_filter",
-            "support": {
-                "source": "https://git.drupalcode.org/project/image_resize_filter",
-                "issues": "https://www.drupal.org/project/issues/image_resize_filter"
-            }
-        },
-        {
             "name": "drupal/imce",
             "version": "3.0.11",
             "source": {
@@ -8610,17 +8628,17 @@
         },
         {
             "name": "drupal/inline_entity_form",
-            "version": "1.0.0-rc15",
+            "version": "1.0.0-rc17",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/inline_entity_form.git",
-                "reference": "8.x-1.0-rc15"
+                "reference": "8.x-1.0-rc17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/inline_entity_form-8.x-1.0-rc15.zip",
-                "reference": "8.x-1.0-rc15",
-                "shasum": "7702801f7e599956fc3d10cff8257809f53ac3ec"
+                "url": "https://ftp.drupal.org/files/projects/inline_entity_form-8.x-1.0-rc17.zip",
+                "reference": "8.x-1.0-rc17",
+                "shasum": "626622e01cf7a2d2977fdc06ae09afd5a814e09b"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9 || ^10",
@@ -8632,8 +8650,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-rc15",
-                    "datestamp": "1678126675",
+                    "version": "8.x-1.0-rc17",
+                    "datestamp": "1703020130",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
@@ -8656,6 +8674,10 @@
                 {
                     "name": "dawehner",
                     "homepage": "https://www.drupal.org/user/99340"
+                },
+                {
+                    "name": "dww",
+                    "homepage": "https://www.drupal.org/user/46549"
                 },
                 {
                     "name": "geek-merlin",
@@ -10988,65 +11010,6 @@
             }
         },
         {
-            "name": "drupal/n1ed",
-            "version": "2.66.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/n1ed.git",
-                "reference": "8.x-2.66"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/n1ed-8.x-2.66.zip",
-                "reference": "8.x-2.66",
-                "shasum": "b629f0cd56a31eaa12eb5870ce48f429c7d794e7"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10",
-                "ext-curl": "*",
-                "ext-gd": "*",
-                "ext-json": "*"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-2.66",
-                    "datestamp": "1703512208",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Dmitriy Komarov",
-                    "homepage": "https://n1ed.com",
-                    "email": "support@helpdesk.edsdk.com",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Ilia Kandaurov",
-                    "homepage": "https://www.drupal.org/user/3606953",
-                    "email": "ilia@kandaurov.su",
-                    "role": "Contributor"
-                },
-                {
-                    "name": "Olga Tarkova",
-                    "homepage": "https://www.drupal.org/user/3627488"
-                }
-            ],
-            "description": "Multiplugin for CKEditor 4. Includes Bootstrap editor, file manager, image editor, etc..",
-            "homepage": "https://drupal.org/project/n1ed",
-            "support": {
-                "source": "https://git.drupalcode.org/project/n1ed"
-            }
-        },
-        {
             "name": "drupal/notify",
             "version": "2.0.0-beta1",
             "source": {
@@ -13155,57 +13118,6 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/social_media_links",
                 "issues": "https://www.drupal.org/project/issues/social_media_links"
-            }
-        },
-        {
-            "name": "drupal/spammaster",
-            "version": "2.20.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.20"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.20.zip",
-                "reference": "8.x-2.20",
-                "shasum": "9474fc46dcdeb35d05b717eaf51453429c5b66f7"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-2.20",
-                    "datestamp": "1706362184",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Pedro Alves",
-                    "homepage": "https://www.drupal.org/u/pedro-alves",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "This module provides a Dacast handler for Video Embed Field.",
-            "homepage": "https://www.drupal.org/project/spammaster",
-            "keywords": [
-                "Drupal",
-                "Security",
-                "Spam Master"
-            ],
-            "support": {
-                "source": "https://git.drupalcode.org/project/spammaster",
-                "issues": "https://www.drupal.org/project/issues/spammaster"
             }
         },
         {
@@ -15978,6 +15890,46 @@
             "time": "2023-10-06T06:47:41+00:00"
         },
         {
+            "name": "enyo/dropzone",
+            "version": "v5.9.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dropzone/dropzone-packagist.git",
+                "reference": "286b2dc1f1195bd12169e4c9d5f91cfbe46e245f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dropzone/dropzone-packagist/zipball/286b2dc1f1195bd12169e4c9d5f91cfbe46e245f",
+                "reference": "286b2dc1f1195bd12169e4c9d5f91cfbe46e245f",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matias Meno",
+                    "email": "m@tias.me",
+                    "homepage": "http://www.yesmeno.com"
+                }
+            ],
+            "description": "Handles drag and drop of files for you.",
+            "homepage": "http://www.dropzonejs.com",
+            "keywords": [
+                "drag and drop",
+                "dragndrop",
+                "file upload",
+                "upload"
+            ],
+            "support": {
+                "issues": "https://github.com/dropzone/dropzone-packagist/issues",
+                "source": "https://github.com/dropzone/dropzone-packagist/tree/v5.9.3"
+            },
+            "time": "2021-09-21T17:03:36+00:00"
+        },
+        {
             "name": "ezyang/htmlpurifier",
             "version": "v4.17.0",
             "source": {
@@ -16730,16 +16682,16 @@
         },
         {
             "name": "laminas/laminas-stdlib",
-            "version": "3.18.0",
+            "version": "3.19.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-stdlib.git",
-                "reference": "e85b29076c6216e7fc98e72b42dbe1bbc3b95ecf"
+                "reference": "6a192dd0882b514e45506f533b833b623b78fff3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/e85b29076c6216e7fc98e72b42dbe1bbc3b95ecf",
-                "reference": "e85b29076c6216e7fc98e72b42dbe1bbc3b95ecf",
+                "url": "https://api.github.com/repos/laminas/laminas-stdlib/zipball/6a192dd0882b514e45506f533b833b623b78fff3",
+                "reference": "6a192dd0882b514e45506f533b833b623b78fff3",
                 "shasum": ""
             },
             "require": {
@@ -16750,10 +16702,10 @@
             },
             "require-dev": {
                 "laminas/laminas-coding-standard": "^2.5",
-                "phpbench/phpbench": "^1.2.14",
-                "phpunit/phpunit": "^10.3.3",
+                "phpbench/phpbench": "^1.2.15",
+                "phpunit/phpunit": "^10.5.8",
                 "psalm/plugin-phpunit": "^0.18.4",
-                "vimeo/psalm": "^5.15.0"
+                "vimeo/psalm": "^5.20.0"
             },
             "type": "library",
             "autoload": {
@@ -16785,7 +16737,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2023-09-19T10:15:21+00:00"
+            "time": "2024-01-19T12:39:49+00:00"
         },
         {
             "name": "lcobucci/clock",
@@ -23592,6 +23544,86 @@
             "time": "2022-12-30T00:23:10+00:00"
         },
         {
+            "name": "drupal/bootstrap_horizontal_tabs",
+            "version": "2.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs.git",
+                "reference": "2.0.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_horizontal_tabs-2.0.6.zip",
+                "reference": "2.0.6",
+                "shasum": "7e2a2b3de3abcbca7d6f7b2540f121cf4ab725b3"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.6",
+                    "datestamp": "1706289954",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "bjc2265",
+                    "homepage": "https://www.drupal.org/user/3759740"
+                },
+                {
+                    "name": "daddison",
+                    "homepage": "https://www.drupal.org/user/51447"
+                },
+                {
+                    "name": "gravelpot",
+                    "homepage": "https://www.drupal.org/user/748208"
+                },
+                {
+                    "name": "Jeff Cardwell",
+                    "homepage": "https://www.drupal.org/user/2913129"
+                },
+                {
+                    "name": "lreynaga",
+                    "homepage": "https://www.drupal.org/user/3400232"
+                },
+                {
+                    "name": "mark_fullmer",
+                    "homepage": "https://www.drupal.org/user/2612816"
+                },
+                {
+                    "name": "mmarler",
+                    "homepage": "https://www.drupal.org/user/500192"
+                },
+                {
+                    "name": "ricksta",
+                    "homepage": "https://www.drupal.org/user/311042"
+                },
+                {
+                    "name": "texas_tater",
+                    "homepage": "https://www.drupal.org/user/753614"
+                },
+                {
+                    "name": "utexas",
+                    "homepage": "https://www.drupal.org/user/3716409"
+                }
+            ],
+            "description": "Provides a custom field type displayed as horizontal tabs",
+            "homepage": "https://www.drupal.org/project/bootstrap_horizontal_tabs",
+            "support": {
+                "source": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs"
+            }
+        },
+        {
             "name": "drupal/coder",
             "version": "8.3.22",
             "source": {
@@ -23644,7 +23676,7 @@
         },
         {
             "name": "drupal/core-dev",
-            "version": "10.2.1",
+            "version": "10.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-dev.git",
@@ -23694,22 +23726,73 @@
             ],
             "description": "require-dev dependencies from drupal/drupal; use in addition to drupal/core-recommended to run tests from drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-dev/tree/10.2.1"
+                "source": "https://github.com/drupal/core-dev/tree/10.2.2"
             },
             "time": "2023-12-12T22:01:45+00:00"
         },
         {
-            "name": "google/protobuf",
-            "version": "v3.25.1",
+            "name": "drupal/spammaster",
+            "version": "2.21.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "1fb247e72df401c863ed239c1660f981644af5db"
+                "url": "https://git.drupalcode.org/project/spammaster.git",
+                "reference": "8.x-2.21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/1fb247e72df401c863ed239c1660f981644af5db",
-                "reference": "1fb247e72df401c863ed239c1660f981644af5db",
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.21.zip",
+                "reference": "8.x-2.21",
+                "shasum": "e341ae4312249e4dcb3cc8633231db268e548e8a"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-2.21",
+                    "datestamp": "1706539196",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Pedro Alves",
+                    "homepage": "https://www.drupal.org/u/pedro-alves",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "This module provides a Dacast handler for Video Embed Field.",
+            "homepage": "https://www.drupal.org/project/spammaster",
+            "keywords": [
+                "Drupal",
+                "Security",
+                "Spam Master"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/spammaster",
+                "issues": "https://www.drupal.org/project/issues/spammaster"
+            }
+        },
+        {
+            "name": "google/protobuf",
+            "version": "v3.25.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/protocolbuffers/protobuf-php.git",
+                "reference": "83ea4c147718666ce6a9b9332ac2aa588c9211eb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/83ea4c147718666ce6a9b9332ac2aa588c9211eb",
+                "reference": "83ea4c147718666ce6a9b9332ac2aa588c9211eb",
                 "shasum": ""
             },
             "require": {
@@ -23738,9 +23821,9 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.25.1"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v3.25.2"
             },
-            "time": "2023-11-15T21:36:03+00:00"
+            "time": "2024-01-09T22:12:32+00:00"
         },
         {
             "name": "instaclick/php-webdriver",
@@ -23877,21 +23960,21 @@
         },
         {
             "name": "mglaman/phpstan-drupal",
-            "version": "1.2.4",
+            "version": "1.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mglaman/phpstan-drupal.git",
-                "reference": "57b2cc67fb4416e8484db37a3d8502ac8fb3c0d6"
+                "reference": "ba8678f8cbea42cc41022c21751004eb677cf5a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mglaman/phpstan-drupal/zipball/57b2cc67fb4416e8484db37a3d8502ac8fb3c0d6",
-                "reference": "57b2cc67fb4416e8484db37a3d8502ac8fb3c0d6",
+                "url": "https://api.github.com/repos/mglaman/phpstan-drupal/zipball/ba8678f8cbea42cc41022c21751004eb677cf5a4",
+                "reference": "ba8678f8cbea42cc41022c21751004eb677cf5a4",
                 "shasum": ""
             },
             "require": {
                 "php": "^7.4 || ^8.0",
-                "phpstan/phpstan": "^1.10.1",
+                "phpstan/phpstan": "^1.10.56",
                 "phpstan/phpstan-deprecation-rules": "^1.1.4",
                 "symfony/finder": "^4.2 || ^5.0 || ^6.0 || ^7.0",
                 "symfony/yaml": "^4.2|| ^5.0 || ^6.0 || ^7.0",
@@ -23961,7 +24044,7 @@
             "description": "Drupal extension and rules for PHPStan",
             "support": {
                 "issues": "https://github.com/mglaman/phpstan-drupal/issues",
-                "source": "https://github.com/mglaman/phpstan-drupal/tree/1.2.4"
+                "source": "https://github.com/mglaman/phpstan-drupal/tree/1.2.6"
             },
             "funding": [
                 {
@@ -23977,7 +24060,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-11-14T22:47:32+00:00"
+            "time": "2024-01-16T00:42:10+00:00"
         },
         {
             "name": "micheh/phpcs-gitlab",
@@ -24143,16 +24226,16 @@
         },
         {
             "name": "open-telemetry/api",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "78bf7615fa0504b5b9ac632cc79bb83ffe7ebb90"
+                "reference": "401d04c6afe349afa78250ac862db2f89dbf94f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/78bf7615fa0504b5b9ac632cc79bb83ffe7ebb90",
-                "reference": "78bf7615fa0504b5b9ac632cc79bb83ffe7ebb90",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/401d04c6afe349afa78250ac862db2f89dbf94f6",
+                "reference": "401d04c6afe349afa78250ac862db2f89dbf94f6",
                 "shasum": ""
             },
             "require": {
@@ -24164,7 +24247,7 @@
                 "symfony/polyfill-php82": "^1.26"
             },
             "conflict": {
-                "open-telemetry/sdk": "<=1.0.1"
+                "open-telemetry/sdk": "<=1.0.4"
             },
             "type": "library",
             "extra": {
@@ -24206,20 +24289,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2023-12-13T02:03:10+00:00"
+            "time": "2024-01-10T13:04:59+00:00"
         },
         {
             "name": "open-telemetry/context",
-            "version": "1.0.0",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/context.git",
-                "reference": "99f3d54fa9f9ff67421774feeef5e5b1f209ea21"
+                "reference": "e9d254a7c89885e63fd2fde54e31e81aaaf52b7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/99f3d54fa9f9ff67421774feeef5e5b1f209ea21",
-                "reference": "99f3d54fa9f9ff67421774feeef5e5b1f209ea21",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/e9d254a7c89885e63fd2fde54e31e81aaaf52b7c",
+                "reference": "e9d254a7c89885e63fd2fde54e31e81aaaf52b7c",
                 "shasum": ""
             },
             "require": {
@@ -24267,25 +24350,25 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2023-09-05T03:38:44+00:00"
+            "time": "2024-01-13T05:50:44+00:00"
         },
         {
             "name": "open-telemetry/exporter-otlp",
-            "version": "1.0.1",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/exporter-otlp.git",
-                "reference": "89aaf718248e558679e04129cd0ec7d708c91fc3"
+                "reference": "db7b96bd04284d2fea92dccaebb68f8af40f79d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/exporter-otlp/zipball/89aaf718248e558679e04129cd0ec7d708c91fc3",
-                "reference": "89aaf718248e558679e04129cd0ec7d708c91fc3",
+                "url": "https://api.github.com/repos/opentelemetry-php/exporter-otlp/zipball/db7b96bd04284d2fea92dccaebb68f8af40f79d8",
+                "reference": "db7b96bd04284d2fea92dccaebb68f8af40f79d8",
                 "shasum": ""
             },
             "require": {
                 "open-telemetry/api": "^1.0",
-                "open-telemetry/gen-otlp-protobuf": "^1.0",
+                "open-telemetry/gen-otlp-protobuf": "^1.1",
                 "open-telemetry/sdk": "^1.0",
                 "php": "^7.4 || ^8.0",
                 "php-http/discovery": "^1.14"
@@ -24331,20 +24414,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2023-12-17T23:25:22+00:00"
+            "time": "2024-01-17T12:46:01+00:00"
         },
         {
             "name": "open-telemetry/gen-otlp-protobuf",
-            "version": "1.0.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/gen-otlp-protobuf.git",
-                "reference": "30fe95f10c2ec1a577f78257c86fbbebe739ca5e"
+                "reference": "76e2a44357f8c3fdcabcb070ec8a59e52ae3e3c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/gen-otlp-protobuf/zipball/30fe95f10c2ec1a577f78257c86fbbebe739ca5e",
-                "reference": "30fe95f10c2ec1a577f78257c86fbbebe739ca5e",
+                "url": "https://api.github.com/repos/opentelemetry-php/gen-otlp-protobuf/zipball/76e2a44357f8c3fdcabcb070ec8a59e52ae3e3c3",
+                "reference": "76e2a44357f8c3fdcabcb070ec8a59e52ae3e3c3",
                 "shasum": ""
             },
             "require": {
@@ -24394,20 +24477,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2023-09-05T03:38:44+00:00"
+            "time": "2024-01-16T21:54:57+00:00"
         },
         {
             "name": "open-telemetry/sdk",
-            "version": "1.0.4",
+            "version": "1.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sdk.git",
-                "reference": "550ea6e9a14bef8b5fc522b88687b57306013fe8"
+                "reference": "818263750d299df5b9612a738440e56d92e5a296"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/550ea6e9a14bef8b5fc522b88687b57306013fe8",
-                "reference": "550ea6e9a14bef8b5fc522b88687b57306013fe8",
+                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/818263750d299df5b9612a738440e56d92e5a296",
+                "reference": "818263750d299df5b9612a738440e56d92e5a296",
                 "shasum": ""
             },
             "require": {
@@ -24477,20 +24560,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2023-12-28T22:10:34+00:00"
+            "time": "2024-01-24T12:00:22+00:00"
         },
         {
             "name": "open-telemetry/sem-conv",
-            "version": "1.23.1",
+            "version": "1.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sem-conv.git",
-                "reference": "6921f9450510bf8e87c737f731ff818de05bf9c4"
+                "reference": "d03e6501d21c04cd1b1e66e4cbcc7c2dd2e2cfa3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/6921f9450510bf8e87c737f731ff818de05bf9c4",
-                "reference": "6921f9450510bf8e87c737f731ff818de05bf9c4",
+                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/d03e6501d21c04cd1b1e66e4cbcc7c2dd2e2cfa3",
+                "reference": "d03e6501d21c04cd1b1e66e4cbcc7c2dd2e2cfa3",
                 "shasum": ""
             },
             "require": {
@@ -24534,7 +24617,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2023-11-21T22:12:22+00:00"
+            "time": "2024-01-23T21:47:17+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -25278,16 +25361,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.10.54",
+            "version": "1.10.57",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3e25f279dada0adc14ffd7bad09af2e2fc3523bb"
+                "reference": "1627b1d03446904aaa77593f370c5201d2ecc34e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3e25f279dada0adc14ffd7bad09af2e2fc3523bb",
-                "reference": "3e25f279dada0adc14ffd7bad09af2e2fc3523bb",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/1627b1d03446904aaa77593f370c5201d2ecc34e",
+                "reference": "1627b1d03446904aaa77593f370c5201d2ecc34e",
                 "shasum": ""
             },
             "require": {
@@ -25336,7 +25419,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-01-05T15:50:47+00:00"
+            "time": "2024-01-24T11:51:34+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",
@@ -25759,16 +25842,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.15",
+            "version": "9.6.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "05017b80304e0eb3f31d90194a563fd53a6021f1"
+                "reference": "3767b2c56ce02d01e3491046f33466a1ae60a37f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/05017b80304e0eb3f31d90194a563fd53a6021f1",
-                "reference": "05017b80304e0eb3f31d90194a563fd53a6021f1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3767b2c56ce02d01e3491046f33466a1ae60a37f",
+                "reference": "3767b2c56ce02d01e3491046f33466a1ae60a37f",
                 "shasum": ""
             },
             "require": {
@@ -25842,7 +25925,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.15"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.16"
             },
             "funding": [
                 {
@@ -25858,7 +25941,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-01T16:55:19+00:00"
+            "time": "2024-01-19T07:03:14+00:00"
         },
         {
             "name": "react/promise",
@@ -27129,16 +27212,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.8.0",
+            "version": "3.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "5805f7a4e4958dbb5e944ef1e6edae0a303765e7"
+                "reference": "14f5fff1e64118595db5408e946f3a22c75807f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/5805f7a4e4958dbb5e944ef1e6edae0a303765e7",
-                "reference": "5805f7a4e4958dbb5e944ef1e6edae0a303765e7",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/14f5fff1e64118595db5408e946f3a22c75807f7",
+                "reference": "14f5fff1e64118595db5408e946f3a22c75807f7",
                 "shasum": ""
             },
             "require": {
@@ -27148,11 +27231,11 @@
                 "php": ">=5.4.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.3.4"
             },
             "bin": [
-                "bin/phpcs",
-                "bin/phpcbf"
+                "bin/phpcbf",
+                "bin/phpcs"
             ],
             "type": "library",
             "extra": {
@@ -27205,7 +27288,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-12-08T12:32:31+00:00"
+            "time": "2024-01-11T20:47:48+00:00"
         },
         {
             "name": "symfony/browser-kit",
