@@ -236,7 +236,7 @@
         "drupal/queue_ui": "^3.1",
         "drupal/queue_order": "^2.1",
         "drupal/media_gallery": "^2.2",
-        "drupal/media_directories": "^2.0",
+        "drupal/media_directories": "2.1-beta3",
         "drupal/svg_image": "^3.0"
     },
     "require-dev": {
