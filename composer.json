@@ -235,7 +235,9 @@
         "drupal/media_library_importer": "^2.0",
         "drupal/queue_ui": "^3.1",
         "drupal/queue_order": "^2.1",
-        "drupal/media_gallery": "^2.2"
+        "drupal/media_gallery": "^2.2",
+        "drupal/media_directories": "^2.0",
+        "drupal/svg_image": "^3.0"
     },
     "require-dev": {
         "drupal/core-dev": "^10.2",
@@ -285,7 +287,7 @@
         "post-update-cmd": ["DrupalComposerManaged\\ComposerScripts::postUpdate"]
     },
     "config": {
-		"process-timeout":0,
+        "process-timeout": 0,
         "preferred-install": "dist",
         "sort-packages": false,
         "platform": {
