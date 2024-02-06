@@ -241,8 +241,9 @@
     },
     "require-dev": {
         "drupal/core-dev": "^10.2",
-        "drupal/spammaster": "^2.24",
-        "drupal/bootstrap_horizontal_tabs": "^2.0"
+        "drupal/spammaster": "^2.28",
+        "drupal/bootstrap_horizontal_tabs": "^2.0",
+        "drupal/body_node_id_class": "^2.0"
     },
     "conflict": {
         "drupal/drupal": "*"

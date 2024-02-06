@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "58d3c2c03ad3dd8eb0832f35c8a5d665",
+    "content-hash": "135540ad6f84941620084eb485b1ee54",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -23936,6 +23936,54 @@
             "time": "2022-12-30T00:23:10+00:00"
         },
         {
+            "name": "drupal/body_node_id_class",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/body_node_id_class.git",
+                "reference": "2.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/body_node_id_class-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "b18b086b19a3f0df64607efbb113e3e9b9e3fd5f"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.0",
+                    "datestamp": "1683197987",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "klukacin",
+                    "homepage": "https://www.drupal.org/user/164107"
+                },
+                {
+                    "name": "tamerzg",
+                    "homepage": "https://www.drupal.org/user/464564"
+                }
+            ],
+            "description": "Adds a node ID and type class to the <body> tag",
+            "homepage": "https://www.drupal.org/project/body_node_id_class",
+            "support": {
+                "source": "https://git.drupalcode.org/project/body_node_id_class"
+            }
+        },
+        {
             "name": "drupal/bootstrap_horizontal_tabs",
             "version": "2.0.6",
             "source": {
@@ -24124,17 +24172,17 @@
         },
         {
             "name": "drupal/spammaster",
-            "version": "2.25.0",
+            "version": "2.28.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.25"
+                "reference": "8.x-2.28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.25.zip",
-                "reference": "8.x-2.25",
-                "shasum": "31ff306f07adb4d408026eaf5d3fb7e8c1eec4bf"
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.28.zip",
+                "reference": "8.x-2.28",
+                "shasum": "5cff03d95a6e4497d09e76ddf5fd5fce9d1b2e6a"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10"
@@ -24142,8 +24190,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.25",
-                    "datestamp": "1706715538",
+                    "version": "8.x-2.28",
+                    "datestamp": "1707131951",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
