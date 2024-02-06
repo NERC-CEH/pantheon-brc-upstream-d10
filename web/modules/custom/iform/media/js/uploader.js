@@ -98,7 +98,7 @@ jQuery(document).ready(function($) {
   function initServerConfig(fileName) {
     var url;
     urlSep = indiciaData.initServerConfigUrl.indexOf('?') === -1 ? '?' : '&';
-    url = indiciaData.initServerConfigUrl + urlSep + 'data-file=' + fileName;
+    url = indiciaData.initServerConfigUrl + urlSep + 'data-file=' + encodeURIComponent(fileName);
     if (indiciaData.import_template_id) {
       url += '&import_template_id=' + indiciaData.import_template_id;
     }
@@ -114,7 +114,7 @@ jQuery(document).ready(function($) {
   function transferDataToTempTable(fileName) {
     urlSep = indiciaData.loadChunkToTempTableUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.loadChunkToTempTableUrl + urlSep + 'data-file=' + fileName,
+      url: indiciaData.loadChunkToTempTableUrl + urlSep + 'data-file=' + encodeURIComponent(fileName),
       dataType: 'json',
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
     }).done(function(transferResult) {
@@ -157,7 +157,7 @@ jQuery(document).ready(function($) {
     logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.uploadingFile);
     urlSep = indiciaData.sendFileToWarehouseUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.sendFileToWarehouseUrl + urlSep + 'interim-file=' + indiciaData.processUploadedInterimFile,
+      url: indiciaData.sendFileToWarehouseUrl + urlSep + 'interim-file=' + encodeURIComponent(indiciaData.processUploadedInterimFile),
       dataType: 'json',
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
       success: function(sendFileResult) {
@@ -763,7 +763,7 @@ jQuery(document).ready(function($) {
   function nextLookupProcessingStep() {
     urlSep = indiciaData.processLookupMatchingUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.processLookupMatchingUrl + urlSep + 'data-file=' + indiciaData.dataFile + '&index=' + indiciaData.processLookupIndex,
+      url: indiciaData.processLookupMatchingUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '&index=' + indiciaData.processLookupIndex,
       dataType: 'json',
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
     })
@@ -872,7 +872,7 @@ jQuery(document).ready(function($) {
     logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.savingMatchesFor.replace('{1}', $(button).data('source-field')));
     urlSep = indiciaData.saveLookupMatchesGroupUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.saveLookupMatchesGroupUrl + urlSep + 'data-file=' + indiciaData.dataFile,
+      url: indiciaData.saveLookupMatchesGroupUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile),
       dataType: 'json',
       method: 'POST',
       data: matches,
@@ -923,7 +923,7 @@ jQuery(document).ready(function($) {
   function nextPreprocessingStep() {
     urlSep = indiciaData.preprocessUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.preprocessUrl + urlSep + 'data-file=' + indiciaData.dataFile + '&index=' + indiciaData.preprocessIndex,
+      url: indiciaData.preprocessUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '&index=' + indiciaData.preprocessIndex,
       dataType: 'json',
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
     })
@@ -985,7 +985,7 @@ jQuery(document).ready(function($) {
       msg += ' ' + indiciaData.lang.import_helper_2.importingFoundErrors;
     }
     $('#error-info').append(msg);
-    $('#error-info').append('<div><a class="btn btn-info" href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + indiciaData.dataFile + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
+    $('#error-info').append('<div><a class="btn btn-info" href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
     $('#error-info').fadeIn();
   }
 
@@ -1013,7 +1013,7 @@ jQuery(document).ready(function($) {
     }
     urlSep = indiciaData.importChunkUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.importChunkUrl + urlSep + 'data-file=' + indiciaData.dataFile,
+      url: indiciaData.importChunkUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile),
       dataType: 'json',
       method: 'POST',
       data: postData,
