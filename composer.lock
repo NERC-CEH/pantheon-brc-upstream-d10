@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6a8fd70d0959eece24de6d68c824060",
+    "content-hash": "12c7cf408cfbc3fcf4e70fd2363ac4c6",
     "packages": [
         {
             "name": "academicpuma/citeproc-php",
@@ -3208,6 +3208,54 @@
             }
         },
         {
+            "name": "drupal/body_node_id_class",
+            "version": "2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/body_node_id_class.git",
+                "reference": "2.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/body_node_id_class-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "b18b086b19a3f0df64607efbb113e3e9b9e3fd5f"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.0",
+                    "datestamp": "1683197987",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "klukacin",
+                    "homepage": "https://www.drupal.org/user/164107"
+                },
+                {
+                    "name": "tamerzg",
+                    "homepage": "https://www.drupal.org/user/464564"
+                }
+            ],
+            "description": "Adds a node ID and type class to the <body> tag",
+            "homepage": "https://www.drupal.org/project/body_node_id_class",
+            "support": {
+                "source": "https://git.drupalcode.org/project/body_node_id_class"
+            }
+        },
+        {
             "name": "drupal/bootstrap",
             "version": "3.29.0",
             "source": {
@@ -3328,6 +3376,86 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/bootstrap4",
                 "issues": "https://www.drupal.org/project/issues/bootstrap4"
+            }
+        },
+        {
+            "name": "drupal/bootstrap_horizontal_tabs",
+            "version": "2.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs.git",
+                "reference": "2.0.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_horizontal_tabs-2.0.6.zip",
+                "reference": "2.0.6",
+                "shasum": "7e2a2b3de3abcbca7d6f7b2540f121cf4ab725b3"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.6",
+                    "datestamp": "1706289954",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "bjc2265",
+                    "homepage": "https://www.drupal.org/user/3759740"
+                },
+                {
+                    "name": "daddison",
+                    "homepage": "https://www.drupal.org/user/51447"
+                },
+                {
+                    "name": "gravelpot",
+                    "homepage": "https://www.drupal.org/user/748208"
+                },
+                {
+                    "name": "Jeff Cardwell",
+                    "homepage": "https://www.drupal.org/user/2913129"
+                },
+                {
+                    "name": "lreynaga",
+                    "homepage": "https://www.drupal.org/user/3400232"
+                },
+                {
+                    "name": "mark_fullmer",
+                    "homepage": "https://www.drupal.org/user/2612816"
+                },
+                {
+                    "name": "mmarler",
+                    "homepage": "https://www.drupal.org/user/500192"
+                },
+                {
+                    "name": "ricksta",
+                    "homepage": "https://www.drupal.org/user/311042"
+                },
+                {
+                    "name": "texas_tater",
+                    "homepage": "https://www.drupal.org/user/753614"
+                },
+                {
+                    "name": "utexas",
+                    "homepage": "https://www.drupal.org/user/3716409"
+                }
+            ],
+            "description": "Provides a custom field type displayed as horizontal tabs",
+            "homepage": "https://www.drupal.org/project/bootstrap_horizontal_tabs",
+            "support": {
+                "source": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs"
             }
         },
         {
@@ -4959,17 +5087,17 @@
         },
         {
             "name": "drupal/commerce_shipping",
-            "version": "2.7.0",
+            "version": "2.8.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/commerce_shipping.git",
-                "reference": "8.x-2.7"
+                "reference": "8.x-2.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/commerce_shipping-8.x-2.7.zip",
-                "reference": "8.x-2.7",
-                "shasum": "95438247d92b57ec668705712e3ed62e0ff56aaf"
+                "url": "https://ftp.drupal.org/files/projects/commerce_shipping-8.x-2.8.zip",
+                "reference": "8.x-2.8",
+                "shasum": "a62b910078df28f0e6ed1d27c111020d00b57816"
             },
             "require": {
                 "drupal/commerce": "^2.29",
@@ -4981,8 +5109,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.7",
-                    "datestamp": "1703971126",
+                    "version": "8.x-2.8",
+                    "datestamp": "1707227072",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13476,6 +13604,57 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/social_media_links",
                 "issues": "https://www.drupal.org/project/issues/social_media_links"
+            }
+        },
+        {
+            "name": "drupal/spammaster",
+            "version": "2.28.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/spammaster.git",
+                "reference": "8.x-2.28"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.28.zip",
+                "reference": "8.x-2.28",
+                "shasum": "5cff03d95a6e4497d09e76ddf5fd5fce9d1b2e6a"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-2.28",
+                    "datestamp": "1707131951",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Pedro Alves",
+                    "homepage": "https://www.drupal.org/u/pedro-alves",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "This module provides a Dacast handler for Video Embed Field.",
+            "homepage": "https://www.drupal.org/project/spammaster",
+            "keywords": [
+                "Drupal",
+                "Security",
+                "Spam Master"
+            ],
+            "support": {
+                "source": "https://git.drupalcode.org/project/spammaster",
+                "issues": "https://www.drupal.org/project/issues/spammaster"
             }
         },
         {
@@ -23962,134 +24141,6 @@
             "time": "2022-12-30T00:23:10+00:00"
         },
         {
-            "name": "drupal/body_node_id_class",
-            "version": "2.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/body_node_id_class.git",
-                "reference": "2.0.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/body_node_id_class-2.0.0.zip",
-                "reference": "2.0.0",
-                "shasum": "b18b086b19a3f0df64607efbb113e3e9b9e3fd5f"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.0",
-                    "datestamp": "1683197987",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "klukacin",
-                    "homepage": "https://www.drupal.org/user/164107"
-                },
-                {
-                    "name": "tamerzg",
-                    "homepage": "https://www.drupal.org/user/464564"
-                }
-            ],
-            "description": "Adds a node ID and type class to the <body> tag",
-            "homepage": "https://www.drupal.org/project/body_node_id_class",
-            "support": {
-                "source": "https://git.drupalcode.org/project/body_node_id_class"
-            }
-        },
-        {
-            "name": "drupal/bootstrap_horizontal_tabs",
-            "version": "2.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs.git",
-                "reference": "2.0.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_horizontal_tabs-2.0.6.zip",
-                "reference": "2.0.6",
-                "shasum": "7e2a2b3de3abcbca7d6f7b2540f121cf4ab725b3"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.6",
-                    "datestamp": "1706289954",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "bjc2265",
-                    "homepage": "https://www.drupal.org/user/3759740"
-                },
-                {
-                    "name": "daddison",
-                    "homepage": "https://www.drupal.org/user/51447"
-                },
-                {
-                    "name": "gravelpot",
-                    "homepage": "https://www.drupal.org/user/748208"
-                },
-                {
-                    "name": "Jeff Cardwell",
-                    "homepage": "https://www.drupal.org/user/2913129"
-                },
-                {
-                    "name": "lreynaga",
-                    "homepage": "https://www.drupal.org/user/3400232"
-                },
-                {
-                    "name": "mark_fullmer",
-                    "homepage": "https://www.drupal.org/user/2612816"
-                },
-                {
-                    "name": "mmarler",
-                    "homepage": "https://www.drupal.org/user/500192"
-                },
-                {
-                    "name": "ricksta",
-                    "homepage": "https://www.drupal.org/user/311042"
-                },
-                {
-                    "name": "texas_tater",
-                    "homepage": "https://www.drupal.org/user/753614"
-                },
-                {
-                    "name": "utexas",
-                    "homepage": "https://www.drupal.org/user/3716409"
-                }
-            ],
-            "description": "Provides a custom field type displayed as horizontal tabs",
-            "homepage": "https://www.drupal.org/project/bootstrap_horizontal_tabs",
-            "support": {
-                "source": "https://git.drupalcode.org/project/bootstrap_horizontal_tabs"
-            }
-        },
-        {
             "name": "drupal/coder",
             "version": "8.3.22",
             "source": {
@@ -24195,57 +24246,6 @@
                 "source": "https://github.com/drupal/core-dev/tree/10.2.2"
             },
             "time": "2023-12-12T22:01:45+00:00"
-        },
-        {
-            "name": "drupal/spammaster",
-            "version": "2.28.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.28"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.28.zip",
-                "reference": "8.x-2.28",
-                "shasum": "5cff03d95a6e4497d09e76ddf5fd5fce9d1b2e6a"
-            },
-            "require": {
-                "drupal/core": "^8 || ^9 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-2.28",
-                    "datestamp": "1707131951",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Pedro Alves",
-                    "homepage": "https://www.drupal.org/u/pedro-alves",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "This module provides a Dacast handler for Video Embed Field.",
-            "homepage": "https://www.drupal.org/project/spammaster",
-            "keywords": [
-                "Drupal",
-                "Security",
-                "Spam Master"
-            ],
-            "support": {
-                "source": "https://git.drupalcode.org/project/spammaster",
-                "issues": "https://www.drupal.org/project/issues/spammaster"
-            }
         },
         {
             "name": "google/protobuf",
@@ -28382,7 +28382,8 @@
     "stability-flags": {
         "pantheon-upstreams/upstream-configuration": 20,
         "drupal/core-recommended": 20,
-        "drupal/ckeditor_media_resize": 10
+        "drupal/ckeditor_media_resize": 10,
+        "drupal/module_missing_message_fixer": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
