@@ -237,7 +237,8 @@
         "drupal/queue_order": "^2.1",
         "drupal/media_gallery": "^2.2",
         "drupal/media_directories": "2.1-beta3",
-        "drupal/svg_image": "^3.0"
+        "drupal/svg_image": "^3.0",
+        "drupal/module_missing_message_fixer": "^2.0@dev"
     },
     "require-dev": {
         "drupal/core-dev": "^10.2",
