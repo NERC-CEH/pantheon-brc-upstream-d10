@@ -1160,26 +1160,34 @@ jQuery(document).ready(function($) {
         $.each($(row).find('option[value!=""]'), function() {
           const option = this;
           const optGroupHeading = $(option).parent().attr('label').toLowerCase().replace(/[^a-z0-9]/g, '');
-          const label = $(option).data('untranslated').toLowerCase().replace(/[^a-z0-9]/g, '');
-          const labelExcludeBrackets = $(option).data('untranslated').toLowerCase().replace(/\(.+\)/, '').replace(/[^a-z0-9]/g, '');
-          var altTerms;
-          if (columnLabel === optGroupHeading + label) {
-            matches.headingPlusLabel.push(option);
+          const possibleMatches = [
+            $(option).data('untranslated').toLowerCase().replace(/[^a-z0-9]/g, '')
+          ];
+          if ($(option).text().toLowerCase().replace(/[^a-z0-9]/g, '') !== possibleMatches[0]) {
+            possibleMatches.push($(option).text().toLowerCase().replace(/[^a-z0-9]/g, ''));
           }
-          else if (columnLabel === label) {
-            matches.label.push(option);
-          }
-          else if (columnLabelExcludeBrackets === optGroupHeading + labelExcludeBrackets) {
-            matches.headingPlusLabel.push(option);
-          }
-          else if (columnLabelExcludeBrackets === labelExcludeBrackets) {
-            matches.label.push(option);
-          }
+          possibleMatches.forEach(function(matchText) {
+            const matchTextExcludesBrackets = matchText.replace(/\(.+\)/, '');
+            if (columnLabel === optGroupHeading + matchText) {
+              matches.headingPlusLabel.push(option);
+            }
+            else if (columnLabel === matchText) {
+              matches.label.push(option);
+            }
+            else if (matchText !== matchTextExcludesBrackets && columnLabelExcludeBrackets === optGroupHeading + matchTextExcludesBrackets) {
+              matches.headingPlusLabel.push(option);
+            }
+            else if (matchText !== matchTextExcludesBrackets && columnLabelExcludeBrackets === matchTextExcludesBrackets) {
+              matches.label.push(option);
+            }
+          });
           if ($(option).data('alt')) {
-            altTerms = $(option).data('alt').split(',');
-            $.each(altTerms, function() {
-              if (columnLabel === this) {
-                matches.label.push(option);
+            $.each($(option).data('alt').split(','), function() {
+              // Don't consider the alt term if already checked.
+              if (possibleMatches.indexOf(this) === -1) {
+                if (columnLabel === this) {
+                  matches.label.push(option);
+                }
               }
             });
           }
