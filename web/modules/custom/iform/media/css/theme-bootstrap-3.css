@@ -1503,6 +1503,21 @@ do need to do something.
   padding: 4px;
 }
 
+.input-group input.form-control:not(:first-child):not(:last-child).date-text, .input-group input.form-control:not(:first-child):not(:last-child).precise-date-picker {
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+}
+
+/* Safari HTML5 date corrections for Bootstrap 3 */
+input.precise-date-picker {
+  padding: 0 12px;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input[type=date].form-control.precise-date-picker {
+    line-height: 30px;
+  }
+}
 /* Verification buttons control */
 .verification-popup #ctrl-wrap-template-name .input-group-addon.ctrl-addons {
   padding: 0;

@@ -796,7 +796,7 @@ jQuery(document).ready(function($) {
             logBackgroundProcessingInfo(result.colTitle);
           }
           if (result.status === 'ok' && result.msgKey !== 'findLookupFieldsDone') {
-            // Move to next lookup col
+            // Move to next lookup col.
             indiciaData.processLookupIndex++;
             nextLookupProcessingStep();
           }
@@ -985,7 +985,7 @@ jQuery(document).ready(function($) {
       msg += ' ' + indiciaData.lang.import_helper_2.importingFoundErrors;
     }
     $('#error-info').append(msg);
-    $('#error-info').append('<div><a class="btn btn-info" href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
+    $('#error-info').append('<div><a class="btn btn-info" download href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
     $('#error-info').fadeIn();
   }
 

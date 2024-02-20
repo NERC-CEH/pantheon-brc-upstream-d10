@@ -677,6 +677,12 @@ var control_speciesmap_addcontrols;
     $('<div id="' + opts.messageId + '" class="' + opts.messageClasses + '"></div>').appendTo(container);
     indiciaData.control_speciesmap_mode = 'Off';
 
+    // If the form has it's own spatial ref system picker, we can drop the
+    // hidden input added by this control.
+    if ($('[name="sample\\:entered_sref_system"]:visible').length) {
+      $('[name="sample\\:entered_sref_system"]').not(':visible').remove();
+    }
+
     // We are assuming that this the species map control is invoked after the
     mapInitialisationHooks.push(function (div) {
       var defaultStyle = $.extend(true, {}, div.map.editLayer.styleMap.styles.default.defaultStyle);
