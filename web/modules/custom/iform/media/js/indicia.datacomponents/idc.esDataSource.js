@@ -65,12 +65,14 @@ var IdcEsDataSource;
       // Does the selected tab have unpopulated sources?
       if (hiddenTabSources[tabInfo.newPanel[0].id]) {
         $.each(hiddenTabSources[tabInfo.newPanel[0].id], function() {
-          var src = this[0];
+          this.src.prepare();
           // If only populating 1 control, apply that limit, otherwise all controls for source are
           // populated.
-          var onlyForControl = this[1];
-          src.prepare();
-          doPopulation.call(src, false, onlyForControl);
+          doPopulation.call(this.src, false, this.onlyForControl);
+          // Reset the old filter if a temporary filter condition.
+          if (this.filterToRestore) {
+            this.src.settings.filterBoolClauses = this.filterToRestore;
+          }
         });
         // Clear the sources to populate for this tab.
         hiddenTabSources[tabInfo.newPanel[0].id] = [];
@@ -498,13 +500,17 @@ var IdcEsDataSource;
      *
      * @param bool force
      *   Set to true to force even if request same as before.
+     * @param obj filterToRestore
+     *   If this is a one-off filter, specify the filter bool clauses to
+     *   restore after the data are loaded.
      * @param obj onlyForControl
      *   jQuery plugin to populate into. If not supplied, all plugins linked to
      *   source are populated.
      */
-    IdcEsDataSource.prototype.populate = function datasourcePopulate(force, onlyForControl) {
+    IdcEsDataSource.prototype.populate = function datasourcePopulate(force, filterToRestore, onlyForControl) {
       var src = this;
       var needsPopulation = false;
+      const doNow = typeof immediate !== 'undefined' && immediate;
       if (!src.outputs || src.settings.disabled) {
         // Not initialised yet, so don't populate.
         return;
@@ -515,27 +521,31 @@ var IdcEsDataSource;
         $.each(src.outputs[pluginClass], function eachOutput() {
           var output = this;
           var populateThis = $(output)[pluginClass]('getNeedsPopulation', src);
-          var tabSet;
-          var tab;
           // If on a hidden tab, we'll save the population for when the tab is shown.
-          if ($(output).closest('.ui-tabs-panel:hidden').length > 0) {
-            tab = $(output).closest('.ui-tabs-panel:hidden')[0];
+          if ($(output).closest('.ui-tabs-panel:hidden').length > 0 && populateThis) {
+            var tab = $(output).closest('.ui-tabs-panel:hidden')[0];
             var tabSet = $(tab).closest('.ui-tabs');
-            let alreadyHandled = false;
-            // This output does not want to be populated yet.
-            populateThis = false;
-            // Track the tab and source that needs population.
             if (!hiddenTabSources[tab.id]) {
               hiddenTabSources[tab.id] = [];
             }
-            $.each(hiddenTabSources[tab.id], function() {
-              if (this[0].settings.id === src.settings.id) {
-                alreadyHandled = true;
+            // Remove existing items from the queue to populate. We will either
+            // re-add, or we are doing immediate population so not necessary.
+            hiddenTabSources[tab.id] = $.grep(hiddenTabSources[tab.id], function(hiddenTabSourceInfo) {
+              var remove = hiddenTabSourceInfo.src.settings.id === src.settings.id;
+              if (hiddenTabSourceInfo.filterToRestore) {
+                src.settings.filterBoolClauses = hiddenTabSourceInfo.filterToRestore;
               }
+              // Return false to remove.
+              return !remove;
             });
-            if (!alreadyHandled) {
-              hiddenTabSources[tab.id].push([src, onlyForControl ? onlyForControl : false]);
-            }
+            // This output does not want to be populated yet.
+            populateThis = false;
+            // Track the tab and source that needs population.
+            hiddenTabSources[tab.id].push({
+              src: src,
+              onlyForControl: onlyForControl ? onlyForControl : false,
+              filterToRestore: filterToRestore ? filterToRestore: false,
+            });
             // Hook up a tab activation event handler.
             if ($(tabSet).prop('data-src-fn-bound') !== 'true') {
               indiciaFns.bindTabsActivate(tabSet, tabSelectFn);
@@ -551,6 +561,10 @@ var IdcEsDataSource;
       if (needsPopulation) {
         src.prepare();
         doPopulation.call(src, force, onlyForControl);
+        // Reset the old filter.
+        if (filterToRestore) {
+          src.settings.filterBoolClauses = filterToRestore;
+        }
       }
     };
 

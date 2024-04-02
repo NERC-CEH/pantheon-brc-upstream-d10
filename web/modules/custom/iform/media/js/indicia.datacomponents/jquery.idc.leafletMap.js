@@ -432,7 +432,7 @@
         var count = indiciaFns.findValue(this, 'count');
         // On a scale of 0 to 20000 (the range allowed for metrics), we
         // want 20% to 70% opacity according to number of records.
-        metric = Math.round((count / maxMetric) * 10000) + 2000;
+        var metric = Math.round((count / maxMetric) * 10000) + 2000;
         if (typeof location !== 'undefined') {
           addFeature(el, sourceSettings.id, location, null, metric, null, null, null, null, this.key);
         }
@@ -805,13 +805,11 @@
                     });
                     // Temporarily populate just the linked grid with the
                     // filter to show the selected row.
-                    source.populate(false, $('#' + el.settings.showSelectedRow)[0]);
+                    source.populate(false, origFilter, $('#' + el.settings.showSelectedRow)[0]);
                     // Map click will later clear this filter.
                     sourcesToReloadOnMapClick.push(source);
                     // Tell the map click not to clear this filter just yet.
                     justClickedOnFeature = true;
-                    // Reset the old filter.
-                    source.settings.filterBoolClauses = origFilter;
                   });
                 }
               });
