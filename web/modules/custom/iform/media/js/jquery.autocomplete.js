@@ -46,6 +46,10 @@ $.fn.extend({
   flushCache: function() {
     return this.trigger("flushCache");
   },
+  refresh: function() {
+    // Reloads the current search result.
+    return this.trigger("refresh");
+  },
   setOptions: function(options){
     return this.trigger("setOptions", [options]);
   },
@@ -267,6 +271,9 @@ $.Autocompleter = function(input, options) {
     });
   }).bind("flushCache", function() {
     cache.flush();
+  }).bind("refresh", function() {
+    hideResultsNow(false);
+    onChange(0, true);
   }).bind("setOptions", function() {
     $.extend(options, arguments[1]);
     // if we've updated the data, repopulate

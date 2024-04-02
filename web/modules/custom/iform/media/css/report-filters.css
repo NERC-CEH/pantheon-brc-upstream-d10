@@ -1,133 +1,11 @@
-#standard-params .header {
-  display: flex;
-  align-items: center;
-  padding-left: 4px;
-  margin-bottom: 0;
-}
-
-#standard-params .header > div:last-child {
-  /* Acts like a float right inside flex */
-  margin-left: auto;
-}
-
-#standard-params .header > div:last-child > * {
-  margin: 4px 4px 4px 0;
-}
-
-#standard-params .disabled {
-  opacity: 0.3;
-}
-
-#standard-params #filter-panes {
-  padding-right: 24px;
-  box-sizing:border-box;
-  -moz-box-sizing:border-box;
-  -webkit-box-sizing:border-box;
-  height: auto;
-}
-
-.pane-row {
-  display: flex;
-  border-top: 2px solid white;
-}
-
-.pane-row .pane {
-  flex-grow: 2;
-}
-
-.pane-row .pane:not(:last-child) {
-  border-right: 2px solid white;
-}
-
-.pane-row:nth-child(even) > .pane:first-child,
-.pane-row:nth-child(even) > .pane:last-child {
-  flex-grow: 1;
-}
-
-.pane {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #DFDFDE;
-  height: 80px;
-}
-
-.pane a {
-  text-decoration: none;
-  border-bottom: none;
-}
-
 @media screen and (max-width: 1024px) {
   .pane {
     height: 110px;
   }
 }
 
-#pane-filter_what a {
-  background: url(../images/nuvola/viewmag-32px.png) no-repeat 6px 6px;
-}
-
-#pane-filter_when a {
-  background-image: url(../images/nuvola/date-32px.png);
-}
-
-#pane-filter_where a {
-  background-image: url(../images/nuvola/globe-32px.png);
-}
-
-#pane-filter_who a {
-  background-image: url(../images/nuvola/people-32px.png);
-}
-
-#pane-filter_occ_id a, #pane-filter_smp_id a {
-  background-image: url(../images/nuvola/number-32px.png);
-}
-
-#pane-filter_source a {
-  background-image: url(../images/nuvola/source-32px.png);
-}
-
-#pane-filter_quality a {
-  background-image: url(../images/nuvola/ok-32px.png);
-}
-
-#standard-params .pane .filter-desc {
-  font-size: 90%;
-}
-
-#standard-params .pane a, #standard-params .pane a:hover {
-  padding: 6px 6px 6px 42px;
-  display: block;
-  text-decoration: none;
-  min-height: 54px;
-  background-repeat: no-repeat;
-  background-position: 6px 6px;
-}
-
-#standard-params .pane a:hover {
-  background-color: #f3f3f3;
-}
-
-#standard-params .pane .pane-title {
-  margin: 0;
-  line-height: 1.2em;
-  font-size: 1.2em;
-  font-weight: bold;
-  display: block;
-}
-#standard-params .pane h4 {
-  margin: 0;
-  line-height: 1em;
-  font-size: 1em;
-  font-weight: bold;
-}
-
 .filter-controls h3 {
    margin: 0;
-}
-
-.filter-controls h4 {
-   margin: 1em 0 0 0;
 }
 
 .olMap .olControlDrawFeaturePolygonItemActive, .olMap .olControlDrawFeaturePolygonItemInactive,
@@ -172,21 +50,11 @@
   min-height: 165px;
 }
 
-#filter-done {
-  float: right;
-  margin: 0;
-  padding: 0;
-}
-
 .save-controls {
   margin-bottom: 8px;
 }
 .save-controls.form-inline input, .save-controls.form-inline button {
   margin-right: 8px;
-}
-
-#filter\:title {
-  min-width: 250px;
 }
 
 img.button {

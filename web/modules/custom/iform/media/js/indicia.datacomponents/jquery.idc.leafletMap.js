@@ -425,12 +425,14 @@
     if (typeof buckets !== 'undefined') {
       $.each(buckets, function eachBucket() {
         var count = indiciaFns.findValue(this, 'count');
-        maxMetric = Math.max(Math.sqrt(count), maxMetric);
+        maxMetric = Math.max(count, maxMetric);
       });
       $.each(buckets, function eachBucket() {
         var location = indiciaFns.findValue(this, 'location');
         var count = indiciaFns.findValue(this, 'count');
-        var metric = Math.round((Math.sqrt(count) / maxMetric) * 20000);
+        // On a scale of 0 to 20000 (the range allowed for metrics), we
+        // want 20% to 70% opacity according to number of records.
+        metric = Math.round((count / maxMetric) * 10000) + 2000;
         if (typeof location !== 'undefined') {
           addFeature(el, sourceSettings.id, location, null, metric, null, null, null, null, this.key);
         }
@@ -447,7 +449,7 @@
   function mapGridSquareAggregation(el, response, sourceSettings) {
     var buckets = indiciaFns.findValue(response.aggregations, 'buckets');
     var subBuckets;
-    var maxMetric = 10;
+    var maxMetric = Math.sqrt(10);
     var filterField = $(el).idcLeafletMap('getAutoSquareField');
     if (typeof buckets !== 'undefined') {
       $.each(buckets, function eachBucket() {
@@ -466,7 +468,9 @@
             var metric;
             if (this.key && this.key.match(/\-?\d+\.\d+ \-?\d+\.\d+/)) {
               coords = this.key.split(' ');
-              metric = Math.round((Math.sqrt(this.doc_count) / maxMetric) * 20000);
+              // On a scale of 0 to 20000 (the range allowed for metrics), we
+              // want 20% to 70% opacity according to number of records.
+              metric = Math.round((Math.sqrt(this.doc_count) / maxMetric) * 10000) + 2000;
               if (typeof location !== 'undefined') {
                 addFeature(el, sourceSettings.id, { lat: coords[1], lon: coords[0] }, null, metric, null, filterField, this.key);
               }
@@ -484,12 +488,22 @@
    */
   function autoGridSquareKms(el) {
     var zoom = el.map.getZoom();
+    var kms;
     if (zoom > 10) {
-      return 1;
+      kms = 1;
     } else if (zoom > 8) {
-      return 2;
+      kms = 2;
     }
-    return 10;
+    else {
+      kms = 10;
+    }
+    if (el.settings.maxSqSizeKms) {
+      kms = Math.min(kms, el.settings.maxSqSizeKms);
+    }
+    if (el.settings.minSqSizeKms) {
+      kms = Math.max(kms, el.settings.minSqSizeKms);
+    }
+    return kms;
   }
 
   /**
@@ -861,8 +875,9 @@
       var el = this;
       var layers = getLayersForSource(el, sourceSettings.id);
       var bounds;
-      var fillOpacity = 0.2;
-      var geomCounts = {};
+      let geomCounts = {};
+      let maxCount = 0;
+      var fillOpacity;
       $.each(layers, function eachLayer() {
         if (this.clearLayers) {
           this.clearLayers();
@@ -870,26 +885,29 @@
           this.setLatLngs([]);
         }
       });
+
       // Are there document hits to map?
-      $.each(response.hits.hits, function eachHit(i) {
-        var latlon = this._source.location.point.split(',');
-        var label = typeof this._source.taxon === 'undefined' || typeof this._source.event === 'undefined'
-          ? null
-          : indiciaFns.fieldConvertors.taxon_label(this._source) + '<br/>' +
-          this._source.event.recorded_by + '<br/>' +
-          indiciaFns.fieldConvertors.event_date(this._source);
-        // Repeat records on same grid square should be progressively more
-        // transparent so they don't block the background out.
-        if (typeof geomCounts[this._source.location.point] === 'undefined') {
-          geomCounts[this._source.location.point] = 0;
-        }
-        geomCounts[this._source.location.point]++;
-        let allowForRepeats = Math.pow(geomCounts[this._source.location.point], 1.8);
-        // Also some allowance so large squares are more transparent and don't dominate.
-        let allowForSquareSize = Math.pow(this._source.location.coordinate_uncertainty_in_meters, 0.1);
-        fillOpacity = 0.50 / allowForRepeats / allowForSquareSize;
-        addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, '_id', this._id, label);
-      });
+      if (response.hits.hits.length > 0) {
+        // First find the counts per polygon and the max count.
+        $.each(response.hits.hits, function eachHit(i) {
+          if (typeof geomCounts[this._source.location.point] === 'undefined') {
+            geomCounts[this._source.location.point] = 0;
+          }
+          geomCounts[this._source.location.point]++;
+          maxCount = Math.max(maxCount, geomCounts[this._source.location.point]);
+        });
+        $.each(response.hits.hits, function eachHit(i) {
+          var latlon = this._source.location.point.split(',');
+          var label = typeof this._source.taxon === 'undefined' || typeof this._source.event === 'undefined'
+            ? null
+            : indiciaFns.fieldConvertors.taxon_label(this._source) + '<br/>' +
+            this._source.event.recorded_by + '<br/>' +
+            indiciaFns.fieldConvertors.event_date(this._source);
+          // Work out an opacity scale so that a zero count is 20%, max count is 70%.
+          fillOpacity = (0.4 / maxCount) + (0.1 / geomCounts[this._source.location.point]);
+          addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, '_id', this._id, label);
+        });
+      }
       // Are there aggregations to map?
       if (typeof response.aggregations !== 'undefined') {
         if (sourceSettings.mode === 'mapGeoHash') {

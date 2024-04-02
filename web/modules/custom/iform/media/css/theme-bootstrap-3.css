@@ -270,6 +270,148 @@ input:checked + .slider:before {
   font-size: 9px;
 }
 
+#standard-params .header {
+  margin-bottom: 0;
+}
+#standard-params .disabled {
+  opacity: 0.3;
+}
+#standard-params #filter-panes {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  height: auto;
+}
+#standard-params #filter-panes .pane {
+  background-color: #DFDFDE;
+  justify-content: center;
+  align-items: center;
+}
+#standard-params #filter-panes .pane.active {
+  background-color: #eeeeee;
+}
+#standard-params #filter-panes .pane .pane-title {
+  margin: 0;
+  line-height: 1.2em;
+  font-size: 1.2em;
+  font-weight: bold;
+  display: block;
+}
+#standard-params #filter-panes .pane a, #standard-params #filter-panes .pane a:hover {
+  text-decoration: none;
+  border-bottom: none;
+  padding: 6px 6px 6px 50px;
+  display: block;
+  text-decoration: none;
+  min-height: 54px;
+  background-repeat: no-repeat;
+  background-position: 6px center;
+}
+#standard-params #filter-panes .pane a:hover {
+  background-color: #f3f3f3;
+}
+#standard-params #filter-panes .pane#pane-filter_what a {
+  background-image: url(../images/nuvola/viewmag-32px.png);
+}
+#standard-params #filter-panes .pane#pane-filter_when a {
+  background-image: url(../images/nuvola/date-32px.png);
+}
+#standard-params #filter-panes .pane#pane-filter_where a {
+  background-image: url(../images/nuvola/globe-32px.png);
+}
+#standard-params #filter-panes .pane#pane-filter_who a {
+  background-image: url(../images/nuvola/people-32px.png);
+}
+#standard-params #filter-panes .pane#pane-filter_occ_id a, #standard-params #filter-panes .pane#pane-filter_smp_id a {
+  background-image: url(../images/nuvola/number-32px.png);
+}
+#standard-params #filter-panes .pane#pane-filter_source a {
+  background-image: url(../images/nuvola/source-32px.png);
+}
+#standard-params #filter-panes .pane#pane-filter_quality a {
+  background-image: url(../images/nuvola/ok-32px.png);
+}
+#standard-params #filter-panes .pane .toggle-description {
+  position: absolute;
+  margin: 4px;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+#standard-params #filter-panes .pane .filter-desc {
+  font-size: 90%;
+}
+#standard-params.standard-params-horizontal .header {
+  display: flex;
+  align-items: center;
+  padding-left: 4px;
+}
+#standard-params.standard-params-horizontal .header > div:last-child {
+  /* Acts like a float right inside flex */
+  margin-left: auto;
+}
+#standard-params.standard-params-horizontal .header > div:last-child > * {
+  margin: 4px 4px 4px 0;
+}
+#standard-params.standard-params-horizontal #filter-panes {
+  padding-right: 24px;
+}
+#standard-params.standard-params-horizontal .pane-row {
+  display: flex;
+  border-top: 2px solid white;
+}
+#standard-params.standard-params-horizontal .pane-row .pane {
+  flex-grow: 2;
+}
+#standard-params.standard-params-horizontal .pane-row .pane:not(:last-child) {
+  border-right: 2px solid white;
+}
+#standard-params.standard-params-horizontal .pane-row:nth-child(even) > .pane:first-child, #standard-params.standard-params-horizontal .pane-row:nth-child(even) > .pane:last-child {
+  flex-grow: 1;
+}
+#standard-params.standard-params-horizontal .pane {
+  display: flex;
+  height: 80px;
+}
+#standard-params.standard-params-horizontal #filter\:title {
+  min-width: 250px;
+}
+#standard-params.standard-params-horizontal #filter-done {
+  float: right;
+  padding: 2px;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+#standard-params.standard-params-horizontal #filter-done:hover {
+  background: #e7e7e7;
+}
+#standard-params.standard-params-vertical {
+  /* Display description on demand to save space. */
+  /* Tidy up stuff as restricted space. */
+}
+#standard-params.standard-params-vertical .pane-cntr {
+  margin: 1px 0;
+  position: relative;
+}
+#standard-params.standard-params-vertical .pane-cntr .pane-title {
+  /* Vertical align in centre */
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#standard-params.standard-params-vertical .filter-desc {
+  display: none;
+  padding: 6px;
+}
+#standard-params.standard-params-vertical #active-filter-label, #standard-params.standard-params-vertical label[for=select-filter], #standard-params.standard-params-vertical #filter-details p {
+  display: none;
+}
+#standard-params.standard-params-vertical #filter-save, #standard-params.standard-params-vertical #filter-delete {
+  margin-top: 2px;
+  font-size: 1.2em;
+}
+
 /* Quality filter custom select */
 .quality-cntr {
   /* Drop down quality pane */

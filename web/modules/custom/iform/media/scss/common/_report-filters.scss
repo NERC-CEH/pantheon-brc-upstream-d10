@@ -1,3 +1,159 @@
+#standard-params {
+  .header {
+    margin-bottom: 0;
+  }
+  .disabled {
+    opacity: 0.3;
+  }
+  #filter-panes {
+    box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    height: auto;
+    .pane {
+      background-color: #DFDFDE;
+      justify-content: center;
+      align-items: center;
+      &.active {
+        background-color: #eeeeee;
+      }
+
+      .pane-title {
+        margin: 0;
+        line-height: 1.2em;
+        font-size: 1.2em;
+        font-weight: bold;
+        display: block;
+      }
+      a, a:hover {
+        text-decoration: none;
+        border-bottom: none;
+        padding: 6px 6px 6px 50px;
+        display: block;
+        text-decoration: none;
+        min-height: 54px;
+        background-repeat: no-repeat;
+        background-position: 6px center;
+      }
+      a:hover {
+        background-color: #f3f3f3;
+      }
+      &#pane-filter_what a {
+        background-image: url(../images/nuvola/viewmag-32px.png);
+      }
+
+      &#pane-filter_when a {
+        background-image: url(../images/nuvola/date-32px.png);
+      }
+
+      &#pane-filter_where a {
+        background-image: url(../images/nuvola/globe-32px.png);
+      }
+
+      &#pane-filter_who a {
+        background-image: url(../images/nuvola/people-32px.png);
+      }
+
+      &#pane-filter_occ_id a, &#pane-filter_smp_id a {
+        background-image: url(../images/nuvola/number-32px.png);
+      }
+
+      &#pane-filter_source a {
+        background-image: url(../images/nuvola/source-32px.png);
+      }
+
+      &#pane-filter_quality a {
+        background-image: url(../images/nuvola/ok-32px.png);
+      }
+
+      .toggle-description {
+        position: absolute;
+        margin: 4px;
+        right: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+      }
+
+      .filter-desc {
+        font-size: 90%;
+      }
+    }
+  }
+  &.standard-params-horizontal {
+    .header {
+      display: flex;
+      align-items: center;
+      padding-left: 4px;
+      > div:last-child {
+        /* Acts like a float right inside flex */
+        margin-left: auto;
+        > * {
+          margin: 4px 4px 4px 0;
+        }
+      }
+    }
+
+    #filter-panes {
+      padding-right: 24px;
+    }
+    .pane-row {
+      display: flex;
+      border-top: 2px solid white;
+      .pane {
+        flex-grow: 2;
+        &:not(:last-child) {
+          border-right: 2px solid white;
+        }
+      }
+      &:nth-child(even) > .pane:first-child, &:nth-child(even) > .pane:last-child {
+        flex-grow: 1;
+      }
+    }
+    .pane {
+      display: flex;
+      height: 80px;
+    }
+    #filter\:title {
+      min-width: 250px;
+    }
+    #filter-done {
+      float: right;
+      padding: 2px;
+      font-size: 1.2em;
+      cursor: pointer;
+      &:hover {
+        background: #e7e7e7;
+      }
+    }
+  }
+  &.standard-params-vertical {
+    .pane-cntr {
+      margin: 1px 0;
+      position: relative;
+      .pane-title {
+        /* Vertical align in centre */
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+    /* Display description on demand to save space. */
+    .filter-desc {
+      display: none;
+      padding: 6px;
+    }
+    /* Tidy up stuff as restricted space. */
+    #active-filter-label, label[for="select-filter"], #filter-details p{
+      display: none;
+    }
+    #filter-save, #filter-delete {
+      margin-top: 2px;
+      font-size: 1.2em;
+    }
+  }
+}
+
 /* Quality filter custom select */
 .quality-cntr {
 

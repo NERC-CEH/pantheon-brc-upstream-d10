@@ -639,7 +639,7 @@ var control_speciesmap_addcontrols;
             const matches = [...tokens[0].matchAll(/smpAttr:(\d*)$/g)];
             if (matches.length > 0) {
               $.each($('#scm-' + feature.attributes.subSampleIndex + '-block .subsample-ctrl-cntr').find(':input'), function() {
-                if ($(this).attr('id').match(new RegExp('smpAttr:' + matches[0][1] + '$'))) {
+                if (typeof $(this).attr('id') !== 'undefined' && $(this).attr('id').match(new RegExp('smpAttr:' + matches[0][1] + '$'))) {
                   if ($(this).is('select')) {
                     labelContents.push(tokens[1] + ': '  + $(this).find('option:selected').text());
                   } else {
