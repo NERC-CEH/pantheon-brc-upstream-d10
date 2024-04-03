@@ -222,7 +222,7 @@
         "drupal/insert_view": "^2.1",
         "drupal/views_data_export": "^1.4",
         "drupal/addtoany": "^2.0",
-        "drupal/insert": "3.0-beta5",
+        "drupal/insert": "3.0-beta6",
         "drupal/simple_sitemap": "^4.1",
         "drupal/simple_oauth": "^5.2",
         "drupal/core-recommended": "dev-default",
