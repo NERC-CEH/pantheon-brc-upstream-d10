@@ -154,7 +154,7 @@
         "drupal/menu_items_visibility": "*",
         "drupal/metatag": "*",
         "drupal/mobile_detect": "^3.0",
-        "drupal/override_node_options": "*",
+        "drupal/override_node_options": "^2.8",
         "drupal/panelbutton": "*",
         "drupal/pathauto": "*",
         "drupal/pdf": "*",
@@ -247,7 +247,8 @@
         "drupal/phpmailer_smtp": "^2.2",
         "drupal/fancy_file_delete": "^2.0",
         "drupal/scheduler": "^2.0",
-        "drupal/responsivewrappers": "^2.0"
+        "drupal/responsivewrappers": "^2.0",
+        "drupal/mimemail": "1.0-alpha6"
     },
     "require-dev": {
         "drupal/core-dev": "^10.2"
