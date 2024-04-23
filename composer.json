@@ -57,7 +57,7 @@
         "drupal/api_proxy": "^2.0",
         "drupal/auto_entitylabel": "*",
         "drupal/backup_migrate": "*",
-        "drupal/better_exposed_filters": "*",
+        "drupal/better_exposed_filters": "^6.0",
         "drupal/block_class": "*",
         "drupal/blog": "*",
         "drupal/bootstrap": "*",
@@ -248,7 +248,8 @@
         "drupal/fancy_file_delete": "^2.0",
         "drupal/scheduler": "^2.0",
         "drupal/responsivewrappers": "^2.0",
-        "drupal/mimemail": "1.0-alpha6"
+        "drupal/coder": "^8.3",
+        "drupal/symfony_mailer": "^1.4"
     },
     "require-dev": {
         "drupal/core-dev": "^10.2"
