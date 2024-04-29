@@ -4,54 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b700b0a4a04ef5a4b0e68b782e8f3db5",
+    "content-hash": "9fc46a53cfdba18c3754038876424f7a",
     "packages": [
-        {
-            "name": "academicpuma/citeproc-php",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/seboettg/citeproc-php-old.git",
-                "reference": "41da9655943bc495439df92ff68890b61277d724"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/seboettg/citeproc-php-old/zipball/41da9655943bc495439df92ff68890b61277d724",
-                "reference": "41da9655943bc495439df92ff68890b61277d724",
-                "shasum": ""
-            },
-            "require": {
-                "academicpuma/locales": ">=1.0",
-                "academicpuma/styles": ">=1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "3.7.*",
-                "phpunit/phpunit-skeleton-generator": "2.0.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "AcademicPuma\\CiteProc\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL v3"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian Böttger",
-                    "email": "boettger@cs.uni-kassel.de"
-                }
-            ],
-            "description": "This is an effort to implement a full-featured standalone CSL processor in PHP. The code based on the implementation of Ron Jerome.",
-            "support": {
-                "issues": "https://github.com/seboettg/citeproc-php-old/issues",
-                "source": "https://github.com/seboettg/citeproc-php-old/tree/1.0.0"
-            },
-            "abandoned": "seboettg/citeproc-php",
-            "time": "2015-09-15T09:01:39+00:00"
-        },
         {
             "name": "academicpuma/locales",
             "version": "dev-master",
@@ -89,37 +43,6 @@
                 "source": "https://github.com/seboettg/locales/tree/master"
             },
             "time": "2023-03-23T19:18:02+00:00"
-        },
-        {
-            "name": "academicpuma/styles",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/seboettg/styles.git",
-                "reference": "24a0ab9277d3cc7d344e621721b2f4c2ed2f2ecc"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/seboettg/styles/zipball/24a0ab9277d3cc7d344e621721b2f4c2ed2f2ecc",
-                "reference": "24a0ab9277d3cc7d344e621721b2f4c2ed2f2ecc",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Creative Commons Attribution-ShareAlike 3.0 License"
-            ],
-            "authors": [
-                {
-                    "name": "seboettg",
-                    "email": "boettger@cs.uni-kassel.de"
-                }
-            ],
-            "description": "Citation Style Language (CSL) Stylesheet Repository",
-            "support": {
-                "source": "https://github.com/seboettg/styles/tree/master"
-            },
-            "time": "2015-09-08T14:22:08+00:00"
         },
         {
             "name": "adci/full-name-parser",
@@ -478,28 +401,28 @@
         },
         {
             "name": "commerceguys/addressing",
-            "version": "v1.4.2",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/commerceguys/addressing.git",
-                "reference": "406c7b5f0fbe4f6a64155c0fe03b1adb34d01308"
+                "reference": "a5af40bd4b6edee5101e182085e67b7ff5d4a89b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/commerceguys/addressing/zipball/406c7b5f0fbe4f6a64155c0fe03b1adb34d01308",
-                "reference": "406c7b5f0fbe4f6a64155c0fe03b1adb34d01308",
+                "url": "https://api.github.com/repos/commerceguys/addressing/zipball/a5af40bd4b6edee5101e182085e67b7ff5d4a89b",
+                "reference": "a5af40bd4b6edee5101e182085e67b7ff5d4a89b",
                 "shasum": ""
             },
             "require": {
-                "doctrine/collections": "^1.2 || ^2.0",
-                "php": ">=7.3"
+                "doctrine/collections": "^1.6 || ^2.0",
+                "php": ">=8.0"
             },
             "require-dev": {
                 "ext-json": "*",
-                "mikey179/vfsstream": "^1.6.10",
-                "phpunit/phpunit": "^9.5",
-                "squizlabs/php_codesniffer": "^3.6",
-                "symfony/validator": "^4.4 || ^5.4 || ^6.0"
+                "mikey179/vfsstream": "^1.6.11",
+                "phpunit/phpunit": "^9.6",
+                "squizlabs/php_codesniffer": "^3.7",
+                "symfony/validator": "^5.4 || ^6.3 || ^7.0"
             },
             "suggest": {
                 "symfony/validator": "to validate addresses"
@@ -507,7 +430,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.x-dev"
+                    "dev-master": "2.x-dev"
                 }
             },
             "autoload": {
@@ -536,9 +459,9 @@
             ],
             "support": {
                 "issues": "https://github.com/commerceguys/addressing/issues",
-                "source": "https://github.com/commerceguys/addressing/tree/v1.4.2"
+                "source": "https://github.com/commerceguys/addressing/tree/v2.2.0"
             },
-            "time": "2023-02-15T10:11:14+00:00"
+            "time": "2024-02-25T11:22:16+00:00"
         },
         {
             "name": "commerceguys/intl",
@@ -2291,31 +2214,33 @@
         },
         {
             "name": "drupal/address",
-            "version": "1.12.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/address.git",
-                "reference": "8.x-1.12"
+                "reference": "2.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/address-8.x-1.12.zip",
-                "reference": "8.x-1.12",
-                "shasum": "67dd4699040aabf0cd6169e437706fa6a39b0b3a"
+                "url": "https://ftp.drupal.org/files/projects/address-2.0.1.zip",
+                "reference": "2.0.1",
+                "shasum": "47e166dc46b1a2e17470738e8321bc20fa9e8e24"
             },
             "require": {
-                "commerceguys/addressing": "^1.4.2",
-                "drupal/core": "^9.2 || ^10",
-                "php": "^7.3 || ^8.0"
+                "commerceguys/addressing": "^2.1.1",
+                "drupal/core": "^9.5 || ^10",
+                "php": "^8.0"
             },
             "require-dev": {
-                "drupal/token": "^1.0"
+                "drupal/diff": "^1",
+                "drupal/feeds": "^3",
+                "drupal/token": "^1"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.12",
-                    "datestamp": "1684710176",
+                    "version": "2.0.1",
+                    "datestamp": "1708373992",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3001,26 +2926,26 @@
         },
         {
             "name": "drupal/bibcite",
-            "version": "3.0.0-beta3",
+            "version": "3.0.0-beta4",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bibcite.git",
-                "reference": "3.0.0-beta3"
+                "reference": "3.0.0-beta4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bibcite-3.0.0-beta3.zip",
-                "reference": "3.0.0-beta3",
-                "shasum": "0f56b2078fb4751999e5cd4e936f11efaa8d9858"
+                "url": "https://ftp.drupal.org/files/projects/bibcite-3.0.0-beta4.zip",
+                "reference": "3.0.0-beta4",
+                "shasum": "169de8507e537e2498b7eadafda2b9fd78dfbd12"
             },
             "require": {
-                "academicpuma/citeproc-php": "~1.0",
                 "adci/full-name-parser": "^0.2.4",
                 "audiolabs/bibtexparser": "^1.0",
                 "caseyamcl/php-marc21": "~1.0",
-                "drupal/core": "^8 || ^9 || ^10",
+                "drupal/core": "^8.8 || ^9 || ^10",
                 "drupal/entity": "^1.0",
                 "drupal/token": "^1.0",
+                "seboettg/citeproc-php": "^2.6",
                 "technosophos/libris": "~2.0"
             },
             "require-dev": {
@@ -3038,8 +2963,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.0-beta3",
-                    "datestamp": "1689237020",
+                    "version": "3.0.0-beta4",
+                    "datestamp": "1714122585",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -4670,25 +4595,25 @@
         },
         {
             "name": "drupal/commerce",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/commerce.git",
-                "reference": "8.x-2.36"
+                "reference": "8.x-2.38"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/commerce-8.x-2.36.zip",
-                "reference": "8.x-2.36",
-                "shasum": "4114db573120036d5075c027e3bb9a61d3bdb582"
+                "url": "https://ftp.drupal.org/files/projects/commerce-8.x-2.38.zip",
+                "reference": "8.x-2.38",
+                "shasum": "3857000c3fa8c50189a3cabb0417ce06131d3e3f"
             },
             "require": {
                 "commerceguys/intl": "^2.0.2",
-                "drupal/address": "^1.7",
+                "drupal/address": "^2.0",
                 "drupal/core": "^9.3 || ^10",
                 "drupal/entity": "^1.0",
                 "drupal/entity_reference_revisions": "~1.0",
-                "drupal/inline_entity_form": "^1.0@RC",
+                "drupal/inline_entity_form": "^1.0@RC || ^3.0@RC",
                 "drupal/profile": "^1.2",
                 "drupal/state_machine": "^1.5",
                 "drupal/token": "^1.7",
@@ -4710,14 +4635,16 @@
                 "drupal/entity_print": "^2.2",
                 "drupal/entity_reference_revisions": "*",
                 "drupal/mailsystem": "^4.3",
+                "drupal/panelizer": "^5.0",
+                "drupal/physical": "^1.3",
                 "drupal/profile": "*",
                 "drupal/state_machine": "*"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4750,7 +4677,7 @@
         },
         {
             "name": "drupal/commerce_cart",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_order": "*",
@@ -4760,8 +4687,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4794,7 +4721,7 @@
         },
         {
             "name": "drupal/commerce_number_pattern",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_store": "*",
@@ -4803,8 +4730,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4837,7 +4764,7 @@
         },
         {
             "name": "drupal/commerce_order",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_number_pattern": "*",
@@ -4851,8 +4778,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4885,7 +4812,7 @@
         },
         {
             "name": "drupal/commerce_payment",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_order": "*",
@@ -4895,8 +4822,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4988,7 +4915,7 @@
         },
         {
             "name": "drupal/commerce_price",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/core": "^9.3 || ^10"
@@ -4996,8 +4923,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5030,7 +4957,7 @@
         },
         {
             "name": "drupal/commerce_product",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_price": "*",
@@ -5040,8 +4967,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5283,7 +5210,7 @@
         },
         {
             "name": "drupal/commerce_store",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_price": "*",
@@ -5292,8 +5219,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5326,7 +5253,7 @@
         },
         {
             "name": "drupal/commerce_tax",
-            "version": "2.36.0",
+            "version": "2.38.0",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_order": "*",
@@ -5336,8 +5263,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.36",
-                    "datestamp": "1685624434",
+                    "version": "8.x-2.38",
+                    "datestamp": "1707150193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -6601,17 +6528,17 @@
         },
         {
             "name": "drupal/ds",
-            "version": "3.20.0",
+            "version": "3.21.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ds.git",
-                "reference": "8.x-3.20"
+                "reference": "8.x-3.21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ds-8.x-3.20.zip",
-                "reference": "8.x-3.20",
-                "shasum": "7daa28e565fa7746a662fc90505bed095ff24d3a"
+                "url": "https://ftp.drupal.org/files/projects/ds-8.x-3.21.zip",
+                "reference": "8.x-3.21",
+                "shasum": "2ba25caae67bda0c029505c40483ea28b5fe22e4"
             },
             "require": {
                 "drupal/core": "^10"
@@ -6623,8 +6550,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.20",
-                    "datestamp": "1711814947",
+                    "version": "8.x-3.21",
+                    "datestamp": "1714125839",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7223,20 +7150,20 @@
         },
         {
             "name": "drupal/entity_print",
-            "version": "2.13.0",
+            "version": "2.14.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/entity_print.git",
-                "reference": "8.x-2.13"
+                "reference": "8.x-2.14"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.13.zip",
-                "reference": "8.x-2.13",
-                "shasum": "7ed305a9bfaf76adefe780bb8da382fd5bc8e475"
+                "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.14.zip",
+                "reference": "8.x-2.14",
+                "shasum": "5ecc2c11ed839dd870ab5127e5e83cc4c3783801"
             },
             "require": {
-                "dompdf/dompdf": "^2.0.0",
+                "dompdf/dompdf": ">=2.0.7",
                 "drupal/core": "^9.4 || ^10.0"
             },
             "suggest": {
@@ -7245,8 +7172,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.13",
-                    "datestamp": "1688453967",
+                    "version": "8.x-2.14",
+                    "datestamp": "1713939908",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8943,17 +8870,17 @@
         },
         {
             "name": "drupal/inline_entity_form",
-            "version": "1.0.0-rc17",
+            "version": "3.0.0-rc19",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/inline_entity_form.git",
-                "reference": "8.x-1.0-rc17"
+                "reference": "3.0.0-rc19"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/inline_entity_form-8.x-1.0-rc17.zip",
-                "reference": "8.x-1.0-rc17",
-                "shasum": "626622e01cf7a2d2977fdc06ae09afd5a814e09b"
+                "url": "https://ftp.drupal.org/files/projects/inline_entity_form-3.0.0-rc19.zip",
+                "reference": "3.0.0-rc19",
+                "shasum": "d8976940dd3f85412ba5e274af15fbcdd22ee27a"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9 || ^10",
@@ -8965,8 +8892,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-rc17",
-                    "datestamp": "1703020130",
+                    "version": "3.0.0-rc19",
+                    "datestamp": "1704729077",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "RC releases are not covered by Drupal security advisories."
@@ -13159,17 +13086,17 @@
         },
         {
             "name": "drupal/scheduler",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/scheduler.git",
-                "reference": "2.0.2"
+                "reference": "2.0.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/scheduler-2.0.2.zip",
-                "reference": "2.0.2",
-                "shasum": "1f02e0f198b85e5e5d5a39c148db4106ca1cee2d"
+                "url": "https://ftp.drupal.org/files/projects/scheduler-2.0.3.zip",
+                "reference": "2.0.3",
+                "shasum": "1ef7a92afcb8e138cf697dc35f15cbc2353801b4"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10"
@@ -13185,8 +13112,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.2",
-                    "datestamp": "1713553950",
+                    "version": "2.0.3",
+                    "datestamp": "1714312557",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -20961,16 +20888,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.9.1",
+            "version": "3.9.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "267a4405fff1d9c847134db3a3c92f1ab7f77909"
+                "reference": "aac1f6f347a5c5ac6bc98ad395007df00990f480"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/267a4405fff1d9c847134db3a3c92f1ab7f77909",
-                "reference": "267a4405fff1d9c847134db3a3c92f1ab7f77909",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/aac1f6f347a5c5ac6bc98ad395007df00990f480",
+                "reference": "aac1f6f347a5c5ac6bc98ad395007df00990f480",
                 "shasum": ""
             },
             "require": {
@@ -21037,7 +20964,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-03-31T21:03:09+00:00"
+            "time": "2024-04-23T20:25:34+00:00"
         },
         {
             "name": "steverhoades/oauth2-openid-connect-server",
