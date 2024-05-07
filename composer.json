@@ -183,7 +183,7 @@
         "drupal/superfish": "*",
         "drupal/synonyms": "^2.1",
         "drupal/taxonomy_entity_index": "^1.15",
-        "drupal/taxonomy_manager": "*",
+        "drupal/taxonomy_manager": "^2.0",
         "drupal/taxonomy_menu": "*",
         "drupal/theme_switcher": "*",
         "drupal/tmgmt": "*",
@@ -225,7 +225,7 @@
         "drupal/insert": "3.0-beta6",
         "drupal/simple_sitemap": "^4.1",
         "drupal/simple_oauth": "^5.2",
-        "drupal/core-recommended": "dev-default",
+        "drupal/core-recommended": "^10.2",
         "drupal/core-composer-scaffold": "^10.2",
         "drupal/core-project-message": "^10.2",
         "drupal/ckeditor_media_resize": "^1.0@beta",
@@ -250,9 +250,6 @@
         "drupal/responsivewrappers": "^2.0",
         "drupal/coder": "^8.3",
         "drupal/symfony_mailer": "^1.4"
-    },
-    "require-dev": {
-        "drupal/core-dev": "^10.2"
     },
     "conflict": {
         "drupal/drupal": "*"
@@ -313,5 +310,8 @@
             "drupal/core-project-message": true,
             "php-http/discovery": true
         }
+    },
+    "require-dev": {
+        "drupal/core-dev": "10.2.6"
     }
 }
