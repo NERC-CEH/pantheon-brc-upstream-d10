@@ -1242,20 +1242,20 @@
   /**
    * Add the HTML inputs for an expert email to a form.
    */
-  function appendRecordEmailControls(form, emailTo, emailSubject, emailBody, recordData) {
+  function appendRecordEmailExpertControls(form, emailTo, emailSubject, emailBody, recordData) {
     $('<div class="form-group">' +
-        '<label for="email-to">Send email to:</label>' +
-        '<input id="email-to" class="form-control email required" placeholder="' + indiciaData.lang.verificationButtons.enterEmailAddress + '" value="' + emailTo + '" />' +
+        '<label for="email-to-expert">Send email to:</label>' +
+        '<input id="email-to-expert" class="form-control email required" placeholder="' + indiciaData.lang.verificationButtons.enterEmailAddress + '" value="' + emailTo + '" />' +
       '</div>').appendTo(form);
     $('<div class="form-group">' +
-        '<label for="email-subject">Email subject:</label>' +
-        '<input id="email-subject" class="form-control required" value="' + emailSubject + '" />' +
+        '<label for="email-subject-expert">Email subject:</label>' +
+        '<input id="email-subject-expert" class="form-control subject required" value="' + emailSubject + '" />' +
       '</div>').appendTo(form);
     $('<div class="form-group">' +
-        '<label for="email-body">Email body:</label>' +
-        '<textarea id="email-body" class="form-control required" rows="12">' + emailBody + '\n\n' + recordData + '</textarea>' +
+        '<label for="email-body-expert">Email body:</label>' +
+        '<textarea id="email-body-expert" class="form-control required" rows="12">' + emailBody + '\n\n' + recordData + '</textarea>' +
       '</div>').appendTo(form);
-    $('<button type="submit" class="' + indiciaData.templates.buttonHighlightedClass + '">Send email</button>').appendTo(form);
+    $('<button type="submit" class="' + indiciaData.templates.buttonHighlightedClass + '">Send email</button>&nbsp;').appendTo(form);
     $('<button type="button" class="' + indiciaData.templates.buttonDefaultClass + ' cancel">' + indiciaData.lang.verificationButtons.cancel + '</button>').appendTo(form);
   }
 
@@ -1364,7 +1364,7 @@
     form = $('<form />').appendTo(container);
     $('<p class="alert alert-info">' + indiciaData.lang.verificationButtons.emailExpertInstruct + '</p>')
       .appendTo(form);
-    appendRecordEmailControls(form, '', emailSubject, emailBody, recordData);
+    appendRecordEmailExpertControls(form, '', emailSubject, emailBody, recordData);
     emailFormvalidator = $(form).validate({});
     $(form).submit(processEmail);
     $(container).draggable();
@@ -1551,9 +1551,9 @@
    */
   function processEmail(e) {
     var email = {
-      to: $('#email-to').val(),
-      subject: $('#email-subject').val(),
-      body: $('#email-body').val()
+      to: $(e.currentTarget).find('.email').val(),
+      subject: $(e.currentTarget).find('.subject').val(),
+      body: $(e.currentTarget).find('textarea').val(),
     };
     var popup = $(e.currentTarget).closest('.query-popup');
     var occurrenceId = $(popup).data('id');

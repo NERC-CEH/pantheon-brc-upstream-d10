@@ -66,8 +66,8 @@
         "drupal/bootstrap_layouts": "*",
         "drupal/bootstrap_styles": "^1.1",
         "drupal/captcha": "*",
-        "drupal/chosen": "*",
-        "drupal/chosen_lib": "*",
+        "drupal/chosen": "^4.0",
+        "drupal/chosen_lib": "^4.0",
         "drupal/clientside_validation": "*",
         "drupal/collapsiblock": "*",
         "drupal/colorbox": "*",
@@ -98,7 +98,7 @@
         "drupal/domain_registration": "*",
         "drupal/draggableviews": "*",
         "drupal/dropzonejs": "*",
-        "drupal/ds": "^3.21",
+        "drupal/ds": "^3.22",
         "drupal/editor_advanced_link": "*",
         "drupal/editor_file": "^1.8",
         "drupal/embed": "*",
@@ -144,7 +144,7 @@
         "drupal/libraries": "*",
         "drupal/linked_field": "*",
         "drupal/login_emailusername": "*",
-        "drupal/mailchimp": "*",
+        "drupal/mailchimp": "^2.2",
         "drupal/mailsystem": "^4.4",
         "drupal/media_bulk_upload": "*",
         "drupal/media_library_form_element": "*",
@@ -313,6 +313,6 @@
     },
     "require-dev": {
         "drupal/core-dev": "10.2.6",
-        "kint-php/kint": "*"
+        "kint-php/kint": "^5.1"
     }
 }
