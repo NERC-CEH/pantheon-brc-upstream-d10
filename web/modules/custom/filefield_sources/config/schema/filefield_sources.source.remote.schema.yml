@@ -1,3 +1,0 @@
-filefield_sources.source.remote:
-  type: filefield_sources_source
-  label: 'Remote URL'
