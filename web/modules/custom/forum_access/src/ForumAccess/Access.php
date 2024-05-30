@@ -16,7 +16,7 @@ class Access {
    * {@inheritdoc}
    */
   public function __construct() {
-    module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+    \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   }
 
   /**

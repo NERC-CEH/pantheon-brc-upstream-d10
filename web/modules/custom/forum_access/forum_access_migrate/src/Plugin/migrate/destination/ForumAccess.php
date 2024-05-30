@@ -60,7 +60,7 @@ class ForumAccess extends Table {
    */
   public function import(Row $row, array $old_destination_id_values = []) {
     // Migrate moderators.
-    module_load_include('inc', 'forum_access', 'includes/forum_access.acl');
+    \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.acl');
     $tid = $row->getSourceProperty('tid');
     $moderators = $row->getSourceProperty('moderators');
     if (!empty($moderators)) {

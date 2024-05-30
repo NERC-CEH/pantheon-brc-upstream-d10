@@ -83,7 +83,7 @@ function forum_access_node_access(NodeInterface $node, $op, AccountInterface $ac
   }
 
   // Disallow if user has no access to view.
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   if (!forum_access_entity_access_by_tid('view', $node)) {
     return AccessResult::forbidden();
   }
@@ -125,7 +125,7 @@ function forum_access_node_access(NodeInterface $node, $op, AccountInterface $ac
  * @inheritdoc
  */
 function forum_access_node_access_records(NodeInterface $node) {
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   $grants = &drupal_static(__FUNCTION__, []);
   $seers = &drupal_static(__FUNCTION__ . '__seers');
   $tid = forum_access_get_tid($node);
@@ -175,7 +175,7 @@ function forum_access_node_create_access(AccountInterface $account, array $conte
   }
   // If we are on forum page we want to restrict access
   // to create forum according to the forum access rules.
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   $route = \Drupal::routeMatch();
   $route_name = $route->getCurrentRouteMatch()->getRouteName();
   switch ($route_name) {
@@ -200,8 +200,8 @@ function forum_access_node_insert(EntityInterface $entity) {
     return;
   }
 
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
-  module_load_include('inc', 'forum_access', 'includes/forum_access.acl');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.acl');
   if ($tid = forum_access_get_tid($entity)) {
     $acl_id = forum_access_get_acl($tid, 'moderate');
     acl_node_add_acl($entity->id(), $acl_id, 1, 1, 1);
@@ -227,7 +227,7 @@ function forum_access_node_update(EntityInterface $entity) {
     return;
   }
 
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   $old_tid = forum_access_get_tid($entity->original);
   $current_tid = forum_access_get_tid($entity);
   if (isset($old_tid)) {
@@ -251,7 +251,7 @@ function forum_access_node_view_alter(array &$build, EntityInterface $entity, En
   }
 
   // Don't show comment form is user has no access to it.
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   if (!forum_access_entity_access_by_tid('create', $entity)) {
     $build['comment_forum'][0]['comment_form'] = [];
   }
@@ -291,7 +291,7 @@ function forum_access_comment_access(EntityInterface $entity, $operation, Accoun
     return AccessResult::neutral();
   }
 
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   if ($tid = forum_access_get_tid($parent)) {
     // Disallow if user has no access to view.
     if (!forum_access_access('view', $tid)) {
@@ -335,7 +335,7 @@ function forum_access_query_comment_filter_alter(AlterableInterface $query) {
     return;
   }
 
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   // @todo Replace it with the function.
   $tid = forum_access_get_tid($entity);
   $access = [
@@ -404,7 +404,7 @@ function forum_access_taxonomy_term_delete(EntityInterface $entity) {
  */
 function forum_access_taxonomy_term_access(EntityInterface $entity, string $operation, AccountInterface $account) {
   if ($entity->bundle() == 'forums') {
-    module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+    \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
     if (!forum_access_access('view', $entity->id())) {
       return AccessResult::forbidden();
     }
@@ -571,8 +571,8 @@ function forum_access_form_node_form_alter(&$form, FormStateInterface $form_stat
  * @inheritdoc
  */
 function forum_access_form_taxonomy_term_forums_forum_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  module_load_include('inc', 'forum_access', 'includes/forum_access.admin');
-  module_load_include('inc', 'forum_access', 'includes/forum_access.acl');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.admin');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.acl');
   $tid = $form['tid']['#value'];
   $settings = forum_access_get_settings($tid);
   $form['forum_access'] = [
@@ -607,21 +607,6 @@ function forum_access_form_taxonomy_term_forums_forum_form_alter(&$form, FormSta
     $form['forum_access']['update_choice'] = [
       '#type' => 'radios',
       '#title' => t('Update the permissions'),
-      /*
-      '#description' => t('<em>If</em> you make any node access changes, then each node in this forum needs to be updated. Hover over the radiobuttons for details.'),
-      '#options' => array_flip(['this_tid_now', 'batch', 'later']),
-      '#default_value' => ($count <= $threshold ? 'this_forum_now' : 'batch'),
-      'this_tid_now' => [
-        '#type' => 'radio',
-        '#title' => t('for all %count nodes immediately', ['%count' => $count]),
-        '#attributes' => ['title' => t('This option is the fastest, but with many nodes it can still take considerable time and memory. If it does not complete, it will leave your @node_access table in an inconsistent state.', ['@!node_access' => '{node_access}'])],
-      ],
-      'batch' => [
-        '#type' => 'radio',
-        '#title' => t('in batches of @limit now', ['@limit' => $limit]),
-        '#attributes' => ['title' => t('The batch option will always work reliably, but it takes longer to complete.')],
-      ],
-      */
       '#options' => array_flip(['all_now', 'all_later']),
       '#default_value' => 'all_now',
       'all_now' => [
@@ -666,7 +651,8 @@ function forum_access_form_taxonomy_term_forums_x_form_alter_after_build(array $
  * Submit handler for forum access administrative form.
  */
 function _forum_access_admin_forum_form_submit($form, FormStateInterface $form_state) {
-  _forum_access_admin_container_form_submit($form, $form_state); // Shared code.
+  // Shared code.
+  _forum_access_admin_container_form_submit($form, $form_state);
 
   if (\Drupal::routeMatch()->getRouteName() != 'forum.add_forum') {
     // Update access records.
@@ -680,8 +666,8 @@ function _forum_access_admin_forum_form_submit($form, FormStateInterface $form_s
  * @inheritdoc
  */
 function forum_access_form_taxonomy_term_forums_container_form_alter(&$form, FormStateInterface $form_state, $form_id) {
-  module_load_include('inc', 'forum_access', 'includes/forum_access.admin');
-  module_load_include('inc', 'forum_access', 'includes/forum_access.acl');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.admin');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.acl');
   $tid = $form['tid']['#value'];
   $settings = forum_access_get_settings($tid);
   $form['forum_access'] = [
@@ -704,7 +690,7 @@ function forum_access_form_taxonomy_term_forums_container_form_alter(&$form, For
  * Submit handler for container access administrative form.
  */
 function _forum_access_admin_container_form_submit($form, FormStateInterface $form_state) {
-  module_load_include('inc', 'forum_access', 'includes/forum_access.admin');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.admin');
 
   // Save roles permissions.
   _forum_access_form_roles_permissions_save($form_state);
@@ -828,7 +814,7 @@ function forum_access_set_settings($tid, array $settings) {
  *   List of available tids for specific account.
  */
 function forum_access_form_node_form_get_available_tids(AccountInterface $account, NodeInterface $node) {
-  module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
   // We figure out what tids we want to show in form according
   // to the forum access settings.
   $forum_access_settings = forum_access_get_settings_by_roles($account->getRoles(), 'create');

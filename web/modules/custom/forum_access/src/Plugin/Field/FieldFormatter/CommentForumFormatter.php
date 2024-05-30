@@ -27,7 +27,7 @@ class CommentForumFormatter extends CommentDefaultFormatter {
    * {@inheritdoc}
    */
   public function viewElements(FieldItemListInterface $items, $langcode) {
-    module_load_include('inc', 'forum_access', 'includes/forum_access.common');
+    \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.common');
     $elements = [];
     $output = [];
     $field_name = $this->fieldDefinition->getName();

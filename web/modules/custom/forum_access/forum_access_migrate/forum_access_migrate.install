@@ -9,7 +9,7 @@
  * Implements hook_install().
  */
 function forum_access_migrate_install() {
-  // TODO: WARNING: needs test!
+  // @todo WARNING: needs test!
   \Drupal::database()->delete('forum_access')
     ->execute();
   node_access_rebuild();

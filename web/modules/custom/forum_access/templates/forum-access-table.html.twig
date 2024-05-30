@@ -2,7 +2,7 @@
     {% if form.header %}
         <thead>
         <tr>
-            {% for key, column in form.header if key|first != '#' %}
+            {% for key, column in form.header|filter((value, key) => key|first != '#') %}
                 <th>
                     {{- column }}
                 </th>
@@ -10,9 +10,9 @@
         </tr>
         </thead>
     {% endif %}
-    {% for key, column in form.rows if key|first != '#' %}
+    {% for key, column in form.rows|filter((value, key) => key|first != '#') %}
         <tr>
-            {% for key2, column2 in column if key2|first != '#' %}
+            {% for key2, column2 in column|filter((value2, key2) => key2|first != '#') %}
                 <td>
                     {{- column2 }}
                 </td>

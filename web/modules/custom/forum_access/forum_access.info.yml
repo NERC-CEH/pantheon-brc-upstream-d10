@@ -1,16 +1,11 @@
 name: Forum Access
 type: module
 description: Allows forums to be set private and to be given moderators.
-core_version_requirement: ^8.8 || ^9 || ^10
+core_version_requirement: ^9.4 || ^10 || ^11
 package: Access control
 
 configure: forum.overview
 
 dependencies:
-  - acl:acl (>=1.0)
+  - acl:acl (>=1.1 || >2)
   - drupal:forum
-
-# Information added by Drupal.org packaging script on 2023-08-23
-version: '8.x-1.0'
-project: 'forum_access'
-datestamp: 1692792010

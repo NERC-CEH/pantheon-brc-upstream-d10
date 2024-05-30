@@ -5,25 +5,38 @@ CHANGELOG for Forum Access for Drupal 8 and 9
 forum_access 8.x-1.x-dev:
 
 
+forum_access 8.x-1.1 (2024-04-07):
+  Bug fixed:
+    - Issue #3386451 by salvis: Fix moderator element doesn't exist on Add
+      forms, causes error.
+  Tasks:
+    - Issue #3390476 by salvis: Resolve a TODO and a PHP warning.
+    _ Issue #3390466 by salvis: Update ACL dependency and fix some other issues
+      in composer.json and *.info.yml.
+
+
 forum_access 8.x-1.0 (2023-08-23):
     - Issue by salvis: Update serialization.
 
-
 forum_access 8.x-1.0-beta3 (2023-08-05):
   Bugs fixed:
-    - #3378089 by salvis: Collapse Moderators when not used, but open when unsaved.
+    - #3378089 by salvis: Collapse Moderators when not used, but open
+      when unsaved.
     - #3378081 by salvis: Support the [Save and go to list] button.
   Task:
     - Issue by salvis: Raise the ACL minimal dependency to 8.x-1.0-beta3.
-    - #3378086 by salvis: Avoid using ACL internal data, use acl_edit_form_get_user_list_changed($form) instead.
+    - #3378086 by salvis: Avoid using ACL internal data, use
+      acl_edit_form_get_user_list_changed($form) instead.
 
 forum_access 8.x-1.0-beta2 (2023-07-28):
   Enhancement:
     - #3377832 by salvis: Update ACL dependency.
-    - #3083683 by salvis, naresh_bavaskar: Hide closed forums from the 'normal' forum list.
+    - #3083683 by salvis, naresh_bavaskar: Hide closed forums from the 'normal'
+      forum list.
   Bugs fixed:
     - #3345959 by salvis: Avoid rebuilding permissions when unchanged.
-    - #3112447 by eelkeblok: Fix potential undefined index for role that was not configured during testing.
+    - #3112447 by eelkeblok: Fix potential undefined index for role that was
+      not configured during testing.
     - Issue by salvis: This version is not ready for D10.
 
 forum_access 8.x-1.0-beta1 (2022-10-10):
@@ -39,20 +52,27 @@ forum_access 8.x-1.0-alpha3 (2021-10-07):
   Bug fixed:
     - #3085002 by sadashiv: Requires ACL dev.
     - #3129859 by Mfgr45, mrinalini9, nickolaj: Drupal 9 readiness.
-    - #3103089 by cainaru: "Undefined index" message in dblog after creating new forum.
+    - #3103089 by cainaru: "Undefined index" message in dblog after creating
+      new forum.
 
 forum_access 8.x-1.0-alpha2 (2019-09-27):
   Bug fixed:
-    - #3084233 by salvis: Update 8101 (#3002918) can fail; fix rid width and redo the update in 8102.
+    - #3084233 by salvis: Update 8101 (#3002918) can fail; fix rid width and
+      redo the update in 8102.
 
 forum_access 8.x-1.0-alpha1 (2019-09-25):
   Bugs fixed:
-    - #3001448 by salvis: PHP notice and other issues with the Update radiobuttons.
+    - #3001448 by salvis: PHP notice and other issues with the Update
+      radiobuttons.
     - #3011364 by volkswagenchick, salvis: README configs and formatting.
-    - #3066485 by Tomazetti: FieldFormatter comment_forum missing cache contexts.
-    - #3002918 by salvis, ron_s: Add primary key and index to the {forum_access} table.
+    - #3066485 by Tomazetti: FieldFormatter comment_forum missing
+      cache contexts.
+    - #3002918 by salvis, ron_s: Add primary key and index to
+      the {forum_access} table.
     - #3016322 by chipway: All dependencies must be prefixed.
-    - #3028731 by salvis, Tomazetti, g.philippot: Fix Error during migration from D7 to D8 -- fix missing common.inc include and generally postpone includes until needed in forum_access.module.
+    - #3028731 by salvis, Tomazetti, g.philippot: Fix Error during migration
+      from D7 to D8 -- fix missing common.inc include and generally postpone
+      includes until needed in forum_access.module.
   Tasks:
     - #3081936 by Sergiu Stici: Deprecated Code Report.
 
@@ -66,18 +86,23 @@ forum_access 8.x-1.0-alpha0 (2018-04-11):
 
 forum_access 7.x-1.3 (2016-08-16):
   Bugs fixed:
-    - #2783863: Remove call to non-existent _forum_access_preprocess_comment() function.
+    - #2783863: Remove call to non-existent _forum_access_preprocess_comment()
+      function.
     - #2463055 by DrCord: Fix 'Use of undefined constant uids' notice.
-    - #2276445 by Bastlynn: Avoid a notice when a comment pending for notification has been deleted.
-    - #2147183 by sadashiv: Notices in user_role_delete() when upgrading from D6 to D7.
-    - #2005352 by EAnushan: Avoid trashing the saved tid when another module calls menu_get_item() with a different $path.
+    - #2276445 by Bastlynn: Avoid a notice when a comment pending for
+      notification has been deleted.
+    - #2147183 by sadashiv: Notices in user_role_delete() when upgrading
+      from D6 to D7.
+    - #2005352 by EAnushan: Avoid trashing the saved tid when another module
+      calls menu_get_item() with a different $path.
     - #1849288: Clean up the helpful information for Content Access.
     - Avoid a notice on admin/index.
     - #1793504 by RedRat: Fix non-translatable string.
 
 forum_access 7.x-1.2 (2012-09-15):
   Bugs fixed:
-    - #1775204: Avoid crashing the site if FA encounters CMA 1.x (when the upgrade instructions aren't being followed).
+    - #1775204: Avoid crashing the site if FA encounters CMA 1.x (when
+      the upgrade instructions aren't being followed).
 
 forum_access 7.x-1.1 (2012-09-02):
   Enhancements:
@@ -86,11 +111,14 @@ forum_access 7.x-1.1 (2012-09-02):
     - Revised the README.txt file.
     - Work around all false Coder Review positives (no functional change).
   Bugs fixed:
-    - Increase timeout for the tests to ensure they go through on slow computers.
+    - Increase timeout for the tests to ensure they go through on
+      slow computers.
     - Clean up the dependencies for testing (no functional change).
     - #1768330: Remove the broken D5 Legacy Mode which never worked for D7.
-    - #1701504: Give moderators access to the administrative node properties and add tests.
-    - Remove the version requirement in the .info file to avoid breaking the testbot (#1768442).
+    - #1701504: Give moderators access to the administrative node properties and
+      add tests.
+    - Remove the version requirement in the .info file to avoid breaking
+      the testbot (#1768442).
     - Avoid an E_STRICT warning (no functional change).
     - Remove the unnecessary hook_requirements().
     - #1706040: Avoid crashing in the presence of content_access.module.
@@ -100,14 +128,17 @@ forum_access 7.x-1.1 (2012-09-02):
 forum_access 7.x-1.0 (2012-04-02):
 forum_access 7.x-1.0-rc2 (2012-03-16):
   Bugs fixed:
-   - #1478822: Use user_roles() to allow translation of built-in roles and because it's the right way.
+   - #1478822: Use user_roles() to allow translation of built-in roles and
+     because it's the right way.
    - Remove some left-over code from D6.
    - Use node_load_multiple() for updating the permissions.
-   - #1321864 by David4514: Fix unnecessary suppression of non-standard fields on add/edit node form for moderators.
+   - #1321864 by David4514: Fix unnecessary suppression of non-standard fields
+     on add/edit node form for moderators.
 
 forum_access 7.x-1.0-rc1 (2012-02-19):
   Bugs fixed:
-    - #1429220: Fix extending edit/delete own forum content permissions to comments and clarify information.
+    - #1429220: Fix extending edit/delete own forum content permissions to
+      comments and clarify information.
     - Show proper mouse-over hints on the forum settings pages.
     - Fix the ForumAccessBaseTestCase.
     - Adjust POST to the Devel Settings page to Devel change.
@@ -115,17 +146,21 @@ forum_access 7.x-1.0-rc1 (2012-02-19):
 forum_access 7.x-1.0-beta2 (2012-01-05):
   Bugs fixed:
     - Use url() to format links in tests to be compatible with qa.d.o.
-    - Avoid trying to enable non-existing modules in tests (especially on qa.d.o).
-    - Override the invalid inherited testEnableForumField() test in the ForumTestCase base class.
+    - Avoid trying to enable non-existing modules in tests (especially
+      on qa.d.o).
+    - Override the invalid inherited testEnableForumField() test in
+      the ForumTestCase base class.
     - #1343568: Fix reference to the test file.
     - #1325850: Fix a left-over D6 db_result() call.
     - #1244406: Remove ACL version requirement.
-    - #1228214: Fully qualify field parameter in SelectQuery::condition(), SelectQuery::orderBy() calls.
+    - #1228214: Fully qualify field parameter in SelectQuery::condition(),
+      SelectQuery::orderBy() calls.
 
 forum_access 7.x-1.0-beta1 (2011-07-07):
   Bugs fixed:
     - Make template forum selection optional.
-    - #1210900 by ohnobinki, salvis: Enable caching of the 'create' case in forum_access_node_access().
+    - #1210900 by ohnobinki, salvis: Enable caching of the 'create' case
+      in forum_access_node_access().
     - First attempt to handle unpublished nodes.
     - Make Edit and Delete depend on View.
     - #1097692 by salvis: Fix array_merge() warning on comment previews.
@@ -136,15 +171,19 @@ forum_access 7.x-1.0-alpha4 (2011-01-16):
     - Implement node and comment edit forms for moderators.
     - Fix comment links.
     - Disable 'edit own comments' permission and document this.
-    - Fix the tests to ignore 'edit own comments' but to account for 'edit/delete any/own forum content'.
+    - Fix the tests to ignore 'edit own comments' but to account for
+      'edit/delete any/own forum content'.
     - Reorder the tests to make the more difficult ones come first.
-    - In the test suite, rename the roles and users to more accurately reflect the names of the permissions they represent.
-    - #1020852: Fix "Undefined variable: node in forum_access_menu_get_item_alter() line 341".
+    - In the test suite, rename the roles and users to more accurately reflect
+      the names of the permissions they represent.
+    - #1020852: Fix "Undefined variable: node in
+      forum_access_menu_get_item_alter() line 341".
     - #1019572: Add '>=' operator to ACL dependency.
 
 forum_access 7.x-1.0-alpha3 (2011-01-08):
   Bugs fixed:
-    - Major update to fix various bugs and adapt to late changes in the Form API of D7 core.
+    - Major update to fix various bugs and adapt to late changes in
+      the Form API of D7 core.
     - Remove remaining references to {acl.name}.
     - Clean up / enable tests.
     - Port update 6106 to secure upgrade path from D6.
@@ -153,14 +192,16 @@ forum_access 7.x-1.0-alpha3 (2011-01-08):
     - #999556: Adapt to changed signature of hook_menu_view().
     - #996130: Fix undefined index 'buttons' notice.
     - Fix tests to install the newly required chain_menu_access.module.
-    - The D6 moderator role is removed during upgrading, no need to remove it in hook_uninstall(), too.
+    - The D6 moderator role is removed during upgrading, no need to remove it
+      in hook_uninstall(), too.
 
 forum_access 7.x-1.0-alpha2 (2010-12-11):
   Enhancement:
     - Use the Chain Menu Access API.
   Bugs fixed:
     - Fix some minor bugs.
-    - Add missing assertFieldEnabled()/assertFieldDisabled() function that haven't made it into core (see #882564).
+    - Add missing assertFieldEnabled()/assertFieldDisabled() function that
+      haven't made it into core (see #882564).
     - Remove the need for the hook_menu_get_item_alter() patch.
     - Some code clean-up, no functional changes.
     - Fix invalid use of t().
@@ -168,11 +209,14 @@ forum_access 7.x-1.0-alpha2 (2010-12-11):
 
 forum_access 7.x-1.0-alpha1 (2010-11-07):
   Port fixes from 6.x-1.5:
-    - #745002: Fix missing 'delete comment' link for users with the 'administer comments' permission.
+    - #745002: Fix missing 'delete comment' link for users with
+      the 'administer comments' permission.
     - #906430: Add a missing preg_match() call.
-    - #810422: Fix public forums not being visible to Anonymous on the overview page, due to missing default records in the {node_access} table.
-    - Always display the 'Update even if unchanged' checkbox, except for new forums/containers.
-    - Fix inability to save Create and View access for roles with the 'administer nodes' permission.
+    - #810422: Fix public forums not being visible to Anonymous on the overview
+      page, due to missing default records in the {node_access} table.
+    - Always display the 'Update even if unchanged' checkbox, except for new
+      forums/containers.
+    - Fix inability to save Create and View access for roles with
+      the 'administer nodes' permission.
   Porting to D7:
     - Initial port of 6.x-1.4, add extensive tests.
-

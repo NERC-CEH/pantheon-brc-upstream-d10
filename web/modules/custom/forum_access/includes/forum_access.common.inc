@@ -44,7 +44,7 @@ function forum_access_modify_check_query($query, $settings) {
  * Access checking.
  */
 function forum_access_access($op, $tid, $account = NULL) {
-  module_load_include('inc', 'forum_access', 'includes/forum_access.acl');
+  \Drupal::moduleHandler()->loadInclude('forum_access', 'inc', 'includes/forum_access.acl');
   $cache = &drupal_static(__FUNCTION__, []);
   // Load current user if account is empty.
   if (!$account) {
@@ -60,7 +60,7 @@ function forum_access_access($op, $tid, $account = NULL) {
     return TRUE;
   }
   if (!isset($cache[$account->id()][$tid][$op])) {
-    // Check if user's roles allow him permissions to operators.
+    // Check if user's roles grant access permissions to operators.
     $query = \Drupal::database()->select('forum_access', 'fa')
       ->fields('fa', ['tid']);
     forum_access_modify_check_query($query, [

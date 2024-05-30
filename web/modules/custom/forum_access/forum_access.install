@@ -70,7 +70,9 @@ function forum_access_install() {
 }
 
 /**
- * Resize {forum_access}.rid and
+ * Updates for {forum_access} table.
+ *
+ * Resize {forum_access}.rid. and
  * add primary key and index to the {forum_access} table.
  */
 function forum_access_update_8102(&$sandbox) {
