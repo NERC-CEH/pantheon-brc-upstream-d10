@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e9192d2e66d48d3e6a8da96707787b3c",
+    "content-hash": "3fdad49d9138e06020b5bdf66c0cabb6",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -6546,20 +6546,20 @@
         },
         {
             "name": "drupal/draggableviews",
-            "version": "2.1.3",
+            "version": "2.1.4",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/draggableviews.git",
-                "reference": "2.1.3"
+                "reference": "2.1.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/draggableviews-2.1.3.zip",
-                "reference": "2.1.3",
-                "shasum": "d22af995f543ab9dfb1c8eeaaa79bdf3ef233879"
+                "url": "https://ftp.drupal.org/files/projects/draggableviews-2.1.4.zip",
+                "reference": "2.1.4",
+                "shasum": "09a484ed290cf0f52dfa399b4dfea8fd50cd403b"
             },
             "require": {
-                "drupal/core": "^9 || ^10"
+                "drupal/core": "^9 || ^10 || ^11"
             },
             "require-dev": {
                 "drupal/draggableviews_demo": "*"
@@ -6567,8 +6567,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.3",
-                    "datestamp": "1682439050",
+                    "version": "2.1.4",
+                    "datestamp": "1717236719",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8949,28 +8949,31 @@
         },
         {
             "name": "drupal/gutenberg",
-            "version": "2.8.0",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/gutenberg.git",
-                "reference": "8.x-2.8"
+                "reference": "3.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/gutenberg-8.x-2.8.zip",
-                "reference": "8.x-2.8",
-                "shasum": "4fdcf7bc65e67063e5f266b733a93e8176ad7a79"
+                "url": "https://ftp.drupal.org/files/projects/gutenberg-3.0.0.zip",
+                "reference": "3.0.0",
+                "shasum": "3c2736ecd3d946a743538f148c71f23d95b2cd3f"
             },
             "require": {
-                "drupal/core": "^9 || ^10",
+                "drupal/core": "^9.5 || ^10",
                 "ext-json": "*",
                 "php": ">=7.4"
+            },
+            "require-dev": {
+                "phpspec/prophecy-phpunit": "^2"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.8",
-                    "datestamp": "1697496069",
+                    "version": "3.0.0",
+                    "datestamp": "1717198192",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -9404,17 +9407,17 @@
         },
         {
             "name": "drupal/insert",
-            "version": "3.0.0-beta6",
+            "version": "3.0.0-beta7",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/insert.git",
-                "reference": "3.0.0-beta6"
+                "reference": "3.0.0-beta7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/insert-3.0.0-beta6.zip",
-                "reference": "3.0.0-beta6",
-                "shasum": "b7903f42d9ff27cfd5cd35f438af67a5742ea61d"
+                "url": "https://ftp.drupal.org/files/projects/insert-3.0.0-beta7.zip",
+                "reference": "3.0.0-beta7",
+                "shasum": "5387763d30e4dd15142617ce826df572689ec99a"
             },
             "require": {
                 "drupal/core": "^10"
@@ -9425,8 +9428,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.0-beta6",
-                    "datestamp": "1712055209",
+                    "version": "3.0.0-beta7",
+                    "datestamp": "1717265062",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -9878,27 +9881,27 @@
         },
         {
             "name": "drupal/jquery_ui_datepicker",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/jquery_ui_datepicker.git",
-                "reference": "2.0.0"
+                "reference": "2.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/jquery_ui_datepicker-2.0.0.zip",
-                "reference": "2.0.0",
-                "shasum": "ce40cf8ab400866bffda1ac3f7e4a5ac20bb3ae5"
+                "url": "https://ftp.drupal.org/files/projects/jquery_ui_datepicker-2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": "22e1cceeba22522cdd23f08ec345a4dfb2e8550f"
             },
             "require": {
-                "drupal/core": "^9.2 || ^10",
-                "drupal/jquery_ui": "^1.6"
+                "drupal/core": "^9.2 || ^10 || 11",
+                "drupal/jquery_ui": "^1.7"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.0",
-                    "datestamp": "1670871494",
+                    "version": "2.1.0",
+                    "datestamp": "1717094444",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16332,26 +16335,26 @@
         },
         {
             "name": "drupal/views_conditional",
-            "version": "1.9.0",
+            "version": "1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_conditional.git",
-                "reference": "8.x-1.9"
+                "reference": "8.x-1.10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_conditional-8.x-1.9.zip",
-                "reference": "8.x-1.9",
-                "shasum": "0a3600d3c2120ce8702f72c741f3a1608b3e3c27"
+                "url": "https://ftp.drupal.org/files/projects/views_conditional-8.x-1.10.zip",
+                "reference": "8.x-1.10",
+                "shasum": "54997357c05b7f08b87411018eed3aafd3e65547"
             },
             "require": {
-                "drupal/core": "^9 || ^10"
+                "drupal/core": "^9 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.9",
-                    "datestamp": "1699473354",
+                    "version": "8.x-1.10",
+                    "datestamp": "1717201344",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
