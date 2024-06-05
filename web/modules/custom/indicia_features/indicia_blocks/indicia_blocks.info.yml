@@ -1,8 +1,7 @@
 name: 'Indicia blocks'
 description: 'A collection of handy blocks for interacting with Indicia data.'
-core: 8.x
-core_version_requirement: ^8 || ^9 || ^10
-version: "8.24.0"
+core_version_requirement: ^9 || ^10
+version: "9.0.0"
 package: "Indicia"
 type: module
 dependencies:

@@ -1,0 +1,8 @@
+group_langing_pages.group_home:
+  path: '/groups/{title}'
+  defaults:
+    _controller: '\Drupal\group_landing_pages\Controller\GroupLandingPagesController::groupHome'
+  requirements:
+    _permission: 'access content'
+  options:
+    no_cache: TRUE

@@ -225,6 +225,10 @@ function indicia_notification_emails_advanced_selects(array $selects, $notificat
  *   Existing notification settings data.
  */
 function indicia_notification_emails_existing_data(array $readAuth, $userId) {
+  if (!preg_match('/^\d+$/', $userId)) {
+    // Don't request if user ID invalid.
+    return [];
+  }
   $freqSettingsData = \data_entry_helper::get_population_data([
     'table' => 'user_email_notification_setting',
     'extraParams' => $readAuth + ['user_id' => $userId],

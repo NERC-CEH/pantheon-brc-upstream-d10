@@ -43,8 +43,11 @@ jQuery(document).ready(function($) {
         $(li).append(mediaDiv);
       }
     });
-  }
+  };
 
+  /**
+   * Handle the AJAX ES response for the totals block data.
+   */
   indiciaFns.handleEsTotalsResponse = function(div, sourceSettings, response) {
     var occs;
     var occsString;
@@ -65,5 +68,142 @@ jQuery(document).ready(function($) {
       $(div).find('.photos').append(photosString.replace('{1}', nf.format(response.aggregations.photo_count.doc_count))).addClass('loaded');
       $(div).find('.recorders').append(recordersString.replace('{1}', nf.format(response.aggregations.recorder_count.value))).addClass('loaded');
     }
-  }
+  };
+
+  /**
+   * Handle the AJAX ES response for the phenology graph block data.
+   */
+  indiciaFns.handlePhenologyGraphResponse = function(div, sourceSettings, response) {
+    let monthlyRecordsData = [];
+    let allMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    response.aggregations.by_month.buckets.forEach(function (w) {
+      if (w.key) {
+        let index = allMonths.indexOf(w.key);
+        if (index !== -1) {
+          allMonths.splice(index, 1);
+        }
+        monthlyRecordsData.push({
+          taxon: 'taxon',
+          month: w.key,
+          n: w.doc_count
+        });
+      }
+    });
+    // Fill in the zeros.
+    allMonths.forEach(function (m) {
+      monthlyRecordsData.push({
+        taxon: 'taxon',
+        month: m,
+        n: 0
+      });
+    });
+    brccharts.phen1({
+      selector: '#' + div.id,
+      axisLabelFontSize: 22,
+      data: monthlyRecordsData,
+      metrics: [{ prop: 'n', label: 'Records per month', opacity: 1, colour: '#337ab7' }],
+      taxa: ['taxon'],
+      width: 500,
+      height: 200,
+      perRow: 1,
+      expand: true,
+      showTaxonLabel: false,
+      showLegend: false,
+      margin: {left: 60, right: 0, top: 10, bottom: 20},
+      axisLeftLabel: 'Records per month'
+    });
+  };
+
+  /**
+   * Handle the AJAX ES response for the phenology taxon group pie data.
+   */
+  indiciaFns.handleRecordsByTaxonGroupPieResponse = function(div, sourceSettings, response) {
+    let pieSectionsData = [];
+    response.aggregations.by_group.buckets.forEach(function (w) {
+      pieSectionsData.push({
+        name: w.key,
+        number: w.doc_count
+      });
+    });
+    // Add other bucket for remainder.
+    if (response.aggregations.by_group.sum_other_doc_count > 0) {
+      pieSectionsData.push({
+        name: 'other',
+        number: response.aggregations.by_group.sum_other_doc_count
+      });
+    }
+    brccharts.pie({
+      selector: '#' + div.id,
+      data: pieSectionsData
+    })
+  };
+
+  /**
+   * Handle the AJAX ES response for the the verification status pie or donut data.
+   */
+  indiciaFns.handleRecordsByVerificationStatusPieResponse = function(div, sourceSettings, response) {
+    let pieSectionsData = [];
+    let has2ndLevel = false;
+    response.aggregations.by_status.buckets.forEach(function (w) {
+      pieSectionsData.push({
+        set: 1,
+        name: indiciaData.lang.statuses[w.key],
+        number: w.doc_count,
+        colour: indiciaData.statusColours[w.key],
+      });
+      // Optional 2nd level for decision detail.
+      if (w.by_substatus) {
+        w.by_substatus.buckets.forEach(function (v) {
+          pieSectionsData.push({
+            set: 2,
+            name: indiciaData.lang.statuses[w.key + v.key],
+            number: v.doc_count,
+            colour: indiciaData.statusColours[w.key + v.key],
+          });
+          has2ndLevel = true;
+        });
+      }
+    });
+    let opts = {
+      selector: '#' + div.id,
+      data: pieSectionsData,
+      radius: 180
+    };
+    if (has2ndLevel) {
+      // Convert to donut for 2 levels of info.
+      opts.innerRadius = 110;
+      opts.innerRadius2 = 40;
+    }
+    brccharts.pie(opts);
+  };
+
+  /**
+   * Output the top recorders table.
+   */
+  indiciaFns.handleTopRecordersTableResponse = function(div, sourceSettings, response) {
+    const table = $('<table class="table">').appendTo(div);
+    const headTr = $('<tr>').appendTo($('<thead>').appendTo(table));
+    const body = $(table).append('<tbody>');
+    // Prepare the header.
+    $('<th>' + indiciaData.lang.topRecordersByRecords.recorderName + '</th>').appendTo(headTr);
+    // Columns to include are optional.
+    if (indiciaData.topRecordersTableOptions.includeRecords) {
+      $('<th>' + indiciaData.lang.topRecordersByRecords.noOfRecords + '</th>').appendTo(headTr);
+    }
+    if (indiciaData.topRecordersTableOptions.includeSpecies) {
+      $('<th>' + indiciaData.lang.topRecordersByRecords.noOfSpecies + '</th>').appendTo(headTr);
+    }
+    // Add the rows.
+    response.aggregations.records_by_user.buckets.forEach(function (w) {
+      let tr = $('<tr>').appendTo(body);
+      $('<th>' + w.key + '</th>').appendTo(tr);
+      if (indiciaData.topRecordersTableOptions.includeRecords) {
+        $('<td>' + w.doc_count + '</td>').appendTo(tr);
+      }
+      if (indiciaData.topRecordersTableOptions.includeSpecies) {
+        $('<td>' + w.species_count.value + '</td>').appendTo(tr);
+      }
+    });
+  };
+
 });

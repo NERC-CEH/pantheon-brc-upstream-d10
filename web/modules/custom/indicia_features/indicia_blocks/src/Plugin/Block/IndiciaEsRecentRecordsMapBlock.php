@@ -20,6 +20,7 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
    * {@inheritdoc}
    */
   public function build() {
+    self::$blockCount++;
     iform_load_helpers(['ElasticsearchReportHelper']);
     $enabled = \ElasticsearchReportHelper::enableElasticsearchProxy();
     if (!$enabled) {
@@ -29,6 +30,7 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
       ];
     }
     $r = \ElasticsearchReportHelper::leafletMap([
+      'id' => 'recentRecordsMap-' . self::$blockCount,
       'layerConfig' => [
         'recent-records' => [
           'title' => $this->t('Recent records'),

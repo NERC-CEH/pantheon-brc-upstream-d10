@@ -9,7 +9,7 @@ entity_type: user
 bundle: user
 label: 'First name'
 description: 'Enter your first name'
-required: false
+required: true
 translatable: false
 default_value:
   -

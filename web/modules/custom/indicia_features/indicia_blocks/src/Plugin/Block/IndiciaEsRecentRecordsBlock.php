@@ -2,8 +2,8 @@
 
 namespace Drupal\indicia_blocks\Plugin\Block;
 
-use Drupal\Core\Render\Markup;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
 
 /**
  * Provides a 'Recent Elasticsearch Records' block.
@@ -20,41 +20,16 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
    */
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
-
+    $this->addDefaultEsFilterFormCtrls($form);
     // Retrieve existing configuration for this block.
     $config = $this->getConfiguration();
-
-    // Option to exclude sensitive records.
-    $form['sensitive_records'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Include sensitive records'),
-      '#description' => $this->t('Unless this box is ticked, sensitive records are completely excluded.'),
-      '#default_value' => isset($config['sensitive_records']) ? $config['sensitive_records'] : 0,
-    ];
-
-    // Option to exclude unverified records.
-    $form['unverified_records'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t('Include unverified records'),
-      '#description' => $this->t('Unless this box is ticked, unverified (pending) records are completely excluded.'),
-      '#default_value' => isset($config['unverified_records']) ? $config['unverified_records'] : 0,
-    ];
-
-    // Option to limit to current user.
-    $form['limit_to_user'] = [
-      '#type' => 'checkbox',
-      '#title' => $this->t("Limit to current user's records"),
-      '#description' => $this->t('If ticked, only records for the current user are shown.'),
-      '#default_value' => isset($config['limit_to_user']) ? $config['limit_to_user'] : 0,
-    ];
-
-    $form['cache_timeout'] = [
+    // Add a limit control.
+    $form['limit'] = [
       '#type' => 'number',
-      '#title' => $this->t('Cache timeout'),
-      '#description' => $this->t('Minimum number of seconds that the data request will be cached for, resulting in faster loads times.'),
-      '#default_value' => isset($config['cache_timeout']) ? $config['cache_timeout'] : 300,
+      '#title' => $this->t('Number of records'),
+      '#description' => $this->t('Limit the report to this number of records.'),
+      '#default_value' => $config['limit'] ?? 10,
     ];
-
     return $form;
   }
 
@@ -63,17 +38,15 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
-    // Save our custom settings when the form is submitted.
-    $this->setConfigurationValue('sensitive_records', $form_state->getValue('sensitive_records'));
-    $this->setConfigurationValue('unverified_records', $form_state->getValue('unverified_records'));
-    $this->setConfigurationValue('limit_to_user', $form_state->getValue('limit_to_user'));
-    $this->setConfigurationValue('cache_timeout', $form_state->getValue('cache_timeout'));
+    $this->saveDefaultEsFilterFormCtrls($form_state);
+    $this->setConfigurationValue('limit', $form_state->getValue('limit'));
   }
 
   /**
    * {@inheritdoc}
    */
   public function build() {
+    self::$blockCount++;
     iform_load_helpers(['ElasticsearchReportHelper']);
     $enabled = \ElasticsearchReportHelper::enableElasticsearchProxy();
     if (!$enabled) {
@@ -82,7 +55,10 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
         '#markup' => str_replace('{message}', $this->t('Service unavailable.'), $indicia_templates['warningBox']),
       ];
     }
-    $config = $this->getConfiguration();
+    // Get config with defaults.
+    $config = array_merge([
+      'limit' => 10,
+    ], $this->getConfiguration());
     $location = hostsite_get_user_field('location');
     $groups = hostsite_get_user_field('taxon_groups', FALSE, TRUE);
     $fields = [
@@ -100,14 +76,14 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
     ];
     $filterPath = 'hits.hits._source.' . implode(',hits.hits._source.', $fields);
     $options = [
-      'id' => 'src-IndiciaEsRecentRecordsBlock',
-      'size' => 10,
-      'proxyCacheTimeout' => isset($config['cache_timeout']) ? $config['cache_timeout'] : 300,
+      'id' => 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount,
+      'size' => $config['limit'] ?? 10,
+      'proxyCacheTimeout' => $config['cache_timeout'] ?? 300,
       'filterPath' => $filterPath,
       'initialMapBounds' => TRUE,
       'sort' => ['id' => 'desc'],
+      'filterBoolClauses' => ['must' => $this->getFilterBoolClauses($config)],
     ];
-    $options['filterBoolClauses'] = ['must' => []];
     // Apply user profile preferences.
     if ($location || !empty($groups)) {
       if ($location) {
@@ -126,41 +102,13 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
         ];
       }
     }
-    // Other record filters.
-    if (empty($config['sensitive_records'])) {
-      $options['filterBoolClauses']['must'][] = [
-        'query_type' => 'term',
-        'field' => 'metadata.sensitive',
-        'value' => 'false',
-      ];
-    }
-    if (empty($config['unverified_records'])) {
-      $options['filterBoolClauses']['must'][] = [
-        'query_type' => 'term',
-        'field' => 'identification.verification_status',
-        'value' => 'V',
-      ];
-    }
-    if (!empty($config['limit_to_user'])) {
-      $warehouseUserId = $this->getWarehouseUserId();
-      if (empty($warehouseUserId)) {
-        // Not linked to the warehouse so force report to be blank.
-        $warehouseUserId = -9999;
-      }
-      $options['filterBoolClauses']['must'][] = [
-        'query_type' => 'term',
-        'field' => 'metadata.created_by_id',
-        'value' => $warehouseUserId,
-      ];
-    }
-
     $r = \ElasticsearchReportHelper::source($options);
     // Totally exclude sensitive records.
     $r .= <<<HTML
 <input type="hidden" class="es-filter-param" data-es-query-type="term" data-es-field="metadata.sensitive" data-es-bool-clause="must" value="false" />
 HTML;
     $r .= \ElasticsearchReportHelper::customScript([
-      'source' => 'src-IndiciaEsRecentRecordsBlock',
+      'source' => 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount,
       'functionName' => 'handleEsRecentRecordsResponse',
     ]);
     return [

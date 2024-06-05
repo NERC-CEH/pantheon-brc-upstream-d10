@@ -1,0 +1,6 @@
+<dl class="dl dl-horizontal">
+{% for key, value in data %}
+  <dt>{{key|t}}</dt>
+  <dd>{{value|raw}}</dd>
+{% endfor %}
+</dl>

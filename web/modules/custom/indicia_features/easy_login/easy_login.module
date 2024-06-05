@@ -1,9 +1,9 @@
 <?php
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\user\UserInterface;
-use Drupal\Core\Entity\EntityInterface;
-use \Drupal\Core\Form\FormStateInterface;
 
 /**
  * Implements hook_user_login().
@@ -18,10 +18,7 @@ function easy_login_user_login(UserInterface $account) {
     ));
     return;
   }
-  elseif (
-    $account->access->value !== 0 &&
-    !empty($account->field_indicia_user_id->value)
-  ) {
+  elseif ($account->isActive() && account_has_valid_warehouse_user_id($account)) {
     // If not first login and we know our indicia user ID, still check in case
     // a user merge done elsewhere has caused the deletion of the user ID.
     if (!easy_login_check_user_id($account)) {
@@ -40,16 +37,19 @@ function easy_login_user_login(UserInterface $account) {
 /**
  * Implements hook_user_presave.
  *
+ * * Creates or links to an existing warehouse if surnem filled in and not
+ *   already done.
+ * * Ensures any synchronisable custom person attribute values are kept up to
+ *   date on the warehouse.
+ *
+ * @param \Drupal\user\UserInterface $account
+ *   User account.
+ *
  * @param EntityInterface $account User account
  */
 function easy_login_user_presave(EntityInterface $account) {
-  if (
-    $account->isActive() &&
-    $account->id() &&
-    empty($account->field_indicia_user_id->value)
-  ) {
-    $response = easy_login_call_get_user_id($account);
-    easy_login_handle_get_user_id_response($account, $response, FALSE);
+  if ($account->isActive() && !empty($account->field_last_name->value)) {
+    easy_login_synchronise_account_to_warehouse($account);
   }
 }
 
@@ -78,27 +78,16 @@ function easy_login_form_user_form_alter(
 
 /**
  * Implements hook_user_insert.
- *
- * Synchronises user fields to matching custom attributes on the
- * Indicia warehouse, if the user is created as active.
- * @param array $account User account
  */
 function easy_login_user_insert($account) {
-  if ($account->status->value) {
-    easy_login_synchronise_account_to_warehouse($account, FALSE);
-  }
+  // All functionality in presave now.
 }
 
 /**
  * Implements hook_user_update.
- *
- * Synchronises user fields to matching custom attributes on
- * the Indicia warehouse.
- * @param UserInterface $account
- *   User account.
  */
 function easy_login_user_update(UserInterface $account) {
-  easy_login_synchronise_account_to_warehouse($account, FALSE);
+  // All functionality in presave now.
 }
 
 /**
@@ -109,9 +98,11 @@ function easy_login_user_update(UserInterface $account) {
  *   User account.
  */
 function easy_login_user_delete($account) {
-  clear_indicia_fields_synced_to_warehouse($account);
-  easy_login_synchronise_account_to_warehouse($account, FALSE);
-  call_warehouse_user_delete($account);
+  if (account_has_valid_warehouse_user_id($account)) {
+    clear_indicia_fields_synced_to_warehouse($account);
+    easy_login_synchronise_account_to_warehouse($account);
+    call_warehouse_user_delete($account);
+  }
 }
 
 /**
@@ -183,10 +174,6 @@ function easy_login_allowed_locations() {
  *   True if user_id is valid on warehouse else false.
  */
 function easy_login_check_user_id($account) {
-  if (empty($account->field_indicia_user_id->value)) {
-    return FALSE;
-  }
-
   iform_load_helpers(['data_entry_helper']);
   $config = \Drupal::config('iform.settings');
   $auth = data_entry_helper::get_read_auth(
@@ -246,7 +233,7 @@ function easy_login_call_get_user_id(
   $postargs['surname'] = $account->field_last_name->value;
   $identifiers = [['type' => 'email', 'identifier' => $account->getEmail()]];
   $postargs['identifiers'] = json_encode($identifiers);
-  if (!empty($account->field_indicia_user_id->value)) {
+  if (account_has_valid_warehouse_user_id($account)) {
     $postargs['warehouse_user_id'] = $account->field_indicia_user_id->value;
   }
   if (count($fieldsToSyncByCaption)) {
@@ -271,7 +258,7 @@ function easy_login_call_get_user_id(
   $response = data_entry_helper::http_post($url, http_build_query($postargs));
   if ($response['result'] === FALSE) {
     // There was an error.
-    if (strpos($response['output'], 'Error: unknown warehouse_user_id') !== false) {
+    if (strpos($response['output'], 'Error: unknown warehouse_user_id') !== FALSE) {
       // The previously found indicia_user_id is no longer valid. This can
       // happen if the user was deleted due to account merging.
       unset($postargs['warehouse_user_id']);
@@ -296,16 +283,13 @@ function easy_login_call_get_user_id(
 function easy_login_handle_get_user_id_response($account, $response, $save) {
   $response = json_decode($response);
   if (isset($response->userId)) {
-    $isEmpty = empty($account->field_indicia_user_id->value);
-    if ($isEmpty || $account->field_indicia_user_id->value != $response->userId) {
+    if (!account_has_valid_warehouse_user_id($account) || $account->field_indicia_user_id->value != $response->userId) {
       // @todo: no need for these messages during registration
-      if ($isEmpty) {
-        \Drupal::messenger()->addMessage(t('Your user account is now linked to
-        the central records database.'));
+      if (!account_has_valid_warehouse_user_id($account)) {
+        \Drupal::messenger()->addMessage(t('Your user account is now linked to the central records database.'));
       }
       else {
-        \Drupal::messenger()->addMessage(t('Your user account link to the
-        central records database has been updated.'));
+        \Drupal::messenger()->addMessage(t('Your user account link to the central records database has been updated.'));
       }
       $account->field_indicia_user_id->setValue($response->userId);
       if ($save) {
@@ -342,18 +326,16 @@ function easy_login_synchronise_account_to_warehouse($account) {
   $fieldsToSync = [];
   foreach ($account as $field => $def) {
     if (preg_match('/^field_indicia_/', $field) && $field !== 'field_indicia_user_id') {
-      if (!empty($def->value)) {
-        $value = $def->value;
+      $value = empty($def->value) ? '' : $def->value;
+      $origValue = NULL;
+      if ($account->original) {
+        $origValue = empty($account->original->$field->value) ? '' : $account->original->$field->value;
       }
-      else {
-        $value = '';
+      // Save the value if the account is being deleted, linked to the
+      // warehouse for the first time, or the value has changed.
+      if (!$account->original || !$account->original->field_indicia_user_id->value || $value !== $origValue) {
+        $fieldsToSync[$field] = $value;
       }
-      // Note: there used to be an if statement around this field to make sure
-      // it was previously empty or had changed before doing a sync.
-      // This does not work in the situation where a user registers and is then
-      // activated, as the first sync should occur at activation when actually a
-      // field might of been filled at registration and won't have changed.
-      $fieldsToSync[$field] = $value;
     }
   }
   if (count($fieldsToSync)) {
@@ -389,7 +371,6 @@ function easy_login_synchronise_account_to_warehouse($account) {
       ));
     }
   }
-  easy_login_move_form_data_into_account($account);
   $response = easy_login_call_get_user_id($account, NULL, NULL, $fieldsToSyncByCaption);
   easy_login_handle_get_user_id_response($account, $response, FALSE);
 }
@@ -413,23 +394,6 @@ function build_fields_to_sync_by_caption_array(
 }
 
 /**
- * Copied form data into the account.
- *
- * Overwrites the content of the account object with any updates from the
- * posted form. Does not save to the db.
- *
- * @param array $account
- *   User account.
- */
-function easy_login_move_form_data_into_account($account) {
-  foreach ($account as $key => $data) {
-    if (substr($key, 0, 6) === 'field_') {
-      $account->$key = $data;
-    }
-  }
-}
-
-/**
  * Inform the Warehouse that the user deletion function need to be run.
  *
  * @param object $account
@@ -440,7 +404,7 @@ function easy_login_move_form_data_into_account($account) {
  */
 function call_warehouse_user_delete($account) {
   iform_load_helpers(['data_entry_helper']);
-  if (!empty($account->field_indicia_user_id->value)) {
+  if (account_has_valid_warehouse_user_id($account)) {
     $url = data_entry_helper::$base_url;
     $url .= 'index.php/services/user_identifier/delete_user';
 
@@ -452,9 +416,8 @@ function call_warehouse_user_delete($account) {
     $url .= '&auth_token=' . $auth['write_tokens']['auth_token'];
     $postargs = 'warehouse_user_id=' . $account->field_indicia_user_id->value;
     $postargs .= '&website_id_for_user_deletion=' . $config->get('website_id');
-
-    $response = data_entry_helper::http_post($url, $postargs);
-    return $response['output'];
+    data_entry_helper::http_post($url, $postargs);
+    // @todo Check response.
   }
 }
 
@@ -466,12 +429,7 @@ function call_warehouse_user_delete($account) {
  */
 function clear_indicia_fields_synced_to_warehouse($account) {
   iform_load_helpers(['data_entry_helper']);
-  if (!empty($account->field_indicia_user_id->value)) {
-    $config = \Drupal::config('iform.settings');
-    $auth = data_entry_helper::get_read_write_auth(
-      $config->get('website_id'), $config->get('password')
-    );
-
+  if (account_has_valid_warehouse_user_id($account)) {
     foreach ($account as $fieldName => &$def) {
       // Need to check for field_indicia as we only want to clear synced fields.
       if (
@@ -484,4 +442,17 @@ function clear_indicia_fields_synced_to_warehouse($account) {
     }
     return $account;
   }
+}
+
+/**
+ * Check that an account has a warehouse user ID that is a valid ID.
+ *
+ * @param object $account
+ *    Drupal user account object.
+ *
+ * @return bool
+ *   True if present and valid.
+ */
+function account_has_valid_warehouse_user_id($account) {
+  return filter_var($account->field_indicia_user_id->value, FILTER_VALIDATE_INT, ['min_range' => 1]) !== FALSE;
 }

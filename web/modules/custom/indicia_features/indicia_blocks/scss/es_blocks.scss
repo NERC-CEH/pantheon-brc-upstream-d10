@@ -1,3 +1,5 @@
+$default-block-height: 500px;
+
 #indicia-es-totals-block-container {
   font-size: 150%;
   display: table;
@@ -24,7 +26,7 @@
 }
 
 #recent-records-container {
-  max-height: 500px;
+  max-height: $default-block-height;
   overflow-y: scroll;
   .list-group-item {
     padding: 0 0 0 10px;
@@ -53,4 +55,8 @@
       float: right;
     }
   }
+}
+
+.indicia-block-visualisation {
+  height: $default-block-height;
 }

@@ -263,6 +263,15 @@ jQuery(document).ready(function($) {
     // text input, and also for textarea and select (I don't know why).
     var escControlId = esc4jq(controlId);
     if ($('#' + escControlId).length==1) {
+      if (caption) {
+        // For autocomplete with separate input for display caption. Must be
+        // before the main value input otherwise the change event will clear
+        // the main value.
+        $('input[id*=' + escControlId + '\\:]')
+          .val(caption)
+          .change()
+          .blur();
+      }
       if ($('#' + escControlId).attr('type')=='checkbox'){
         var values = [];
         values[0] = value;
@@ -292,11 +301,7 @@ jQuery(document).ready(function($) {
         // don't know what control this is
       }
     }
-    // for autocomplete
-    if (caption) {
-      $('input[id*=' + escControlId + '\\:]').val(caption)
-          .change().blur();
-    }
+
   };
 
   var setWriteStatus = function(id) {

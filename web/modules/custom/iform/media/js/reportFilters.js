@@ -1565,7 +1565,7 @@ jQuery(document).ready(function ($) {
         if ($(ctrl).attr('name').match(/\[\]$/) && typeof indiciaData.filter.def[$(ctrl).attr('name').replace('[]', '')] !== 'undefined') {
           // An array mapped to a set of checkboxes.
           var field = $(ctrl).attr('name').replace('[]', '');
-          var checkValues = indiciaData.filter.def[field].split(',');
+          var checkValues = indiciaData.filter.def[field].toString().split(',');
           $(ctrl).prop('checked', checkValues.indexOf($(ctrl).val()) !== -1);
         } else {
           // other checkboxes are simple on/off flags for filter parameters.
@@ -2265,7 +2265,7 @@ jQuery(document).ready(function ($) {
         // Exclude.
         $('#quality_op--standalone\\:1').prop('checked', !inChecked);
         // Statuses
-        const statuses = indiciaData.filter.def.quality.split(',');
+        const statuses = indiciaData.filter.def.quality.toString().split(',');
         $('.quality-pane input[type="checkbox"]').prop('checked', false);
         $.each(statuses, function() {
           $('.quality-pane input[type="checkbox"][value="' + this + '"]').prop('checked', true);

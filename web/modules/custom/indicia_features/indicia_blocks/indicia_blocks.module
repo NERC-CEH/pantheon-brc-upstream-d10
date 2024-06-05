@@ -1,0 +1,16 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ *
+ * Declare a template for the recorder info block output.
+ */
+function indicia_blocks_theme($existing, $type, $theme, $path) {
+  return [
+    'recorder_info_block' => [
+      'variables' => [
+        'data' => '',
+      ],
+    ],
+  ];
+}
