@@ -35,7 +35,7 @@
         "drupal/feeds": "3.0-beta5",
         "drupal/inline_entity_form": "3.0-rc19",
         "drupal/insert_view_adv": "2.0-alpha3",
-        "drupal/login_destination": "2.0-beta6",
+        "drupal/login_destination": "^2.0@beta",
         "drupal/markup": "2.0-beta6",
         "drupal/masquerade": "2.0-rc4",
         "drupal/notify": "2.0-beta1",
@@ -262,7 +262,8 @@
         "drupal/flexible_permissions": "^1.1",
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/paragraphs": "^1.17",
-        "drupal/entity_usage": "2.0-beta12"
+        "drupal/entity_usage": "2.0-beta12",
+        "drupal/twig_tweak": "^3.3"
     },
     "conflict": {
         "drupal/drupal": "*"
