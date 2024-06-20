@@ -195,7 +195,7 @@
             });
             var action = this.record_status !== null
               ? indiciaData.lang.recordDetails.verificationDecision
-              : (this.type === 'comment' ? indiciaData.lang.recordDetails.comment : indiciaData.lang.recordDetails.redetermination);
+              : indiciaData.lang.recordDetails[this.type];
             var title = indiciaData.lang.recordDetails.actionByPersonOnDate
               .replace('{1}', action)
               .replace('{2}', this.person_name)
@@ -214,7 +214,10 @@
             if (statusIcon === '' && this.type === 'comment') {
               statusIcon += ' <span class="far fa-comment"></span>';
             }
-            else if (this.type !== 'comment') {
+            else if (this.type === 'recordEntered') {
+              statusIcon += ' <span class="fas fa-keyboard"></span>';
+            }
+            else if (this.type === 'redetermination') {
               statusIcon += ' <span class="fas fa-tag"></span>';
             }
 

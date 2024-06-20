@@ -119,11 +119,14 @@
         var regexEscDbl = new RegExp('\\{' + param + '-escape-dblquote\\}', 'g');
         var regexHtmlEsc = new RegExp('\\{' + param + '-escape-htmlquote\\}', 'g');
         var regexHtmlEscDbl = new RegExp('\\{' + param + '-escape-htmldblquote\\}', 'g');
+        var regexHtmlEscUrl = new RegExp('\\{' + param + '-escape-urlpath\\}', 'g');
         r = r.replace(regex, paramStr);
         r = r.replace(regexEsc, paramStr.replace(/'/g, "\\'"));
         r = r.replace(regexEscDbl, paramStr.replace(/"/g, '\\"'));
         r = r.replace(regexHtmlEsc, paramStr.replace(/'/g, '&#39;'));
         r = r.replace(regexHtmlEscDbl, paramStr.replace(/"/g, '&quot;'));
+        // Convert to lowercase, hyphen separated, with leading/trailing hyphens trimmed.
+        r = r.replace(regexHtmlEscUrl, paramStr.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9\-]/g, '').replace(/^\-+|\-+$/g, ''));
       });
       // Also do some standard params from the settings, for various paths/urls
       r = r.replace(/\{rootFolder\}/g, div.settings.rootFolder);

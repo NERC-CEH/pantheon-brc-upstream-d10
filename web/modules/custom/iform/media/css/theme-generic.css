@@ -1177,6 +1177,27 @@ table.es-data-grid tfoot button span {
   margin: 0 0 0 8px;
 }
 
+/* idcGridSquareOpacityScale plugin */
+.idc-gridSquareOpacityScale {
+  font-size: 0.8em;
+  display: inline-block;
+}
+.idc-gridSquareOpacityScale .scale span {
+  min-width: 16px;
+  height: 16px;
+  margin: 2px 2px 0 0;
+  display: inline-block;
+  vertical-align: top;
+  text-align: center;
+}
+.idc-gridSquareOpacityScale .scale span:last-child {
+  color: white;
+  margin-right: 0;
+}
+.idc-gridSquareOpacityScale div {
+  text-align: center;
+}
+
 /* idcLeafletMap plugin */
 .idc-leafletMap {
   height: 500px;
@@ -1481,15 +1502,35 @@ table.es-data-grid tfoot button span {
   font-style: italic;
 }
 
-/* idcRecordsMover */
-.post-move-info .output {
+/* idcBulkEditor */
+.bulk-editor-dlg .pre-bulk-edit-info {
+  max-width: 500px;
+}
+.bulk-editor-dlg .pre-bulk-edit-info input[type=date] {
+  padding: 0 12px;
+}
+.bulk-editor-dlg .post-bulk-edit-info .output {
   border: solid silver 1px;
-  width: 350px;
-  min-height: 140px;
+  width: 100%;
+  min-width: 400px;
+  min-height: 200px;
   padding: 4px;
   margin-bottom: 8px;
 }
-.post-move-info .output p {
+.bulk-editor-dlg .post-bulk-edit-info .output p {
+  margin: 2px;
+}
+
+/* idcRecordsMover */
+.records-mover-dlg .post-move-info .output {
+  border: solid silver 1px;
+  width: 100%;
+  min-width: 400px;
+  min-height: 200px;
+  padding: 4px;
+  margin-bottom: 8px;
+}
+.records-mover-dlg .post-move-info .output p {
   margin: 2px;
 }
 
@@ -2013,6 +2054,10 @@ div.inline.disabled {
 
 .fancy-dialog-button {
   margin: 8px 15px 0 0;
+}
+
+div.fancy-dialog-content {
+  max-width: 600px;
 }
 
 /* Provide some basic Bootstrap style classes */

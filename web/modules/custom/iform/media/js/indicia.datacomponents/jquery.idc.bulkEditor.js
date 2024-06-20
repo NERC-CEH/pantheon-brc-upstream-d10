@@ -1,6 +1,6 @@
 /**
  * @file
- * Plugin for a tool to move records between websites.
+ * Plugin for a bulk editor tool.
  *
  * Indicia, the OPAL Online Recording Toolkit.
  *
@@ -23,7 +23,7 @@
 /**
 * Output plugin for the verification record details pane.
 */
-(function idcRecordsMover() {
+(function idcBulkEditor() {
   'use strict';
   var $ = jQuery;
 
@@ -38,7 +38,7 @@
   var defaults = {};
 
   var callbacks = {
-    onMove: []
+    onEdit: []
   };
 
   /* Private methods. */
@@ -64,24 +64,35 @@
   }
 
   /**
+   * Popup a message if the edit cannot proceed.
+   */
+  function cannotProceedMessage(message) {
+    $.fancyDialog({
+      title: indiciaData.lang.bulkEditor.cannotProceed,
+      message: message,
+      cancelButton: null
+    });
+  }
+
+  /**
    * Fetches the source from the linked data control.
    *
    * @param DOM el
-   *   The recordsMover container element.
+   *   The bulkEditor container element.
    */
   function linkToDataSource(el) {
     let settings = $(el)[0].settings;
     let ctrlSettings;
     if (!settings.sourceObject) {
       if ($('#' + settings.linkToDataControl).length !== 1) {
-        indiciaFns.controlFail(el, 'Failed to find data control ' + settings.linkToDataControl + ' linked to recordsMover');
+        indiciaFns.controlFail(el, 'Failed to find data control ' + settings.linkToDataControl + ' linked to bulkEditor');
       }
       // Find the source linked to the data control.
       ctrlSettings = $('#' + settings.linkToDataControl)[0].settings;
       settings.source = ctrlSettings.source;
       settings.sourceObject = indiciaData.esSourceObjects[Object.keys(settings.source)[0]];
       if (settings.sourceObject.settings.mode !== 'docs') {
-        indiciaFns.controlFail(el, 'The recordsMover control needs to link to a source that lists occurrences rather than aggregated data');
+        indiciaFns.controlFail(el, 'The bulkEditor control needs to link to a source that lists occurrences rather than aggregated data');
       }
     }
   }
@@ -90,7 +101,7 @@
    * Retrieve a summary of the work to do.
    *
    * @param DOM el
-   *   The recordsMover container element.
+   *   The bulkEditor container element.
    */
   function getTodoListInfo(el) {
     const linkToDataControl = $('#' + $(el)[0].settings.linkToDataControl);
@@ -102,7 +113,7 @@
       r = {
         total: $(linkToDataControl).find('.multiselect:checked').length,
         totalAsText: $(linkToDataControl).find('.multiselect:checked').length,
-        message: indiciaData.lang.recordsMover.recordsMoverDialogMessageSelected,
+        message: indiciaData.lang.bulkEditor.bulkEditorDialogMessageSelected,
         ids: []
       };
       selectedItems = $(linkToDataControl).find('.multiselect:checked').closest('tr,.card')
@@ -115,22 +126,11 @@
       r = {
         total: total.value,
         totalAsText : (total.relation === 'gte' ? 'at least ' : '') + total.value,
-        message: indiciaData.lang.recordsMover.recordsMoverDialogMessageAll
+        message: indiciaData.lang.bulkEditor.bulkEditorDialogMessageAll
       }
     }
     r.message = r.message.replace('{1}', r.totalAsText);
     return r;
-  }
-
-  /**
-   * Popup a message if the move cannot proceed.
-   */
-  function cannotProceedMessage(message) {
-    $.fancyDialog({
-      title: indiciaData.lang.recordsMover.cannotProceed,
-      message: message,
-      cancelButton: null
-    });
   }
 
   /**
@@ -142,7 +142,7 @@
    *   Information to log.
    */
   function logOutput(dlg, info) {
-    dlg.find('.post-move-info .output').append('<p>' + info + '</p>');
+    dlg.find('.post-bulk-edit-info .output').append('<p>' + info + '</p>');
   }
 
   /**
@@ -150,22 +150,19 @@
    *
    * @param DOM dlg
    *   Dialog element
-   * @param bool precheck
-   *   Is this prechecking?
    * @param object affected
    *   Sample and occurrences updated by the last API request.
    */
-  function showProgressInOutput(dlg, precheck, affected) {
-    let p = dlg.find('.post-move-info .output p:last-child');
-    let msg = precheck ? indiciaData.lang.recordsMover.precheckProgress : indiciaData.lang.recordsMover.moveProgress;
+  function showProgressInOutput(dlg, affected) {
+    let p = dlg.find('.post-bulk-edit-info .output p:last-child');
     if (!p || !p.hasClass('progress-message')) {
-      p = $('<p class="progress-message">').appendTo(dlg.find('.post-move-info .output'));
+      p = $('<p class="progress-message">').appendTo(dlg.find('.post-bulk-edit-info .output'));
       dlg.data('affected-samples', 0);
       dlg.data('affected-occurrences', 0);
     }
     dlg.data('affected-samples', dlg.data('affected-samples') + parseInt(affected.samples, 10));
     dlg.data('affected-occurrences', dlg.data('affected-occurrences') + parseInt(affected.occurrences, 10));
-    $(p).html(msg
+    $(p).html(indiciaData.lang.bulkEditor.bulkEditProgress
       .replace('{samples}', dlg.data('affected-samples'))
       .replace('{occurrences}', dlg.data('affected-occurrences'))
     )
@@ -186,7 +183,7 @@
    */
   function checkResponseCode(dlg, response) {
     if (response.code !== 200 && response.code !== 204) {
-      logOutput(dlg, indiciaData.lang.recordsMover.error);
+      logOutput(dlg, indiciaData.lang.bulkEditor.error);
       logOutput(dlg, response.message);
       return false;
     }
@@ -194,86 +191,103 @@
   }
 
   /**
-   * Resest the dialog before doing a bulk move.
+   * Resest the dialog before doing a bulk edit.
    *
    * @param DOM dlg
    *   Dialog element.
    */
-  function prepareForBulkMove(dlg) {
-    dlg.find('.pre-move-info').hide();
-    dlg.find('.post-move-info .output *').remove();
-    dlg.find('.post-move-info').show();
-    logOutput(dlg, indiciaData.lang.recordsMover.preparing);
+  function prepareForBulkEdit(dlg) {
+    dlg.find('.pre-bulk-edit-info').hide();
+    dlg.find('.post-bulk-edit-info .output *').remove();
+    dlg.find('.post-bulk-edit-info').show();
+    logOutput(dlg, indiciaData.lang.bulkEditor.preparing);
   }
 
   /**
-   * Perform the actual move operation once proceed confirmed.
+   * Perform the actual bulk edit operation once proceed confirmed.
    *
    * @param DOM dlg
    *   Dialog element.
    * @param object data
-   *   Data object to send to the warehouse bulk move web-service.
+   *   Data object to send to the warehouse bulk edit web-service.
    * @param string endpoint
-   *   Name of the endpoint to call: bulkmoveids for a list of ids, or
-   *   bulkmoveall to move all records in the current filter.
+   *   Name of the endpoint to call: bulkeditids for a list of ids, or
+   *   bulkeditall to edit all records in the current filter.
    */
-  function performBulkMove(dlg, data, endpoint) {
+  function performBulkEdit(dlg, data, endpoint) {
     $.post(indiciaData.esProxyAjaxUrl + '/' + endpoint + '/' + indiciaData.nid, data, null, 'json')
-    .done(function(response) {
-      if (!checkResponseCode(dlg, response)) {
-        dlg.find('.post-move-info .close-move-dlg').removeAttr('disabled');
-        return;
-      }
-      if (response.search_after) {
-        // Paging through a set of records.
-        showProgressInOutput(dlg, data.precheck, response.affected);
+    .done(function(response, textStatus, jqXHR) {
+      if (response.code === 200 && response.search_after) {
+        // Paging through a set of records, send the same request again, but
+        // with search_after set.
+        showProgressInOutput(dlg, response.affected);
         data.search_after = response.search_after;
-        performBulkMove(dlg, data, endpoint);
-      } else if ((response.code === 200 && endpoint === 'bulkmoveids')
-          || (response.code === 204 && endpoint === 'bulkmoveall')) {
-        if (typeof data.precheck !== 'undefined') {
-          // Finished doing the precheck.
-          logOutput(dlg, indiciaData.lang.recordsMover.moving);
-          // Restart without the precheck flag so it actually does updates.
-          delete data.precheck;
-          delete data.search_after;
-          performBulkMove(dlg, data, endpoint);
-        } else {
-          // Finished.
-          const settings = $('#' + $(dlg).attr('id').replace(/-dlg$/, ''))[0].settings;
-          const dataOutputControl = $('#' + settings.linkToDataControl);
-          const pagerLabel = dataOutputControl.find('.showing');
-          var toRemove;
-          dlg.find('.post-move-info .close-move-dlg').removeAttr('disabled');
-          logOutput(dlg, indiciaData.lang.recordsMover.done);
-
-          if (endpoint === 'bulkmoveall') {
-            toRemove = dataOutputControl.find('[data-row-id]');
-          } else {
-            toRemove = dataOutputControl.find('[type=checkbox]:checked').closest('[data-row-id]');
+        performBulkEdit(dlg, data, endpoint);
+      } else if (response.code === 200 || response.code === 204) {
+        // Finished.
+        const settings = $('#' + $(dlg).attr('id').replace(/-dlg$/, ''))[0].settings;
+        settings.sourceObject.populate(true);
+        dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
+        logOutput(dlg, indiciaData.lang.bulkEditor.done);
+        // @todo Notify the user that it worked.
+      } else if (response.code === 409 && response.errorCode && response.errorCode === 'SAMPLES_CONTAIN_OTHER_OCCURRENCES') {
+        $.fancyDialog({
+          title: indiciaData.lang.bulkEditor.allowSampleSplitting,
+          message: indiciaData.lang.bulkEditor.promptAllowSampleSplit
+            .replace('{1}', response.errorData.sample_id)
+            .replace('{2}', response.errorData.included_occurrence_id)
+            .replace('{3}', response.errorData.excluded_occurrence_id),
+          okButton: indiciaData.lang.bulkEditor.confirm,
+          callbackOk: function() {
+            if (!data.options) {
+              data.options = {};
+            }
+            data.options.allowSampleSplits = true;
+            performBulkEdit(dlg, data, endpoint);
+          },
+          callbackCancel: function() {
+            $.fancybox.close();
           }
-          dataOutputControl[0].settings.sourceObject.settings.total.value -= toRemove.length;
-          toRemove.remove();
-          // Update the pager to reflect the removed rows.
-          if (pagerLabel.length) {
-            indiciaFns.drawPager(
-              pagerLabel,
-              dataOutputControl.find('[data-row-id]').length,
-              dataOutputControl[0].settings.sourceObject.settings
-            );
-          }
-        }
+        });
       } else {
-        logOutput(dlg, indiciaData.lang.recordsMover.error);
-        logOutput(dlg, 'Internal error - incorrect response from server.');
-        dlg.find('.post-move-info .close-move-dlg').removeAttr('disabled');
+        logOutput(dlg, indiciaData.lang.bulkEditor.error);
+        if (response.message) {
+          logOutput(dlg, response.message);
+        }
+        dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
       }
-
     })
     .fail(function() {
-      logOutput(dlg, indiciaData.lang.recordsMover.error);
-      dlg.find('.post-move-info .close-move-dlg').removeAttr('disabled');
+      logOutput(dlg, indiciaData.lang.bulkEditor.error);
+      dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
     });
+  }
+
+  /**
+   * Returns an object containing the updates implied by the edit form.
+   *
+   * @param DOM el
+   *   Control element.
+   *
+   * @returns object
+   *   Data object containing fields to update.
+   */
+  function getUpdates(el) {
+    let r = {};
+    if ($(el).find('[name="edit-recorder-name"]').val()) {
+      r.recorder_name = $(el).find('[name="edit-recorder-name"]').val();
+    }
+    if ($(el).find('[name="edit-location-name"]').val()) {
+      r.location_name = $(el).find('[name="edit-location-name"]').val();
+    }
+    if ($(el).find('[name="edit-date"]').val()) {
+      r.date = $(el).find('[name="edit-date"]').val();
+    }
+    if ($(el).find('[name="edit-sref"]').val()) {
+      r.sref = $(el).find('[name="edit-sref"]').val();
+      r.sref_system = $(el).find('[name="edit-sref-system"]').val();
+    }
+    return r;
   }
 
   /**
@@ -282,49 +296,56 @@
   function proceedClickHandler(el) {
     // Either pass through list of IDs or pass through a filter to restrict to.
     const linkToDataControl = $('#' + $(el)[0].settings.linkToDataControl);
-    const todoInfo = getTodoListInfo(el);
     const dlg = $('#' + $(el)[0].settings.id + '-dlg');
     let data = {
-      datasetMappings: JSON.stringify($(el)[0].settings.datasetMappings),
+      updates: getUpdates(dlg),
       website_id: indiciaData.website_id,
-      precheck: true
+      restrictToOwnData: $(el)[0].settings.restrictToOwnData
     };
-    prepareForBulkMove(dlg);
+    if ($.isEmptyObject(data.updates)) {
+      cannotProceedMessage(indiciaData.lang.bulkEditor.warningNoChanges);
+      return;
+    }
+    prepareForBulkEdit(dlg);
     if (linkToDataControl.hasClass('multiselect-mode')) {
-      data['occurrence:ids'] = todoInfo.ids.join(',');
-      performBulkMove(dlg, data, 'bulkmoveids');
+      data['occurrence:ids'] = getTodoListInfo(el).ids.join(',');
+      performBulkEdit(dlg, data, 'bulkeditids');
     } else {
       const filter = indiciaFns.getFormQueryData($(el)[0].settings.sourceObject, false);
       data['occurrence:idsFromElasticFilter'] = filter;
-      performBulkMove(dlg, data, 'bulkmoveall');
+      performBulkEdit(dlg, data, 'bulkeditall');
     }
   }
 
   /**
-   * Click button displays info message before allowing user to proceed with move.
+   * Click button displays info message before allowing user to proceed with edit.
    */
-  function moveRecordsBtnClickHandler(e) {
-    const el = $(e.currentTarget).closest('.idc-recordsMover');
+  function bulkEditRecordsBtnClickHandler(e) {
+    const el = $(e.currentTarget).closest('.idc-bulkEditor');
     const todoInfo = getTodoListInfo(el);
     const dlg = $('#' + $(el)[0].settings.id + '-dlg');
     linkToDataSource(el);
     const filter = indiciaFns.getFormQueryData($(el)[0].settings.sourceObject, false);
     // Validate that it won't affect other user data if it shouldn't.
     if (el[0].settings.restrictToOwnData && !checkHasMyRecordsFilter(el, filter)) {
-      cannotProceedMessage(indiciaData.lang.recordsMover.errorNotFilteredToCurrentUser);
+      cannotProceedMessage(indiciaData.lang.bulkEditor.errorEditNotFilteredToCurrentUser);
       return;
     }
     // Message if nothing to do.
     if (todoInfo.total === 0) {
-      cannotProceedMessage(indiciaData.lang.recordsMover.warningNothingToDo);
+      cannotProceedMessage(indiciaData.lang.bulkEditor.warningNothingToDo);
       return;
     }
     // Reset the dialog.
     dlg.find('.message').text(todoInfo.message);
-    dlg.find('.pre-move-info').show();
-    dlg.find('.post-move-info').hide();
-    dlg.find('.post-move-info .close-move-dlg').attr('disabled', true);
-    dlg.find('.post-move-info .output p').remove();
+    dlg.find('.pre-bulk-edit-info').show();
+    dlg.find('.post-bulk-edit-info').hide();
+    dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').attr('disabled', true);
+    dlg.find('.post-bulk-edit-info .output p').remove();
+    // Reset date picker so that placeholder works.
+    dlg.find('[name="edit-date"]')[0].type='text';
+    console.log('Reset inputs');
+    dlg.find('.ctrl-wrap input').val('');
     // Now open it.
     $.fancybox.open({
       src: dlg,
@@ -339,14 +360,21 @@
    * Register the various user interface event handlers.
    */
   function initHandlers(el) {
-    $(el).find('.move-records-btn').click(moveRecordsBtnClickHandler);
+    $(el).find('.bulk-edit-records-btn').click(bulkEditRecordsBtnClickHandler);
 
-    $(el).find('.proceed-move').click(() => {
+    $(el).find('.proceed-bulk-edit').click(() => {
       proceedClickHandler(el);
     });
 
-    $(el).find('.close-move-dlg').click(() => {
+    $(el).find('.close-bulk-edit-dlg').click(() => {
       $.fancybox.close();
+    });
+
+    // For custom placeholder, only switch to date when focused.
+    $(el).find('[name="edit-date"]').mouseover((e) => {
+      if (e.currentTarget.type === 'text') {
+        e.currentTarget.type = 'date';
+      }
     });
   }
 
@@ -392,7 +420,7 @@
     /**
    * Extend jQuery to declare idcRecordDetailsPane method.
    */
-  $.fn.idcRecordsMover = function buildRecordsMover(methodOrOptions) {
+  $.fn.idcBulkEditor = function buildBulkEditor(methodOrOptions) {
     var passedArgs = arguments;
     var result;
     $.each(this, function callOnEachOutput() {
@@ -405,7 +433,7 @@
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.
-      $.error('Method ' + methodOrOptions + ' does not exist on jQuery.idcRecordsMover');
+      $.error('Method ' + methodOrOptions + ' does not exist on jQuery.idcBulkEditor');
       return true;
     });
     // If the method has no explicit response, return this to allow chaining.

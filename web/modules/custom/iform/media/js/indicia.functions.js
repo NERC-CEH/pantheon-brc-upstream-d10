@@ -796,7 +796,7 @@ jQuery(document).ready(function ($) {
     // Adds a Fancybox dialog control.
     $.fancyDialog = function(opts) {
       var origContentParent;
-      var content = $('<div class="fc-content p-5 rounded">');
+      var content = $('<div class="fancy-dialog-content p-5 rounded">');
       opts = $.extend(
         true,
         {

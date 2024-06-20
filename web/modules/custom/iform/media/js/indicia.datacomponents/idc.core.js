@@ -28,6 +28,8 @@
   'use strict';
   var $ = jQuery;
 
+  indiciaData.leafletSearchPolygon = null;
+
   /**
    * Extend the String class to simplify a column fieldname string.
    *
@@ -60,6 +62,8 @@
     // Leading caps.
     return name.charAt(0).toUpperCase() + name.slice(1);
   };
+
+  indiciaFns.modifyEsFilterHooks = [];
 
   /**
    * Keep track of a list of all the plugin instances that output something.
@@ -1774,6 +1778,16 @@
       }
       data.aggs = agg;
     }
+    if (data.filter_def && data.filter_def.searchArea && indiciaData.leafletSearchPolygon !== data.filter_def.searchArea) {
+      indiciaData.leafletSearchPolygon = data.filter_def.searchArea;
+      $.each($('.idc-leafletMap'), function eachMap() {
+        $(this).idcLeafletMap('showFeature', data.filter_def.searchArea, true);
+      });
+    }
+    // Allow custom filter modifier hooks.
+    $.each(indiciaFns.modifyEsFilterHooks, function() {
+      this(data);
+    });
     return data;
   };
 }());
@@ -1872,6 +1886,11 @@ jQuery(document).ready(function docReady() {
 
   $('.es-location-select').change(function selectChange() {
     var changedSelect = this;
+    // Select a site will remove a drawn polygon.
+    delete indiciaData.filter.def.searchArea;
+    delete indiciaData.filter.def.bufferedSearchArea;
+    indiciaData.mapdiv.removeAllFeatures(indiciaData.mapdiv.map.editLayer, 'clickPoint', true)
+
     // Callback needs to handle the geometry filters.
     onLocationSelectChange(this, function callback(data) {
       if (data.length === 0) {

@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.
  *
- * @author Indicia Team
  * @license http://www.gnu.org/licenses/gpl.html GPL 3.0
  * @link https://github.com/indicia-team/client_helpers
  */
@@ -470,7 +469,7 @@ var IdcEsDataSource;
       }
       // If limited to a map's bounds, redraw when the map is zoomed or panned.
       if (ds.settings.filterBoundsUsingMap) {
-        $('#' + ds.settings.filterBoundsUsingMap).idcLeafletMap('on', 'moveend', function onMoveEnd() {
+        $('#' + ds.settings.filterBoundsUsingMap).idcLeafletMap('on', 'moveEnd', function onMoveEnd() {
           ds.populate();
         });
       }

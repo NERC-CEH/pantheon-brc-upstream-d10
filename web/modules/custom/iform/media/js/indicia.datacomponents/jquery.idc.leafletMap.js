@@ -64,7 +64,12 @@
    * Registered callbacks for different events.
    */
   var callbacks = {
-    moveend: []
+    move: [],
+    moveStart: [],
+    moveEnd: [],
+    zoomEnd: [],
+    itemSelect: [],
+    drawDataLayerEnd: []
   };
 
   /**
@@ -73,11 +78,16 @@
    */
   var selectedRowMarker = null;
 
-   /**
-   * Variable to hold the polygon used to highlight the currently selected
-   * location boundary when relevant.
+  /**
+   * Variable to hold polygons by type (e.g. selection, buffer) that have been loaded onto the map.
    */
-  var selectedFeature = null;
+  var managedFeatures = {};
+
+  /**
+   * Track the currently selected grid square, when this is being used as a
+   * temporary filter on other data sources.
+   */
+  var selectedGridSquare = null;
 
   /**
    * If filtering applied due to selected feature, remember which sources need
@@ -115,6 +125,30 @@
       }
     });
     return layers;
+  }
+
+  /**
+   * When reporting on a filter boundary, add filter to limit coord precision.
+   *
+   * So that very imprecise records are excluded if much bigger than the
+   * reporting polygon.
+   */
+  function addPrecisionFilterForReportBoundary(bounds) {
+    const proj4326 = new Proj4js.Proj('EPSG:4326');
+    // Web mercator good enough for rough size estimate in metres.
+    const projWebMercator = new Proj4js.Proj('EPSG:3857');
+    // Find the diagonal of the bounding box.
+    const cornerNE = new Proj4js.Point(bounds.getEast(), bounds.getNorth());
+    const cornerSW = new Proj4js.Point(bounds.getWest(), bounds.getSouth  ());
+    // Transform to Web Mercator.
+    const cornerNEWM = Proj4js.transform(proj4326, projWebMercator, cornerNE);
+    const cornerSWWM = Proj4js.transform(proj4326, projWebMercator, cornerSW);
+    // Find the smallest dimension west->east or south-north.
+    const minDimension = Math.min(cornerNE.y - cornerSW.y, cornerNE.x - cornerSW.x);
+    // Double it to define a limit on the range of coordinate imprecisions, so
+    // records that are not likely to be in or near the boundary are excluded.
+    const maxImprecision = Math.round(minDimension * 2);
+    $('body').append('<input class="es-filter-param" type="hidden" data-es-bool-clause="must" data-es-query-type="query_string" value="location.coordinate_uncertainty_in_meters:[* TO ' + maxImprecision + ']" />');
   }
 
   /**
@@ -192,7 +226,8 @@
     var size = {};
     fillOpacity = fillOpacity === null || typeof fillOpacity === "undefined" ? 0.5 : fillOpacity;
     $.each(layerIds, function eachLayer() {
-      var layerConfig = el.settings.layerConfig[this];
+      var layerId = this;
+      var layerConfig = el.settings.layerConfig[layerId];
       var mapObject;
       config = {
         type: typeof layerConfig.type === 'undefined' ? 'marker' : layerConfig.type,
@@ -245,6 +280,7 @@
       // Store type so available in feature details.
       config.options.type = config.type;
       config.options.className = 'data-' + config.type;
+      config.options.layerId = layerId;
       // Store filter data to apply if feature clicked on.
       if (filterField && filterValue) {
         config.options.filterField = filterField;
@@ -431,13 +467,18 @@
         var location = indiciaFns.findValue(this, 'location');
         var count = indiciaFns.findValue(this, 'count');
         // On a scale of 0 to 20000 (the range allowed for metrics), we
-        // want 20% to 70% opacity according to number of records.
+        // want 10% to 60% opacity according to number of records.
         var metric = Math.round((count / maxMetric) * 10000) + 2000;
         if (typeof location !== 'undefined') {
           addFeature(el, sourceSettings.id, location, null, metric, null, null, null, null, this.key);
         }
       });
     }
+    getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
+      $.each(callbacks.drawDataLayerEnd, function eachCallback() {
+        this(el, 'aggregation', response, null, maxMetric, layer);
+      });
+    });
   }
 
   /**
@@ -450,6 +491,7 @@
     var buckets = indiciaFns.findValue(response.aggregations, 'buckets');
     var subBuckets;
     var maxMetric = Math.sqrt(10);
+    var maxCount = 0;
     var filterField = $(el).idcLeafletMap('getAutoSquareField');
     if (typeof buckets !== 'undefined') {
       $.each(buckets, function eachBucket() {
@@ -457,6 +499,7 @@
         if (typeof subBuckets !== 'undefined') {
           $.each(subBuckets, function eachSubBucket() {
             maxMetric = Math.max(Math.sqrt(this.doc_count), maxMetric);
+            maxCount = Math.max(this.doc_count, maxCount);
           });
         }
       });
@@ -477,6 +520,11 @@
             }
           });
         }
+      });
+      getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
+        $.each(callbacks.drawDataLayerEnd, function eachCallback() {
+          this(el, 'aggregation', response, maxCount, maxMetric, layer);
+        });
       });
     }
   }
@@ -656,12 +704,25 @@
         // Intersects is using the outer bounding box of the square which is
         // only rough as square may be at an angle. So do an accurate point in
         // polygon test to confirm.
-        if (!feature.getBounds || pointInPolygon(latlng, feature.toGeoJSON().geometry.coordinates[0])) {
+        if (!feature.getBounds || feature.toGeoJSON().geometry.type === 'Point' || pointInPolygon(latlng, feature.toGeoJSON().geometry.coordinates[0])) {
           filterValues.push(feature.options.filterValue);
         }
       }
     });
     return filterValues;
+  }
+
+  /**
+   * Removes any previously selected grid square's selection style.
+   */
+  function deselectGridSquare(el) {
+    if (selectedGridSquare) {
+      selectedGridSquare.setStyle({
+        color: el.settings.layerConfig[selectedGridSquare.options.layerId].style.color,
+        fillColor: el.settings.layerConfig[selectedGridSquare.options.layerId].style.fillColor
+      });
+      selectedGridSquare = null;
+    }
   }
 
   /**
@@ -729,10 +790,14 @@
           // Clear filters on any sources that resulted from the click on a
           // feature, unless it only just happened.
           if (!justClickedOnFeature) {
+            $.each(el.callbacks.itemSelect, function eachCallback() {
+              this(null);
+            });
             sourcesToReloadOnMapClick.forEach(function eachSrc(src) {
               src.populate(false);
             });
             sourcesToReloadOnMapClick = [];
+            deselectGridSquare(el);
           }
           justClickedOnFeature = false;
         });
@@ -771,13 +836,20 @@
               // Use preclick event as this must come before the map click for
               // the filter reset to work at correct time.
               group.on('preclick', function clickFeature(e) {
+                $.each(el.callbacks.itemSelect, function eachCallback() {
+                  this(e.layer);
+                });
                 if (e.layer.options.filterField && e.layer.options.filterValue) {
+                  e.layer.setStyle(el.settings.selectedFeatureStyle);
+                  deselectGridSquare(el);
+                  selectedGridSquare = e.layer;
                   // Since we are applying a new set of filters, we can clear the
                   // list of sources that needed to be reloaded next time the map
                   // was clicked.
                   sourcesToReloadOnMapClick = [];
-                  $.each($('#' + el.settings.showSelectedRow)[0].settings.source, function eachSrc(src) {
-                    var source = indiciaData.esSourceObjects[src];
+                  const selectedRowOutputSelector = typeof el.settings.showSelectedRow === 'string' ? '#' + el.settings.showSelectedRow : '#' + el.settings.showSelectedRow.join(',#');
+                  $.each($(selectedRowOutputSelector), function() {
+                    var source = this.settings.sourceObject;
                     var origFilter;
                     let filterValues;
                     if (!source.settings.filterBoolClauses) {
@@ -805,7 +877,7 @@
                     });
                     // Temporarily populate just the linked grid with the
                     // filter to show the selected row.
-                    source.populate(false, origFilter, $('#' + el.settings.showSelectedRow)[0]);
+                    source.populate(true, origFilter, this);
                     // Map click will later clear this filter.
                     sourcesToReloadOnMapClick.push(source);
                     // Tell the map click not to clear this filter just yet.
@@ -834,6 +906,9 @@
       layersControl = L.control.layers(baseMaps, overlays);
       layersControl.addTo(el.map);
       el.map.on('zoomend', function zoomEnd() {
+        $.each(callbacks.zoomEnd, function eachCallback() {
+          this(el);
+        });
         if (selectedRowMarker !== null) {
           // Timeout needed as Leaflet objects not placed correctly until after
           // zoom complete.
@@ -842,8 +917,18 @@
           }, 100);
         }
       });
+      el.map.on('move', function move() {
+        $.each(callbacks.move, function eachCallback() {
+          this(el);
+        });
+      });
+      el.map.on('movestart', function moveStart() {
+        $.each(callbacks.moveStart, function eachCallback() {
+          this(el);
+        });
+      });
       el.map.on('moveend', function moveEnd() {
-        $.each(callbacks.moveend, function eachCallback() {
+        $.each(callbacks.moveEnd, function eachCallback() {
           this(el);
         });
         if (el.settings.cookies) {
@@ -905,13 +990,18 @@
           fillOpacity = (0.4 / maxCount) + (0.1 / geomCounts[this._source.location.point]);
           addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, '_id', this._id, label);
         });
+        getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
+          $.each(callbacks.drawDataLayerEnd, function eachCallback() {
+            this(el, 'aggregation', response, maxCount, null, layer);
+          });
+        });
       }
       // Are there aggregations to map?
       if (typeof response.aggregations !== 'undefined') {
         if (sourceSettings.mode === 'mapGeoHash') {
-          mapGeoHashAggregation(el, response, sourceSettings);
+          mapGeoHashAggregation(el, response, sourceSettings, layers);
         } else if (sourceSettings.mode === 'mapGridSquare') {
-          mapGridSquareAggregation(el, response, sourceSettings);
+          mapGridSquareAggregation(el, response, sourceSettings, layers);
         }
       }
       if (sourceSettings.initialMapBounds && !el.settings.initialBoundsSet && layers.length > 0 && layers[0].getBounds) {
@@ -934,15 +1024,15 @@
       var settings = $(el)[0].settings;
       var controlClass;
       if (typeof settings.showSelectedRow !== 'undefined') {
-        if ($('#' + settings.showSelectedRow).length === 0) {
-          indiciaFns.controlFail(el, 'Invalid grid ID in @showSelectedRow parameter');
-        }
-        controlClass = $('#' + settings.showSelectedRow).data('idc-class');
-        $('#' + settings.showSelectedRow)[controlClass]('on', 'itemSelect', function onItemSelect(tr) {
-          rowSelected(el, tr, false);
-        });
-        $('#' + settings.showSelectedRow)[controlClass]('on', 'itemDblClick', function onItemDblClick(tr) {
-          rowSelected(el, tr, true);
+        const selectedRowOutputSelector = typeof el.settings.showSelectedRow === 'string' ? '#' + el.settings.showSelectedRow : '#' + el.settings.showSelectedRow.join(',#');
+        $.each($(selectedRowOutputSelector), function() {
+          controlClass = $(this).data('idc-class');
+          $(this)[controlClass]('on', 'itemSelect', function onItemSelect(tr) {
+            rowSelected(el, tr, false);
+          });
+          $(this)[controlClass]('on', 'itemDblClick', function onItemDblClick(tr) {
+            rowSelected(el, tr, true);
+          });
         });
       }
     },
@@ -952,38 +1042,52 @@
      */
     addBoundaryGroup: function addBoundaryGroup(geoms, style) {
       var featureList = [];
-      var group;
       geoms.forEach(function(geom) {
         featureList.push(getFeatureFromGeom(geom, style).obj);
       });
-      group = L.featureGroup(featureList)
+      const group = L.featureGroup(featureList)
         .addTo(this.map);
-      this.map.fitBounds(group.getBounds(), { maxZoom: 14 });
+      const bounds = group.getBounds();
+      this.map.fitBounds(bounds, { maxZoom: 14 });
+      addPrecisionFilterForReportBoundary(bounds);
     },
 
     /**
      * Clears the selected feature boundary (e.g. a selected location).
      */
-    clearFeature: function clearFeature() {
-      if (selectedFeature) {
-        selectedFeature.removeFrom(this.map);
-        selectedFeature = null;
+    clearFeature: function clearFeature(featureName) {
+      featureName = typeof featureName === 'undefined' ? 'selection' : '';
+      if (managedFeatures[featureName]) {
+        managedFeatures[featureName].removeFrom(this.map);
+        delete managedFeatures[featureName];
       }
+    },
+
+    /**
+     * Clears the selected feature boundary (e.g. a selected location).
+     */
+    clearSelectedGridSquare: function clearSelectedGridSquare() {
+      deselectGridSquare(this);
     },
 
     /**
      * Shows a selected feature boundary (e.g. a selected location).
      */
-    showFeature: function showFeature(geom, zoom) {
-      if (selectedFeature) {
-        selectedFeature.removeFrom(this.map);
-        selectedFeature = null;
+    showFeature: function showFeature(geom, zoom, featureName, style) {
+      // Set default style.
+      if (typeof style === 'undefined') {
+        style = {
+          color: '#3333DD',
+          fillColor: '#4444CC',
+          fillOpacity: 0.05
+        };
       }
-      selectedFeature = showFeatureWkt(this, geom, 0, zoom, 14, {
-        color: '#3333DD',
-        fillColor: '#4444CC',
-        fillOpacity: 0.05
-      });
+      featureName = typeof featureName === 'undefined' ? 'selection' : '';
+      if (managedFeatures[featureName]) {
+        managedFeatures[featureName].removeFrom(this.map);
+        delete managedFeatures[featureName];
+      }
+      managedFeatures[featureName] = showFeatureWkt(this, geom, 0, zoom, 14, style);
     },
 
     /**

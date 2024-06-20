@@ -23,7 +23,7 @@ if (typeof indiciaData.srefHandlers==="undefined") {
 
 indiciaData.srefHandlers['osie'] = {
 
-  srid: 29901,
+  srid: 29903,
 
   returns: ['wkt', 'precisions', 'gridNotation'],
 

@@ -2250,7 +2250,7 @@ var destroyAllFeatures;
           && wmPoint.x >= -1196000 && wmPoint.x <= -599200 && wmPoint.y >= 6687800 && wmPoint.y <= 7442470) {
         // Got a rough match, now transform to the correct system so we can do exact match. Note that we are not testing against
         // a pure rectangle now.
-        proj = new OpenLayers.Projection('EPSG:29901');
+        proj = new OpenLayers.Projection('EPSG:29903');
         testpoint = wmPoint.clone().transform(wmProj, proj);
         if (testpoint.x >= 10000 && testpoint.x <= 367300 && testpoint.y >= 10000 && testpoint.y <= 468100
             && (testpoint.x < 332000 || testpoint.y < 445900)) {
@@ -2319,7 +2319,7 @@ var destroyAllFeatures;
         if (wmPoint.x >= -1196000 && wmPoint.x <= -599200 && wmPoint.y >= 6687800 && wmPoint.y <= 7442470) {
           // Got a rough match, now transform to the correct system so we can do exact match. Note that we are not testing against
           // a pure rectangle now.
-          proj = new OpenLayers.Projection('EPSG:29901');
+          proj = new OpenLayers.Projection('EPSG:29903');
           testpoint = wmPoint.clone().transform(wmProj, proj);
           if (testpoint.x >= 10000 && testpoint.x <= 367300 && testpoint.y >= 10000 && testpoint.y <= 468100
               && (testpoint.x < 332000 || testpoint.y < 445900)) {
@@ -3024,6 +3024,8 @@ var destroyAllFeatures;
         if ($.inArray('panZoom', this.settings.standardControls) ||
             $.inArray('panZoomBar', this.settings.standardControls)) {
           helptext.push(this.settings.hlpPanZoomButtons);
+        } else if ($.inArray('zoom', this.settings.standardControls)) {
+          helptext.push(this.settings.hlpZoomButtons);
         } else {
           helptext.push(this.settings.hlpPanZoom);
         }
@@ -3507,6 +3509,8 @@ var destroyAllFeatures;
           div.map.addControl(new OpenLayers.Control.PanZoom());
         } else if (ctrl=='panZoomBar') {
           div.map.addControl(new OpenLayers.Control.PanZoomBar());
+        } else if (ctrl=='zoom') {
+          div.map.addControl(new OpenLayers.Control.Zoom());
         } else if (ctrl=='drawPolygon' && div.settings.editLayer) {
           hint = div.settings.hintDrawPolygonHint;
           if (div.settings.reportGroup!==null) {
@@ -3856,7 +3860,7 @@ jQuery.fn.indiciaMapPanel.defaults = {
       intervals: [100000, 10000, 1000, 100]
     },
     'OSIE': {
-      projection: 29901,
+      projection: 29903,
       bounds: [0, 0, 400000, 500000],
       intervals: [100000, 10000, 1000, 100]
     },
@@ -3914,6 +3918,8 @@ jQuery.fn.indiciaMapPanel.defaults = {
   hlpPanZoom: 'Pan and zoom the map to the required place by dragging the map and double clicking or Shift-dragging to zoom.',
   hlpPanZoomButtons: 'Pan and zoom the map to the required place using the navigation buttons or '+
       'by dragging the map and double clicking or Shift-dragging to zoom.',
+  hlpZoomButtons: 'Zoom the map to the required place using the +/- buttons or by double clicking or Shift-dragging to zoom. ' +
+      'Drag the map with the mouse to pan.',
   hlpZoomChangesPrecision: 'By zooming the map in or out before clicking you can alter the precision of the '+
       'selected grid square.',
   helpToPickPrecisionMin: false,

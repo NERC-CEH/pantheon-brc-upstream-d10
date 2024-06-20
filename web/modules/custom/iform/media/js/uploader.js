@@ -944,6 +944,13 @@ jQuery(document).ready(function($) {
           message: indiciaData.lang.import_helper_2.importCannotProceed + '<br/><ul><li>' + result.error + '</li></ul>',
           cancelButton: null
         });
+        if (result.errorCount) {
+          // If the result informs us there are errors in the row details,
+          // show a download button to access the errors file.
+          $('.fancybox-content').append(' <a class="btn btn-info fancy-dialog-button" download href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '">' +
+            indiciaData.lang.import_helper_2.downloadPreprocessingErrorsExplanationsFile +
+            '</a>');
+        }
       }
       else if (result.nextStep) {
         logBackgroundProcessingInfo(result.nextDescription);
@@ -1102,6 +1109,7 @@ jQuery(document).ready(function($) {
             } else {
               // Import is complete.
               $('#import-details-importing-done').show();
+              $('#import-details-import-another').show();
               // Update page title to import complete.
               $('#current-task').text(indiciaData.lang.import_helper_2.completeMessage);
               $('#file-progress').slideUp();

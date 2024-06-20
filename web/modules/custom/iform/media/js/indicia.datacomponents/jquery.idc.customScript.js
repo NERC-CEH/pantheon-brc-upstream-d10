@@ -12,7 +12,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.
  *
- * @author Indicia Team
  * @license http://www.gnu.org/licenses/gpl.html GPL 3.0
  * @link https://github.com/indicia-team/client_helpers
  */
@@ -58,6 +57,8 @@
       if (typeof options !== 'undefined') {
         $.extend(el.settings, options);
       }
+      // customScript does not make use of multiple sources.
+      el.settings.sourceObject = indiciaData.esSourceObjects[Object.keys(el.settings.source)[0]];
     },
 
     /*
@@ -95,6 +96,9 @@
         // Call a declared method.
         result = methods[methodOrOptions].apply(this, Array.prototype.slice.call(passedArgs, 1));
         return true;
+      } else if (methodOrOptions === 'on') {
+        // Custom script currently ignores binding events.
+        return false;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
         return methods.init.apply(this, passedArgs);

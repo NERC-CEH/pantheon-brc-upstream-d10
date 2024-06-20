@@ -282,7 +282,7 @@ function easy_login_call_get_user_id(
  */
 function easy_login_handle_get_user_id_response($account, $response, $save) {
   $response = json_decode($response);
-  if (isset($response->userId)) {
+  if (!empty($response->userId)) {
     if (!account_has_valid_warehouse_user_id($account) || $account->field_indicia_user_id->value != $response->userId) {
       // @todo: no need for these messages during registration
       if (!account_has_valid_warehouse_user_id($account)) {
