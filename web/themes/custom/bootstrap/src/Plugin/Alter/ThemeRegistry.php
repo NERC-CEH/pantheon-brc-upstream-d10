@@ -42,7 +42,7 @@ class ThemeRegistry extends Registry implements AlterInterface {
       $configuration['theme'] = Bootstrap::getTheme();
     }
     $this->currentTheme = $configuration['theme'];
-    if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '10.3.0-dev')) {
+    if (Comparator::greaterThanOrEqualTo(\Drupal::VERSION, '10.3.0')) {
 		parent::__construct(
 		  \Drupal::root(),
 		  \Drupal::service('cache.default'),
