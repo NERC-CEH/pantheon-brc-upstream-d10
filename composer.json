@@ -240,7 +240,7 @@
         "drupal/module_missing_message_fixer": "^2.0@dev",
         "drupal/body_node_id_class": "^2.0",
         "drupal/bootstrap_horizontal_tabs": "^3.0",
-        "drupal/spammaster": "^2.46",
+        "drupal/spammaster": "^2.48",
         "drupal/core": "^10.2",
         "drupal/recaptcha_v3": "^2.0",
         "drupal/phpmailer_smtp": "^2.2",
@@ -262,7 +262,10 @@
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/paragraphs": "^1.17",
         "drupal/entity_usage": "2.0-beta12",
-        "drupal/twig_tweak": "^3.3"
+        "drupal/twig_tweak": "^3.3",
+        "drupal/forum": "^1.0",
+        "drupal/book": "^1.0",
+        "drupal/bootstrap": "^3.31"
     },
     "conflict": {
         "drupal/drupal": "*"
