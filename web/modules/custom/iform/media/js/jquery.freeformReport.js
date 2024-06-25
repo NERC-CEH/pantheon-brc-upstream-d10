@@ -32,25 +32,39 @@ jQuery(document).ready(function($) {
       div.settings.rowContainer = $('#' + div.settings.id + ' .freeform-row-placeholder').parent();
       $('#' + div.settings.id + ' .freeform-row-placeholder').remove();
 
-      var request = indiciaData.read.url + 'index.php/services/report/requestReport?report=' + div.settings.dataSource + '.xml&reportSource=local&' +
-        'mode=json&nonce=' + indiciaData.read.nonce +
-        '&auth_token=' + indiciaData.read.auth_token +
-        '&callback=?';
-
-      $.each(div.settings.extraParams, function(key, value) {
-        request += '&' + key + '=' + encodeURIComponent(value);
-      });
-
+      var request;
+      var params;
+      if (div.settings.proxy) {
+        request = div.settings.proxy;
+        params = div.settings.extraParams;
+      }  else {
+        request = indiciaData.read.url + 'index.php/services/report/requestReport';
+        params = $.extend({
+          report: div.settings.dataSource + '.xml',
+          reportSource: 'local',
+          mode: 'json',
+          nonce: indiciaData.read.nonce,
+          auth_token: indiciaData.read.auth_token
+        }, div.settings.extraParams);
+      }
+      request = request + '?' + Object.entries(params)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(value)}`)
+        .join('&');
+      if (!div.settings.proxy) {
+        // JSONP if going direct to warehouse.
+        request += '&callback=?';
+      }
       $.ajax({
         dataType: 'json',
         url: request,
         data: null,
       }).done(function(data) {
         $.each(data, function() {
-          const row = this;
           // Add some extra replacements for handling links.
-          row.rootFolder = indiciaData.rootFolder;
-          row.sep = indiciaData.rootFolder.match(/\?/) ? '&' : '?';
+          const row = $.extend({}, this, {
+            rootFolder: indiciaData.rootFolder,
+            sep: indiciaData.rootFolder.match(/\?/) ? '&' : '?'
+          });
           $.each(div.settings.bands, function() {
             const band = this;
             let outputBand = true;
@@ -91,7 +105,7 @@ jQuery(document).ready(function($) {
           });
         });
       }).fail(function() {
-
+        console.log('request failed');
       });
     });
 

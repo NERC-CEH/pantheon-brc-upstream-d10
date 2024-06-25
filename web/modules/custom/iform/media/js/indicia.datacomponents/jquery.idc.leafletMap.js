@@ -135,8 +135,9 @@
    */
   function addPrecisionFilterForReportBoundary(bounds) {
     const proj4326 = new Proj4js.Proj('EPSG:4326');
-    // Web mercator good enough for rough size estimate in metres.
-    const projWebMercator = new Proj4js.Proj('EPSG:3857');
+    // Web mercator good enough for rough size estimate in metres. Using 900913
+    // as 3857 broken in our copy of proj4.js.
+    const projWebMercator = new Proj4js.Proj('EPSG:900913');
     // Find the diagonal of the bounding box.
     const cornerNE = new Proj4js.Point(bounds.getEast(), bounds.getNorth());
     const cornerSW = new Proj4js.Point(bounds.getWest(), bounds.getSouth  ());
@@ -144,7 +145,7 @@
     const cornerNEWM = Proj4js.transform(proj4326, projWebMercator, cornerNE);
     const cornerSWWM = Proj4js.transform(proj4326, projWebMercator, cornerSW);
     // Find the smallest dimension west->east or south-north.
-    const minDimension = Math.min(cornerNE.y - cornerSW.y, cornerNE.x - cornerSW.x);
+    const minDimension = Math.min(cornerNEWM.y - cornerSWWM.y, cornerNEWM.x - cornerSWWM.x);
     // Double it to define a limit on the range of coordinate imprecisions, so
     // records that are not likely to be in or near the boundary are excluded.
     const maxImprecision = Math.round(minDimension * 2);
