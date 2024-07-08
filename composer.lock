@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "97481780a02a1f09d672cb11b59932d2",
+    "content-hash": "45c63452686cde22057badc022fcb649",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -2306,21 +2306,21 @@
         },
         {
             "name": "drupal/address",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/address.git",
-                "reference": "2.0.1"
+                "reference": "2.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/address-2.0.1.zip",
-                "reference": "2.0.1",
-                "shasum": "47e166dc46b1a2e17470738e8321bc20fa9e8e24"
+                "url": "https://ftp.drupal.org/files/projects/address-2.0.2.zip",
+                "reference": "2.0.2",
+                "shasum": "62875933847d9dcab5584de9c88712fa372cab9d"
             },
             "require": {
                 "commerceguys/addressing": "^2.1.1",
-                "drupal/core": "^9.5 || ^10",
+                "drupal/core": "^9.5 || ^10 || ^11",
                 "php": "^8.0"
             },
             "require-dev": {
@@ -2331,8 +2331,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.1",
-                    "datestamp": "1708373992",
+                    "version": "2.0.2",
+                    "datestamp": "1720108676",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3845,17 +3845,17 @@
         },
         {
             "name": "drupal/calendar",
-            "version": "1.0.0-beta1",
+            "version": "1.0.0-beta2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/calendar.git",
-                "reference": "8.x-1.0-beta1"
+                "reference": "8.x-1.0-beta2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/calendar-8.x-1.0-beta1.zip",
-                "reference": "8.x-1.0-beta1",
-                "shasum": "e91e0df97e7beac1ca9be8a3521138cca4cea3be"
+                "url": "https://ftp.drupal.org/files/projects/calendar-8.x-1.0-beta2.zip",
+                "reference": "8.x-1.0-beta2",
+                "shasum": "0bb9fbcb83ac87e32c1824e3a0473ab06d1f5a00"
             },
             "require": {
                 "drupal/calendar_datetime": "*",
@@ -3865,8 +3865,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-beta1",
-                    "datestamp": "1691500976",
+                    "version": "8.x-1.0-beta2",
+                    "datestamp": "1720252135",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -3910,16 +3910,16 @@
         },
         {
             "name": "drupal/calendar_datetime",
-            "version": "1.0.0-beta1",
+            "version": "1.0.0-beta2",
             "require": {
                 "drupal/calendar": "^1",
-                "drupal/core": "^9.4 || ^10"
+                "drupal/core": "^9.4 || ^10 || ^11"
             },
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-beta1",
-                    "datestamp": "1691500976",
+                    "version": "8.x-1.0-beta2",
+                    "datestamp": "1720252135",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -5805,16 +5805,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "10.3.0",
+            "version": "10.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "6f1af3070110d7d0f2a6671bea26add34667f765"
+                "reference": "d137403a30d4154404e473785f48dfc889d77e23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/6f1af3070110d7d0f2a6671bea26add34667f765",
-                "reference": "6f1af3070110d7d0f2a6671bea26add34667f765",
+                "url": "https://api.github.com/repos/drupal/core/zipball/d137403a30d4154404e473785f48dfc889d77e23",
+                "reference": "d137403a30d4154404e473785f48dfc889d77e23",
                 "shasum": ""
             },
             "require": {
@@ -5963,13 +5963,13 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/10.3.0"
+                "source": "https://github.com/drupal/core/tree/10.3.1"
             },
-            "time": "2024-06-20T18:58:42+00:00"
+            "time": "2024-07-04T11:33:45+00:00"
         },
         {
             "name": "drupal/core-composer-scaffold",
-            "version": "10.3.0",
+            "version": "10.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-composer-scaffold.git",
@@ -6013,13 +6013,13 @@
                 "drupal"
             ],
             "support": {
-                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.3.0"
+                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.3.1"
             },
             "time": "2024-05-11T08:21:39+00:00"
         },
         {
             "name": "drupal/core-project-message",
-            "version": "10.3.0",
+            "version": "10.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-project-message.git",
@@ -9110,17 +9110,17 @@
         },
         {
             "name": "drupal/gutenberg",
-            "version": "3.0.0",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/gutenberg.git",
-                "reference": "3.0.0"
+                "reference": "3.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/gutenberg-3.0.0.zip",
-                "reference": "3.0.0",
-                "shasum": "3c2736ecd3d946a743538f148c71f23d95b2cd3f"
+                "url": "https://ftp.drupal.org/files/projects/gutenberg-3.0.2.zip",
+                "reference": "3.0.2",
+                "shasum": "4c6c8f4dcfc44eafaf0ff093599e9d67a2fac2f1"
             },
             "require": {
                 "drupal/core": "^9.5 || ^10",
@@ -9133,8 +9133,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.0",
-                    "datestamp": "1717198192",
+                    "version": "3.0.2",
+                    "datestamp": "1720280481",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -11623,20 +11623,20 @@
         },
         {
             "name": "drupal/media_library_form_element",
-            "version": "2.0.6",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/media_library_form_element.git",
-                "reference": "2.0.6"
+                "reference": "2.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/media_library_form_element-2.0.6.zip",
-                "reference": "2.0.6",
-                "shasum": "91363cbea0d1895fbf0fbb9640d70fee47775111"
+                "url": "https://ftp.drupal.org/files/projects/media_library_form_element-2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": "5f805c71fbb4cbc67572a5713da807c8b8893bd6"
             },
             "require": {
-                "drupal/core": "^9.2 || ^10"
+                "drupal/core": "^10.3"
             },
             "require-dev": {
                 "drupal/webform": "6.2.x-dev@dev"
@@ -11644,8 +11644,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.6",
-                    "datestamp": "1674069446",
+                    "version": "2.1.0",
+                    "datestamp": "1719866596",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16659,26 +16659,26 @@
         },
         {
             "name": "drupal/views_condition",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_condition.git",
-                "reference": "2.0.0"
+                "reference": "2.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_condition-2.0.0.zip",
-                "reference": "2.0.0",
-                "shasum": "ab8745e8aeb0caf44c885500d33e45735aaa4e5d"
+                "url": "https://ftp.drupal.org/files/projects/views_condition-2.0.1.zip",
+                "reference": "2.0.1",
+                "shasum": "1e6b28872ef2bbe6716d8a49c55c3345a45cd6e6"
             },
             "require": {
-                "drupal/core": "^9.4 || ^10"
+                "drupal/core": "^9.4 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.0",
-                    "datestamp": "1659156084",
+                    "version": "2.0.1",
+                    "datestamp": "1720211185",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -19874,16 +19874,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.0.2",
+            "version": "v5.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "139676794dc1e9231bf7bcd123cfc0c99182cb13"
+                "reference": "683130c2ff8c2739f4822ff7ac5c873ec529abd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/139676794dc1e9231bf7bcd123cfc0c99182cb13",
-                "reference": "139676794dc1e9231bf7bcd123cfc0c99182cb13",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/683130c2ff8c2739f4822ff7ac5c873ec529abd1",
+                "reference": "683130c2ff8c2739f4822ff7ac5c873ec529abd1",
                 "shasum": ""
             },
             "require": {
@@ -19894,7 +19894,7 @@
             },
             "require-dev": {
                 "ircmaxell/php-yacc": "^0.0.7",
-                "phpunit/phpunit": "^7.0 || ^8.0 || ^9.0"
+                "phpunit/phpunit": "^9.0"
             },
             "bin": [
                 "bin/php-parse"
@@ -19926,9 +19926,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.0.2"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.1.0"
             },
-            "time": "2024-03-05T20:51:40+00:00"
+            "time": "2024-07-01T20:03:41+00:00"
         },
         {
             "name": "pantheon-systems/drupal-integrations",
@@ -29710,11 +29710,11 @@
     "stability-flags": {
         "pantheon-upstreams/upstream-configuration": 20,
         "drupal/login_destination": 10,
-        "drupal/core-recommended": 20,
         "drupal/ckeditor_media_resize": 10,
         "drupal/module_missing_message_fixer": 20,
         "drupal/filefield_sources": 20,
-        "drupal/htmlmail": 20
+        "drupal/htmlmail": 20,
+        "drupal/ckeditor_details": 10
     },
     "prefer-stable": true,
     "prefer-lowest": false,
