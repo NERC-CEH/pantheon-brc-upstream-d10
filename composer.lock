@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c1ff45f529a8060c484040db4b3803ea",
+    "content-hash": "7cbf059d1e0a8bfa56666f0abc1d48bf",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -8766,26 +8766,26 @@
         },
         {
             "name": "drupal/forum",
-            "version": "1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/forum.git",
-                "reference": "1.0.1"
+                "reference": "1.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/forum-1.0.1.zip",
-                "reference": "1.0.1",
-                "shasum": "bd35ac6ba370557501c675d2c8b53b00ef91e29e"
+                "url": "https://ftp.drupal.org/files/projects/forum-1.0.2.zip",
+                "reference": "1.0.2",
+                "shasum": "89ac29b06a7c5a4629a04ae9a87b39ba1f34330e"
             },
             "require": {
-                "drupal/core": ">=10.0"
+                "drupal/core": "^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.0.1",
-                    "datestamp": "1708474536",
+                    "version": "1.0.2",
+                    "datestamp": "1721256595",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13698,26 +13698,26 @@
         },
         {
             "name": "drupal/restui",
-            "version": "1.21.0",
+            "version": "1.22.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/restui.git",
-                "reference": "8.x-1.21"
+                "reference": "8.x-1.22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/restui-8.x-1.21.zip",
-                "reference": "8.x-1.21",
-                "shasum": "2a67dc2c1953dced0bddaff25e5c60784ee0178c"
+                "url": "https://ftp.drupal.org/files/projects/restui-8.x-1.22.zip",
+                "reference": "8.x-1.22",
+                "shasum": "7c9fb14c574f8a4090b77b1bcbc5be141409a383"
             },
             "require": {
-                "drupal/core": "^8.7.7 || ^9 || ^10"
+                "drupal/core": "^9.5 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.21",
-                    "datestamp": "1659086914",
+                    "version": "8.x-1.22",
+                    "datestamp": "1721134189",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13742,8 +13742,12 @@
                     "homepage": "https://www.drupal.org/user/682736"
                 },
                 {
-                    "name": "klausi",
-                    "homepage": "https://www.drupal.org/user/262198"
+                    "name": "kamkejj",
+                    "homepage": "https://www.drupal.org/user/81043"
+                },
+                {
+                    "name": "vipin.mittal18",
+                    "homepage": "https://www.drupal.org/user/319716"
                 }
             ],
             "description": "Provides a user interface to manage REST resources.",
@@ -15218,17 +15222,17 @@
         },
         {
             "name": "drupal/taxonomy_entity_index",
-            "version": "1.16.0",
+            "version": "1.17.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/taxonomy_entity_index.git",
-                "reference": "8.x-1.16"
+                "reference": "8.x-1.17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/taxonomy_entity_index-8.x-1.16.zip",
-                "reference": "8.x-1.16",
-                "shasum": "860eee90a7549c1a6b1fc46da306b41c043b4563"
+                "url": "https://ftp.drupal.org/files/projects/taxonomy_entity_index-8.x-1.17.zip",
+                "reference": "8.x-1.17",
+                "shasum": "cc8f89b56914431776f70c23243ef77effb74848"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10 || ^11"
@@ -15240,8 +15244,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.16",
-                    "datestamp": "1715217299",
+                    "version": "8.x-1.17",
+                    "datestamp": "1721256115",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -15283,17 +15287,17 @@
         },
         {
             "name": "drupal/taxonomy_manager",
-            "version": "2.0.11",
+            "version": "2.0.12",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/taxonomy_manager.git",
-                "reference": "2.0.11"
+                "reference": "2.0.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/taxonomy_manager-2.0.11.zip",
-                "reference": "2.0.11",
-                "shasum": "03d50c2702dcf1c2f744ad735ab2037adc422fb1"
+                "url": "https://ftp.drupal.org/files/projects/taxonomy_manager-2.0.12.zip",
+                "reference": "2.0.12",
+                "shasum": "70677d9fb730cbf40640d6e28393f74458ecf717"
             },
             "require": {
                 "drupal/core": "^9.3 || ^10",
@@ -15305,8 +15309,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.11",
-                    "datestamp": "1715239473",
+                    "version": "2.0.12",
+                    "datestamp": "1721222244",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17055,26 +17059,26 @@
         },
         {
             "name": "drupal/views_templates",
-            "version": "1.5.0",
+            "version": "1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_templates.git",
-                "reference": "8.x-1.5"
+                "reference": "8.x-1.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_templates-8.x-1.5.zip",
-                "reference": "8.x-1.5",
-                "shasum": "a54e158adc658f9fde8ab4b2e046fa601a2f6076"
+                "url": "https://ftp.drupal.org/files/projects/views_templates-8.x-1.6.zip",
+                "reference": "8.x-1.6",
+                "shasum": "681d7db0a77cf8d5e6758597e37931e35926a96d"
             },
             "require": {
-                "drupal/core": "^10.1"
+                "drupal/core": "^10.1 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.5",
-                    "datestamp": "1709314062",
+                    "version": "8.x-1.6",
+                    "datestamp": "1721227749",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -18202,22 +18206,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.8.1",
+            "version": "7.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "41042bc7ab002487b876a0683fc8dce04ddce104"
+                "reference": "84ac2b2afc44e40d3e8e658a45d68d6d20437612"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/41042bc7ab002487b876a0683fc8dce04ddce104",
-                "reference": "41042bc7ab002487b876a0683fc8dce04ddce104",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/84ac2b2afc44e40d3e8e658a45d68d6d20437612",
+                "reference": "84ac2b2afc44e40d3e8e658a45d68d6d20437612",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^1.5.3 || ^2.0.1",
-                "guzzlehttp/psr7": "^1.9.1 || ^2.5.1",
+                "guzzlehttp/promises": "^1.5.3 || ^2.0.3",
+                "guzzlehttp/psr7": "^2.7.0",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
                 "symfony/deprecation-contracts": "^2.2 || ^3.0"
@@ -18228,9 +18232,9 @@
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "ext-curl": "*",
-                "php-http/client-integration-tests": "dev-master#2c025848417c1135031fdf9c728ee53d0a7ceaee as 3.0.999",
+                "guzzle/client-integration-tests": "3.0.2",
                 "php-http/message-factory": "^1.1",
-                "phpunit/phpunit": "^8.5.36 || ^9.6.15",
+                "phpunit/phpunit": "^8.5.39 || ^9.6.20",
                 "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
             "suggest": {
@@ -18308,7 +18312,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.8.1"
+                "source": "https://github.com/guzzle/guzzle/tree/7.9.0"
             },
             "funding": [
                 {
@@ -18324,20 +18328,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-03T20:35:24+00:00"
+            "time": "2024-07-18T11:52:56+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.0.2",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "bbff78d96034045e58e13dedd6ad91b5d1253223"
+                "reference": "6ea8dd08867a2a42619d65c3deb2c0fcbf81c8f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/bbff78d96034045e58e13dedd6ad91b5d1253223",
-                "reference": "bbff78d96034045e58e13dedd6ad91b5d1253223",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/6ea8dd08867a2a42619d65c3deb2c0fcbf81c8f8",
+                "reference": "6ea8dd08867a2a42619d65c3deb2c0fcbf81c8f8",
                 "shasum": ""
             },
             "require": {
@@ -18345,7 +18349,7 @@
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
-                "phpunit/phpunit": "^8.5.36 || ^9.6.15"
+                "phpunit/phpunit": "^8.5.39 || ^9.6.20"
             },
             "type": "library",
             "extra": {
@@ -18391,7 +18395,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.0.2"
+                "source": "https://github.com/guzzle/promises/tree/2.0.3"
             },
             "funding": [
                 {
@@ -18407,20 +18411,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-03T20:19:20+00:00"
+            "time": "2024-07-18T10:29:17+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.6.2",
+            "version": "2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "45b30f99ac27b5ca93cb4831afe16285f57b8221"
+                "reference": "a70f5c95fb43bc83f07c9c948baa0dc1829bf201"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/45b30f99ac27b5ca93cb4831afe16285f57b8221",
-                "reference": "45b30f99ac27b5ca93cb4831afe16285f57b8221",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/a70f5c95fb43bc83f07c9c948baa0dc1829bf201",
+                "reference": "a70f5c95fb43bc83f07c9c948baa0dc1829bf201",
                 "shasum": ""
             },
             "require": {
@@ -18435,8 +18439,8 @@
             },
             "require-dev": {
                 "bamarni/composer-bin-plugin": "^1.8.2",
-                "http-interop/http-factory-tests": "^0.9",
-                "phpunit/phpunit": "^8.5.36 || ^9.6.15"
+                "http-interop/http-factory-tests": "0.9.0",
+                "phpunit/phpunit": "^8.5.39 || ^9.6.20"
             },
             "suggest": {
                 "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
@@ -18507,7 +18511,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.6.2"
+                "source": "https://github.com/guzzle/psr7/tree/2.7.0"
             },
             "funding": [
                 {
@@ -18523,7 +18527,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-03T20:05:35+00:00"
+            "time": "2024-07-18T11:15:46+00:00"
         },
         {
             "name": "html2text/html2text",
@@ -25921,22 +25925,22 @@
         },
         {
             "name": "lullabot/mink-selenium2-driver",
-            "version": "v1.7.2",
+            "version": "v1.7.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Lullabot/MinkSelenium2Driver.git",
-                "reference": "5f9ecc2dc329d87442843f6143a4307a62fc5f8c"
+                "reference": "91445897dda062790a741003c9c85d9bb2f902cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Lullabot/MinkSelenium2Driver/zipball/5f9ecc2dc329d87442843f6143a4307a62fc5f8c",
-                "reference": "5f9ecc2dc329d87442843f6143a4307a62fc5f8c",
+                "url": "https://api.github.com/repos/Lullabot/MinkSelenium2Driver/zipball/91445897dda062790a741003c9c85d9bb2f902cf",
+                "reference": "91445897dda062790a741003c9c85d9bb2f902cf",
                 "shasum": ""
             },
             "require": {
                 "behat/mink": "^1.11@dev",
                 "ext-json": "*",
-                "lullabot/php-webdriver": "^2.0",
+                "lullabot/php-webdriver": "^2.0.5",
                 "php": ">=7.2"
             },
             "replace": {
@@ -25987,22 +25991,22 @@
                 "webdriver"
             ],
             "support": {
-                "source": "https://github.com/Lullabot/MinkSelenium2Driver/tree/v1.7.2"
+                "source": "https://github.com/Lullabot/MinkSelenium2Driver/tree/v1.7.3"
             },
-            "time": "2024-02-12T10:40:39+00:00"
+            "time": "2024-07-17T16:07:12+00:00"
         },
         {
             "name": "lullabot/php-webdriver",
-            "version": "v2.0.4",
+            "version": "v2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Lullabot/php-webdriver.git",
-                "reference": "55fb15bd92663c3f90f42b2c79ca3ee11f2d7925"
+                "reference": "b686c5fe74ae4f3d5f7ff6e45234d99562de9ff4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Lullabot/php-webdriver/zipball/55fb15bd92663c3f90f42b2c79ca3ee11f2d7925",
-                "reference": "55fb15bd92663c3f90f42b2c79ca3ee11f2d7925",
+                "url": "https://api.github.com/repos/Lullabot/php-webdriver/zipball/b686c5fe74ae4f3d5f7ff6e45234d99562de9ff4",
+                "reference": "b686c5fe74ae4f3d5f7ff6e45234d99562de9ff4",
                 "shasum": ""
             },
             "require": {
@@ -26034,9 +26038,10 @@
                 "webtest"
             ],
             "support": {
-                "source": "https://github.com/Lullabot/php-webdriver/tree/v2.0.4"
+                "issues": "https://github.com/Lullabot/php-webdriver/issues",
+                "source": "https://github.com/Lullabot/php-webdriver/tree/v2.0.5"
             },
-            "time": "2024-07-04T09:19:59+00:00"
+            "time": "2024-07-17T15:21:54+00:00"
         },
         {
             "name": "mglaman/phpstan-drupal",
@@ -29692,6 +29697,7 @@
     "stability-flags": {
         "pantheon-upstreams/upstream-configuration": 20,
         "drupal/login_destination": 10,
+        "drupal/typed_data": 10,
         "drupal/core-recommended": 20,
         "drupal/ckeditor_media_resize": 10,
         "drupal/module_missing_message_fixer": 20,
