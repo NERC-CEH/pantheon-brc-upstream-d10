@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f51897c9b4dda9e7081b8af68a76908a",
+    "content-hash": "953720ef6718b7761fe0b7e730dcf1f0",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -4266,26 +4266,26 @@
         },
         {
             "name": "drupal/ckeditor_accordion",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ckeditor_accordion.git",
-                "reference": "2.1.0"
+                "reference": "2.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ckeditor_accordion-2.1.0.zip",
-                "reference": "2.1.0",
-                "shasum": "9c9bdfd789f5ce5186e56004288cefa1b1b19a26"
+                "url": "https://ftp.drupal.org/files/projects/ckeditor_accordion-2.2.0.zip",
+                "reference": "2.2.0",
+                "shasum": "bffafb1bc1dd2f16d918731be34ba468c12aca66"
             },
             "require": {
-                "drupal/core": "^9.4 || ^10"
+                "drupal/core": "^9.4 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.0",
-                    "datestamp": "1701411380",
+                    "version": "2.2.0",
+                    "datestamp": "1724231021",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -11374,29 +11374,29 @@
         },
         {
             "name": "drupal/markup",
-            "version": "2.0.0-beta6",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/markup.git",
-                "reference": "2.0.0-beta6"
+                "reference": "2.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/markup-2.0.0-beta6.zip",
-                "reference": "2.0.0-beta6",
-                "shasum": "8f3b8e21814ee51776e757bc4d279483ee393b66"
+                "url": "https://ftp.drupal.org/files/projects/markup-2.0.0.zip",
+                "reference": "2.0.0",
+                "shasum": "e999ed39711ff2692584bf254f0534fd247bf6db"
             },
             "require": {
-                "drupal/core": "^8.9 || ^9 || ^10"
+                "drupal/core": "^9 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.0-beta6",
-                    "datestamp": "1675927815",
+                    "version": "2.0.0",
+                    "datestamp": "1724320773",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Beta releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
@@ -11406,7 +11406,7 @@
             ],
             "authors": [
                 {
-                    "name": "Anybody",
+                    "name": "anybody",
                     "homepage": "https://www.drupal.org/user/291091"
                 },
                 {
@@ -11414,7 +11414,7 @@
                     "homepage": "https://www.drupal.org/user/1340686"
                 },
                 {
-                    "name": "cYu",
+                    "name": "cyu",
                     "homepage": "https://www.drupal.org/user/202205"
                 },
                 {
@@ -11426,7 +11426,7 @@
                     "homepage": "https://www.drupal.org/user/23897"
                 },
                 {
-                    "name": "Grevil",
+                    "name": "grevil",
                     "homepage": "https://www.drupal.org/user/3668491"
                 },
                 {
@@ -25865,7 +25865,7 @@
         },
         {
             "name": "drupal/core-dev",
-            "version": "10.3.1",
+            "version": "10.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-dev.git",
@@ -25915,7 +25915,7 @@
             ],
             "description": "require-dev dependencies from drupal/drupal; use in addition to drupal/core-recommended to run tests from drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-dev/tree/10.3.1"
+                "source": "https://github.com/drupal/core-dev/tree/10.3.2"
             },
             "time": "2024-07-04T10:19:29+00:00"
         },
