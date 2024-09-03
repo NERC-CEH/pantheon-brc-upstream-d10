@@ -76,7 +76,7 @@
         "drupal/better_exposed_filters": "^7.0",
         "drupal/block_class": "^3.0",
         "drupal/blog": "*",
-        "drupal/bootstrap4": "*",
+        "drupal/bootstrap4": "^3.0",
         "drupal/bootstrap_layout_builder": "*",
         "drupal/bootstrap_layouts": "*",
         "drupal/bootstrap_styles": "^1.1",
@@ -96,8 +96,8 @@
         "drupal/commerce_paypal": "^1.8",
         "drupal/commerce_price": "^2.40",
         "drupal/commerce_product": "^2.40",
-        "drupal/commerce_product_tax": "*",
-        "drupal/commerce_shipping": "^2.9",
+        "drupal/commerce_product_tax": "^1.1",
+        "drupal/commerce_shipping": "^2.11",
         "drupal/commerce_store": "^2.40",
         "drupal/commerce_tax": "^2.40",
         "drupal/config_delete": "*",
@@ -156,7 +156,7 @@
         "drupal/layout_builder_styles": "*",
         "drupal/layout_builder_tabs": "^1.0",
         "drupal/legal": "^3.0",
-        "drupal/libraries": "*",
+        "drupal/libraries": "^4.0",
         "drupal/linked_field": "*",
         "drupal/login_emailusername": "*",
         "drupal/mailchimp": "^2.2",
@@ -165,7 +165,7 @@
         "drupal/media_library_form_element": "^2.1",
         "drupal/media_library_theme_reset": "*",
         "drupal/menu_breadcrumb": "*",
-        "drupal/menu_item_extras": "*",
+        "drupal/menu_item_extras": "^3.1",
         "drupal/menu_items_visibility": "*",
         "drupal/metatag": "^2.0",
         "drupal/mobile_detect": "^3.0",
@@ -285,7 +285,8 @@
         "drupal/ckeditor_details": "^2.1@beta",
         "drupal/pantheon_advanced_page_cache": "^2.2",
         "phpoffice/phpspreadsheet": "2.2",
-        "drupal/dropzonejs_eb_widget": "^2.11"
+        "drupal/dropzonejs_eb_widget": "^2.11",
+        "drupal/bootstrap5": "^4.0"
     },
     "conflict": {
         "drupal/drupal": "*"
