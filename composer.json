@@ -61,9 +61,9 @@
         "drupal/block_class": "^3.0",
         "drupal/blog": "*",
         "drupal/bootstrap4": "^3.0",
-        "drupal/bootstrap_layout_builder": "*",
-        "drupal/bootstrap_layouts": "*",
-        "drupal/bootstrap_styles": "^1.1",
+        "drupal/bootstrap_layout_builder": "^2.2",
+        "drupal/bootstrap_layouts": "^5.4",
+        "drupal/bootstrap_styles": "^1.2",
         "drupal/captcha": "^2.0",
         "drupal/chosen": "^4.0",
         "drupal/chosen_lib": "^4.0",
@@ -270,7 +270,8 @@
         "drupal/pantheon_advanced_page_cache": "^2.2",
         "phpoffice/phpspreadsheet": "2.2",
         "drupal/dropzonejs_eb_widget": "^2.11",
-        "drupal/bootstrap5": "^4.0"
+        "drupal/bootstrap5": "^4.0",
+        "drupal/youtube_cookies": "^2.1"
     },
     "conflict": {
         "drupal/drupal": "*"

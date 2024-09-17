@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04d49fe7c6e83df7e088af4d64a20a23",
+    "content-hash": "030f88e9fe2fd862b4325618ad8892b3",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -3656,27 +3656,27 @@
         },
         {
             "name": "drupal/bootstrap_layout_builder",
-            "version": "2.1.2",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap_layout_builder.git",
-                "reference": "2.1.2"
+                "reference": "2.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_layout_builder-2.1.2.zip",
-                "reference": "2.1.2",
-                "shasum": "c0000f57f9b218fd43b893f3311de73911020ced"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_layout_builder-2.2.1.zip",
+                "reference": "2.2.1",
+                "shasum": "a13972a2299b44f710b0ac5eae67563771d2392f"
             },
             "require": {
-                "drupal/bootstrap_styles": "^1.1",
-                "drupal/core": "^9.3 || ^10"
+                "drupal/bootstrap_styles": "^1.2.0",
+                "drupal/core": "^10.3 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.2",
-                    "datestamp": "1690460409",
+                    "version": "2.2.1",
+                    "datestamp": "1726578341",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3685,7 +3685,7 @@
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
             "license": [
-                "GPL-2.0+"
+                "GPL-2.0-or-later"
             ],
             "authors": [
                 {
@@ -3697,7 +3697,7 @@
                     "homepage": "https://www.drupal.org/user/2947001"
                 },
                 {
-                    "name": "Rajab Natshah",
+                    "name": "rajab natshah",
                     "homepage": "https://www.drupal.org/user/1414312"
                 }
             ],
@@ -3715,26 +3715,26 @@
         },
         {
             "name": "drupal/bootstrap_layouts",
-            "version": "5.3.0",
+            "version": "5.4.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap_layouts.git",
-                "reference": "8.x-5.3"
+                "reference": "8.x-5.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_layouts-8.x-5.3.zip",
-                "reference": "8.x-5.3",
-                "shasum": "0ca3a76594a9483235920964c56effcf0fdfe06e"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_layouts-8.x-5.4.zip",
+                "reference": "8.x-5.4",
+                "shasum": "d4c16870ee830804c54a0bc3c18a114cc2d63966"
             },
             "require": {
-                "drupal/core": "^9.3 || ^10"
+                "drupal/core": "^10.3 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-5.3",
-                    "datestamp": "1675341751",
+                    "version": "8.x-5.4",
+                    "datestamp": "1726493467",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3762,7 +3762,8 @@
             "description": "This module is going to generate layouts with Bootstrap grid system.",
             "homepage": "https://www.drupal.org/project/bootstrap_layouts",
             "support": {
-                "source": "https://git.drupalcode.org/project/bootstrap_layouts"
+                "source": "http://cgit.drupalcode.org/bootstrap_layouts",
+                "issues": "https://www.drupal.org/project/issues/bootstrap_layouts"
             }
         },
         {
@@ -3824,27 +3825,27 @@
         },
         {
             "name": "drupal/bootstrap_styles",
-            "version": "1.1.6",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap_styles.git",
-                "reference": "1.1.6"
+                "reference": "1.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap_styles-1.1.6.zip",
-                "reference": "1.1.6",
-                "shasum": "9453e50f155776ebe5051f728ab04145faeb94e9"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap_styles-1.2.1.zip",
+                "reference": "1.2.1",
+                "shasum": "d7c3b7c81f057edd821d128ce2addd8158ac114b"
             },
             "require": {
-                "drupal/core": "^9.3 || ^10",
+                "drupal/core": "^10.3 || ^11",
                 "drupal/media_library_form_element": "^2.0"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.1.6",
-                    "datestamp": "1721035698",
+                    "version": "1.2.1",
+                    "datestamp": "1726504417",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3865,7 +3866,7 @@
                     "homepage": "https://www.drupal.org/user/2947001"
                 },
                 {
-                    "name": "Rajab Natshah",
+                    "name": "rajab natshah",
                     "homepage": "https://www.drupal.org/user/1414312"
                 }
             ],
@@ -7937,7 +7938,7 @@
                     "homepage": "https://www.drupal.org/user/279352"
                 },
                 {
-                    "name": "Neslee Canil Pinto",
+                    "name": "neslee canil pinto",
                     "homepage": "https://www.drupal.org/user/3580850"
                 }
             ],
@@ -8395,6 +8396,10 @@
                 {
                     "name": "hydra",
                     "homepage": "https://www.drupal.org/user/647364"
+                },
+                {
+                    "name": "joevagyok",
+                    "homepage": "https://www.drupal.org/user/2876343"
                 },
                 {
                     "name": "jyve",
@@ -10730,27 +10735,27 @@
         },
         {
             "name": "drupal/layout_builder_blocks",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/layout_builder_blocks.git",
-                "reference": "1.1.1"
+                "reference": "1.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/layout_builder_blocks-1.1.1.zip",
-                "reference": "1.1.1",
-                "shasum": "7ff492dd75b25a37b2281de5cedbe75686b8f264"
+                "url": "https://ftp.drupal.org/files/projects/layout_builder_blocks-1.1.2.zip",
+                "reference": "1.1.2",
+                "shasum": "c6a662e731cc5680b8f4dc4e7347689ef5199ad6"
             },
             "require": {
-                "drupal/bootstrap_styles": "^1.1",
-                "drupal/core": "^9.3 || ^10"
+                "drupal/bootstrap_styles": "^1.1 || ^2.0",
+                "drupal/core": "^9.3 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.1.1",
-                    "datestamp": "1702397566",
+                    "version": "1.1.2",
+                    "datestamp": "1726509193",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -10771,7 +10776,7 @@
                     "homepage": "https://www.drupal.org/user/2947001"
                 },
                 {
-                    "name": "Rajab Natshah",
+                    "name": "rajab natshah",
                     "homepage": "https://www.drupal.org/user/1414312"
                 }
             ],
@@ -12162,7 +12167,7 @@
                     "role": "Developer"
                 },
                 {
-                    "name": "Dave Reid",
+                    "name": "dave reid",
                     "homepage": "https://www.drupal.org/user/53892"
                 }
             ],
@@ -14115,7 +14120,7 @@
                     "homepage": "https://www.drupal.org/user/262198"
                 },
                 {
-                    "name": "TR",
+                    "name": "tr",
                     "homepage": "https://www.drupal.org/user/202830"
                 }
             ],
@@ -15550,24 +15555,25 @@
         },
         {
             "name": "drupal/taxonomy_manager",
-            "version": "2.0.14",
+            "version": "2.0.15",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/taxonomy_manager.git",
-                "reference": "2.0.14"
+                "reference": "2.0.15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/taxonomy_manager-2.0.14.zip",
-                "reference": "2.0.14",
-                "shasum": "911af83d6873835a3c328b1f7ae22a816b88ff74"
+                "url": "https://ftp.drupal.org/files/projects/taxonomy_manager-2.0.15.zip",
+                "reference": "2.0.15",
+                "shasum": "b3a7af31c310047587ec730114f991d274dda646"
             },
             "require": {
                 "drupal/core": "^10.2 || ^11.0",
                 "drupal/jquery_ui": "^1.7"
             },
             "require-dev": {
-                "drupal/term_merge": "*"
+                "drupal/term_merge": "^2.0",
+                "drupal/term_reference_change": "^2.0"
             },
             "suggest": {
                 "fancytree/fancytree": "The fancytree library is required to use the drupal/taxonomy_manager module."
@@ -15575,8 +15581,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.14",
-                    "datestamp": "1725896151",
+                    "version": "2.0.15",
+                    "datestamp": "1726572388",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16036,7 +16042,7 @@
                     "homepage": "https://www.drupal.org/user/1068770"
                 },
                 {
-                    "name": "Dave Reid",
+                    "name": "dave reid",
                     "homepage": "https://www.drupal.org/user/53892"
                 },
                 {
@@ -16161,7 +16167,7 @@
                     "homepage": "https://www.drupal.org/user/16747"
                 },
                 {
-                    "name": "TR",
+                    "name": "tr",
                     "homepage": "https://www.drupal.org/user/202830"
                 }
             ],
@@ -17364,7 +17370,7 @@
                     "role": "Maintainer"
                 },
                 {
-                    "name": "Neslee Canil Pinto",
+                    "name": "neslee canil pinto",
                     "homepage": "https://www.drupal.org/user/3580850"
                 },
                 {
@@ -17874,11 +17880,11 @@
                     "homepage": "https://www.drupal.org/user/101412"
                 },
                 {
-                    "name": "Neslee Canil Pinto",
+                    "name": "neslee canil pinto",
                     "homepage": "https://www.drupal.org/user/3580850"
                 },
                 {
-                    "name": "VladimirAus",
+                    "name": "vladimiraus",
                     "homepage": "https://www.drupal.org/user/673120"
                 }
             ],
@@ -17890,6 +17896,63 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/weight",
                 "issues": "https://www.drupal.org/project/issues/weight"
+            }
+        },
+        {
+            "name": "drupal/youtube_cookies",
+            "version": "2.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/youtube_cookies.git",
+                "reference": "2.1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/youtube_cookies-2.1.1.zip",
+                "reference": "2.1.1",
+                "shasum": "50b4686fa81004c98920c10184b3a104bb51e8f5"
+            },
+            "require": {
+                "drupal/core": "^9.3 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.1.1",
+                    "datestamp": "1711030623",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "omarlopesino",
+                    "homepage": "https://www.drupal.org/u/omarlopesino"
+                },
+                {
+                    "name": "frouco",
+                    "homepage": "https://www.drupal.org/user/3600632"
+                },
+                {
+                    "name": "omarlopesino",
+                    "homepage": "https://www.drupal.org/user/2853043"
+                },
+                {
+                    "name": "tunic",
+                    "homepage": "https://www.drupal.org/user/397132"
+                }
+            ],
+            "description": "Manage youtube cookie privacy.",
+            "homepage": "https://www.drupal.org/project/youtube_cookies",
+            "support": {
+                "source": "https://git.drupal.org/project/youtube_cookies.git",
+                "issues": "https://www.drupal.org/project/issues/youtube_cookies"
             }
         },
         {
@@ -20067,16 +20130,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.1.0",
+            "version": "v5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "683130c2ff8c2739f4822ff7ac5c873ec529abd1"
+                "reference": "23c79fbbfb725fb92af9bcf41065c8e9a0d49ddb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/683130c2ff8c2739f4822ff7ac5c873ec529abd1",
-                "reference": "683130c2ff8c2739f4822ff7ac5c873ec529abd1",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/23c79fbbfb725fb92af9bcf41065c8e9a0d49ddb",
+                "reference": "23c79fbbfb725fb92af9bcf41065c8e9a0d49ddb",
                 "shasum": ""
             },
             "require": {
@@ -20119,9 +20182,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.1.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.2.0"
             },
-            "time": "2024-07-01T20:03:41+00:00"
+            "time": "2024-09-15T16:40:33+00:00"
         },
         {
             "name": "pantheon-systems/drupal-integrations",
