@@ -120,13 +120,19 @@
   indiciaFns.drawPager = (pagerEl, pageSize, sourceSettings) => {
     // Output text describing loaded hits.
     if (pageSize > 0) {
-      if (sourceSettings.from === 0 && pageSize === sourceSettings.total.value) {
+      if (sourceSettings.total && sourceSettings.from === 0 && pageSize === sourceSettings.total.value) {
         $(pagerEl).html('Showing all ' + sourceSettings.total.value + ' hits');
       } else {
         const toLabel = sourceSettings.from === 0 ? 'first ' : (sourceSettings.from + 1) + ' to ';
-        // Indicate if approximate.
-        const ofLabel = sourceSettings.total.relation === 'gte' ? 'at least ' : '';
-        $(pagerEl).html('Showing ' + toLabel + (sourceSettings.from + pageSize) + ' of ' + ofLabel + sourceSettings.total.value);
+        let pagerText = 'Showing ' + toLabel + (sourceSettings.from + pageSize);
+        // If we know the total, add it. Manually configured aggregations may
+        // not have a count.
+        if (sourceSettings.total) {
+          // Indicate if approximate.
+          const ofLabel = sourceSettings.total.relation === 'gte' ? 'at least ' : '';
+          pagerText += ' of ' + ofLabel + sourceSettings.total.value;
+        }
+        $(pagerEl).html(pagerText);
       }
     } else {
       $(pagerEl).html('No hits');

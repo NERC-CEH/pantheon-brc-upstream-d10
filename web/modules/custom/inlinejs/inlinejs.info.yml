@@ -1,8 +1,8 @@
 name: Inline JS
 type: module
 description: Allows to add inline JavaScripts snipt.
-core: 8.x
-core_version_requirement: ^8 || ^9 || ^10
+core: 10.x
+core_version_requirement: ^10 || ^11
 
 # Information added by Drupal.org packaging script on 2020-05-24
 version: '2.0.0'
