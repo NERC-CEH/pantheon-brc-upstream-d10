@@ -272,7 +272,8 @@
         "drupal/dropzonejs_eb_widget": "^2.11",
         "drupal/bootstrap5": "^4.0",
         "drupal/youtube_cookies": "^2.1",
-        "drupal/inclusive_cards": "^1.0@beta"
+        "drupal/inclusive_cards": "^1.0@beta",
+        "drupal/flexistyle_bootstrap": "^1.2"
     },
     "conflict": {
         "drupal/drupal": "*"
