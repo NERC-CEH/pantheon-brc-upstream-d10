@@ -32,7 +32,7 @@
         "drupal/custom_formatters": "4.0-beta1",
         "drupal/entity_clone": "2.1-beta1",
         "drupal/entity_legal": "4.0-alpha4",
-        "drupal/feeds": "3.0-rc1",
+        "drupal/feeds": "3.0-rc2",
         "drupal/inline_entity_form": "3.0-rc20",
         "drupal/insert_view_adv": "2.0-alpha3",
         "drupal/login_destination": "^2.0@beta",
@@ -181,7 +181,7 @@
         "drupal/super_login": "*",
         "drupal/superfish": "^1.8",
         "drupal/synonyms": "^2.1",
-        "drupal/taxonomy_entity_index": "^1.17",
+        "drupal/taxonomy_entity_index": "^1.18",
         "drupal/taxonomy_manager": "^2.0",
         "drupal/taxonomy_menu": "*",
         "drupal/theme_switcher": "*",
@@ -253,7 +253,7 @@
         "drupal/commerce_variation_add_to_cart": "^2.0",
         "drupal/filefield_sources": "^2.0@dev",
         "drupal/fixed_text_link_formatter": "^1.7",
-        "drupal/htmlmail": "4.0.x-dev",
+        "drupal/htmlmail": "^4.0@beta",
         "drupal/show_email": "^1.2",
         "drupal/view_user_email": "^1.0",
         "drupal/jquery_ui_autocomplete": "^2.1",
@@ -271,7 +271,8 @@
         "phpoffice/phpspreadsheet": "2.2",
         "drupal/dropzonejs_eb_widget": "^2.11",
         "drupal/bootstrap5": "^4.0",
-        "drupal/youtube_cookies": "^2.1"
+        "drupal/youtube_cookies": "^2.1",
+        "drupal/inclusive_cards": "^1.0@beta"
     },
     "conflict": {
         "drupal/drupal": "*"
