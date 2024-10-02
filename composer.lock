@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "463b2439b49cdb31e9b0b19e273f1ba4",
+    "content-hash": "1b988a7aafaff9800893f9b12097ad4a",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -11048,26 +11048,26 @@
         },
         {
             "name": "drupal/legal",
-            "version": "3.0.2",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/legal.git",
-                "reference": "3.0.2"
+                "reference": "3.0.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/legal-3.0.2.zip",
-                "reference": "3.0.2",
-                "shasum": "044e0b96f0b4f4a66501ad45184a1f22d5b74280"
+                "url": "https://ftp.drupal.org/files/projects/legal-3.0.3.zip",
+                "reference": "3.0.3",
+                "shasum": "3c19a01e45eba0879f1837f3db45d9355f188cc4"
             },
             "require": {
-                "drupal/core": "^8.9 || ^9 || ^10"
+                "drupal/core": "^8.9 || ^9 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.2",
-                    "datestamp": "1717951482",
+                    "version": "3.0.3",
+                    "datestamp": "1727782339",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -11080,7 +11080,7 @@
             ],
             "authors": [
                 {
-                    "name": "Robert Castelo",
+                    "name": "robert castelo",
                     "homepage": "https://www.drupal.org/user/3555"
                 }
             ],
@@ -12555,20 +12555,20 @@
         },
         {
             "name": "drupal/pantheon_advanced_page_cache",
-            "version": "2.2.0",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/pantheon_advanced_page_cache.git",
-                "reference": "2.2.0"
+                "reference": "2.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/pantheon_advanced_page_cache-2.2.0.zip",
-                "reference": "2.2.0",
-                "shasum": "2404a92479e41d2bc60d477de14713dbe5b41b71"
+                "url": "https://ftp.drupal.org/files/projects/pantheon_advanced_page_cache-2.3.0.zip",
+                "reference": "2.3.0",
+                "shasum": "4873930901e4c90b3fcaf2d4d6c260764a3e28f9"
             },
             "require": {
-                "drupal/core": "^9.4 || ^10"
+                "drupal/core": "^9.4 || ^10 || ^11"
             },
             "require-dev": {
                 "drupal/coder": "^8.2",
@@ -12578,8 +12578,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.2.0",
-                    "datestamp": "1711466862",
+                    "version": "2.3.0",
+                    "datestamp": "1727726477",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12612,7 +12612,7 @@
             ],
             "authors": [
                 {
-                    "name": "David Strauss",
+                    "name": "david strauss",
                     "homepage": "https://www.drupal.org/user/93254"
                 },
                 {
@@ -12828,7 +12828,7 @@
             ],
             "authors": [
                 {
-                    "name": "Berdir",
+                    "name": "berdir",
                     "homepage": "https://www.drupal.org/user/214652"
                 },
                 {
