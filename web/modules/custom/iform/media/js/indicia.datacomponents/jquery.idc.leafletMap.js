@@ -853,11 +853,18 @@
                     var source = this.settings.sourceObject;
                     var origFilter;
                     let filterValues;
-                    if (!source.settings.filterBoolClauses) {
-                      source.settings.filterBoolClauses = { };
-                    }
-                    if (!source.settings.filterBoolClauses.must) {
-                      source.settings.filterBoolClauses.must = [];
+                    // Reset filter if there is a pending population for
+                    // another map click (grid is on a hidden tab).
+                    if (typeof source.settings.filterToRestore !== 'undefined') {
+                      source.settings.filterBoolClauses = source.settings.filterToRestore;
+                      delete source.settings.filterToRestore;
+                    } else {
+                      if (!source.settings.filterBoolClauses) {
+                        source.settings.filterBoolClauses = { };
+                      }
+                      if (!source.settings.filterBoolClauses.must) {
+                        source.settings.filterBoolClauses.must = [];
+                      }
                     }
                     // Keep the old filter.
                     origFilter = $.extend(true, {}, source.settings.filterBoolClauses);
@@ -878,7 +885,8 @@
                     });
                     // Temporarily populate just the linked grid with the
                     // filter to show the selected row.
-                    source.populate(true, origFilter, this);
+                    source.settings.filterToRestore = origFilter;
+                    source.populate(true, this);
                     // Map click will later clear this filter.
                     sourcesToReloadOnMapClick.push(source);
                     // Tell the map click not to clear this filter just yet.
@@ -941,6 +949,17 @@
       if (el.settings.cookies) {
         el.map.on('baselayerchange', function baselayerchange(layer) {
           indiciaFns.cookie('baseLayer-' + el.id, layer.name, { expires: 3650 });
+        });
+      }
+      // If map starts on a hidden tab, refresh it and add report boundaries
+      // when it is first shown.
+      if (!$(el).is(':visible')) {
+        var tab = $(el).closest('.indicia-lazy-load');
+        indiciaData.onTabShowFns['#' + tab[0].id].push(function() {
+          window.setTimeout(function() {
+            el.map.invalidateSize();
+            indiciaFns.loadReportBoundaries(el);
+          }, 200);
         });
       }
     },
@@ -1182,17 +1201,19 @@
    * Can be either from a location ID, or a search area polygon. Must be run
    * after the map has initialised.
    */
-  indiciaFns.loadReportBoundaries = function() {
+  indiciaFns.loadReportBoundaries = function(mapEl) {
     if (indiciaData.reportBoundaries) {
-      $.each($('.idc-leafletMap'), function eachMap() {
+      $.each($('.idc-leafletMap:visible'), function eachMap() {
         var map = this;
-        if (!map.settings.initialBoundsSet) {
-          $(map).idcLeafletMap('addBoundaryGroup', indiciaData.reportBoundaries, {
-            color: '#3333DD',
-            fillColor: '#4444CC',
-            fillOpacity: 0.05
-          });
-          map.settings.initialBoundsSet = true;
+        if (typeof mapEl === 'undefined' || mapEl === map) {
+          if (!map.settings.initialBoundsSet) {
+            $(map).idcLeafletMap('addBoundaryGroup', indiciaData.reportBoundaries, {
+              color: '#3333DD',
+              fillColor: '#4444CC',
+              fillOpacity: 0.05
+            });
+            map.settings.initialBoundsSet = true;
+          }
         }
       });
     }

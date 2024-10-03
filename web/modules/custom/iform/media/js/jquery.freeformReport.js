@@ -89,7 +89,6 @@ jQuery(document).ready(function($) {
             }
             if (outputBand) {
               let itemHtml = band.content;
-              console.log(itemHtml);
               // Field token replacements.
               $.each(row, function(field, value) {
                 const regexp = new RegExp('\\{' + field + '\\}', 'g');

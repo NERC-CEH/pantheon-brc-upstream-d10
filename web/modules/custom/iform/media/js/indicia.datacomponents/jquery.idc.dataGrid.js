@@ -82,13 +82,19 @@
   var lastLoadedRowId = null;
 
   /**
-   * Removes the configuration overlay pane.
+   * Find the column config panel for a grid el.
+   *
+   * Use the data-el attribute to locate it, in case the panel is relocated to
+   * Fancybox's overlay.
    */
-  function removeConfigPane(el) {
-    var panel = $(el).find('.data-grid-settings');
-    $(panel).fadeOut('fast');
-    // Undo forced minimum height on the container.
-    $(el).css('min-height', '');
+  function findSettingsPanel(el) {
+    var panel = null;
+    $.each($('.data-grid-settings'), function eachCheckList() {
+      if ($(this).data('el') === el.id) {
+        panel = this;
+      }
+    });
+    return panel;
   }
 
   /**
@@ -111,7 +117,8 @@
    */
   function appendColumnsToConfigList(el, columns) {
     var done = [];
-    var ol = $(el).find('.data-grid-settings ol');
+    var ol = $(findSettingsPanel(el)).find('ol');
+    $(ol).children().remove();
     $.each(columns, function eachColumn() {
       done.push(this.field);
       $(getColInfoItem(el, this.field, true)).appendTo(ol);
@@ -121,6 +128,23 @@
         $(getColInfoItem(el, key, false)).appendTo(ol);
       }
     });
+  }
+
+  /**
+   * Encode text for use in HTML data.
+   *
+   * @param string text
+   *   Unencoded text.
+   *
+   * @return string
+   *   Encoded text.
+   */
+  function htmlEncode(text) {
+    return text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/&/g, '&quot;');
   }
 
   /**
@@ -180,7 +204,8 @@
       if (dataType) {
         footableExtras += ' data-type="' + dataType + '"';
       }
-      $('<th class="col-' + idx + '" data-field="' + this.field + '"' + footableExtras + '>' + heading + '</th>')
+      const fieldHtmlEncode = htmlEncode(this.field);
+      $('<th class="col-' + idx + '" data-field="' + fieldHtmlEncode + '"' + footableExtras + '>' + heading + '</th>')
         .appendTo(headerRow);
     });
     if (el.settings.actions.length) {
@@ -201,7 +226,8 @@
       $('<td class="footable-toggle-col"></td>').appendTo(filterRow);
     }
     $.each(el.settings.columns, function eachColumn(idx) {
-      var td = $('<td class="col-' + idx + '" data-field="' + this.field + '"></td>').appendTo(filterRow);
+      const fieldHtmlEncode = htmlEncode(this.field);
+      var td = $('<td class="col-' + idx + '" data-field="' + fieldHtmlEncode + '"></td>').appendTo(filterRow);
       var title;
       var caption = el.settings.availableColumnInfo[this.field].caption;
       // No filter input if this column has no mapping unless there is a
@@ -492,24 +518,10 @@
      * Click handler for the settings icon. Displays the config overlay pane.
      */
     $(el).find('.data-grid-show-settings').click(function settingsIconClick() {
-      var $panel = $(el).find('.data-grid-settings').html('');
-      var ol;
-      var maxHeight;
-      // Ensure height available enough for columns config.
-      $(el).css('min-height', '250px');
-      $('<h3>Column configuration</h3>').appendTo($panel);
-      $('<p>The following columns are available for this table. Tick the ones you want to include. Drag and drop the ' +
-        'columns into your preferred order.</p>').appendTo($panel);
-      $('<div><button class="btn btn-default toggle">Tick/untick all</button>' +
-        '<button class="btn btn-default restore">Restore defaults</button> ' +
-        '<button class="btn btn-default cancel">Cancel</button>' +
-        '<button class="btn btn-primary save">Save</button></div>').appendTo($panel);
-      ol = $('<ol/>').appendTo($panel);
-      $panel.fadeIn('fast');
-      maxHeight = $(el).find('table.es-data-grid').height() - ($(ol).offset().top - $panel.offset().top) - 15;
-      $(ol).css('max-height', maxHeight + 'px');
+      const panel = findSettingsPanel(el);
       appendColumnsToConfigList(el, el.settings.columns);
-      Sortable.create($panel.find('ol')[0]);
+      Sortable.create($(panel).find('ol')[0]);
+      $.fancybox.open(panel);
     });
 
     $(el).find('.fullscreen-tool').click(function fullscreenIconClick() {
@@ -519,10 +531,11 @@
     /**
      * Config save button handler.
      */
-    indiciaFns.on('click', '#' + el.id + ' .data-grid-settings .save', {}, function onClick() {
+    $('#' + el.id + ' .data-grid-settings .save').click(function() {
       var header = $(el).find('thead');
       var colsList = [];
-      $.each($(el).find('.data-grid-settings ol :checkbox:checked'), function eachCheckedCol() {
+      const panel = findSettingsPanel(el);
+      $.each($(panel).find('ol :checkbox:checked'), function eachCheckedCol() {
         colsList.push($(this).val());
       });
       applyColumnsList(el, colsList);
@@ -540,31 +553,32 @@
         addFilterRow(el, header);
       }
       el.settings.sourceObject.populate(true);
-      removeConfigPane(el);
+      $.fancybox.close();
     });
 
     /**
      * Config cancel button handler.
      */
-    indiciaFns.on('click', '.data-grid-settings .cancel', {}, function onClick() {
-      removeConfigPane(el);
+    $('#' + el.id + ' .data-grid-settings .cancel').click(function() {
+      $.fancybox.close();
     });
 
     /**
      * Config restore button handler.
      */
-    indiciaFns.on('click', '.data-grid-settings .restore', {}, function onClick() {
+    $('#' + el.id + ' .data-grid-settings .restore').click(function(e) {
       // Discard current columns and replace with defaults.
-      $(el).find('.data-grid-settings ol li').remove();
+      $(findSettingsPanel(el)).find('ol li').remove();
       appendColumnsToConfigList(el, el.settings.defaultColumns);
     });
 
     /**
      * Config toggle button handler.
      */
-    indiciaFns.on('click', '.data-grid-settings .toggle', {}, function onClick() {
-      var anyUnchecked = $(el).find('.data-grid-settings ol li :checkbox:not(:checked)').length > 0;
-      $(el).find('.data-grid-settings ol li :checkbox').prop('checked', anyUnchecked);
+    $('#' + el.id + ' .data-grid-settings .toggle').click(function() {
+      const panel = findSettingsPanel(el);
+      var anyUnchecked = $([panel]).find('ol li :checkbox:not(:checked)').length > 0;
+      $(panel).find('ol li :checkbox').prop('checked', anyUnchecked);
     });
 
     // Public function so it can be called from bindControls event handlers.
@@ -660,7 +674,10 @@
         maxCharsPerCol['col-' + idx] =
           Math.max(maxCharsPerCol['col-' + idx], longestWordLength($('<p>' + value + '</p>').text()) + extraSpace);
       }
-      classes.push('field-' + this.field.replace(/\./g, '--').replace(/_/g, '-'));
+      if (value === '!' && (field.substr(0, 9) === '#sitename' || field === 'location.verbatim_locality')) {
+        value = '<i class="fas fa-eye-slash" title="' + indiciaData.lang.dataGrid.siteNameWitheld + '"></i>';
+      }
+      classes.push('field-' + this.field.replace(/\./g, '--').replace(/_/g, '-').replace(/[^a-z\-]/g, ''));
       // Copy across responsive hidden cols.
       if ($(el).find('table th.col-' + idx).css('display') === 'none') {
         style = ' style="display: none"';
@@ -702,10 +719,25 @@
   function setColWidths(el, maxCharsPerCol) {
     var maxCharsPerRow = 0;
     var tbody = $(el).find('tbody');
+    var hiddenContainer;
+    var hiddenContainerOrigStyle;
+    if ($(el).is(':hidden')) {
+      // If on a hidden tab, clientWidth is broken, so we need to temporarily
+      // show the container with opacity 0 in order for calculations to work.
+      hiddenContainer = $(el).closest('.indicia-lazy-load');
+      hiddenContainerOrigStyle = hiddenContainer.attr('style');
+      hiddenContainer
+        .css('opacity', 0)
+        .css('position', 'absolute')
+        .css('display', 'block');
+    }
     var pixelsAvailable = tbody[0].clientWidth;
     var scrollbarWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
     var scrollBarInnerWidth;
     var outerSpacing = $(el).find('.col-0').outerWidth() - $(el).find('.col-0').width();
+    if (hiddenContainer) {
+      hiddenContainer.attr('style', hiddenContainerOrigStyle)
+    }
     // Column resizing needs to be done manually when tbody has scroll bar.
     if (el.settings.tbodyHasScrollBar) {
       if (el.settings.responsive) {
@@ -913,9 +945,6 @@
         tools.push('<span class="far fa-window-maximize fullscreen-tool" title="' + indiciaData.lang.dataGrid.fullScreenToolHint + '"></span>');
       }
       $('<div class="idc-tools">' + tools.join('<br/>') + '</div>').appendTo(el);
-      // Add overlay for settings etc.
-      $('<div class="data-grid-settings" style="display: none"></div>').appendTo(el);
-      $('<div class="loading-spinner" style="display: none"><div>Loading...</div></div>').appendTo(el);
       initHandlers(el);
       if (footableSort === 'true' || el.settings.responsive) {
         // Make grid responsive.

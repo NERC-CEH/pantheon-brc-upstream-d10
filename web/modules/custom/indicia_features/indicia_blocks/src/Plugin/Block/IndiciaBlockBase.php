@@ -34,7 +34,7 @@ abstract class IndiciaBlockBase extends BlockBase {
       '#type' => 'textfield',
       '#title' => $this->t('View permission'),
       '#description' => $this->t('Set to the name of an existing permission that is required to view the block content, or leave blank to make the block content publicly accessible.'),
-      '#default_value' => isset($config['view_permission']) ? $config['view_permission'] : '',
+      '#default_value' => $config['view_permission'] ?? '',
     ];
 
     return $form;
@@ -118,6 +118,14 @@ abstract class IndiciaBlockBase extends BlockBase {
       '#default_value' => $config['limit_to_website'] ?? 0,
     ];
 
+    // Option to limit to current user.
+    $form['limit_by_user_profile_preferences'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t("Limit to current user's profile preferences"),
+      '#description' => $this->t('If ticked, only records which match the taxon groups and/or location specified in the user profile will be shown.'),
+      '#default_value' => $config['limit_by_user_profile_preferences'] ?? 0,
+    ];
+
     $form['cache_timeout'] = [
       '#type' => 'number',
       '#title' => $this->t('Cache timeout'),
@@ -132,21 +140,29 @@ abstract class IndiciaBlockBase extends BlockBase {
     $this->setConfigurationValue('unverified_records', $form_state->getValue('unverified_records'));
     $this->setConfigurationValue('limit_to_user', $form_state->getValue('limit_to_user'));
     $this->setConfigurationValue('limit_to_website', $form_state->getValue('limit_to_website'));
+    $this->setConfigurationValue('limit_by_user_profile_preferences', $form_state->getValue('limit_by_user_profile_preferences'));
     $this->setConfigurationValue('cache_timeout', $form_state->getValue('cache_timeout'));
   }
 
   protected function getFilterBoolClauses($config) {
-    $clauses = [];
+    $mustNot = [
+      [
+        'query_type' => 'term',
+        'field' => 'occurrence.zero_abundance',
+        'value' => 'true',
+      ],
+    ];
+    $must = [];
     // Other record filters.
     if (empty($config['sensitive_records'])) {
-      $clauses[] = [
+      $mustNot[] = [
         'query_type' => 'term',
         'field' => 'metadata.sensitive',
-        'value' => 'false',
+        'value' => 'true',
       ];
     }
     if (empty($config['unverified_records'])) {
-      $clauses[] = [
+      $must[] = [
         'query_type' => 'term',
         'field' => 'identification.verification_status',
         'value' => 'V',
@@ -158,7 +174,7 @@ abstract class IndiciaBlockBase extends BlockBase {
         // Not linked to the warehouse so force report to be blank.
         $warehouseUserId = -9999;
       }
-      $clauses[] = [
+      $must[] = [
         'query_type' => 'term',
         'field' => 'metadata.created_by_id',
         'value' => $warehouseUserId,
@@ -166,13 +182,36 @@ abstract class IndiciaBlockBase extends BlockBase {
     }
     if (!empty($config['limit_to_website'])) {
       $connection = iform_get_connection_details();
-      $clauses[] = [
+      $must[] = [
         'query_type' => 'term',
         'field' => 'metadata.website.id',
         'value' => $connection['website_id'],
       ];
     }
-    return $clauses;
+    if (!empty($config['limit_by_user_profile_preferences'])) {
+      $location = hostsite_get_user_field('location');
+      $groups = hostsite_get_user_field('taxon_groups', FALSE, TRUE);
+      // Apply user profile preferences.
+      if ($location) {
+        $must[] = [
+          'query_type' => 'term',
+          'nested' => 'location.higher_geography',
+          'field' => 'location.higher_geography.id',
+          'value' => $location,
+        ];
+      }
+      if (!empty($groups)) {
+        $must[] = [
+          'query_type' => 'terms',
+          'field' => 'taxon.group_id',
+          'value' => json_encode($groups),
+        ];
+      }
+    }
+    return [
+      'must' => $must,
+      'must_not' => $mustNot,
+    ];
   }
 
 }

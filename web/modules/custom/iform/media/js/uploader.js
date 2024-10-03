@@ -297,6 +297,46 @@ jQuery(document).ready(function($) {
   }
 
   /**
+   * Ensure the selected fields don't conflict.
+   *
+   * E.g. if importing 2 different fields that both provide a way of selecting
+   * a taxon for the imported occurrence.
+   *
+   * @return bool
+   *   True if no conflicts.
+   */
+  function checkConflictingFields() {
+    // Collections of fields where max one of each group should be selected.
+    const conflictingFieldsets = [[
+      'sample:date',
+      'sample:date_start'
+    ], [
+      'occurrence:fk_taxa_taxon_list:id',
+      'occurrence:fk_taxa_taxon_list:external_key',
+      'occurrence:fk_taxa_taxon_list',
+      'occurrence:fk_taxa_taxon_list:search_code',
+      'occurrence:fk_taxa_taxon_list:specific',
+    ]];
+    let failures = 0;
+    conflictingFieldsets.forEach(function(fieldset) {
+      let selectedFieldsCount = 0;
+      let selectedFields = [];
+      fieldset.forEach(function(field) {
+        if ($('.mapped-field option:selected[value="' + field + '"]').length > 0) {
+          selectedFieldsCount++;
+          selectedFields.push($('.mapped-field option:selected[value="' + field + '"]')[0].text);
+        }
+      });
+      if (selectedFieldsCount > 1) {
+        $('#selected-field-messages').append('<p>' + indiciaData.lang.import_helper_2.fieldSelectionConflict
+          .replace('{1}', '<ul>' + $.map(selectedFields, label => '<li>' + label + '</li>').join('') + '</ul></p>'));
+        failures++;
+      }
+    });
+    return failures === 0;
+  }
+
+  /**
    * Ensure groups of related fields are complete.
    *
    * E.g. date type, date start and date end are all required if one present.
@@ -329,24 +369,29 @@ jQuery(document).ready(function($) {
             indiciaData.lang.import_helper_2.incompleteFieldGroupSelected
               .replace('{1}', '<ul>' + $.map(tickedArr, label => '<li>' + label + '</li>').join('') + '</ul>') +
             indiciaData.lang.import_helper_2.incompleteFieldGroupRequired
-              .replace('{2}', '<ul>' + $.map(missing, label => '<li>' + label + '</li>').join('') + '</ul>') +
+              .replace('{1}', '<ul>' + $.map(missing, label => '<li>' + label + '</li>').join('') + '</ul>') +
           '</p>');
         }
       }
     });
     if (messages.length) {
-      $('#required-messages').html(messages.join('<br/>'));
-      $('#required-messages').fadeIn();
-    } else {
-      $('#required-messages').fadeOut();
+      $('#selected-field-messages').append(messages.join('<br/>'));
     }
+    return !messages.length;
   }
 
   /**
    * Check that required fields are mapped. Set checkbox ticked state in UI.
    */
-  function checkRequiredFields() {
-    checkGroupsOfRelatedFields();
+  function checkSelectedFields() {
+    $('#selected-field-messages').html('');
+    let passChecks = checkGroupsOfRelatedFields();
+    passChecks = checkConflictingFields() && passChecks;
+    if (passChecks) {
+      $('#selected-field-messages').fadeOut();
+    } else {
+      $('#selected-field-messages').fadeIn();
+    }
     $.each($('.required-checkbox'), function() {
       var checkbox = $(this);
       var checkboxKeyList = checkbox.data('key');
@@ -405,7 +450,7 @@ jQuery(document).ready(function($) {
    */
   function applySuggestion(e) {
     $(e.currentTarget).closest('td').find('option[value="' + $(e.currentTarget).data('value') + '"]').prop('selected', true);
-    checkRequiredFields();
+    checkSelectedFields();
   }
 
   /**
@@ -1218,9 +1263,9 @@ jQuery(document).ready(function($) {
         }
       }
     });
-    indiciaFns.on('change', '.mapped-field', {}, checkRequiredFields);
+    indiciaFns.on('change', '.mapped-field', {}, checkSelectedFields);
     indiciaFns.on('click', '.apply-suggestion', {}, applySuggestion);
-    checkRequiredFields();
+    checkSelectedFields();
     $('[name="field-type-toggle"]').change(showOrHideAdvancedFields);
     // Capture the full field option HTML so selects can be reset as required.
     indiciaData.fullImportFieldOptionsHtml = $('select.mapped-field:first').html();

@@ -89,42 +89,6 @@ fieldset.inline fieldset label {
   width: auto;
 }
 
-div.filter-popup-columns {
-  width: 250px;
-  border-right: solid silver 1px;
-}
-div.filter-popup-columns:last-child {
-  border: none;
-}
-div.filter-popup-columns li {
-  background: none;
-  border-bottom: 1px solid #F0F0F0;
-  padding: 0.2em 0;
-}
-div.filter-popup-columns li:last-child {
-  border: none;
-}
-div.filter-popup-columns ul * {
-  vertical-align: middle;
-  margin: 0 6px;
-}
-
-#controls-filter_source {
-  width: 800px;
- }
-
-#controls-filter_source .filter-popup-columns ul {
-  overflow: auto;
-  height: 450px;
-  padding: 0;
-}
-
-/* Source search and operation controls */
-#controls-filter_source .filter-popup-columns .ctrl-wrap {
-  font-size: 90%;
-  margin-bottom: 4px;
-}
-
 #ctrl-wrap-taxon_rank_sort_order_op {
   display: inline-block;
 }

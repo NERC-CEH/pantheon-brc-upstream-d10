@@ -1,0 +1,29 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.node.group_blog.body
+    - field.field.node.group_blog.field_group_id
+    - node.type.group_blog
+  module:
+    - text
+    - user
+id: node.group_blog.default
+targetEntityType: node
+bundle: group_blog
+mode: default
+content:
+  body:
+    type: text_default
+    label: hidden
+    settings: {  }
+    third_party_settings: {  }
+    weight: 0
+    region: content
+  links:
+    settings: {  }
+    third_party_settings: {  }
+    weight: 1
+    region: content
+hidden:
+  field_group_id: true

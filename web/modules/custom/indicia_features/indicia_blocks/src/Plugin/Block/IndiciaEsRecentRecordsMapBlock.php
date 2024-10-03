@@ -29,12 +29,22 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
         '#markup' => str_replace('{message}', $this->t('Service unavailable.'), $indicia_templates['warningBox']),
       ];
     }
+    // We aren't sure if this comes before or after a recent records block on
+    // the page, so a slight fiddle to get them to use the same source.
+    if (isset(\helper_base::$indiciaData['recentRecordsSourceId'])) {
+      $sourceId = \helper_base::$indiciaData['recentRecordsSourceId'];
+      unset(\helper_base::$indiciaData['recentRecordsSourceId']);
+    }
+    else {
+      $sourceId = 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount;
+      \helper_base::$indiciaData['recentRecordsSourceId'] = $sourceId;
+    }
     $r = \ElasticsearchReportHelper::leafletMap([
       'id' => 'recentRecordsMap-' . self::$blockCount,
       'layerConfig' => [
         'recent-records' => [
           'title' => $this->t('Recent records'),
-          'source' => 'src-IndiciaEsRecentRecordsBlock',
+          'source' => $sourceId,
           'forceEnabled' => TRUE,
           'labels' => 'hover',
         ],
@@ -47,20 +57,9 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
           'iform/leaflet',
         ],
       ],
-      '#cache' => [
-        // No cache please.
-        'max-age' => 0,
-      ],
+      // Rely on Indicia caching, otherwise our JS not injected onto page.
+      '#cache' => ['max-age' => 0],
     ];
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * Prevent caching.
-   */
-  public function getCacheMaxAge() {
-    return 0;
   }
 
 }

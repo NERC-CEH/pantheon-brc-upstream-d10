@@ -50,35 +50,6 @@ var IdcEsDataSource;
     var modeSpecificSetupFns = {};
 
     /**
-     * List of tabs which were initially hidden but contain controls with sources that need to be
-     * populated when the tab shows.
-     */
-    var hiddenTabSources = {};
-
-    /**
-     * Tab select event handler.
-     *
-     * Populates sources for controls where the population was delayed because the tab was initially hidden.
-     */
-    function tabSelectFn(e, tabInfo) {
-      // Does the selected tab have unpopulated sources?
-      if (hiddenTabSources[tabInfo.newPanel[0].id]) {
-        $.each(hiddenTabSources[tabInfo.newPanel[0].id], function() {
-          this.src.prepare();
-          // If only populating 1 control, apply that limit, otherwise all controls for source are
-          // populated.
-          doPopulation.call(this.src, false, this.onlyForControl);
-          // Reset the old filter if a temporary filter condition.
-          if (this.filterToRestore) {
-            this.src.settings.filterBoolClauses = this.filterToRestore;
-          }
-        });
-        // Clear the sources to populate for this tab.
-        hiddenTabSources[tabInfo.newPanel[0].id] = [];
-      }
-    }
-
-    /**
      * Some generic preparation for modes that aggregate data.
      */
     function prepareAggregationMode() {
@@ -289,6 +260,9 @@ var IdcEsDataSource;
           aggs: subAggs
         }
       };
+      if (settings.shardSize) {
+        settings.aggregation._idfield.terms.shard_size = settings.shardSize;
+      }
       settings.aggregation._idfield.terms.order[sortField] = sortDir;
       // Add a count agg only if filter changed.
       if (this.settings.needsRecount) {
@@ -499,14 +473,11 @@ var IdcEsDataSource;
      *
      * @param bool force
      *   Set to true to force even if request same as before.
-     * @param obj filterToRestore
-     *   If this is a one-off filter, specify the filter bool clauses to
-     *   restore after the data are loaded.
      * @param obj onlyForControl
      *   jQuery plugin to populate into. If not supplied, all plugins linked to
      *   source are populated.
      */
-    IdcEsDataSource.prototype.populate = function datasourcePopulate(force, filterToRestore, onlyForControl) {
+    IdcEsDataSource.prototype.populate = function datasourcePopulate(force, onlyForControl) {
       var src = this;
       var needsPopulation = false;
       const doNow = typeof immediate !== 'undefined' && immediate;
@@ -521,35 +492,8 @@ var IdcEsDataSource;
           var output = this;
           var populateThis = $(output)[pluginClass]('getNeedsPopulation', src);
           // If on a hidden tab, we'll save the population for when the tab is shown.
-          if ($(output).closest('.ui-tabs-panel:hidden').length > 0 && populateThis) {
-            var tab = $(output).closest('.ui-tabs-panel:hidden')[0];
-            var tabSet = $(tab).closest('.ui-tabs');
-            if (!hiddenTabSources[tab.id]) {
-              hiddenTabSources[tab.id] = [];
-            }
-            // Remove existing items from the queue to populate. We will either
-            // re-add, or we are doing immediate population so not necessary.
-            hiddenTabSources[tab.id] = $.grep(hiddenTabSources[tab.id], function(hiddenTabSourceInfo) {
-              var remove = hiddenTabSourceInfo.src.settings.id === src.settings.id;
-              if (hiddenTabSourceInfo.filterToRestore) {
-                src.settings.filterBoolClauses = hiddenTabSourceInfo.filterToRestore;
-              }
-              // Return false to remove.
-              return !remove;
-            });
-            // This output does not want to be populated yet.
+          if ($(output).closest('.indicia-lazy-load:hidden').length > 0 && populateThis) {
             populateThis = false;
-            // Track the tab and source that needs population.
-            hiddenTabSources[tab.id].push({
-              src: src,
-              onlyForControl: onlyForControl ? onlyForControl : false,
-              filterToRestore: filterToRestore ? filterToRestore: false,
-            });
-            // Hook up a tab activation event handler.
-            if ($(tabSet).prop('data-src-fn-bound') !== 'true') {
-              indiciaFns.bindTabsActivate(tabSet, tabSelectFn);
-              $(tabSet).prop('data-src-fn-bound', 'true');
-            }
           }
           needsPopulation = needsPopulation || populateThis;
           if (populateThis) {
@@ -560,9 +504,11 @@ var IdcEsDataSource;
       if (needsPopulation) {
         src.prepare();
         doPopulation.call(src, force, onlyForControl);
-        // Reset the old filter.
-        if (filterToRestore) {
-          src.settings.filterBoolClauses = filterToRestore;
+        // Reset the original filter if this population was triggered by a map
+        // click that filters a grid.
+        if (typeof src.settings.filterToRestore !== 'undefined') {
+          src.settings.filterBoolClauses = src.settings.filterToRestore;
+          delete src.settings.filterToRestore;
         }
       }
     };
@@ -592,4 +538,28 @@ var IdcEsDataSource;
     }
     return this;
   };
+
+  // Find hidden tabs that contain ES outputs and hook up a function to cause
+  // them to populate when the observer indicates they have become visible.
+  $.each($('.tab-header a'), function() {
+    var tab = $($(this).attr('href'));
+    if (tab.find('.idc-control').length > 0) {
+      indiciaData.onTabShowFns['#' + tab[0].id].push(function(tab) {
+        $.each($(tab).find('.idc-control'), function() {
+          var ctrl = this;
+          if (ctrl.settings.source) {
+            $.each(ctrl.settings.source, function(srcName) {
+              const src = indiciaData.esSourceObjects[srcName];
+              src.populate(false, ctrl);
+              if (typeof src.settings.filterToRestore !== 'undefined') {
+                src.settings.filterBoolClauses = src.settings.filterToRestore;
+                delete src.settings.filterToRestore;
+              }
+            });
+          }
+        });
+      });
+    }
+  });
+
 }());

@@ -1,0 +1,14 @@
+#group-logo {
+  max-height: 100px;
+}
+.group-landing-page-content .row {
+  margin-bottom: 15px;
+}
+/* Prevent z-index problems with map and dialog. */
+.leaflet-pane {
+  z-index: 99;
+}
+.leaflet-top,
+.leaflet-bottom {
+  z-index: 100;
+}

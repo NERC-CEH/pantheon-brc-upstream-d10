@@ -129,7 +129,7 @@ class IndiciaEsTopRecordersTableBlock extends IndiciaBlockBase {
       'size' => 0,
       'proxyCacheTimeout' => $config['cache_timeout'] ?? 300,
       'aggregation' => $agg,
-      'filterBoolClauses' => ['must' => $this->getFilterBoolClauses($config)],
+      'filterBoolClauses' => $this->getFilterBoolClauses($config),
     ]);
     $r .= \ElasticsearchReportHelper::customScript([
       'source' => 'topRecordersTableSource-' . self::$blockCount,
@@ -144,10 +144,8 @@ class IndiciaEsTopRecordersTableBlock extends IndiciaBlockBase {
           'iform/brc_charts',
         ],
       ],
-      '#cache' => [
-        // No cache please.
-        'max-age' => 0,
-      ],
+      // Rely on Indicia caching, otherwise our JS not injected onto page.
+      '#cache' => ['max-age' => 0],
     ];
   }
 

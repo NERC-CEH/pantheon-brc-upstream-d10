@@ -1,0 +1,25 @@
+
+{#
+/**
+ * @file
+ * Default theme implementation for a group landing page's  container tabs.
+ */
+#}
+
+<ul class="nav nav-tabs tab-header">
+
+  <li class="active"><a data-toggle="tab" href="#overview-tab-content">Overview</a></li>
+  <li><a data-toggle="tab" href="#progress-tab-content">Progress</a></li>
+  <li><a data-toggle="tab" href="#taxa-tab-content">Species</a></li>
+</ul>
+<div class="tab-content">
+  <div id="overview-tab-content" class="tab-pane fade indicia-lazy-load in active">
+    {{ overview_tab_content }}
+  </div>
+  <div id="progress-tab-content" class="tab-pane fade indicia-lazy-load">
+    {{ progress_tab_content }}
+  </div>
+  <div id="taxa-tab-content" class="tab-pane fade indicia-lazy-load">
+    {{ taxa_tab_content }}
+  </div>
+</div>

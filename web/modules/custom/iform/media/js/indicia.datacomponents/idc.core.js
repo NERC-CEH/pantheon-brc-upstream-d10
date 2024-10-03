@@ -1070,6 +1070,35 @@
       });
     },
 
+    sitename: function sitename(doc, params) {
+      const format = params.length > 0 ? params[0] : '';
+      const value = typeof doc.location.verbatim_locality === 'undefined' ? '' : doc.location.verbatim_locality;
+      const shouldBlur = doc.metadata.sensitive === 'true' || doc.metadata.private === 'true';
+      switch (format) {
+        case 'obscureifsensitive':
+          if (shouldBlur && value !== '') {
+            return '[sensitive record, location hidden]';
+          }
+          return value;
+
+        case 'showifsensitive':
+          if (shouldBlur) {
+            return value;
+          }
+          return '';
+
+        case 'mapmate':
+          if (shouldBlur && value !== '') {
+            return '[sensitive record, location hidden]';
+          }
+          // Truncation to 62 characters required for MapMate.
+          return value === '' ? 'unnamed site' : value.substring(0, 62);
+
+        default:
+          return value;
+      }
+    },
+
     /**
      * A standardised label for the taxon.
      */
@@ -1296,6 +1325,7 @@
         unit: 'km'
       }
     },
+    sitename: ['location.verbatim_locality.keyword'],
     status_icons: [
       'identification.verification_status',
       'identification.verification_substatus',
@@ -1562,16 +1592,13 @@
    * Apply group reporting filter, e.g. group_id=n?implicit=f in URL.
    */
   function applyGroupFilter(data) {
-    if (indiciaData.filter_group_id) {
-      if (typeof indiciaData.filter_group_implicit === 'undefined') {
+    if (indiciaData.applyGroupFilter) {
+      if (typeof indiciaData.applyGroupFilter.implicit === 'undefined') {
         // Apply default, strictest mode.
-        indiciaData.filter_group_implicit = false;
+        indiciaData.applyGroupFilter.implicit = false;
       }
       // Proxy will be responsible for filter setup.
-      data.group_filter = {
-        id: indiciaData.filter_group_id,
-        implicit: indiciaData.filter_group_implicit
-      };
+      data.group_filter = indiciaData.applyGroupFilter;
     }
   }
 

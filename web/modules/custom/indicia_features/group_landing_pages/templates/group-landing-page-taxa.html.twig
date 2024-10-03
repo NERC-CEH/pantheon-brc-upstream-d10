@@ -1,0 +1,53 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a group landing page taxa tab.
+ *
+ * Available variables:
+ * - group_id: Group unique ID.
+ * - group_title: Title of the group.
+ * - description: Description given for the group.
+ * - group_type: name of the group type (e.g. Local project, Bioblitz).
+ * - joining_method: group joining method.
+ * - implicit_record_inclusion: record inclusion mode for group report filters.
+ * - container: flag indicating that this is a container group.
+ * - contained_by_group_id: if this group is contained by and inherits from
+ *   another group, then ID of that group.
+ * - contained_by_group_title: if this group is contained by and inherits from
+ *   another group, then title of that group.
+ * - contained_by_group_description: if this group is contained by and inherits
+ *   from another group, then description of that group.
+ * - contained_by_group_logo_path: if this group is contained by and inherits
+ *   from another group, then logo path of that group.
+ * - contained_by_group_implicit_record_inclusion: if this group is contained
+ *   by and inherits from another group, then implicit_record_inclusion setting
+ *   of that group.
+ * - member - true if the current user is a member of the group.
+ * - admin - true if the current user is an administrator of the group.
+ * - pending - true if the current user is pending membership.
+ * - can_view_blog - true if blogging is enabled for this group.
+ * - can_post_blog - true if the current user is allowed to add blog posts for
+ *    this group.
+ * - group_label - label used to describe a standard group, e.g. group or
+ *   project.
+ * - container_group_label - label used to describe a container group, e.g.
+ *   project.
+ * - contained_group_label - label used to describe a contained group, e.g.
+ *   sub-group or project-activity.
+ * - edit_alias - the path to the group edit page.
+ * - species_details_alias - the path to the species details page.
+ * - species_details_within_group_alias - the path to the version of the
+ *   species details page used when showing species data for a single group.
+ * - warehouse_url - URL the warehouse is accessed from (including trailing
+ *   slash).
+ */
+#}
+
+<h3>Most recorded species</h3>
+{{ drupal_block('es_species_table_block', {
+    unverified_records: true,
+    sensitive_records: true,
+    species_details_alias: species_details_alias,
+    species_details_within_group_alias: species_details_within_group_alias
+  })
+}}

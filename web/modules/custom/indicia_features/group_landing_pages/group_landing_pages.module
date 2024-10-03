@@ -1,21 +1,66 @@
 <?php
 
 /**
+ * @file
+ * Drupal module for group/activity/project landing pages.
+ */
+
+use Drupal\Core\Ajax\AjaxResponse;
+use Drupal\Core\Ajax\CloseDialogCommand;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\views\ViewExecutable;
+
+/**
  * Implements hook_theme().
  *
  * Declare a template for the group home pages.
  */
 function group_landing_pages_theme($existing, $type, $theme, $path) {
+  $defaultVariables = [
+    'group_id' => '',
+    'group_title' => '',
+    'group_type' => '',
+    'joining_method' => '',
+    'description' => '',
+    'implicit_record_inclusion' => '',
+    'admin' => '',
+    'member' => '',
+    'pending' => '',
+    'container' => '',
+    'contained_by_group_id' => '',
+    'contained_by_group_title' => '',
+    'contained_by_group_description' => '',
+    'contained_by_group_logo_path' => '',
+    'contained_by_group_implicit_record_inclusion' => '',
+    'contained_by_group_admin' => '',
+    'contained_by_group_member' => '',
+    'can_view_blog' => '',
+    'can_post_blog' => '',
+    'discoverable' => '',
+    'edit_alias' => '',
+    'group_label' => '',
+    'container_group_label' => '',
+    'contained_group_label' => '',
+    'species_details_alias' => '',
+    'species_details_within_group_alias' => '',
+    'warehouse_url' => '',
+  ];
   return [
-    'group_landing_page' => [
-      'variables' => [
-        'group_id' => '',
-        'group_title' => '',
-        'group_type' => '',
-        'description' => '',
-        'implicit_record_inclusion' => '',
-        'member' => '',
-      ],
+    'group_landing_page_tabs' => [
+      'variables' => array_merge([
+        'overview_tab_content' => '',
+        'progress_tab_content' => '',
+        'taxa_tab_content' => '',
+      ], $defaultVariables),
+    ],
+    'group_landing_page_overview' => [
+      'variables' => $defaultVariables,
+    ],
+    'group_landing_page_progress' => [
+      'variables' => $defaultVariables,
+    ],
+    'group_landing_page_taxa' => [
+      'variables' => $defaultVariables,
     ],
   ];
 }
@@ -24,14 +69,271 @@ function group_landing_pages_theme($existing, $type, $theme, $path) {
  * Implements hook_theme_suggestions_HOOK().
  *
  * Provides suggestions for template names:
- * * group-landing-page--type-<type name>, e.g.
- *   group-landing-page--type-bioblitz.html.twig.
- * * group-landing-page--id-<id>, e.g. group-landing-page--id-123.html.twig.
+ * * group-landing-page-tabs--type-<type name> - applies to any page of a given
+ *   group type, e.g. group-landing-page-tabs--type-bioblitz.html.twig.
+ * * group-landing-pages-tabs--container - applies to any page that is a
+ *   container (parent) for other contained projects (children).
+ * * group-landing-pages-tabs--container--type-<type name> - applies to any
+ *   container (parent) page of a given  group type, e.g.
+ *   group-landing-page-tabs--container--type-national-scheme.html.twig.
+ * * group-landing-pages-tabs--contained - applies to any page that is
+ *   contained within a container group (i.e. a child of or sub-project).
+ * * group-landing-pages-tabs--contained--type-<type name> - applies to any
+ *   page that is contained within a container group (i.e. a child of or
+ *   sub-project) and of a given type, e.g.
+ *   group-landing-page-tabs--contained--type-bioblitz.html.twig.
+ * * group-landing-page-tabs--contained--parent-id-<id>.html.twig - applies to
+ *   any page that is contained within a container group (i.e. a child of or
+ *   sub-project) and where the parent container group has the given ID.
+ * * group-landing-page-tabs--id-<id> applies only to the page that is for the
+ *   group specified for the given ID, e.g.
+ *   group-landing-page-tabs--id-123.html.twig.
+ *
+ * Type name replacements will always be in lowercase, with non-alpha
+ * characters replaced by a hyphen.
  */
-function group_landing_pages_theme_suggestions_group_landing_page(array $variables) {
+function group_landing_pages_theme_suggestions_group_landing_page_tabs(array $variables) {
+  return group_landing_pages_get_template_suggestions('group_landing_page_tabs', $variables);
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ *
+ * Provides suggestions for template names:
+ * * group-landing-page-tabs--type-<type name> - applies to any page of a given
+ *   group type, e.g. group-landing-page-tabs--type-bioblitz.html.twig.
+ * * group-landing-pages-tabs--container - applies to any page that is a
+ *   container (parent) for other contained projects (children).
+ * * group-landing-pages-tabs--container--type-<type name> - applies to any
+ *   container (parent) page of a given  group type, e.g.
+ *   group-landing-page-tabs--container--type-national-scheme.html.twig.
+ * * group-landing-pages-tabs--contained - applies to any page that is
+ *   contained within a container group (i.e. a child of or sub-project).
+ * * group-landing-pages-tabs--contained--type-<type name> - applies to any
+ *   page that is contained within a container group (i.e. a child of or
+ *   sub-project) and of a given type, e.g.
+ *   group-landing-page-tabs--contained--type-bioblitz.html.twig.
+ * * group-landing-page-tabs--contained--parent-id-<id>.html.twig - applies to
+ *   any page that is contained within a container group (i.e. a child of or
+ *   sub-project) and where the parent container group has the given ID.
+ * * group-landing-page-tabs--id-<id> applies only to the page that is for the
+ *   group specified for the given ID, e.g.
+ *   group-landing-page-tabs--id-123.html.twig.
+ *
+ * Type name replacements will always be in lowercase, with non-alpha
+ * characters replaced by a hyphen.
+ */
+function group_landing_pages_theme_suggestions_group_landing_page_overview(array $variables) {
+  return group_landing_pages_get_template_suggestions('group_landing_page_overview', $variables);
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ *
+ * Provides suggestions for template names:
+ * * group-landing-page-tabs--type-<type name> - applies to any page of a given
+ *   group type, e.g. group-landing-page-tabs--type-bioblitz.html.twig.
+ * * group-landing-pages-tabs--container - applies to any page that is a
+ *   container (parent) for other contained projects (children).
+ * * group-landing-pages-tabs--container--type-<type name> - applies to any
+ *   container (parent) page of a given  group type, e.g.
+ *   group-landing-page-tabs--container--type-national-scheme.html.twig.
+ * * group-landing-pages-tabs--contained - applies to any page that is
+ *   contained within a container group (i.e. a child of or sub-project).
+ * * group-landing-pages-tabs--contained--type-<type name> - applies to any
+ *   page that is contained within a container group (i.e. a child of or
+ *   sub-project) and of a given type, e.g.
+ *   group-landing-page-tabs--contained--type-bioblitz.html.twig.
+ * * group-landing-page-tabs--contained--parent-id-<id>.html.twig - applies to
+ *   any page that is contained within a container group (i.e. a child of or
+ *   sub-project) and where the parent container group has the given ID.
+ * * group-landing-page-tabs--id-<id> applies only to the page that is for the
+ *   group specified for the given ID, e.g.
+ *   group-landing-page-tabs--id-123.html.twig.
+ *
+ * Type name replacements will always be in lowercase, with non-alpha
+ * characters replaced by a hyphen.
+ */
+function group_landing_pages_theme_suggestions_group_landing_page_progress(array $variables) {
+  return group_landing_pages_get_template_suggestions('group_landing_page_progress', $variables);
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ *
+ * Provides suggestions for template names:
+ * * group-landing-page-tabs--type-<type name> - applies to any page of a given
+ *   group type, e.g. group-landing-page-tabs--type-bioblitz.html.twig.
+ * * group-landing-pages-tabs--container - applies to any page that is a
+ *   container (parent) for other contained projects (children).
+ * * group-landing-pages-tabs--container--type-<type name> - applies to any
+ *   container (parent) page of a given  group type, e.g.
+ *   group-landing-page-tabs--container--type-national-scheme.html.twig.
+ * * group-landing-pages-tabs--contained - applies to any page that is
+ *   contained within a container group (i.e. a child of or sub-project).
+ * * group-landing-pages-tabs--contained--type-<type name> - applies to any
+ *   page that is contained within a container group (i.e. a child of or
+ *   sub-project) and of a given type, e.g.
+ *   group-landing-page-tabs--contained--type-bioblitz.html.twig.
+ * * group-landing-page-tabs--contained--parent-id-<id>.html.twig - applies to
+ *   any page that is contained within a container group (i.e. a child of or
+ *   sub-project) and where the parent container group has the given ID.
+ * * group-landing-page-tabs--id-<id> applies only to the page that is for the
+ *   group specified for the given ID, e.g.
+ *   group-landing-page-tabs--id-123.html.twig.
+ *
+ * Type name replacements will always be in lowercase, with non-alpha
+ * characters replaced by a hyphen.
+ */
+function group_landing_pages_theme_suggestions_group_landing_page_taxa(array $variables) {
+  return group_landing_pages_get_template_suggestions('group_landing_page_taxa', $variables);
+}
+
+/**
+ * Builds a list of template suggestions for the landing page components.
+ *
+ * @param string $prefix
+ *   Prefix to use for the theme suggestions, e.g. group_landing_page_tabs.
+ * @param array $variables
+ *   Theme variables.
+ *
+ * @return string[]
+ *   Template suggestions with lowest precedence (most generic) first.
+ */
+function group_landing_pages_get_template_suggestions($prefix, array $variables) {
   $suggestions = [];
+  $groupType = preg_replace('/[^a-z]/', '_', strtolower($variables['group_type']));
+
   // Lowest priority (least specific) first.
-  $suggestions[] = 'group_landing_page__type_' . preg_replace('/[^a-z]/', '-', strtolower($variables['group_type']));
-  $suggestions[] = "group_landing_page__id_$variables[group_id]";
+  $suggestions[] = "{$prefix}__type_{$groupType}";
+  if ($variables['container']) {
+    $suggestions[] = "{$prefix}__container";
+    $suggestions[] = "{$prefix}__container__type_{$groupType}";
+  }
+  if ($variables['contained_by_group_id']) {
+    $suggestions[] = "{$prefix}__contained";
+    $suggestions[] = "{$prefix}__contained__type_{$groupType}";
+    $suggestions[] = "{$prefix}__contained__type_{$groupType}__parent_id_{$variables['contained_by_group_id']}";
+  }
+  $suggestions[] = "{$prefix}__id_$variables[group_id]";
   return $suggestions;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ *
+ * Alter the blog post form to hide the group ID field as its value is autoset.
+ */
+function group_landing_pages_form_node_group_blog_form_alter(&$form, FormStateInterface &$form_state, $form_id) {
+  if (!empty($form['field_group_id']['widget'][0]['value']['#default_value'])) {
+    $form['field_group_id']['#type'] = 'hidden';
+    $form['field_group_id']['#value'] = $form['field_group_id']['widget'][0]['value']['#default_value'];
+  }
+  // Check if Ajax request.
+  if (\Drupal::request()->isXmlHttpRequest()) {
+    $form['actions']['submit']['#ajax']['callback'] = 'group_landing_pages__submit_ajax_callback';
+  }
+}
+
+/**
+ * Custom Ajax callback for group blog form popup.
+ *
+ * Prevents a page redirect.
+ */
+function group_landing_pages__submit_ajax_callback(array &$form, FormStateInterface $form_state) {
+  // If form is valid then close the dialog.
+  if (!$form_state->hasAnyErrors()) {
+    $response = new AjaxResponse();
+    $response->addCommand(new CloseDialogCommand());
+    return $response;
+  }
+  // Otherwise call the default #ajax callback.
+  $form_object = $form_state->getFormObject();
+  $response = $form_object->submitAjaxForm($form, $form_state);
+  return $response;
+}
+
+/**
+ * Implements hook_views_pre_render().
+ *
+ * Attaches library for styling the blog entries view.
+ */
+function group_landing_pages_views_pre_render(ViewExecutable $view) {
+  if (isset($view) && ($view->storage->id() == 'group_blog_entries')) {
+    $view->element['#attached']['library'][] = 'group_landing_pages/blog-entries-view';
+  }
+}
+
+/**
+ * Implements hook_node_access_records().
+ *
+ * Creates node access grants for a blog entry so that edit permission can be
+ * given to the group admins as well as the author of the blog entry.
+ */
+function group_landing_pages_node_access_records($node) {
+  if ($node->bundle() == 'group_blog') {
+    $grants = [];
+    // A grant so all users can view blogs.
+    $grants[] = [
+      'realm' => 'group_blog_view',
+      'gid' => 0,
+      'grant_view' => 1,
+      'grant_update' => 0,
+      'grant_delete' => 0,
+    ];
+    // A grant so users can edit their own blogs.
+    $grants[] = [
+      'realm' => 'group_blog_author',
+      'gid' => $node->getOwnerId(),
+      'grant_view' => 1,
+      'grant_update' => 1,
+      'grant_delete' => 1,
+    ];
+    // A grant so group admins can edit blogs.
+    $grants[] = [
+      'realm' => 'group_admin',
+      'gid' => $node->field_group_id->value,
+      'grant_view' => 1,
+      'grant_update' => 1,
+      'grant_delete' => 1,
+    ];
+    return $grants;
+  }
+}
+
+/**
+ * Implements hook_node_grants().
+ *
+ * Claims grants for a user to be able to edit their own blog entries plus
+ * those for any group they are admin for.
+ */
+function group_landing_pages_node_grants($account, $op) {
+  $grants = [];
+  // All users can view blog entries.
+  $grants['group_blog_view'] = [0];
+  if (hostsite_get_user_field('indicia_user_id')) {
+    iform_load_helpers(['helper_base']);
+    $conn = iform_get_connection_details();
+    $readAuth = helper_base::get_read_auth($conn['website_id'], $conn['password']);
+    // Load the groups the user is admin of.
+    $groups = helper_base::get_population_data([
+      'table' => 'groups_user',
+      'extraParams' => $readAuth + [
+        'columns' => 'group_id',
+        'user_id' => hostsite_get_user_field('indicia_user_id'),
+        'administrator' => 't',
+        'pending' => 'f',
+      ],
+    ]);
+    // Group IDs user is admin for.
+    $groupIds = [];
+    foreach ($groups as $group) {
+      $groupIds[] = $group['group_id'];
+    }
+    // Authors can edit.
+    $grants['group_blog_author'] = [$account->id()];
+    // Group admins can edit.
+    $grants['group_admin'] = $groupIds;
+  }
+  return $grants;
 }

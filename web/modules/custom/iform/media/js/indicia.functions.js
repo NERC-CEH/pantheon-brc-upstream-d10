@@ -19,6 +19,7 @@
 if (typeof window.indiciaData === 'undefined') {
   window.indiciaData = {
     onloadFns: [],
+    onTabShowFns: [],
     idDiffRuleMessages: {},
     documentReady: 'no',
     windowLoaded: 'no',
@@ -33,6 +34,13 @@ if (typeof window.indiciaData === 'undefined') {
 
 (function ($) {
   'use strict';
+
+  /**
+   * Set up the list of tabs in the tabShowFns hook.
+   */
+  $.each($('.tab-header a'), function() {
+    indiciaData.onTabShowFns[$(this).attr('href')] = [];
+  });
 
   /**
    * Keep track of modifier keys such as shift anc ctrl as generally useful.
@@ -950,4 +958,42 @@ jQuery(document).ready(function ($) {
       });
     });
   }
+
+  indiciaFns.setupTabLazyLoad = function setupTabLazyLoad() {
+    /*
+     * Find tabs (jQuery UI, Boostrap etc, as long as the tab link container
+     * has a class tab-header). Tag the divs they point to so the contained
+     * reports only load when the tab shows.
+     */
+    $.each($('.tab-header a'), function() {
+      $($(this).attr('href')).addClass('indicia-lazy-load');
+    });
+
+    /*
+     * Find tabs or similar hidden panels.
+     *
+     * Components that are initially hidden may need be notified when first
+     * shown, for example a report that lazy loads or a map which needs to
+     * update it's size.
+     */
+    if ($('.indicia-lazy-load:hidden').length > 0) {
+      var observer = new MutationObserver(function(records, observer) {
+        $.each(records, function() {
+          const tab = this.target;
+          // If tab being shown for first time.
+          if (!$(tab).data('indicia-loaded') && $(tab).is(':visible')) {
+            // Flag so not reprocessed.
+            $(tab).data('indicia-loaded', true);
+            $.each(indiciaData.onTabShowFns['#' + tab.id], function() {
+              this(tab);
+            });
+          }
+        });
+      });
+      $.each($('.indicia-lazy-load:hidden'), function() {
+        observer.observe(this, { attributes: true });
+      });
+    }
+  }
+
 });

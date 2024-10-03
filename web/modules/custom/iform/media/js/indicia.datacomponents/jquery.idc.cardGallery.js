@@ -523,7 +523,7 @@
       }
       $('<div class="idc-tools">' + tools.join('<br/>') + '</div>').appendTo(el);
       // Add overlay for loading.
-      $('<div class="loading-spinner" style="display: none"><div>Loading...</div></div>').appendTo(el);
+      $('<div class="loading-spinner" style="display: block"><div>Loading...</div></div>').appendTo(el);
       initHandlers(el);
     },
 

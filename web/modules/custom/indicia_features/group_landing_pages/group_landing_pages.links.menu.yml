@@ -1,0 +1,6 @@
+group_landing_pages.settings:
+  title: 'Group landing pages settings'
+  description: 'Settings page for the Group Landing Pages module'
+  parent: iform.admin_config_iform
+  route_name: group_landing_pages.settings
+  weight: 50

@@ -1,4 +1,10 @@
-group_langing_pages.group_home:
+group_landing_pages.group_blog:
+  path: '/groups/{title}/blog'
+  defaults:
+    _controller: '\Drupal\group_landing_pages\Controller\GroupLandingPagesController::groupBlog'
+  requirements:
+    _permission: 'access content'
+group_landing_pages.group_home:
   path: '/groups/{title}'
   defaults:
     _controller: '\Drupal\group_landing_pages\Controller\GroupLandingPagesController::groupHome'
@@ -6,3 +12,17 @@ group_langing_pages.group_home:
     _permission: 'access content'
   options:
     no_cache: TRUE
+group_landing_pages.modal_blog_form:
+  path: '/group_landing_pages/modal_blog_form'
+  defaults:
+    _title: 'Modal Form'
+    _controller: '\Drupal\group_landing_pages\Controller\BlogFormController::openModalBlogForm'
+  requirements:
+    _permission: 'access content'
+group_landing_pages.settings:
+  path: '/admin/config/group_landing_pages/settings'
+  defaults:
+    _form: '\Drupal\group_landing_pages\Form\GroupLandingPagesSettingsForm'
+    _title: 'Group Landing Pages settings'
+  requirements:
+    _permission: 'administer site configuration'

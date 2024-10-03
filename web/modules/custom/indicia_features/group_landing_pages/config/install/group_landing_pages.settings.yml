@@ -1,0 +1,7 @@
+group_label: group
+container_group_label: project
+contained_group_label: project group
+group_edit_alias: /groups/edit
+species_details_alias: ''
+species_details_within_group_alias: ''
+logo_selector: '[rel="home"][class*=logo]'

@@ -1,0 +1,164 @@
+{#
+/**
+ * @file
+ * Default theme implementation for a group landing page overview tab.
+ *
+ * Available variables:
+ * - group_id: Group unique ID.
+ * - group_title: Title of the group.
+ * - description: Description given for the group.
+ * - group_type: name of the group type (e.g. Local project, Bioblitz).
+ * - joining_method: group joining method.
+ * - implicit_record_inclusion: record inclusion mode for group report filters.
+ * - container: flag indicating that this is a container group.
+ * - contained_by_group_id: if this group is contained by and inherits from
+ *   another group, then ID of that group.
+ * - contained_by_group_title: if this group is contained by and inherits from
+ *   another group, then title of that group.
+ * - contained_by_group_description: if this group is contained by and inherits
+ *   from another group, then description of that group.
+ * - contained_by_group_logo_path: if this group is contained by and inherits
+ *   from another group, then logo path of that group.
+ * - contained_by_group_implicit_record_inclusion: if this group is contained
+ *   by and inherits from another group, then implicit_record_inclusion setting
+ *   of that group.
+ * - member - true if the current user is a member of the group.
+ * - admin - true if the current user is an administrator of the group.
+ * - pending - true if the current user is pending membership.
+ * - can_view_blog - true if blogging is enabled for this group.
+ * - can_post_blog - true if the current user is allowed to add blog posts for
+ *    this group.
+ * - group_label - label used to describe a standard group, e.g. group or
+ *   project.
+ * - container_group_label - label used to describe a container group, e.g.
+ *   project.
+ * - contained_group_label - label used to describe a contained group, e.g.
+ *   sub-group or project-activity.
+ * - edit_alias - the path to the group edit page.
+ * - species_details_alias - the path to the species details page.
+ * - species_details_within_group_alias - the path to the version of the
+ *   species details page used when showing species data for a single group.
+ * - warehouse_url - URL the warehouse is accessed from (including trailing
+ *   slash).
+ */
+#}
+
+<div class="group-landing-page-content">
+  <div class="row">
+    <div class="col-md-8">
+      {% if pending %}
+        <p class="alert alert-info">
+          {% trans %}
+            Your membership of this {{ group_label }} is pending approval by an admin.
+          {% endtrans %}
+        </p>
+      {% endif %}
+      <p>
+        {% if description %}
+          {{ description|check_markup('restricted_html') }}
+        {% else %}
+          {% trans %}
+            No description has been provided for this {{ group_label }}.
+          {% endtrans %}
+        {% endif %}
+      </p>
+    </div>
+    <div class="col-md-4">
+      {{ drupal_block('group_landing_pages_group_page_links', {
+        group_id: group_id,
+        group_title: group_title,
+        joining_method: joining_method,
+        implicit_record_inclusion: implicit_record_inclusion,
+        container: container,
+        contained_by_group_id: contained_by_group_id,
+        contained_by_group_title: contained_by_group_title,
+        member: member,
+        admin: admin,
+        edit_alias: edit_alias,
+        group_label: group_label,
+        contained_group_label: contained_group_label,
+        include_home_link: false
+      }) }}
+    </div>
+  </div>
+  <div>
+    {{ drupal_block('es_totals_block', {unverified_records: true, sensitive_records: true}) }}
+  </div>
+  {% if contained_by_group_id %}
+    <div class="row">
+      <div class="col-md-8">
+        <div class="row">
+          {% if contained_by_group_logo_path %}
+            <div class="col-md-4">
+              <img class="img-responsive" src="{{ warehouse_url }}upload/{{ contained_by_group_logo_path }}" />
+            </div>
+            {% set titleCols = 8 %}
+          {% else %}
+            {% set titleCols = 12 %}
+          {% endif %}
+          <div class="col-md-{{ titleCols }}">
+            <h3>{{ contained_by_group_title }}</h3>
+            <p class="alert alert-info">
+              {% trans %}
+                This {{ contained_group_label }} contributes records to the {{ container_group_label }} <strong>{{ contained_by_group_title }}</strong>.
+              {% endtrans %}
+            </p>
+          </div>
+        </div>
+        <p>{{ contained_by_group_description|check_markup('restricted_html') }}</p>
+      </div>
+      <div class="col-md-4">
+        {# /*
+        TODO contained_by_group_member and contained_by_group_admin
+        */ #}
+        {{ drupal_block('group_landing_pages_group_page_links', {
+          group_id: contained_by_group_id,
+          group_title: contained_by_group_title,
+          joining_method: 'A',
+          implicit_record_inclusion: contained_by_group_implicit_record_inclusion,
+          container: true,
+          member: contained_by_group_member,
+          admin: contained_by_group_admin,
+          edit_alias: edit_alias,
+          group_label: container_group_label,
+          contained_group_label: contained_group_label,
+          include_home_link: true
+        }) }}
+      </div>
+    </div>
+  {% endif %}
+  <div class="row">
+    <div class="col-md-12">
+      <h3>{{ "Recent photos"|trans }}</h3>
+      {{ drupal_block('es_recent_photos_block', {unverified_records: true}) }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <h3>{{ "Recent records"|trans }}</h3>
+      {{ drupal_block('es_recent_records_block', {unverified_records: true}) }}
+    </div>
+    <div class="col-md-6">
+      {{ drupal_block('es_all_records_map_block', {unverified_records: true, sensitive_records: true}) }}
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      {% if can_view_blog %}
+        {% set blog_post_count = drupal_view_result('group_blog_entries', 'block_1', group_id)|length %}
+        {% if blog_post_count > 0 or can_post_blog %}
+          <h3>{{ "Posts"|trans }}</h3>
+          {% if blog_post_count > 0 %}
+            {{ drupal_view('group_blog_entries', 'block_1', group_id) }}
+            <p><a href="{{ url('<current>') }}/blog">View more...</a></p>
+          {% else %}
+            <p>There are no posts yet for {{ group_title }}.<p>
+          {% endif %}
+          {% if can_post_blog %}
+            <a class="btn btn-primary use-ajax" href="{{ path('group_landing_pages.modal_blog_form',  {'group_id': group_id}) }}">Add a new post</a>
+          {% endif %}
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+</div>

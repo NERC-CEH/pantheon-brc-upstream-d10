@@ -1,0 +1,22 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_group_id
+    - node.type.group_blog
+id: node.group_blog.field_group_id
+field_name: field_group_id
+entity_type: node
+bundle: group_blog
+label: 'Group ID'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: 1
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

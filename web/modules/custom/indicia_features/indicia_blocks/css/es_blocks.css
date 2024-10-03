@@ -54,7 +54,7 @@
 }
 
 .indicia-block-visualisation {
-  height: 500px;
+  min-height: 500px;
 }
 
 /*# sourceMappingURL=es_blocks.css.map */

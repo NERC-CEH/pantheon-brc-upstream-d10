@@ -112,7 +112,7 @@
     }
     .pane {
       display: flex;
-      height: 80px;
+      min-height: 80px;
     }
     #filter\:title {
       min-width: 250px;
@@ -150,6 +150,42 @@
     #filter-save, #filter-delete {
       margin-top: 2px;
       font-size: 1.2em;
+    }
+  }
+}
+
+/* Source filter checkboxes */
+#controls-filter_source {
+  width: 800px;
+  .filter-popup-columns {
+    width: 250px;
+    border-right: solid silver 1px;
+    &:last-child {
+      border: none;
+    }
+    ul {
+      overflow-x: auto;
+      height: 450px;
+      padding: 0 0 0 22px;
+      li {
+        list-style-type: none;
+        background: none;
+        border-bottom: 1px solid #F0F0F0;
+        padding: 0.2em 0;
+        &:last-child {
+          border: none;
+        }
+        label {
+          margin-left: 6px;
+        }
+        input[type="checkbox"] {
+          margin-left: -20px;
+        }
+      }
+    }
+    .ctrl-wrap {
+      font-size: 90%;
+      margin-bottom: 4px;
     }
   }
 }

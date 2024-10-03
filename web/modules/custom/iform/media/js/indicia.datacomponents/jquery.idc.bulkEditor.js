@@ -169,35 +169,14 @@
   }
 
   /**
-   * Checks the response from the server is status 200 OK.
-   *
-   * If not, adds a message to the log output and returns false.
-   *
-   * @param DOM dlg
-   *   Dialog element.
-   * @param object response
-   *   API request response object.
-   *
-   * @returns bool
-   *   True if status is 200 OK.
-   */
-  function checkResponseCode(dlg, response) {
-    if (response.code !== 200 && response.code !== 204) {
-      logOutput(dlg, indiciaData.lang.bulkEditor.error);
-      logOutput(dlg, response.message);
-      return false;
-    }
-    return true;
-  }
-
-  /**
    * Resest the dialog before doing a bulk edit.
    *
    * @param DOM dlg
    *   Dialog element.
    */
   function prepareForBulkEdit(dlg) {
-    dlg.find('.pre-bulk-edit-info').hide();
+    dlg.find('.bulk-edit-action-buttons').hide();
+    dlg.find('.bulk-edit-form-controls').hide();
     dlg.find('.post-bulk-edit-info .output *').remove();
     dlg.find('.post-bulk-edit-info').show();
     logOutput(dlg, indiciaData.lang.bulkEditor.preparing);
@@ -216,7 +195,7 @@
    */
   function performBulkEdit(dlg, data, endpoint) {
     $.post(indiciaData.esProxyAjaxUrl + '/' + endpoint + '/' + indiciaData.nid, data, null, 'json')
-    .done(function(response, textStatus, jqXHR) {
+    .done(function(response) {
       if (response.code === 200 && response.search_after) {
         // Paging through a set of records, send the same request again, but
         // with search_after set.
@@ -285,9 +264,65 @@
     }
     if ($(el).find('[name="edit-sref"]').val()) {
       r.sref = $(el).find('[name="edit-sref"]').val();
-      r.sref_system = $(el).find('[name="edit-sref-system"]').val();
+      r.sref_system = $(el).find('[name="edit-sref_system"]').val();
     }
     return r;
+  }
+
+  /**
+   * Generate a sample preview of updates that are about to happen.
+   *
+   * Output is loaded into a table on the dialog.
+   */
+  function previewClickHandler(el) {
+    const dlg = $('#' + $(el)[0].settings.id + '-dlg');
+    const updates = getUpdates(dlg);
+    if (Object.keys(updates).length === 0) {
+      $.fancyDialog({
+        title: indiciaData.lang.bulkEditor.cannotProceed,
+        message: indiciaData.lang.bulkEditor.noUpdatesSpecified,
+        cancelButton: null
+      });
+      return;
+    }
+    $(dlg).find('.preview-output').show();
+    $(dlg).find('.bulk-edit-form-controls').hide();
+    $(dlg).find('.preview-bulk-edit').attr('disabled', true);
+    let previewRequest = {
+      updates: updates,
+      website_id: indiciaData.website_id,
+      restrictToOwnData: $(el)[0].settings.restrictToOwnData
+    };
+    if ($('#' + $(el)[0].settings.linkToDataControl).hasClass('multiselect-mode')) {
+      previewRequest['occurrence:ids'] = getTodoListInfo(el).ids.join(',');
+    } else {
+      const filter = indiciaFns.getFormQueryData($(el)[0].settings.sourceObject, false);
+      previewRequest['occurrence:idsFromElasticFilter'] = filter;
+    }
+    $.post(indiciaData.esProxyAjaxUrl + '/bulkeditpreview/' + indiciaData.nid, previewRequest, null, 'json')
+      .done(function(response) {
+        $.each(response, function() {
+          const tr = $('<tr>').appendTo($(dlg).find('.preview-output tbody'));
+          let date = this._source.event.date_start;
+          let recordedBy = typeof this._source.event.recorded_by === 'undefined' ? indiciaData.lang.bulkEditor.noValue : this._source.event.recorded_by;
+          let locationName = typeof this._source.location.verbatim_locality === 'undefined' ? indiciaData.lang.bulkEditor.noValue : this._source.location.verbatim_locality;
+          let sref = this._source.location.input_sref;
+          date = updates.date ? `<span class="old-value">${date}</span> <span class="new-value">${updates.date}</span>` : date;
+          recordedBy = updates.recorder_name ? `<span class="old-value">${recordedBy}</span> <span class="new-value">${updates.recorder_name}</span>` : recordedBy;
+          locationName = updates.location_name ? `<span class="old-value">${locationName}</span> <span class="new-value">${updates.location_name}</span>` : locationName;
+          sref = updates.sref ? `<span class="old-value">${sref}</span> <span class="new-value">${updates.sref}</span>` : sref;
+
+          tr.append('<th>' + this._source.id + '</th>');
+          tr.append('<th>' + this._source.taxon.accepted_name + '</th>');
+          tr.append('<th>' + (typeof this._source.taxon.vernacular_name === 'undefined' ? '' : this._source.taxon.vernacular_name) + '</th>');
+          tr.append(`<th>${date}</th>`);
+          tr.append(`<th>${locationName}</th>`);
+          tr.append(`<th>${sref}</th>`);
+          tr.append(`<th>${recordedBy}</th>`);
+        })
+        $(dlg).find('.proceed-bulk-edit').removeAttr('disabled');
+      });
+    return;
   }
 
   /**
@@ -337,15 +372,18 @@
       return;
     }
     // Reset the dialog.
-    dlg.find('.message').text(todoInfo.message);
-    dlg.find('.pre-bulk-edit-info').show();
+    dlg.find('.message').html(todoInfo.message);
+    dlg.find('.bulk-edit-action-buttons').show();
+    dlg.find('.bulk-edit-form-controls').show();
     dlg.find('.post-bulk-edit-info').hide();
     dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').attr('disabled', true);
     dlg.find('.post-bulk-edit-info .output p').remove();
-    // Reset date picker so that placeholder works.
-    dlg.find('[name="edit-date"]')[0].type='text';
-    console.log('Reset inputs');
+    dlg.find('.preview-output').hide();
+    dlg.find('.preview-output tbody tr').remove();
+    dlg.find('.proceed-bulk-edit').attr('disabled', true);
+    dlg.find('.preview-bulk-edit').removeAttr('disabled');
     dlg.find('.ctrl-wrap input').val('');
+
     // Now open it.
     $.fancybox.open({
       src: dlg,
@@ -355,12 +393,15 @@
       }
     });
   }
-
   /**
    * Register the various user interface event handlers.
    */
   function initHandlers(el) {
     $(el).find('.bulk-edit-records-btn').click(bulkEditRecordsBtnClickHandler);
+
+    $(el).find('.preview-bulk-edit').click(() => {
+      previewClickHandler(el);
+    });
 
     $(el).find('.proceed-bulk-edit').click(() => {
       proceedClickHandler(el);
@@ -368,13 +409,6 @@
 
     $(el).find('.close-bulk-edit-dlg').click(() => {
       $.fancybox.close();
-    });
-
-    // For custom placeholder, only switch to date when focused.
-    $(el).find('[name="edit-date"]').mouseover((e) => {
-      if (e.currentTarget.type === 'text') {
-        e.currentTarget.type = 'date';
-      }
     });
   }
 

@@ -58,5 +58,5 @@ $default-block-height: 500px;
 }
 
 .indicia-block-visualisation {
-  height: $default-block-height;
+  min-height: $default-block-height;
 }

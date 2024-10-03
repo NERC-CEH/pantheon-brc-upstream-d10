@@ -1404,6 +1404,13 @@ jQuery(document).ready(function ($) {
         indiciaData.filterParser[name].loadFilter(indiciaData.filter.def);
       }
     });
+    // Apply to any custom filter parameter inputs.
+    $.each($('.save-in-filter'), function() {
+      const param = $(this).data('parameter');
+      if (param) {
+        $(this).val(typeof indiciaData.filter.def[param] === 'undefined' ? '' : indiciaData.filter.def[param]);
+      }
+    });
     indiciaFns.updateFilterDescriptions();
     $('#filter-build').html(indiciaData.lang.reportFilters.modifyFilter);
     $('#standard-params span.changed').hide();
@@ -1826,6 +1833,27 @@ jQuery(document).ready(function ($) {
     $.fancybox.close();
   });
 
+  /**
+   * Get parameter values from custom inputs.
+   *
+   * Any inputs on the page with class save-in-filter and a data-parameter
+   * attribute is used to provide a custom report parameter that will be saved
+   * into the filter and reloaded.
+   *
+   * @returns object
+   *   Key value pairs for the parameter values.
+   */
+  function getCustomFilterInputValues() {
+    var customFilters = {};
+    $.each($('.save-in-filter'), function() {
+      const param = $(this).data('parameter');
+      if (param) {
+        customFilters[param] = $(this).val();
+      }
+    });
+    return customFilters;
+  }
+
   var saveFilter = function () {
     if (saving) {
       return;
@@ -1847,12 +1875,13 @@ jQuery(document).ready(function ($) {
     var userId = adminMode ? $('#filters_user\\:user_id').val() : indiciaData.user_id;
     var sharing = adminMode ? $('#filter\\:sharing').val() : indiciaData.filterSharing;
     var url;
+    const filterDef = $.extend(indiciaData.filter.def, getCustomFilterInputValues());
     var filter = {
       website_id: indiciaData.website_id,
       user_id: indiciaData.user_id,
       'filter:title': $('#filter\\:title').val(),
       'filter:description': $('#filter\\:description').val(),
-      'filter:definition': JSON.stringify(indiciaData.filter.def),
+      'filter:definition': JSON.stringify(filterDef),
       'filter:sharing': sharing,
       'filter:defines_permissions': adminMode ? 't' : 'f'
     };

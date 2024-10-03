@@ -59,8 +59,6 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
     $config = array_merge([
       'limit' => 10,
     ], $this->getConfiguration());
-    $location = hostsite_get_user_field('location');
-    $groups = hostsite_get_user_field('taxon_groups', FALSE, TRUE);
     $fields = [
       'id',
       'taxon.accepted_name',
@@ -75,40 +73,29 @@ class IndiciaEsRecentRecordsBlock extends IndiciaBlockBase {
       'location.point',
     ];
     $filterPath = 'hits.hits._source.' . implode(',hits.hits._source.', $fields);
+    // We aren't sure if this comes before or after a recent records map block
+    // on the page, so a slight fiddle to get them to use the same source.
+    if (isset(\helper_base::$indiciaData['recentRecordsSourceId'])) {
+      $sourceId = \helper_base::$indiciaData['recentRecordsSourceId'];
+      unset(\helper_base::$indiciaData['recentRecordsSourceId']);
+    }
+    else {
+      $sourceId = 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount;
+      \helper_base::$indiciaData['recentRecordsSourceId'] = $sourceId;
+    }
     $options = [
-      'id' => 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount,
+      'id' => $sourceId,
       'size' => $config['limit'] ?? 10,
       'proxyCacheTimeout' => $config['cache_timeout'] ?? 300,
       'filterPath' => $filterPath,
       'initialMapBounds' => TRUE,
       'sort' => ['id' => 'desc'],
-      'filterBoolClauses' => ['must' => $this->getFilterBoolClauses($config)],
+      'filterBoolClauses' => $this->getFilterBoolClauses($config),
     ];
-    // Apply user profile preferences.
-    if ($location || !empty($groups)) {
-      if ($location) {
-        $options['filterBoolClauses']['must'][] = [
-          'query_type' => 'term',
-          'nested' => 'location.higher_geography',
-          'field' => 'location.higher_geography.id',
-          'value' => $location,
-        ];
-      }
-      if ($groups) {
-        $options['filterBoolClauses']['must'][] = [
-          'query_type' => 'terms',
-          'field' => 'taxon.group_id',
-          'value' => json_encode($groups),
-        ];
-      }
-    }
     $r = \ElasticsearchReportHelper::source($options);
-    // Totally exclude sensitive records.
-    $r .= <<<HTML
-<input type="hidden" class="es-filter-param" data-es-query-type="term" data-es-field="metadata.sensitive" data-es-bool-clause="must" value="false" />
-HTML;
     $r .= \ElasticsearchReportHelper::customScript([
-      'source' => 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount,
+      'id' => 'recentRecords-' . self::$blockCount,
+      'source' => $sourceId,
       'functionName' => 'handleEsRecentRecordsResponse',
     ]);
     return [
@@ -119,20 +106,9 @@ HTML;
           'iform/fancybox',
         ],
       ],
-      '#cache' => [
-        // No cache please.
-        'max-age' => 0,
-      ],
+      // Rely on Indicia caching, otherwise our JS not injected onto page.
+      '#cache' => ['max-age' => 0],
     ];
-  }
-
-  /**
-   * {@inheritdoc}
-   *
-   * Prevent caching.
-   */
-  public function getCacheMaxAge() {
-    return 0;
   }
 
 }

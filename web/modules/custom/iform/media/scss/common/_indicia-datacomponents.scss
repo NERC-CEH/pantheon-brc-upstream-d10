@@ -105,15 +105,35 @@ body {
       display: none;
     }
   }
+  &.flexgrid {
+    .es-card-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      .card {
+        flex-basis: 98%;
+        flex-grow: 1;
+        width: 90%;
+      }
+    }
+  }
+  &.horizontal {
+    .es-card-gallery {
+      overflow-x: auto;
+      white-space: nowrap;
+      .card {
+        display: inline-block;
+        img.med {
+          width: 150px;
+          height: 150px;
+          object-fit: cover;
+        }
+      }
+    }
+  }
   .es-card-gallery {
-    display: flex;
-    flex-wrap: wrap;
     margin: 0 auto;
     .card {
-      flex-basis: 98%;
-      flex-grow: 1;
       margin: 1%;
-      width: 90%;
       box-sizing: border-box;
       background-color: $colour-even-row;
       position: relative;
@@ -294,109 +314,109 @@ body {
   position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;
-  .data-grid-settings {
-    @include control-settings-overlay;
-    bottom: 0;
-    min-height: 500px;
-    ol {
-      overflow: auto;
-      li {
-        background: #e7e7e7;
-        border: solid #777 1px;
-        padding: 4px;
-        margin: 2px 4px;
-        list-style-position: inside;
-        .checkbox {
-          display: inline-block;
-          vertical-align: middle;
-          label {
-            margin: 0;
-            width: auto;
-          }
-          input[type="checkbox"] {
-            margin-right: 8px;
-          }
-        }
-        p {
-          margin: 0;
-        }
-      }
-    }
-  }
   &.layout-align-bottom {
     table.es-data-grid {
       /* Remove margin so controlLayout can anchor to bottom of page. */
       margin-bottom: 0;
     }
   }
-}
-table.es-data-grid {
-  background-color: $colour-odd-row;
-  thead {
-    tr {
-      th, td {
-        @include cell;
-      }
-      &.es-filter-row {
-        input {
-          width: 100%;
-          box-sizing: border-box;
-          margin: 0;
+  table.es-data-grid {
+    background-color: $colour-odd-row;
+    thead {
+      tr {
+        th, td {
+          @include cell;
         }
-        /* Position search value warning icon over input. */
-        .fa-exclamation-circle {
-          margin-left: -20px;
+        &.es-filter-row {
+          input {
+            width: 100%;
+            box-sizing: border-box;
+            margin: 0;
+          }
+          /* Position search value warning icon over input. */
+          .fa-exclamation-circle {
+            margin-left: -20px;
+          }
         }
-      }
-      .fa-sort {
-        opacity: 0.3;
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-  }
-  tbody {
-    tr {
-      th, td {
-        @include cell;
-      }
-      @include grid-rows;
-      img {
-        max-height: 60px;
-        border-radius: 4px;
-        margin: 2px;
-        @include drop-shadow(3px);
-        &.multi {
-          max-height: 45px;
+        .fa-sort {
+          opacity: 0.3;
+          &:hover {
+            opacity: 1;
+          }
         }
       }
     }
-  }
-  &.fixed-header {
     tbody {
-      display:block;
-      overflow-y: auto;
-      overflow-x: hidden;
+      tr {
+        th, td {
+          @include cell;
+        }
+        @include grid-rows;
+        img {
+          max-height: 60px;
+          border-radius: 4px;
+          margin: 2px;
+          @include drop-shadow(3px);
+          &.multi {
+            max-height: 45px;
+          }
+        }
+      }
     }
-    thead, tbody tr {
-      display:table;
-      width:100%;
-      /* even columns width , fix width of table too*/
-      table-layout: fixed;
+    &.fixed-header {
+      tbody {
+        display:block;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      thead, tbody tr {
+        display:table;
+        width:100%;
+        /* even columns width , fix width of table too*/
+        table-layout: fixed;
+      }
+      .multiselect-cntr {
+        padding: 0;
+        width: 12px;
+      }
     }
-    .multiselect-cntr {
-      padding: 0;
-      width: 12px;
+    tfoot {
+      span {
+        margin: 0 1em;
+      }
+      button span {
+        // Undo margin if span inside a button.
+        margin: 0 0 0 8px;
+      }
     }
   }
-  tfoot {
-    span {
-      margin: 0 1em;
-    }
-    button span {
-      // Undo margin if span inside a button.
-      margin: 0 0 0 8px;
+}
+.data-grid-settings {
+  @include control-settings-overlay;
+  min-height: 500px;
+  ol {
+    overflow: auto;
+    max-height: 600px;
+    li {
+      background: #e7e7e7;
+      border: solid #777 1px;
+      padding: 4px;
+      margin: 2px 4px;
+      list-style-position: inside;
+      .checkbox {
+        display: inline-block;
+        vertical-align: middle;
+        label {
+          margin: 0;
+          width: auto;
+        }
+        input[type="checkbox"] {
+          margin-right: 8px;
+        }
+      }
+      p {
+        margin: 0;
+      }
     }
   }
 }
@@ -725,8 +745,14 @@ table.es-data-grid {
 
 /* idcBulkEditor */
 .bulk-editor-dlg {
-  .pre-bulk-edit-info {
+  .message {
+    span {
+      font-weight: bold;
+    }
+  }
+  .bulk-edit-form-controls {
     max-width: 500px;
+    margin-bottom: 15px;
     input[type="date"] {
       padding: 0 12px;
     }
@@ -735,6 +761,10 @@ table.es-data-grid {
     .output {
       @include log-output;
     }
+  }
+  .old-value {
+    text-decoration: line-through;
+    color: red;
   }
 }
 

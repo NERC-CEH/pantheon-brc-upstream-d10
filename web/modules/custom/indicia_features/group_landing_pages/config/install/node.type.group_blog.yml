@@ -1,0 +1,16 @@
+langcode: en
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus: {  }
+    parent: ''
+name: 'Group blog'
+type: group_blog
+description: 'Blog entries for Indicia recording groups.'
+help: null
+new_revision: false
+preview_mode: 1
+display_submitted: true

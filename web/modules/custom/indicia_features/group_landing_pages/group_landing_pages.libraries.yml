@@ -1,0 +1,19 @@
+core:
+  version: VERSION
+  css:
+    component:
+      css/group_landing_pages.css: {}
+  js:
+    js/group_landing_pages.js: {}
+  dependencies:
+    - iform/fancybox
+page-links-block:
+  version: VERSION
+  css:
+    component:
+      css/page_links_block.css: {}
+blog-entries-view:
+  version: VERSION
+  css:
+    component:
+      css/blog_entries_view.css: {}

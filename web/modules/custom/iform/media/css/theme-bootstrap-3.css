@@ -372,7 +372,7 @@ input:checked + .slider:before {
 }
 #standard-params.standard-params-horizontal .pane {
   display: flex;
-  height: 80px;
+  min-height: 80px;
 }
 #standard-params.standard-params-horizontal #filter\:title {
   min-width: 250px;
@@ -410,6 +410,42 @@ input:checked + .slider:before {
 #standard-params.standard-params-vertical #filter-save, #standard-params.standard-params-vertical #filter-delete {
   margin-top: 2px;
   font-size: 1.2em;
+}
+
+/* Source filter checkboxes */
+#controls-filter_source {
+  width: 800px;
+}
+#controls-filter_source .filter-popup-columns {
+  width: 250px;
+  border-right: solid silver 1px;
+}
+#controls-filter_source .filter-popup-columns:last-child {
+  border: none;
+}
+#controls-filter_source .filter-popup-columns ul {
+  overflow-x: auto;
+  height: 450px;
+  padding: 0 0 0 22px;
+}
+#controls-filter_source .filter-popup-columns ul li {
+  list-style-type: none;
+  background: none;
+  border-bottom: 1px solid #F0F0F0;
+  padding: 0.2em 0;
+}
+#controls-filter_source .filter-popup-columns ul li:last-child {
+  border: none;
+}
+#controls-filter_source .filter-popup-columns ul li label {
+  margin-left: 6px;
+}
+#controls-filter_source .filter-popup-columns ul li input[type=checkbox] {
+  margin-left: -20px;
+}
+#controls-filter_source .filter-popup-columns .ctrl-wrap {
+  font-size: 90%;
+  margin-bottom: 4px;
 }
 
 /* Quality filter custom select */
@@ -821,16 +857,32 @@ body > .loading-spinner {
 .idc-cardGallery.max-size-mode .card:not(.show-max-size) {
   display: none;
 }
-.idc-cardGallery .es-card-gallery {
+.idc-cardGallery.flexgrid .es-card-gallery {
   display: flex;
   flex-wrap: wrap;
+}
+.idc-cardGallery.flexgrid .es-card-gallery .card {
+  flex-basis: 98%;
+  flex-grow: 1;
+  width: 90%;
+}
+.idc-cardGallery.horizontal .es-card-gallery {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.idc-cardGallery.horizontal .es-card-gallery .card {
+  display: inline-block;
+}
+.idc-cardGallery.horizontal .es-card-gallery .card img.med {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+.idc-cardGallery .es-card-gallery {
   margin: 0 auto;
 }
 .idc-cardGallery .es-card-gallery .card {
-  flex-basis: 98%;
-  flex-grow: 1;
   margin: 1%;
-  width: 90%;
   box-sizing: border-box;
   background-color: #f7f7f7;
   position: relative;
@@ -1046,7 +1098,99 @@ body > .loading-spinner {
   /* Ensure height enough for spinner. */
   min-height: 140px;
 }
-.idc-dataGrid .data-grid-settings {
+.idc-dataGrid.layout-align-bottom table.es-data-grid {
+  /* Remove margin so controlLayout can anchor to bottom of page. */
+  margin-bottom: 0;
+}
+.idc-dataGrid table.es-data-grid {
+  background-color: #ffffff;
+}
+.idc-dataGrid table.es-data-grid thead tr th, .idc-dataGrid table.es-data-grid thead tr td {
+  padding: 4px 2px;
+  word-wrap: break-word;
+}
+.idc-dataGrid table.es-data-grid thead tr.es-filter-row {
+  /* Position search value warning icon over input. */
+}
+.idc-dataGrid table.es-data-grid thead tr.es-filter-row input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+}
+.idc-dataGrid table.es-data-grid thead tr.es-filter-row .fa-exclamation-circle {
+  margin-left: -20px;
+}
+.idc-dataGrid table.es-data-grid thead tr .fa-sort {
+  opacity: 0.3;
+}
+.idc-dataGrid table.es-data-grid thead tr .fa-sort:hover {
+  opacity: 1;
+}
+.idc-dataGrid table.es-data-grid tbody tr {
+  /* Alternate row colouration */
+  /* Disable hover highlight for row shown when no data available */
+}
+.idc-dataGrid table.es-data-grid tbody tr th, .idc-dataGrid table.es-data-grid tbody tr td {
+  padding: 4px 2px;
+  word-wrap: break-word;
+}
+.idc-dataGrid table.es-data-grid tbody tr:nth-child(even), .idc-dataGrid table.es-data-grid tbody tr:nth-child(even) td {
+  background-color: #f7f7f7;
+}
+.idc-dataGrid table.es-data-grid tbody tr:nth-child(odd), .idc-dataGrid table.es-data-grid tbody tr:nth-child(odd) td {
+  background-color: #ffffff;
+}
+.idc-dataGrid table.es-data-grid tbody tr.disabled td:not(.footable-toggle-col) {
+  opacity: 0.3;
+}
+.idc-dataGrid table.es-data-grid tbody tr:hover:not(.disabled), .idc-dataGrid table.es-data-grid tbody tr:hover:not(.disabled) td {
+  color: #333333;
+  background-color: #fffbcc;
+}
+.idc-dataGrid table.es-data-grid tbody tr.empty-row, .idc-dataGrid table.es-data-grid tbody tr.empty-row:hover, .idc-dataGrid table.es-data-grid tbody tr.empty-row td, .idc-dataGrid table.es-data-grid tbody tr.empty-row:hover td {
+  background-color: #f7f7f7;
+}
+.idc-dataGrid table.es-data-grid tbody tr.selected:not(.disabled), .idc-dataGrid table.es-data-grid tbody tr.selected:not(.disabled) td {
+  color: #ffffff;
+  background-color: #2c7bb6;
+}
+.idc-dataGrid table.es-data-grid tbody tr.zero-abundance, .idc-dataGrid table.es-data-grid tbody tr.zero-t {
+  text-decoration: line-through;
+}
+.idc-dataGrid table.es-data-grid tbody tr img {
+  max-height: 60px;
+  border-radius: 4px;
+  margin: 2px;
+  -webkit-box-shadow: 3px 3px 6px #a7a7a7;
+  -moz-box-shadow: 3px 3px 6px #a7a7a7;
+  box-shadow: 3px 3px 6px #a7a7a7;
+}
+.idc-dataGrid table.es-data-grid tbody tr img.multi {
+  max-height: 45px;
+}
+.idc-dataGrid table.es-data-grid.fixed-header tbody {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.idc-dataGrid table.es-data-grid.fixed-header thead, .idc-dataGrid table.es-data-grid.fixed-header tbody tr {
+  display: table;
+  width: 100%;
+  /* even columns width , fix width of table too*/
+  table-layout: fixed;
+}
+.idc-dataGrid table.es-data-grid.fixed-header .multiselect-cntr {
+  padding: 0;
+  width: 12px;
+}
+.idc-dataGrid table.es-data-grid tfoot span {
+  margin: 0 1em;
+}
+.idc-dataGrid table.es-data-grid tfoot button span {
+  margin: 0 0 0 8px;
+}
+
+.data-grid-settings {
   position: absolute;
   top: 0;
   left: 0;
@@ -1057,124 +1201,32 @@ body > .loading-spinner {
   border: solid silver 1px;
   z-index: 1;
   border-radius: 4px;
-  bottom: 0;
   min-height: 500px;
 }
-.idc-dataGrid .data-grid-settings ol {
+.data-grid-settings ol {
   overflow: auto;
+  max-height: 600px;
 }
-.idc-dataGrid .data-grid-settings ol li {
+.data-grid-settings ol li {
   background: #e7e7e7;
   border: solid #777 1px;
   padding: 4px;
   margin: 2px 4px;
   list-style-position: inside;
 }
-.idc-dataGrid .data-grid-settings ol li .checkbox {
+.data-grid-settings ol li .checkbox {
   display: inline-block;
   vertical-align: middle;
 }
-.idc-dataGrid .data-grid-settings ol li .checkbox label {
+.data-grid-settings ol li .checkbox label {
   margin: 0;
   width: auto;
 }
-.idc-dataGrid .data-grid-settings ol li .checkbox input[type=checkbox] {
+.data-grid-settings ol li .checkbox input[type=checkbox] {
   margin-right: 8px;
 }
-.idc-dataGrid .data-grid-settings ol li p {
+.data-grid-settings ol li p {
   margin: 0;
-}
-.idc-dataGrid.layout-align-bottom table.es-data-grid {
-  /* Remove margin so controlLayout can anchor to bottom of page. */
-  margin-bottom: 0;
-}
-
-table.es-data-grid {
-  background-color: #ffffff;
-}
-table.es-data-grid thead tr th, table.es-data-grid thead tr td {
-  padding: 4px 2px;
-  word-wrap: break-word;
-}
-table.es-data-grid thead tr.es-filter-row {
-  /* Position search value warning icon over input. */
-}
-table.es-data-grid thead tr.es-filter-row input {
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0;
-}
-table.es-data-grid thead tr.es-filter-row .fa-exclamation-circle {
-  margin-left: -20px;
-}
-table.es-data-grid thead tr .fa-sort {
-  opacity: 0.3;
-}
-table.es-data-grid thead tr .fa-sort:hover {
-  opacity: 1;
-}
-table.es-data-grid tbody tr {
-  /* Alternate row colouration */
-  /* Disable hover highlight for row shown when no data available */
-}
-table.es-data-grid tbody tr th, table.es-data-grid tbody tr td {
-  padding: 4px 2px;
-  word-wrap: break-word;
-}
-table.es-data-grid tbody tr:nth-child(even), table.es-data-grid tbody tr:nth-child(even) td {
-  background-color: #f7f7f7;
-}
-table.es-data-grid tbody tr:nth-child(odd), table.es-data-grid tbody tr:nth-child(odd) td {
-  background-color: #ffffff;
-}
-table.es-data-grid tbody tr.disabled td:not(.footable-toggle-col) {
-  opacity: 0.3;
-}
-table.es-data-grid tbody tr:hover:not(.disabled), table.es-data-grid tbody tr:hover:not(.disabled) td {
-  color: #333333;
-  background-color: #fffbcc;
-}
-table.es-data-grid tbody tr.empty-row, table.es-data-grid tbody tr.empty-row:hover, table.es-data-grid tbody tr.empty-row td, table.es-data-grid tbody tr.empty-row:hover td {
-  background-color: #f7f7f7;
-}
-table.es-data-grid tbody tr.selected:not(.disabled), table.es-data-grid tbody tr.selected:not(.disabled) td {
-  color: #ffffff;
-  background-color: #2c7bb6;
-}
-table.es-data-grid tbody tr.zero-abundance, table.es-data-grid tbody tr.zero-t {
-  text-decoration: line-through;
-}
-table.es-data-grid tbody tr img {
-  max-height: 60px;
-  border-radius: 4px;
-  margin: 2px;
-  -webkit-box-shadow: 3px 3px 6px #a7a7a7;
-  -moz-box-shadow: 3px 3px 6px #a7a7a7;
-  box-shadow: 3px 3px 6px #a7a7a7;
-}
-table.es-data-grid tbody tr img.multi {
-  max-height: 45px;
-}
-table.es-data-grid.fixed-header tbody {
-  display: block;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-table.es-data-grid.fixed-header thead, table.es-data-grid.fixed-header tbody tr {
-  display: table;
-  width: 100%;
-  /* even columns width , fix width of table too*/
-  table-layout: fixed;
-}
-table.es-data-grid.fixed-header .multiselect-cntr {
-  padding: 0;
-  width: 12px;
-}
-table.es-data-grid tfoot span {
-  margin: 0 1em;
-}
-table.es-data-grid tfoot button span {
-  margin: 0 0 0 8px;
 }
 
 /* idcGridSquareOpacityScale plugin */
@@ -1503,10 +1555,14 @@ table.es-data-grid tfoot button span {
 }
 
 /* idcBulkEditor */
-.bulk-editor-dlg .pre-bulk-edit-info {
-  max-width: 500px;
+.bulk-editor-dlg .message span {
+  font-weight: bold;
 }
-.bulk-editor-dlg .pre-bulk-edit-info input[type=date] {
+.bulk-editor-dlg .bulk-edit-form-controls {
+  max-width: 500px;
+  margin-bottom: 15px;
+}
+.bulk-editor-dlg .bulk-edit-form-controls input[type=date] {
   padding: 0 12px;
 }
 .bulk-editor-dlg .post-bulk-edit-info .output {
@@ -1519,6 +1575,10 @@ table.es-data-grid tfoot button span {
 }
 .bulk-editor-dlg .post-bulk-edit-info .output p {
   margin: 2px;
+}
+.bulk-editor-dlg .old-value {
+  text-decoration: line-through;
+  color: red;
 }
 
 /* idcRecordsMover */

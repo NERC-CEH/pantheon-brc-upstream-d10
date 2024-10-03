@@ -73,7 +73,7 @@ jQuery(document).ready(function($) {
   /**
    * Handle the AJAX ES response for the phenology graph block data.
    */
-  indiciaFns.handlePhenologyGraphResponse = function(div, sourceSettings, response) {
+  indiciaFns.handlePhenologyChartResponse = function(div, sourceSettings, response) {
     let monthlyRecordsData = [];
     let allMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     response.aggregations.by_month.buckets.forEach(function (w) {
@@ -83,8 +83,8 @@ jQuery(document).ready(function($) {
           allMonths.splice(index, 1);
         }
         monthlyRecordsData.push({
-          taxon: 'taxon',
-          month: w.key,
+          taxon: 'foo',
+          period: w.key,
           n: w.doc_count
         });
       }
@@ -92,27 +92,127 @@ jQuery(document).ready(function($) {
     // Fill in the zeros.
     allMonths.forEach(function (m) {
       monthlyRecordsData.push({
-        taxon: 'taxon',
-        month: m,
+        taxon: 'foo',
+        period: m,
         n: 0
       });
     });
-    brccharts.phen1({
+    brccharts.temporal({
       selector: '#' + div.id,
-      axisLabelFontSize: 22,
+      chartStyle: 'line',
+      periodType: 'month',
+      taxa: ['foo'],
+      expand: true,
+      perRow: 1,
       data: monthlyRecordsData,
       metrics: [{ prop: 'n', label: 'Records per month', opacity: 1, colour: '#337ab7' }],
-      taxa: ['taxon'],
-      width: 500,
-      height: 200,
-      perRow: 1,
-      expand: true,
-      showTaxonLabel: false,
       showLegend: false,
+      showTaxonLabel: false,
+      axisLeftLabel: 'Records per month',
+      axisLabelFontSize: 14,
       margin: {left: 60, right: 0, top: 10, bottom: 20},
-      axisLeftLabel: 'Records per month'
+      lineInterpolator: 'curveMonotoneX'
     });
   };
+
+  /**
+   * AJAX response handler for the accumulation charts (species or records).
+   */
+  function handleAccumulationChartResponse(div, sourceSettings, response, show) {
+    let data = [];
+    var thisYear = new Date().getFullYear();
+    var lastYear = thisYear - 1;
+    $.each(response.aggregations.by_week.buckets, function() {
+      var week = this.key;
+      $.each(this.by_taxon.buckets, function() {
+        var rowData = {
+          taxon: this.key,
+          week: week,
+        };
+        rowData[lastYear] = 0;
+        rowData[thisYear] = 0;
+        $.each(this.by_year.buckets, function() {
+          rowData[this.key] = this.doc_count;
+        });
+        data.push(rowData);
+      });
+    });
+    brccharts.accum({
+      selector: '#' + div.id,
+      data: data,
+      show: show,
+      expand: true,
+      axisCountLabel: 'Number of records',
+      axisTaxaLabel: 'Number of taxa',
+      interactivity: 'mouseclick',
+      margin: {left: 45, right: 68, bottom: 30, top: 10},
+      titleFontSize: 18,
+      axisLabelFontSize: 12,
+      legendFontSize: 12,
+      metrics: [{
+        prop: lastYear,
+        labelTaxa: lastYear + ' taxa',
+        labelCounts: lastYear + ' records',
+        colourTaxa: 'red',
+        colourCounts: 'red',
+        styleTaxa: 'solid',
+        styleCounts: 'dashed'
+      },
+      {
+        prop: thisYear,
+        labelTaxa: thisYear + ' taxa',
+        labelCounts: thisYear + ' records',
+        colourTaxa: 'blue',
+        colourCounts: 'blue',
+        styleTaxa: 'solid',
+        styleCounts: 'dashed'
+      }]
+    });
+  }
+
+  indiciaFns.handleAccumulationChartResponseBoth = function(div, sourceSettings, response) {
+    handleAccumulationChartResponse(div, sourceSettings, response, 'both');
+  }
+
+  indiciaFns.handleAccumulationChartResponseTaxa = function(div, sourceSettings, response) {
+    handleAccumulationChartResponse(div, sourceSettings, response, 'taxa');
+  }
+
+  indiciaFns.handleAccumulationChartResponseCounts = function(div, sourceSettings, response) {
+    handleAccumulationChartResponse(div, sourceSettings, response, 'counts');
+  }
+
+  /**
+   * AJAX handler for the by-year temporal chart response.
+   */
+  indiciaFns.handleRecordsByYearChartResponse = function(div, sourceSettings, response) {
+    let chartData = [];
+    response.aggregations.by_year.buckets.forEach(function (w) {
+      chartData.push({
+        taxon: 'foo',
+        period: w.key,
+        values: w.doc_count
+      });
+    });
+    brccharts.temporal({
+      selector: '#' + div.id,
+      chartStyle: 'bar',
+      periodType: 'year',
+      taxa: ['foo'],
+      expand: true,
+      perRow: 1,
+      data: chartData,
+      metrics: [
+        { prop: 'values', colour: '#337ab7', taxon: 'foo' },
+      ],
+      showLegend: false,
+      showTaxonLabel: false,
+      axisLeftLabel: 'Records per year',
+      minY: 0,
+      axisLabelFontSize: 14,
+      margin: {left: 60, right: 0, top: 10, bottom: 20}
+    })
+  }
 
   /**
    * Handle the AJAX ES response for the phenology taxon group pie data.
@@ -132,6 +232,23 @@ jQuery(document).ready(function($) {
         number: response.aggregations.by_group.sum_other_doc_count
       });
     }
+    brccharts.pie({
+      selector: '#' + div.id,
+      data: pieSectionsData
+    })
+  };
+
+  /**
+   * Handle the AJAX ES response for the phenology taxon group pie data.
+   */
+  indiciaFns.handleRecordsBySpeciesPieResponse = function(div, sourceSettings, response) {
+    let pieSectionsData = [];
+    response.aggregations.by_species.buckets.forEach(function (w) {
+      pieSectionsData.push({
+        name: w.key,
+        number: w.doc_count
+      });
+    });
     brccharts.pie({
       selector: '#' + div.id,
       data: pieSectionsData

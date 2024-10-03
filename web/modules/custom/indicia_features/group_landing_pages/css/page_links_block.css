@@ -1,0 +1,10 @@
+.block-group-landing-pages {
+  border: solid silver 1px;
+  border-radius: 8px;
+  margin: 15px;
+  padding: 15px;
+}
+.block-group-landing-pages li {
+  list-style: none;
+  margin-bottom: 8px;
+}

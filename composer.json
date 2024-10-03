@@ -332,7 +332,8 @@
             "phpstan/extension-installer": true,
             "pantheon-systems/upstream-management": true,
             "drupal/core-project-message": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "tbachert/spi": true
         }
     },
     "require-dev": {
