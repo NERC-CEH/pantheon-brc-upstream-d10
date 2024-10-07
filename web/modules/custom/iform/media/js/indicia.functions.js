@@ -16,21 +16,23 @@
 /**
  * File containing general purpose JavaScript functions for Indicia.
  */
+
+// An object for Indicia related data.
 if (typeof window.indiciaData === 'undefined') {
-  window.indiciaData = {
-    onloadFns: [],
-    onTabShowFns: [],
-    idDiffRuleMessages: {},
-    documentReady: 'no',
-    windowLoaded: 'no',
-    reports: {},
-    lang: [],
-    ctrlPressed: false,
-    shiftPressed: false,
-    linkedSelects: []
-  };
-  window.indiciaFns = {};
+  window.indiciaData = {};
 }
+window.indiciaData.onloadFns = [];
+window.indiciaData.onTabShowFns = [];
+window.indiciaData.idDiffRuleMessages = {};
+window.indiciaData.documentReady = 'no';
+window.indiciaData.windowLoaded = 'no';
+window.indiciaData.reports = {};
+window.indiciaData.lang = [];
+window.indiciaData.ctrlPressed = false;
+window.indiciaData.shiftPressed = false;
+window.indiciaData.linkedSelects = [];
+// A namespace for Indicia related functions.
+window.indiciaFns = {};
 
 (function ($) {
   'use strict';
