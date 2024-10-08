@@ -45,7 +45,7 @@
         "drupal/serial": "2.0-beta3",
         "drupal/shs": "2.0-rc12",
         "drupal/sitemap": "^2.0",
-        "drupal/typed_data": "2.X",
+        "drupal/typed_data": "^2.1",
         "drupal/views_base_url": "2.1-beta1",
         "drupal/views_entity_form_field": "1.0-beta10",
         "drupal/views_field_view": "1.0-beta5",
