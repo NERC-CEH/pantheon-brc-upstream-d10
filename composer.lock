@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "23935ecbb8b0c2d5fafb60cabee78b02",
+    "content-hash": "ce81a1bbb29941510fe639686c73ecd7",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -11337,7 +11337,7 @@
                     "homepage": "https://www.drupal.org/user/3457245"
                 },
                 {
-                    "name": "VladimirAus",
+                    "name": "vladimiraus",
                     "homepage": "https://www.drupal.org/user/673120"
                 }
             ],
@@ -11350,31 +11350,34 @@
         },
         {
             "name": "drupal/mailchimp",
-            "version": "2.2.4",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/mailchimp.git",
-                "reference": "2.2.4"
+                "reference": "3.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/mailchimp-2.2.4.zip",
-                "reference": "2.2.4",
-                "shasum": "2c5566811b778d2cc45b082b3eb9a4f5691b6203"
+                "url": "https://ftp.drupal.org/files/projects/mailchimp-3.0.0.zip",
+                "reference": "3.0.0",
+                "shasum": "642b30f6fbbbd7ab1601d59da54a20198d1fa30a"
             },
             "require": {
-                "drupal/core": "^8.7.7 || ^9 || ^10",
+                "drupal/core": "^10 || ^11",
                 "thinkshout/mailchimp-api-php": "^3"
             },
             "require-dev": {
                 "drupal/mailchimp_events": "*",
                 "drupal/mailchimp_lists": "*"
             },
+            "suggest": {
+                "drupal/webform": "Provide mailchimp events for webform submissions"
+            },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.2.4",
-                    "datestamp": "1721931132",
+                    "version": "3.0.0",
+                    "datestamp": "1728589878",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -15164,17 +15167,17 @@
         },
         {
             "name": "drupal/spammaster",
-            "version": "2.50.0",
+            "version": "2.51.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.50"
+                "reference": "8.x-2.51"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.50.zip",
-                "reference": "8.x-2.50",
-                "shasum": "ae94a5cd22465805d20cd0fd0fdbdcf784a4c7c0"
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.51.zip",
+                "reference": "8.x-2.51",
+                "shasum": "9d0d4581bb49a1edc0a045525d463603dc87b99a"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10 || ^11"
@@ -15182,8 +15185,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.50",
-                    "datestamp": "1722683806",
+                    "version": "8.x-2.51",
+                    "datestamp": "1728571515",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -19367,16 +19370,16 @@
         },
         {
             "name": "league/csv",
-            "version": "9.16.0",
+            "version": "9.17.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/csv.git",
-                "reference": "998280c6c34bd67d8125fdc8b45bae28d761b440"
+                "reference": "8cab815fb11ec93aa2f7b8a57b3daa1f1a364011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/csv/zipball/998280c6c34bd67d8125fdc8b45bae28d761b440",
-                "reference": "998280c6c34bd67d8125fdc8b45bae28d761b440",
+                "url": "https://api.github.com/repos/thephpleague/csv/zipball/8cab815fb11ec93aa2f7b8a57b3daa1f1a364011",
+                "reference": "8cab815fb11ec93aa2f7b8a57b3daa1f1a364011",
                 "shasum": ""
             },
             "require": {
@@ -19384,17 +19387,16 @@
                 "php": "^8.1.2"
             },
             "require-dev": {
-                "doctrine/collections": "^2.2.2",
                 "ext-dom": "*",
                 "ext-xdebug": "*",
-                "friendsofphp/php-cs-fixer": "^3.57.1",
-                "phpbench/phpbench": "^1.2.15",
-                "phpstan/phpstan": "^1.11.1",
-                "phpstan/phpstan-deprecation-rules": "^1.2.0",
+                "friendsofphp/php-cs-fixer": "^3.64.0",
+                "phpbench/phpbench": "^1.3.1",
+                "phpstan/phpstan": "^1.12.5",
+                "phpstan/phpstan-deprecation-rules": "^1.2.1",
                 "phpstan/phpstan-phpunit": "^1.4.0",
-                "phpstan/phpstan-strict-rules": "^1.6.0",
-                "phpunit/phpunit": "^10.5.16 || ^11.1.3",
-                "symfony/var-dumper": "^6.4.6 || ^7.0.7"
+                "phpstan/phpstan-strict-rules": "^1.6.1",
+                "phpunit/phpunit": "^10.5.16 || ^11.4.0",
+                "symfony/var-dumper": "^6.4.8 || ^7.1.5"
             },
             "suggest": {
                 "ext-dom": "Required to use the XMLConverter and the HTMLConverter classes",
@@ -19412,7 +19414,7 @@
                     "src/functions_include.php"
                 ],
                 "psr-4": {
-                    "League\\Csv\\": "src"
+                    "League\\Csv\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -19451,7 +19453,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-24T11:04:54+00:00"
+            "time": "2024-10-10T10:30:28+00:00"
         },
         {
             "name": "league/event",
@@ -19814,16 +19816,16 @@
         },
         {
             "name": "maennchen/zipstream-php",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maennchen/ZipStream-PHP.git",
-                "reference": "b8174494eda667f7d13876b4a7bfef0f62a7c0d1"
+                "reference": "6187e9cc4493da94b9b63eb2315821552015fca9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/b8174494eda667f7d13876b4a7bfef0f62a7c0d1",
-                "reference": "b8174494eda667f7d13876b4a7bfef0f62a7c0d1",
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/6187e9cc4493da94b9b63eb2315821552015fca9",
+                "reference": "6187e9cc4493da94b9b63eb2315821552015fca9",
                 "shasum": ""
             },
             "require": {
@@ -19879,19 +19881,15 @@
             ],
             "support": {
                 "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
-                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.0"
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/3.1.1"
             },
             "funding": [
                 {
                     "url": "https://github.com/maennchen",
                     "type": "github"
-                },
-                {
-                    "url": "https://opencollective.com/zipstream",
-                    "type": "open_collective"
                 }
             ],
-            "time": "2023-06-21T14:59:35+00:00"
+            "time": "2024-10-10T12:33:01+00:00"
         },
         {
             "name": "markbaker/complex",
@@ -21025,16 +21023,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "1.32.0",
+            "version": "1.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "6ca22b154efdd9e3c68c56f5d94670920a1c19a4"
+                "reference": "82a311fd3690fb2bf7b64d5c98f912b3dd746140"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/6ca22b154efdd9e3c68c56f5d94670920a1c19a4",
-                "reference": "6ca22b154efdd9e3c68c56f5d94670920a1c19a4",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/82a311fd3690fb2bf7b64d5c98f912b3dd746140",
+                "reference": "82a311fd3690fb2bf7b64d5c98f912b3dd746140",
                 "shasum": ""
             },
             "require": {
@@ -21066,9 +21064,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.32.0"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/1.33.0"
             },
-            "time": "2024-09-26T07:23:32+00:00"
+            "time": "2024-10-13T11:25:22+00:00"
         },
         {
             "name": "politsin/jquery-ui-touch-punch",
