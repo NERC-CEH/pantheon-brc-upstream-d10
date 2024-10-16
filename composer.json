@@ -273,7 +273,11 @@
         "drupal/bootstrap5": "^4.0",
         "drupal/youtube_cookies": "^2.1",
         "drupal/inclusive_cards": "^1.0@beta",
-        "drupal/flexistyle_bootstrap": "^1.2"
+        "drupal/flexistyle_bootstrap": "^1.2",
+        "drupal/token_or": "^2.2",
+        "drupal/views_exposed_input_token": "^1.0",
+        "drupal/views_argument_token": "^2.0",
+        "drupal/views_argument_substitutions": "2.x-dev"
     },
     "conflict": {
         "drupal/drupal": "*"

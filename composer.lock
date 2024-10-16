@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ce81a1bbb29941510fe639686c73ecd7",
+    "content-hash": "9bbaf1b45020cab4d8c91c9e81095b62",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -2937,17 +2937,17 @@
         },
         {
             "name": "drupal/better_exposed_filters",
-            "version": "7.0.1",
+            "version": "7.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/better_exposed_filters.git",
-                "reference": "7.0.1"
+                "reference": "7.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/better_exposed_filters-7.0.1.zip",
-                "reference": "7.0.1",
-                "shasum": "985389c1c4bac5d3f1e4ea4d6c52ad3d7c789b9c"
+                "url": "https://ftp.drupal.org/files/projects/better_exposed_filters-7.0.2.zip",
+                "reference": "7.0.2",
+                "shasum": "11f6b9021867690e2284325b3c21acdac8a94bb4"
             },
             "require": {
                 "drupal/core": "^10 || ^11"
@@ -2955,8 +2955,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.0.1",
-                    "datestamp": "1724346308",
+                    "version": "7.0.2",
+                    "datestamp": "1729001179",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16177,6 +16177,62 @@
             }
         },
         {
+            "name": "drupal/token_or",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/token_or.git",
+                "reference": "2.2.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/token_or-2.2.1.zip",
+                "reference": "2.2.1",
+                "shasum": "2661e47049b5329fb96727fd8e1f3fd2e4751b9b"
+            },
+            "require": {
+                "drupal/core": "^8.8 || ^9 || ^10",
+                "drupal/token": "^1.0"
+            },
+            "require-dev": {
+                "drupal/webform": "^6.2"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.2.1",
+                    "datestamp": "1728498783",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "danielbeeke",
+                    "homepage": "https://www.drupal.org/user/2484978"
+                },
+                {
+                    "name": "jeroent",
+                    "homepage": "https://www.drupal.org/user/2228934"
+                },
+                {
+                    "name": "pianomansam",
+                    "homepage": "https://www.drupal.org/user/407020"
+                }
+            ],
+            "description": "Provides an 'or-able' token.",
+            "homepage": "https://www.drupal.org/project/token_or",
+            "support": {
+                "source": "https://git.drupalcode.org/project/token_or"
+            }
+        },
+        {
             "name": "drupal/twig_tweak",
             "version": "3.4.0",
             "source": {
@@ -16728,6 +16784,126 @@
             }
         },
         {
+            "name": "drupal/views_argument_substitutions",
+            "version": "dev-2.x",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/views_argument_substitutions.git",
+                "reference": "46adf809bae20e4518b3cf4c7a0ff526fe00006a"
+            },
+            "require": {
+                "drupal/core": "^8.8.0 || ^9 || ^10"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "branch-alias": {
+                    "dev-2.x": "2.x-dev"
+                },
+                "drupal": {
+                    "version": "2.x-dev",
+                    "datestamp": "1699981687",
+                    "security-coverage": {
+                        "status": "not-covered",
+                        "message": "Dev releases are not covered by Drupal security advisories."
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "authors": [
+                {
+                    "name": "jay.dansand",
+                    "homepage": "https://www.drupal.org/user/799552"
+                },
+                {
+                    "name": "jsweetack",
+                    "homepage": "https://www.drupal.org/user/3453007"
+                },
+                {
+                    "name": "LUWebDev",
+                    "homepage": "https://www.drupal.org/user/1576604"
+                },
+                {
+                    "name": "willardb",
+                    "homepage": "https://www.drupal.org/user/1576540"
+                }
+            ],
+            "description": "Allow contextual arguments to be used as replacement tokens in filters and table arguments.",
+            "homepage": "https://www.drupal.org/project/views_argument_substitutions",
+            "support": {
+                "source": "https://git.drupalcode.org/project/views_argument_substitutions"
+            }
+        },
+        {
+            "name": "drupal/views_argument_token",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/views_argument_token.git",
+                "reference": "2.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/views_argument_token-2.0.2.zip",
+                "reference": "2.0.2",
+                "shasum": "37ec2b8865bb84878f3cb53c5472de27dbc4646b"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10",
+                "drupal/token": "^1.9"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.2",
+                    "datestamp": "1697637709",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "eme",
+                    "homepage": "https://www.drupal.org/u/eme"
+                },
+                {
+                    "name": "Mohamed Anis Taktak",
+                    "homepage": "https://www.drupal.org/u/matio89"
+                },
+                {
+                    "name": "Dakwamine",
+                    "homepage": "https://www.drupal.org/u/dakwamine"
+                },
+                {
+                    "name": "Stephen Mulvihill",
+                    "homepage": "https://www.drupal.org/u/smulvih2"
+                },
+                {
+                    "name": "MichaelB",
+                    "homepage": "https://www.drupal.org/user/2309046"
+                },
+                {
+                    "name": "smulvih2",
+                    "homepage": "https://www.drupal.org/user/795442"
+                },
+                {
+                    "name": "snake_plissken",
+                    "homepage": "https://www.drupal.org/user/3624793"
+                }
+            ],
+            "description": "Views Token Argument allows you to use token as contextual filter for Views.",
+            "homepage": "http://drupal.org/project/views_argument_token",
+            "support": {
+                "source": "https://git.drupalcode.org/project/views_argument_token",
+                "issues": "https://www.drupal.org/project/issues/views_argument_token"
+            }
+        },
+        {
             "name": "drupal/views_autocomplete_filters",
             "version": "2.0.2",
             "source": {
@@ -17251,6 +17427,60 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/views_entity_form_field",
                 "issues": "https://www.drupal.org/project/issues/views_entity_form_field"
+            }
+        },
+        {
+            "name": "drupal/views_exposed_input_token",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/views_exposed_input_token.git",
+                "reference": "1.0.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/views_exposed_input_token-1.0.0.zip",
+                "reference": "1.0.0",
+                "shasum": "9545e4333ea8cd0b5694a5d4ac040a49b835425c"
+            },
+            "require": {
+                "drupal/core": "^10.3 || ^11",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "drupal/core-dev": "^10.3",
+                "drupal/core-recommended": "^10.3"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.0",
+                    "datestamp": "1724077717",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Clay Freeman",
+                    "homepage": "https://www.drupal.org/user/860806",
+                    "email": "clay@librarymarket.com"
+                },
+                {
+                    "name": "Jeremy Jackson",
+                    "email": "jeremy@librarymarket.com"
+                }
+            ],
+            "description": "Provides a global Views token containing its exposed input.",
+            "homepage": "https://www.drupal.org/project/views_exposed_input_token",
+            "support": {
+                "source": "https://git.drupalcode.org/project/views_exposed_input_token"
             }
         },
         {
@@ -30490,7 +30720,8 @@
         "drupal/filefield_sources": 20,
         "drupal/htmlmail": 10,
         "drupal/ckeditor_details": 10,
-        "drupal/inclusive_cards": 10
+        "drupal/inclusive_cards": 10,
+        "drupal/views_argument_substitutions": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
