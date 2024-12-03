@@ -33,11 +33,13 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
       $baseMapOptions['GoogleTerrain'] = $this->t('Google Terrain');
       $baseMapOptions['GoogleHybrid'] = $this->t('Google Hybrid');
     }
+    $config = $this->getConfiguration();
     $form['base_layer'] = [
       '#type' => 'select',
       '#title' => $this->t('Base layer'),
       '#description' => $this->t('Select the base layer to use.'),
       '#options' => $baseMapOptions,
+      '#default_value' => $config['base_layer'] ?? 'OpenStreetMap',
     ];
     $form['map_layer_type'] = [
       '#type' => 'select',
@@ -49,6 +51,13 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
         'heat' => $this->t('Heat map'),
         'geo_hash' => $this->t('Geo hash (dynamic rectangles which work worldwide)'),
       ],
+      '#default_value' => $config['map_layer_type'] ?? 'circle',
+    ];
+    $form['boundary_location_id'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Boundary Location ID'),
+      '#description' => $this->t('Specify an Indicia location ID to draw a fixed location boundary onto the map.'),
+      '#default_value' => $config['boundary_location_id'],
     ];
     $this->addDefaultEsFilterFormCtrls($form);
     return $form;
@@ -61,6 +70,7 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
     parent::blockSubmit($form, $form_state);
     $this->setConfigurationValue('base_layer', $form_state->getValue('base_layer'));
     $this->setConfigurationValue('map_layer_type', $form_state->getValue('map_layer_type'));
+    $this->setConfigurationValue('boundary_location_id', $form_state->getValue('boundary_location_id'));
     $this->saveDefaultEsFilterFormCtrls($form_state);
   }
 
@@ -121,6 +131,7 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
           ],
         ],
       ],
+      'boundaryLocationId' => $config['boundary_location_id'] ?? NULL,
     ]);
     return [
       '#markup' => Markup::create($r),

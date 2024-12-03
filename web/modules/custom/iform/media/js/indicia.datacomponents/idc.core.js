@@ -29,6 +29,7 @@
   var $ = jQuery;
 
   indiciaData.leafletSearchPolygon = null;
+  indiciaData.loadedFilterLocationId = null;
 
   /**
    * Extend the String class to simplify a column fieldname string.
@@ -316,10 +317,18 @@
 
   /**
    * Initially populate the data sources.
+   *
+   * @param bool resetPage
+   *   Optional - set to true to force the datasources to reset to the first
+   *   page of data.
    */
-  indiciaFns.populateDataSources = function populateDataSources() {
+  indiciaFns.populateDataSources = function populateDataSources(resetPage) {
     // Build the Elasticsearch source objects and run initial population.
     $.each(indiciaData.esSourceObjects, function eachSource() {
+      if (resetPage) {
+        // Reset to first page.
+        this.settings.from = 0;
+      }
       this.populate();
     });
   };
@@ -1854,22 +1863,22 @@ jQuery(document).ready(function docReady() {
    *
    * @param DOM select
    *   Select control.
-   * @param function callback
-   *   Will be called with polygon data loaded from warehouse, or empty array
-   *   if nothing selected.
    */
-  function onLocationSelectChange(select, callback) {
-    var baseId;
-    var idx = 0;
+  function onLocationSelectChange(select) {
+    const isHigherGeoSelect = $(this).hasClass('es-higher-geography-select');
     var thisSelect;
-    var locIdToLoad;
-    // Find the most precise specified boundary in the list of linked selects.
+    var baseId;
+    var selectToLoadFilterFor;
+    let locIdToLoad = '';
+    let idx = 0;
+    // Find the most specific polyon in the series of linked selects.
     if ($(select).hasClass('linked-select')) {
       baseId = select.id.replace(/\-\d+$/, '');
       thisSelect = $('#' + baseId + '-' + idx);
       while (thisSelect.length) {
         if ($(thisSelect).val() && $(thisSelect).val().match(/^\d+$/)) {
           locIdToLoad = $(thisSelect).val();
+          selectToLoadFilterFor = thisSelect;
         }
         idx++;
         thisSelect = $('#' + baseId + '-' + idx);
@@ -1877,60 +1886,48 @@ jQuery(document).ready(function docReady() {
     } else {
       locIdToLoad = $(select).val();
     }
-    if (locIdToLoad && locIdToLoad.match(/^\d+$/)) {
+    if (locIdToLoad === '' && indiciaData.loadedFilterLocationId) {
+      // Nothing selected, but there was previuosly.
+      if (!isHigherGeoSelect) {
+        // If not a higher geo filter, clear the geom filter.
+        $('.es-location-select-geom').val('');
+      }
+      // Previously selected location has been cleared.
+      $.each($('.idc-leafletMap.leaflet-container'), function eachMap() {
+        $(this).idcLeafletMap('clearFeature');
+        $(this).idcLeafletMap('resetViewport');
+      });
+      indiciaData.loadedFilterLocationId = null;
+      indiciaFns.populateDataSources(true);
+    }
+    else if (locIdToLoad !== indiciaData.loadedFilterLocationId) {
+      // A selected location which differs from the previously loaded one.
+      // Remember which one we are loading so we don't reload the same one.
+      indiciaData.loadedFilterLocationId = locIdToLoad;
       $.getJSON(indiciaData.warehouseUrl + 'index.php/services/report/requestReport?' +
           'report=library/locations/location_boundary_projected.xml' +
           '&reportSource=local&srid=4326&location_id=' + locIdToLoad +
           '&nonce=' + indiciaData.read.nonce + '&auth_token=' + indiciaData.read.auth_token +
           '&mode=json&callback=?', function(data) {
-        if (callback) {
-          callback(data);
-        }
-        // Draw the polygon.
-        $.each($('.idc-leafletMap'), function eachMap() {
-          var map = this;
-          $.each(data, function() {
-            $(map).idcLeafletMap('showFeature', this.boundary_geom, true);
+        if (data.length > 0) {
+          if (!isHigherGeoSelect) {
+            // Clear any other filter geoms.
+            $('.es-location-select-geom').val('');
+            // Set the new filter geom.
+            $('#' + $(selectToLoadFilterFor).attr('id') + '-geom').val(data[0].boundary_geom);
+          }
+          $.each($('.idc-leafletMap'), function eachMap() {
+            $(map).idcLeafletMap('showFeature', data[0].boundary_geom, true);
           });
-        });
-      });
-    } else {
-      // Not selected, so clear the current selection.
-      if (callback) {
-        callback([]);
-      }
-      $.each($('.idc-leafletMap.leaflet-container'), function eachMap() {
-        $(this).idcLeafletMap('clearFeature');
-        $(this).idcLeafletMap('resetViewport');
+        }
+        indiciaFns.populateDataSources(true);
       });
     }
   }
 
   // Hook up event handler to location select controls.
-  $('.es-higher-geography-select').change(function selectChange() {
-    onLocationSelectChange(this, null);
-  });
-
-  $('.es-location-select').change(function selectChange() {
-    var changedSelect = this;
-    // Select a site will remove a drawn polygon.
-    delete indiciaData.filter.def.searchArea;
-    delete indiciaData.filter.def.bufferedSearchArea;
-    indiciaData.mapdiv.removeAllFeatures(indiciaData.mapdiv.map.editLayer, 'clickPoint', true)
-
-    // Callback needs to handle the geometry filters.
-    onLocationSelectChange(this, function callback(data) {
-      if (data.length === 0) {
-        $('#' + changedSelect.id + '-geom').val('');
-      }
-      else {
-        // Empty the location select geom controls, then set the one at the
-        // correct level for the selected location type.
-        $('#' + changedSelect.id + '-geom').val(data[0].boundary_geom);
-      }
-      // Update the sources.
-      $('#' + changedSelect.id + '-geom').change();
-    });
+  $('.es-higher-geography-select,.es-location-select').change(function selectChange() {
+    onLocationSelectChange(this);
   });
 
   /**
@@ -1941,11 +1938,6 @@ jQuery(document).ready(function docReady() {
     $.each($('.idc-leafletMap'), function eachMap() {
       this.settings.initialBoundsSet = false;
     });
-    // Reload all sources.
-    $.each(indiciaData.esSourceObjects, function eachSource() {
-      // Reset to first page.
-      this.settings.from = 0;
-      this.populate();
-    });
+    indiciaFns.populateDataSources(true);
   });
 });

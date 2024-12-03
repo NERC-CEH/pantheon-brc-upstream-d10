@@ -72,7 +72,7 @@ function indicia_notification_emails_form_user_form_alter(&$form, FormStateInter
  *
  * @param array $form
  *   Form object.
- * @param FormStateInterface $form_state
+ * @param Drupal\Core\Form\FormStateInterface $form_state
  *   Form state data.
  */
 function indicia_notification_emails_user_form_submit($form, FormStateInterface $form_state) {
@@ -98,7 +98,7 @@ function indicia_notification_emails_user_form_submit($form, FormStateInterface 
     // If the drop-down is set to blank, and it is a new item rather than a
     // drop-down the user has changed to being blank from an existing selection,
     // then we can ignore this code as we don't need to take any action.
-    if (!empty($value) || !empty($_notification_emails_existing_data[$sourceType])) {
+    if (!empty($value) || !empty($notificationEmailsExistingData[$sourceType])) {
       $data = [
         'id' => 'user_email_notification_setting',
         'fields' => [],
@@ -167,7 +167,7 @@ function indicia_notification_emails_get_options($account) {
  * @param array $selects
  *   The list of selects to create. Each element is an [machine_name,
  *   description, code).
- * @param array
+ * @param array $notificationEmailsExistingData
  *   List of existing settings for this user.
  * @param array $el
  *   Form element to add to (e.g. the advanced settings details fieldset).
@@ -175,7 +175,7 @@ function indicia_notification_emails_get_options($account) {
  *   Returns overall frequency. Used to return a notification frequency if all
  *   the selects are the same or '-'.
  */
-function indicia_notification_emails_advanced_selects(array $selects, $notificationEmailsExistingData, array &$el, &$overallMode) {
+function indicia_notification_emails_advanced_selects(array $selects, array $notificationEmailsExistingData, array &$el, &$overallMode) {
   $firstFound = FALSE;
   $mixFound = FALSE;
   // If we don't have a full complement of setttings in the database, then it

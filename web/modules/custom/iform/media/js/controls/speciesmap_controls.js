@@ -340,7 +340,7 @@ var control_speciesmap_addcontrols;
     }
     // feature selected on subSample layer
     var featureSelected = function (a1) {
-      if (!a1.feature.attributes.subSampleIndex) {
+      if (typeof a1.feature.attributes.subSampleIndex === 'undefined') {
         switchToClusterSelect(a1);
         return;
       }

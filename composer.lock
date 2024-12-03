@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b6b8a66b46c44b8d0a70ce092db16199",
+    "content-hash": "8104f98eb35c852802fc73e7f79604c3",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -318,16 +318,16 @@
         },
         {
             "name": "citation-style-language/locales",
-            "version": "v0.0.23",
+            "version": "v0.0.25",
             "source": {
                 "type": "git",
                 "url": "https://github.com/citation-style-language/locales.git",
-                "reference": "4753e3a9aca4b806ac0e3036ed727d47bf8f678e"
+                "reference": "96d704de2fc7b930ae4a0ec4686a7143bb4a0d33"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/citation-style-language/locales/zipball/4753e3a9aca4b806ac0e3036ed727d47bf8f678e",
-                "reference": "4753e3a9aca4b806ac0e3036ed727d47bf8f678e",
+                "url": "https://api.github.com/repos/citation-style-language/locales/zipball/96d704de2fc7b930ae4a0ec4686a7143bb4a0d33",
+                "reference": "96d704de2fc7b930ae4a0ec4686a7143bb4a0d33",
                 "shasum": ""
             },
             "type": "library",
@@ -350,7 +350,7 @@
             "homepage": "http://citationstyles.org/",
             "support": {
                 "issues": "https://github.com/citation-style-language/locales/issues",
-                "source": "https://github.com/citation-style-language/locales/tree/v0.0.23"
+                "source": "https://github.com/citation-style-language/locales/tree/v0.0.25"
             },
             "funding": [
                 {
@@ -358,20 +358,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-10-16T13:21:24+00:00"
+            "time": "2024-11-21T14:12:58+00:00"
         },
         {
             "name": "citation-style-language/styles",
-            "version": "v0.0.567",
+            "version": "v0.0.569",
             "source": {
                 "type": "git",
                 "url": "https://github.com/citation-style-language/styles.git",
-                "reference": "568b63625d72c25297b498cf3f658e5691655a41"
+                "reference": "6b7b611908b20c91f34110d1c9489fb3278e0ef5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/568b63625d72c25297b498cf3f658e5691655a41",
-                "reference": "568b63625d72c25297b498cf3f658e5691655a41",
+                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/6b7b611908b20c91f34110d1c9489fb3278e0ef5",
+                "reference": "6b7b611908b20c91f34110d1c9489fb3278e0ef5",
                 "shasum": ""
             },
             "type": "library",
@@ -389,7 +389,7 @@
             "homepage": "http://citationstyles.org/",
             "support": {
                 "issues": "https://github.com/citation-style-language/styles/issues",
-                "source": "https://github.com/citation-style-language/styles/tree/v0.0.567"
+                "source": "https://github.com/citation-style-language/styles/tree/v0.0.569"
             },
             "funding": [
                 {
@@ -397,7 +397,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-05T18:29:54+00:00"
+            "time": "2024-11-29T19:26:09+00:00"
         },
         {
             "name": "commerceguys/addressing",
@@ -3399,17 +3399,17 @@
         },
         {
             "name": "drupal/bootstrap",
-            "version": "3.33.0",
+            "version": "3.34.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap.git",
-                "reference": "8.x-3.33"
+                "reference": "8.x-3.34"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.33.zip",
-                "reference": "8.x-3.33",
-                "shasum": "7f25f169f81a5084b42808a4033aa6d93324382d"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.34.zip",
+                "reference": "8.x-3.34",
+                "shasum": "ec6bf5ab602a526b4ff32fa9ff7359480ffd983c"
             },
             "require": {
                 "drupal/core": "^10 || ^11",
@@ -3420,8 +3420,8 @@
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.33",
-                    "datestamp": "1732721272",
+                    "version": "8.x-3.34",
+                    "datestamp": "1733183806",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4524,16 +4524,16 @@
         },
         {
             "name": "drupal/coder",
-            "version": "8.3.25",
+            "version": "8.3.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pfrenssen/coder.git",
-                "reference": "c58e5a0c44c0010bbc8a91fc468f4667e177b976"
+                "reference": "fd98546ce3373aa7767240901eda47963ce64c82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pfrenssen/coder/zipball/c58e5a0c44c0010bbc8a91fc468f4667e177b976",
-                "reference": "c58e5a0c44c0010bbc8a91fc468f4667e177b976",
+                "url": "https://api.github.com/repos/pfrenssen/coder/zipball/fd98546ce3373aa7767240901eda47963ce64c82",
+                "reference": "fd98546ce3373aa7767240901eda47963ce64c82",
                 "shasum": ""
             },
             "require": {
@@ -4571,7 +4571,7 @@
                 "issues": "https://www.drupal.org/project/issues/coder",
                 "source": "https://www.drupal.org/project/coder"
             },
-            "time": "2024-09-22T19:02:16+00:00"
+            "time": "2024-11-28T23:14:29+00:00"
         },
         {
             "name": "drupal/collapse_text",
@@ -7685,17 +7685,17 @@
         },
         {
             "name": "drupal/entity_usage",
-            "version": "2.0.0-beta15",
+            "version": "2.0.0-beta16",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/entity_usage.git",
-                "reference": "8.x-2.0-beta15"
+                "reference": "8.x-2.0-beta16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_usage-8.x-2.0-beta15.zip",
-                "reference": "8.x-2.0-beta15",
-                "shasum": "80ad5d27e2a499fae60d303d8cc7daededc6d8a6"
+                "url": "https://ftp.drupal.org/files/projects/entity_usage-8.x-2.0-beta16.zip",
+                "reference": "8.x-2.0-beta16",
+                "shasum": "af6533149a0926d2d539f279e7e08073f8f08c55"
             },
             "require": {
                 "drupal/core": "^10.2 || ^11"
@@ -7715,8 +7715,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.0-beta15",
-                    "datestamp": "1732783084",
+                    "version": "8.x-2.0-beta16",
+                    "datestamp": "1733149424",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -8654,26 +8654,26 @@
         },
         {
             "name": "drupal/fixed_text_link_formatter",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/fixed_text_link_formatter.git",
-                "reference": "8.x-1.7"
+                "reference": "8.x-1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/fixed_text_link_formatter-8.x-1.7.zip",
-                "reference": "8.x-1.7",
-                "shasum": "6d8c175f366445a49b00fcc3d761db63412632f8"
+                "url": "https://ftp.drupal.org/files/projects/fixed_text_link_formatter-8.x-1.8.zip",
+                "reference": "8.x-1.8",
+                "shasum": "3008e9ac26775b698fca82d5ab3662d581441710"
             },
             "require": {
-                "drupal/core": "^9.3 || ^10"
+                "drupal/core": "^9.3 || ^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.7",
-                    "datestamp": "1699461704",
+                    "version": "8.x-1.8",
+                    "datestamp": "1732914733",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12844,7 +12844,7 @@
                     "homepage": "https://www.drupal.org/user/884704"
                 },
                 {
-                    "name": "JMOmandown",
+                    "name": "jmomandown",
                     "homepage": "https://www.drupal.org/user/1844552"
                 },
                 {
@@ -15188,17 +15188,17 @@
         },
         {
             "name": "drupal/spammaster",
-            "version": "2.51.0",
+            "version": "2.52.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.51"
+                "reference": "8.x-2.52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.51.zip",
-                "reference": "8.x-2.51",
-                "shasum": "9d0d4581bb49a1edc0a045525d463603dc87b99a"
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.52.zip",
+                "reference": "8.x-2.52",
+                "shasum": "28674c5baa82d4bb0d465f9950989733ed119a19"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10 || ^11"
@@ -15206,8 +15206,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.51",
-                    "datestamp": "1728571515",
+                    "version": "8.x-2.52",
+                    "datestamp": "1733212261",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -22304,16 +22304,16 @@
         },
         {
             "name": "sirbrillig/phpcs-variable-analysis",
-            "version": "v2.11.19",
+            "version": "v2.11.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sirbrillig/phpcs-variable-analysis.git",
-                "reference": "bc8d7e30e2005bce5c59018b7cdb08e9fb45c0d1"
+                "reference": "eb2b351927098c24860daa7484e290d3eed693be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/bc8d7e30e2005bce5c59018b7cdb08e9fb45c0d1",
-                "reference": "bc8d7e30e2005bce5c59018b7cdb08e9fb45c0d1",
+                "url": "https://api.github.com/repos/sirbrillig/phpcs-variable-analysis/zipball/eb2b351927098c24860daa7484e290d3eed693be",
+                "reference": "eb2b351927098c24860daa7484e290d3eed693be",
                 "shasum": ""
             },
             "require": {
@@ -22324,9 +22324,9 @@
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.7 || ^1.0",
                 "phpcsstandards/phpcsdevcs": "^1.1",
                 "phpstan/phpstan": "^1.7",
-                "phpunit/phpunit": "^4.8.36 || ^5.7.21 || ^6.5 || ^7.0 || ^8.0 || ^9.0",
+                "phpunit/phpunit": "^4.8.36 || ^5.7.21 || ^6.5 || ^7.0 || ^8.0 || ^9.0 || ^10.5.32 || ^11.3.3",
                 "sirbrillig/phpcs-import-detection": "^1.1",
-                "vimeo/psalm": "^0.2 || ^0.3 || ^1.1 || ^4.24 || ^5.0@beta"
+                "vimeo/psalm": "^0.2 || ^0.3 || ^1.1 || ^4.24 || ^5.0"
             },
             "type": "phpcodesniffer-standard",
             "autoload": {
@@ -22358,7 +22358,7 @@
                 "source": "https://github.com/sirbrillig/phpcs-variable-analysis",
                 "wiki": "https://github.com/sirbrillig/phpcs-variable-analysis/wiki"
             },
-            "time": "2024-06-26T20:08:34+00:00"
+            "time": "2024-12-02T16:37:49+00:00"
         },
         {
             "name": "slevomat/coding-standard",
@@ -30795,6 +30795,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "pantheon-upstreams/upstream-configuration": 20,
+        "drupal/insert_view_adv": 15,
+        "drupal/views_entity_form_field": 10,
         "drupal/filefield_sources": 20,
         "drupal/htmlmail": 10,
         "drupal/ckeditor_details": 10,

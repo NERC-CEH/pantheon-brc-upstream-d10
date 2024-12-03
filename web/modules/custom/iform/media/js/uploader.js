@@ -521,9 +521,10 @@ jQuery(document).ready(function($) {
         '<td><select class="form-control" required data-value="' + this.replace('"', '&quot;') + '" name="' + controlName + '">' + options + '</select></td></tr>')
         .appendTo(tbody);
     });
-    $('<button type="button" class="btn btn-primary save-matches" ' +
+    $('<p>Once you have specified the terms that you wish to use when matching values from the "' + result.columnLabel + '" column, click the button below to apply the matched taxa to the current import.</p>' +
+      '<button type="button" class="btn btn-primary save-matches" ' +
       'data-source-field="' + result.sourceField + '"' +
-      '>Save matches for ' + result.columnLabel + ' <i class="far fa-check"></i></button>')
+      '>Apply matches</button>')
       .appendTo($('<div class="panel-body">').appendTo(matchingPanelBody));
   }
 
@@ -708,9 +709,10 @@ jQuery(document).ready(function($) {
       idx++;
     });
     // Save button
-    $('<button type="button" class="btn btn-primary save-matches" ' +
+    $('<p>Once you have specified the taxa that you wish to use when matching values from the "' + result.columnLabel + '" column, click the button below to apply the matched terms to the current import.</p>' +
+      '<button type="button" class="btn btn-primary save-matches" ' +
       'data-source-field="' + result.sourceField + '"' +
-      '>Save matches for ' + result.columnLabel + ' <i class="far fa-check"></i></button>')
+      '>Apply matches</button>')
       .appendTo($('<div class="panel-body">').appendTo(matchingPanelBody));
     // Enable species search autocomplete for the matching inputs.
     $('.taxon-search').autocomplete(indiciaData.warehouseUrl+'index.php/services/data/taxa_search', getTaxonAutocompleteSettings(result.unmatchedInfo.taxonFilters));
@@ -772,9 +774,10 @@ jQuery(document).ready(function($) {
       idx++;
     });
     // Save button
-    $('<button type="button" class="btn btn-primary save-matches" ' +
+    $('<p>Once you have specified the locations that you wish to use when matching values from the "' + result.columnLabel + '" column, click the button below to apply the matched names to the current import.</p>' +
+      '<a class="save-matches" ' +
       'data-source-field="' + result.sourceField + '"' +
-      '>Save matches for ' + result.columnLabel + ' <i class="far fa-check"></i></button>')
+      '>Apply matches</a>')
       .appendTo($('<div class="panel-body">').appendTo(matchingPanelBody));
 
     // Enable location search autocomplete for the matching inputs.
@@ -873,12 +876,13 @@ jQuery(document).ready(function($) {
   /**
    * Retrieve data about the proposed term matches for a lookup attribute.
    *
-   * Retrieves the user's chosen matches for terms, species or other lookups in
-   * the import file that  did not automatically match entries on the warehouse,
-   * ready to save.
+   * Retrieves the user's chosen matches for terms, species or other lookups
+   * in the import file that  did not automatically match entries on the
+   * warehouse, ready to save.
    *
    * @param string sourceField
-   *   The name of the column in the temp DB that contains the terms being matched.
+   *   The name of the column in the temp DB that contains the terms being
+   *   matched.
    */
   function getProposedMatchesToSave(sourceField) {
     var matches = {
@@ -1043,7 +1047,8 @@ jQuery(document).ready(function($) {
 
   function importNextChunk(state, forceTemplateOverwrite) {
     var postData = {};
-    // Post the description and template title of the import to save on the first chunk only.
+    // Post the description and template title of the import to save on the
+    // first chunk only.
     if (!indiciaData.importOneOffFieldsToSaveDone) {
       postData.description = indiciaData.importDescription;
       postData.importTemplateTitle = indiciaData.importTemplateTitle;
@@ -1206,7 +1211,8 @@ jQuery(document).ready(function($) {
       let suggestions = [];
       let allMatches = [];
       if (indiciaData.columns && indiciaData.columns[$(row).find('td:first-child').text()] && indiciaData.columns[$(row).find('td:first-child').text()]['warehouseField']) {
-        // Mapping is already in the columns info, e.g. when loaded from a template.
+        // Mapping is already in the columns info, e.g. when loaded from a
+        // template.
         $(row).find('option[value="' + indiciaData.columns[$(row).find('td:first-child').text()]['warehouseField'] + '"]').attr('selected', true);
       } else if (!indiciaData.import_template_id) {
         // Scan for matches by field name, but only if not using a template.
@@ -1249,7 +1255,8 @@ jQuery(document).ready(function($) {
           // A single, fully qualified match can be selected.
           $(matches.headingPlusLabel[0]).attr('selected', true);
         } else if (matches.headingPlusLabel.length === 0 && matches.label.length === 1) {
-          // A single match without specifying the heading can also be selected.
+          // A single match without specifying the heading can also be
+          // selected.
           $(matches.label[0]).attr('selected', true);
         } else if (matches.headingPlusLabel.length + matches.label.length > 0) {
           // Any other match scenario isn't certain enough for automatic
@@ -1273,17 +1280,52 @@ jQuery(document).ready(function($) {
   } else if (indiciaData.step === 'lookupMatchingForm') {
     // If on the lookup matching page, then trigger the process.
     logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.findingLookupFieldsThatNeedMatching);
-    // Requesting one lookup column at a time, so track which we are asking for.
+    // Requesting one lookup column at a time, so track which we are asking
+    // for.
     indiciaData.processLookupIndex = 0;
     nextLookupProcessingStep();
   } else if (indiciaData.step === 'preprocessPage') {
     // If on the lookup matching page, then trigger the process.
     logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preprocessingImport);
-    // Requesting one lookup column at a time, so track which we are asking for.
+    // Requesting one lookup column at a time, so track which we are asking
+    // for.
     indiciaData.preprocessIndex = 0;
     nextPreprocessingStep();
   } else if (indiciaData.step === 'doImportPage') {
     importNextChunk('startPrecheck');
   }
-
+  // Code for import reverser.
+  // Change the button label depending if user has chosen to abort.
+  // Also change the next import step to be the first step again.
+  $('[name=\"reverse-mode\"').on('change', function() {
+    if ($(this).val() == 'abort_reverse') {
+      $('[name=\"next-import-step\"').val('fileSelectForm');
+      $('#run-reverse').prop('value', indiciaData.lang.import_helper_2.abort);
+    }
+    else {
+      $('[name=\"next-import-step\"').val('reversalResult');
+      $('#run-reverse').prop('value', indiciaData.lang.import_helper_2.continue);
+    };
+  });
+  // Don't allow reverse to be run until an import has been selected.
+  $('#reverse-guid').on('change', function() {
+    if ($(this).val()) {
+      $('#run-reverse').prop('disabled', false);
+      $('.reverse-instructions-1').show();
+    }
+    else {
+      $('#run-reverse').prop('disabled', true);
+      $('.reverse-instructions-1').hide();
+    }
+  });
+  $('#run-reverse').on('click', function() {
+    // No need to confirm if aborting, as easy to go back.
+    if ($(this).val() != indiciaData.lang.import_helper_2.abort) {
+      if (confirm(indiciaData.lang.import_helper_2.are_you_sure_reverse) == true) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  });
 });

@@ -209,13 +209,23 @@
         dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
         logOutput(dlg, indiciaData.lang.bulkEditor.done);
         // @todo Notify the user that it worked.
-      } else if (response.code === 409 && response.errorCode && response.errorCode === 'SAMPLES_CONTAIN_OTHER_OCCURRENCES') {
+      } else {
+        logOutput(dlg, indiciaData.lang.bulkEditor.error);
+        if (response.message) {
+          logOutput(dlg, response.message);
+        }
+        dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
+      }
+    })
+    .fail(function(response) {
+      // Todo test if the 409 code now goes here.
+      if (response.status === 409 && response.responseJSON && response.responseJSON.errorCode && response.responseJSON.errorCode === 'SAMPLES_CONTAIN_OTHER_OCCURRENCES') {
         $.fancyDialog({
           title: indiciaData.lang.bulkEditor.allowSampleSplitting,
           message: indiciaData.lang.bulkEditor.promptAllowSampleSplit
-            .replace('{1}', response.errorData.sample_id)
-            .replace('{2}', response.errorData.included_occurrence_id)
-            .replace('{3}', response.errorData.excluded_occurrence_id),
+            .replace('{1}', response.responseJSON .errorData.sample_id)
+            .replace('{2}', response.responseJSON .errorData.included_occurrence_id)
+            .replace('{3}', response.responseJSON .errorData.excluded_occurrence_id),
           okButton: indiciaData.lang.bulkEditor.confirm,
           callbackOk: function() {
             if (!data.options) {
@@ -230,15 +240,11 @@
         });
       } else {
         logOutput(dlg, indiciaData.lang.bulkEditor.error);
-        if (response.message) {
-          logOutput(dlg, response.message);
+        if (response.responseJSON && response.responseJSON.message) {
+          logOutput(dlg, response.responseJSON.message);
         }
         dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
       }
-    })
-    .fail(function() {
-      logOutput(dlg, indiciaData.lang.bulkEditor.error);
-      dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').removeAttr('disabled');
     });
   }
 

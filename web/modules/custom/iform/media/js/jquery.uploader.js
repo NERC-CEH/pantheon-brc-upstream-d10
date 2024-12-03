@@ -36,12 +36,10 @@ var checkSubmitInProgress = function () {
   return true;
 };
 
-
 /**
 * Class: uploader
 * A jQuery plugin that provides an upload box for multiple images.
 */
-
 
 (function($) {
 

@@ -1332,7 +1332,7 @@
               if ($(listOutputControl).find('.selected').length > 0) {
                 const currentDoc = JSON.parse($(listOutputControl).find('.selected').attr('data-doc-source'));
                 if (thisRowId === currentDoc.id) {
-                  if (data.msg === 'yes' || data.msg === 'maybe') {
+                  if (data.result === 'yes' || data.result === 'maybe') {
                     tabbedQueryPopup(doc, true, t.queryCommentTabUserIsNotified, t.queryEmailTabUserIsNotified, emailTo);
                   } else {
                     tabbedQueryPopup(doc, false, t.queryCommentTabUserIsNotNotified, t.queryEmailTabUserIsNotNotified, emailTo);
@@ -1519,7 +1519,7 @@
     })
     .done(function (response) {
       $.fancybox.close();
-      if (response.status && response.status === 'OK') {
+      if (response.message && response.message === 'OK') {
         alert(indiciaData.lang.verificationButtons.emailSent);
       } else {
         notifyFailSend();
