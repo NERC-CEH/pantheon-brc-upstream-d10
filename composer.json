@@ -277,7 +277,8 @@
         "drupal/views_argument_token": "^2.0",
         "drupal/views_argument_substitutions": "2.x-dev",
         "drupal/stm": "^1.2",
-        "drupal/video": "^3.1"
+        "html2text/html2text": "^4.3",
+        "drupal/videojs": "*"
     },
     "conflict": {
         "drupal/drupal": "*"

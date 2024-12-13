@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "abccde96d2cbb66fcb23f448a9c0e306",
+    "content-hash": "0492ae3e75e866c0ed6aadf46474248c",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -16576,32 +16576,31 @@
             }
         },
         {
-            "name": "drupal/video",
-            "version": "3.1.0",
+            "name": "drupal/videojs",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
-                "url": "https://git.drupalcode.org/project/video.git",
-                "reference": "3.1.0"
+                "url": "https://git.drupalcode.org/project/videojs.git",
+                "reference": "3.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/video-3.1.0.zip",
-                "reference": "3.1.0",
-                "shasum": "512eb6977142ca1c899527d4f1767040473fdcc5"
+                "url": "https://ftp.drupal.org/files/projects/videojs-3.0.1.zip",
+                "reference": "3.0.1",
+                "shasum": "4417d22d349e3203fdca534083c9b3cb5cd1a1ef"
             },
             "require": {
-                "drupal/core": ">=10.2"
+                "drupal/core": "^9 || ^10"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.x",
-                    "datestamp": "1732797421",
+                    "version": "3.0.1",
+                    "datestamp": "1700918360",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
-                    },
-                    "package": "Field types"
+                    }
                 }
             },
             "notification-url": "https://packages.drupal.org/8/downloads",
@@ -16610,47 +16609,32 @@
             ],
             "authors": [
                 {
-                    "name": "Heshan Wanigasooriya",
-                    "homepage": "https://www.drupal.org/u/heshanlk",
+                    "name": "Your name here",
+                    "homepage": "https://www.drupal.org/u/your_name_here",
                     "role": "Maintainer"
                 },
                 {
-                    "name": "brycefisherfleig",
-                    "homepage": "https://www.drupal.org/user/1300764"
-                },
-                {
-                    "name": "chaitanya17",
-                    "homepage": "https://www.drupal.org/user/1998300"
-                },
-                {
-                    "name": "heshanlk",
-                    "homepage": "https://www.drupal.org/user/199102"
+                    "name": "Contributors",
+                    "homepage": "https://www.drupal.org/node/NID/committers",
+                    "role": "Contributors"
                 },
                 {
                     "name": "Jorrit",
                     "homepage": "https://www.drupal.org/user/161217"
                 },
                 {
-                    "name": "podarok",
-                    "homepage": "https://www.drupal.org/user/116002"
-                },
-                {
-                    "name": "poker10",
-                    "homepage": "https://www.drupal.org/user/272316"
+                    "name": "_shY",
+                    "homepage": "https://www.drupal.org/user/3672933"
                 }
             ],
-            "description": "Video module allows you to embedded videos from YouTube, Vimeo, Facebook, Vine etc (Drupal 8 only) and upload videos and play using HTML5 video player.",
-            "homepage": "https://www.drupal.org/project/video",
+            "description": "Video.js is a HTML5-based video player with a built-in Flash fallback for older browsers.",
+            "homepage": "https://www.drupal.org/project/videojs",
             "keywords": [
-                "Drupal",
-                "embed",
-                "media",
-                "transcode",
-                "video"
+                "Drupal"
             ],
             "support": {
-                "source": "https://www.drupal.org/project/video",
-                "issues": "https://www.drupal.org/project/issues/video"
+                "source": "http://cgit.drupalcode.org/videojs",
+                "issues": "https://www.drupal.org/project/issues/videojs"
             }
         },
         {
