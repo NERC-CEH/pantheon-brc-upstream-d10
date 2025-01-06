@@ -39,7 +39,7 @@
         "drupal/markup": "^2.0",
         "drupal/masquerade": "^2.0",
         "drupal/notify": "2.0-beta1",
-        "drupal/quicktabs": "3.0-alpha7",
+        "drupal/quicktabs": "4.x",
         "drupal/pathologic": "2.0-alpha3",
         "drupal/rules": "4.x",
         "drupal/serial": "2.1",
@@ -108,7 +108,7 @@
         "drupal/eu_cookie_compliance": "^1.25",
         "drupal/eva": "^3.1",
         "drupal/exclude_node_title": "*",
-        "drupal/facets": "^2.0",
+        "drupal/facets": "3.x",
         "drupal/faq": "*",
         "drupal/field_defaults": "*",
         "drupal/field_display_label": "*",
@@ -214,7 +214,7 @@
         "drupal/lang_dropdown": "^2.1",
         "drupal/quick_node_block": "^1.4",
         "drupal/ckeditor_accordion": "^2.2",
-        "drupal/file_delete": "^2.0",
+        "drupal/file_delete": "3.x",
         "drupal/bootstrap_quicktabs": "1.0-alpha6",
         "drupal/bibcite_authors": "^1.0",
         "drupal/insert_view": "^2.1",
@@ -262,7 +262,7 @@
         "drupal/entity_usage": "2.0-beta16",
         "drupal/twig_tweak": "^3.4",
         "drupal/forum": "^1.0",
-        "drupal/book": "^1.0",
+        "drupal/book": "2.x",
         "drupal/bootstrap": "^3.32",
         "drupal/ckeditor_details": "^2.1@beta",
         "drupal/pantheon_advanced_page_cache": "^2.3",
@@ -279,7 +279,8 @@
         "drupal/stm": "^1.2",
         "html2text/html2text": "^4.3",
         "drupal/videojs": "^3.0",
-        "drupal/video_embed_field": "3.0-alpha1"
+        "drupal/video_embed_field": "3.0-alpha3",
+        "drupal/resend_register_mail": "^1.0"
     },
     "conflict": {
         "drupal/drupal": "*"
