@@ -64,6 +64,7 @@
 /web/private/scripts/quicksilver
 /web/libraries/drupal-superfish
 /web/libraries/jquery-ui-touch-punch
+/web/libraries/nouislider
 
 # Generally you should only ignore the root vendor directory. It's important
 # that core/assets/vendor and any other vendor directories within contrib or
