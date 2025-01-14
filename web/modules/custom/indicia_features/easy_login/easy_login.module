@@ -48,7 +48,7 @@ function easy_login_user_login(UserInterface $account) {
  * @param EntityInterface $account User account
  */
 function easy_login_user_presave(EntityInterface $account) {
-  if ($account->isActive() && !empty($account->field_last_name->value)) {
+  if (!empty($account->field_last_name->value)) {
     easy_login_synchronise_account_to_warehouse($account);
   }
 }

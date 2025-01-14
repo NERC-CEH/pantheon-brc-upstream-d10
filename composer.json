@@ -48,7 +48,7 @@
         "drupal/typed_data": "^2.1",
         "drupal/views_base_url": "2.1-beta1",
         "drupal/views_entity_form_field": "^1.0@beta",
-        "drupal/views_field_view": "1.0-beta5",
+        "drupal/views_field_view": "1.0-beta6",
         "drupal/address": "^2.0",
         "drupal/address_map_link": "^1.4",
         "drupal/admin_content_notification": "*",
