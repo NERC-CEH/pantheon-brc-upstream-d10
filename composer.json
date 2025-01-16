@@ -32,7 +32,7 @@
         "drupal/custom_formatters": "4.0-beta1",
         "drupal/entity_clone": "2.1-beta1",
         "drupal/entity_legal": "4.0-alpha4",
-        "drupal/feeds": "3.0-rc3",
+        "drupal/feeds": "^3.0",
         "drupal/inline_entity_form": "3.0-rc20",
         "drupal/insert_view_adv": "^2.0@alpha",
         "drupal/login_destination": "2.0-beta8",
@@ -157,7 +157,7 @@
         "drupal/panelbutton": "*",
         "drupal/pathauto": "^1.13",
         "drupal/pdf": "*",
-        "drupal/permission_spreadsheet": "2.1",
+        "drupal/permission_spreadsheet": "^2.1",
         "drupal/physical": "^1.5",
         "drupal/profile": "^1.11",
         "drupal/publishcontent": "^1.7",
@@ -211,7 +211,7 @@
         "drupal/webform_spam_words": "^2.0",
         "drupal/webform_views": "^5.4",
         "drupal/webform_views_extras": "^2.0",
-        "drupal/lang_dropdown": "2.1",
+        "drupal/lang_dropdown": "^2.3",
         "drupal/quick_node_block": "^1.4",
         "drupal/ckeditor_accordion": "^2.2",
         "drupal/file_delete": "3.x",
@@ -259,7 +259,7 @@
         "drupal/flexible_permissions": "2.*",
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/paragraphs": "^1.18",
-        "drupal/entity_usage": "2.0-beta16",
+        "drupal/entity_usage": "2.0-beta17",
         "drupal/twig_tweak": "^3.4",
         "drupal/forum": "^1.0",
         "drupal/book": "2.x",
@@ -280,7 +280,8 @@
         "html2text/html2text": "^4.3",
         "drupal/videojs": "^3.0",
         "drupal/video_embed_field": "3.0-alpha3",
-        "drupal/resend_register_mail": "^1.0"
+        "drupal/resend_register_mail": "^1.0",
+        "drupal/ai": "^1.0"
     },
     "conflict": {
         "drupal/drupal": "*"
