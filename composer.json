@@ -279,7 +279,7 @@
         "drupal/stm": "^1.2",
         "html2text/html2text": "^4.3",
         "drupal/videojs": "^3.0",
-        "drupal/video_embed_field": "3.0-alpha3",
+        "drupal/video_embed_field": "3.0-alpha4",
         "drupal/resend_register_mail": "^1.0",
         "drupal/ai": "^1.0"
     },
