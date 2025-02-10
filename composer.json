@@ -11,7 +11,19 @@
         {
             "type": "path",
             "url": "upstream-configuration"
-        }
+        },
+		{
+			"type": "package",
+			"package": {
+				"name": "noli42/chosen",
+				"version": "3.0.0",
+				"type": "drupal-library",
+				"dist": {
+					"url": "https://github.com/noli42/chosen/releases/download/3.0.0/chosen-assets-v3.0.0.zip",
+					"type": "zip"
+				}
+			}
+		}		
 	],
     "require": {
         "pantheon-upstreams/upstream-configuration": "dev-main",
@@ -65,7 +77,7 @@
         "drupal/bootstrap_layouts": "^5.4",
         "drupal/bootstrap_styles": "^1.2",
         "drupal/captcha": "^2.0",
-        "drupal/chosen": "^5.0",
+        "drupal/chosen": "5.0",
         "drupal/chosen_lib": "^5.0",
         "drupal/clientside_validation": "^4.1",
         "drupal/collapsiblock": "^4.3",
@@ -282,7 +294,8 @@
         "drupal/video_embed_field": "3.0-alpha4",
         "drupal/resend_register_mail": "^1.0",
         "drupal/ai": "^1.0",
-        "drupal/linkchecker": "^2.0"
+        "drupal/linkchecker": "^2.0",
+        "noli42/chosen": "3.0.0"
     },
     "conflict": {
         "drupal/drupal": "*"

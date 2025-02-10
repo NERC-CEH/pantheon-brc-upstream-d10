@@ -1,6 +1,8 @@
 #### Chosen
 - by Patrick Filler for [Harvest](http://getharvest.com)
-- Copyright (c) 2011-2016 by Harvest
+- 2011-2016 by Harvest
+- 2020-2022 by JJJ
+- 2024- by noli42
 
 Available for use under the [MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
