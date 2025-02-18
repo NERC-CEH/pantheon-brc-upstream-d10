@@ -271,7 +271,7 @@
         "drupal/flexible_permissions": "2.*",
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/paragraphs": "^1.18",
-        "drupal/entity_usage": "2.0-beta17",
+        "drupal/entity_usage": "2.0-beta19",
         "drupal/twig_tweak": "^3.4",
         "drupal/forum": "^1.0",
         "drupal/book": "2.x",
@@ -295,7 +295,9 @@
         "drupal/resend_register_mail": "^1.0",
         "drupal/ai": "^1.0",
         "drupal/linkchecker": "^2.0",
-        "noli42/chosen": "3.0.0"
+        "noli42/chosen": "3.0.0",
+        "drupal/content_entity_builder": "^1.2",
+        "drupal/flexistyle_bootstrap_scss": "^1.0"
     },
     "conflict": {
         "drupal/drupal": "*"
