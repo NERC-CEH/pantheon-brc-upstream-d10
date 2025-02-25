@@ -75,10 +75,6 @@ jQuery(document).ready(function($) {
   }
 
   /**
-   * Import settings page code.
-   */
-
-  /**
    * Adds a background processing progress message to the log output panel.
    *
    * @param string msg
@@ -90,181 +86,214 @@ jQuery(document).ready(function($) {
   }
 
   /**
-   * Creates the config JSON file on the server, then proceeds with next step.
-   *
-   * @param string fileName
-   *   Import file name.
+   * Import settings page code.
    */
-  function initServerConfig(fileName) {
-    var url;
-    urlSep = indiciaData.initServerConfigUrl.indexOf('?') === -1 ? '?' : '&';
-    url = indiciaData.initServerConfigUrl + urlSep + 'data-file=' + encodeURIComponent(fileName);
-    if (indiciaData.import_template_id) {
-      url += '&import_template_id=' + indiciaData.import_template_id;
-    }
-    $.ajax({
-      url: url,
-      dataType: 'json',
-      headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
-    }).done(function() {
-      transferDataToTempTable(fileName);
-    });
-  }
 
-  function transferDataToTempTable(fileName) {
-    urlSep = indiciaData.loadChunkToTempTableUrl.indexOf('?') === -1 ? '?' : '&';
-    $.ajax({
-      url: indiciaData.loadChunkToTempTableUrl + urlSep + 'data-file=' + encodeURIComponent(fileName),
-      dataType: 'json',
-      headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
-    }).done(function(transferResult) {
-      var msg = indiciaData.lang.import_helper_2[transferResult.msgKey];
-      if (transferResult.progress) {
-        $('#file-progress').val(transferResult.progress);
-        msg += ' (' + Math.round(transferResult.progress) + '%)';
-        if (transferResult.progress >= 100) {
-          $('#file-progress').hide();
-          $('.background-processing .panel-heading span').text(indiciaData.lang.import_helper_2.backgroundProcessingDone);
-        }
+  if (indiciaData.step === 'globalValuesForm') {
+
+    /**
+     * Creates the config JSON file on the server, then proceeds with next step.
+     *
+     * @param string fileName
+     *   Import file name.
+     */
+    function initServerConfig(fileName) {
+      var url;
+      urlSep = indiciaData.initServerConfigUrl.indexOf('?') === -1 ? '?' : '&';
+      url = indiciaData.initServerConfigUrl + urlSep + 'data-file=' + encodeURIComponent(fileName);
+      if (indiciaData.import_template_id) {
+        url += '&import_template_id=' + indiciaData.import_template_id;
       }
-      if (transferResult.status === 'ok') {
-        logBackgroundProcessingInfo(msg);
-        if (transferResult.msgKey === 'loadingRecords') {
-          transferDataToTempTable(fileName);
-        }
-        else {
-          $('input[type="submit"]').attr('disabled', false);
-        }
-      } else {
-        if (transferResult.msg) {
-          $.fancyDialog({
-            title: indiciaData.lang.import_helper_2.uploadError,
-            message: transferResult.msg,
-            cancelButton: null
-          });
-        }
-      }
-    }).fail(function(qXHR, textStatus, errorThrown) {
-      $.fancyDialog({
-        title: indiciaData.lang.import_helper_2.uploadError,
-        message: qXHR.responseText,
-        cancelButton: null
+      $.ajax({
+        url: url,
+        dataType: 'json',
+        headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
+      }).done(function() {
+        transferDataToTempTable(fileName);
       });
-    });
-  }
+    }
 
-  if (indiciaData.processUploadedInterimFile) {
-    logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.uploadingFile);
-    urlSep = indiciaData.sendFileToWarehouseUrl.indexOf('?') === -1 ? '?' : '&';
-    $.ajax({
-      url: indiciaData.sendFileToWarehouseUrl + urlSep + 'interim-file=' + encodeURIComponent(indiciaData.processUploadedInterimFile),
-      dataType: 'json',
-      headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
-      success: function(sendFileResult) {
-        if (sendFileResult.status === 'ok') {
-          var isZip = indiciaData.processUploadedInterimFile.split('.').pop().toLowerCase() === 'zip';
-          logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.fileUploaded);
-          if (isZip) {
-            logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.extractingFile);
-            $.ajax({
-              url: indiciaData.extractFileOnWarehouseUrl + urlSep + 'uploaded-file=' + sendFileResult.uploadedFile,
-              dataType: 'json',
-              headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
-              success: function(extractResult) {
-                if (extractResult.status === 'ok') {
-                  logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.fileExtracted);
-                  logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preparingToLoadRecords);
-                  $('#data-file').val(extractResult.dataFile);
-                  initServerConfig(extractResult.dataFile);
-                }
-                else {
-                  if (extractResult.msg) {
-                    $.fancyDialog({
-                      title: indiciaData.lang.import_helper_2.uploadError,
-                      message: extractResult.msg,
-                      cancelButton: null
-                    });
-                  }
-                }
-              }
-            })
-            .fail(
-              function(jqXHR, textStatus, errorThrown) {
-                $.fancyDialog({
-                  // @todo i18n
-                  title: indiciaData.lang.import_helper_2.uploadError,
-                  message: indiciaData.lang.import_helper_2.errorExtractingZip + ':<br/>' + errorThrown,
-                  cancelButton: null
-                });
-              }
-            );
+    /**
+     * Disallow progress past import settings until required fields selected.
+     *
+     * E.g. for occurrence data, we need at least a survey ID to determine the
+     * available attributes.
+     */
+    function setImportSettingsNextStepState() {
+      if ($('#settings-form').find('input,select')
+          // Only visible required inputs.
+          .filter(':visible.\\{required\\:true\\}')
+          // With no data value.
+          .filter(function() { return this.value == ""; })
+          // If we can't find any, enable the next step button.
+          .length === 0) {
+        $('#next-step').attr('disabled', false);
+      }
+      else {
+        $('#next-step').attr('disabled', true);
+      }
+    }
+
+    function transferDataToTempTable(fileName) {
+      urlSep = indiciaData.loadChunkToTempTableUrl.indexOf('?') === -1 ? '?' : '&';
+      $.ajax({
+        url: indiciaData.loadChunkToTempTableUrl + urlSep + 'data-file=' + encodeURIComponent(fileName),
+        dataType: 'json',
+        headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
+      }).done(function(transferResult) {
+        var msg = indiciaData.lang.import_helper_2[transferResult.msgKey];
+        if (transferResult.progress) {
+          $('#file-progress').val(transferResult.progress);
+          msg += ' (' + Math.round(transferResult.progress) + '%)';
+          if (transferResult.progress >= 100) {
+            $('#file-progress').hide();
+            $('.background-processing .panel-heading span').text(indiciaData.lang.import_helper_2.backgroundProcessingDone);
+          }
+        }
+        if (transferResult.status === 'ok') {
+          logBackgroundProcessingInfo(msg);
+          if (transferResult.msgKey === 'loadingRecords') {
+            transferDataToTempTable(fileName);
           }
           else {
-            logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preparingToLoadRecords);
-            $('#data-file').val(sendFileResult.uploadedFile);
-            initServerConfig(sendFileResult.uploadedFile);
+            setImportSettingsNextStepState();
           }
-        }
-        else {
-          if (sendFileResult.msg) {
+        } else {
+          if (transferResult.msg) {
             $.fancyDialog({
               title: indiciaData.lang.import_helper_2.uploadError,
-              message: sendFileResult.msg,
+              message: transferResult.msg,
               cancelButton: null
             });
           }
         }
-      }
-    })
-    .fail(
-      function(jqXHR, textStatus, errorThrown) {
+      }).fail(function(qXHR, textStatus, errorThrown) {
         $.fancyDialog({
-          // @todo i18n
           title: indiciaData.lang.import_helper_2.uploadError,
-          message: indiciaData.lang.import_helper_2.errorUploadingFile + ':<br/>' + errorThrown,
+          message: qXHR.responseText,
           cancelButton: null
         });
-      }
-    );
+      });
+    }
+
+    if (indiciaData.processUploadedInterimFile) {
+      logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.uploadingFile);
+      urlSep = indiciaData.sendFileToWarehouseUrl.indexOf('?') === -1 ? '?' : '&';
+      $.ajax({
+        url: indiciaData.sendFileToWarehouseUrl + urlSep + 'interim-file=' + encodeURIComponent(indiciaData.processUploadedInterimFile),
+        dataType: 'json',
+        headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
+        success: function(sendFileResult) {
+          if (sendFileResult.status === 'ok') {
+            var isZip = indiciaData.processUploadedInterimFile.split('.').pop().toLowerCase() === 'zip';
+            logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.fileUploaded);
+            if (isZip) {
+              logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.extractingFile);
+              $.ajax({
+                url: indiciaData.extractFileOnWarehouseUrl + urlSep + 'uploaded-file=' + sendFileResult.uploadedFile,
+                dataType: 'json',
+                headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
+                success: function(extractResult) {
+                  if (extractResult.status === 'ok') {
+                    logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.fileExtracted);
+                    logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preparingToLoadRecords);
+                    $('#data-file').val(extractResult.dataFile);
+                    initServerConfig(extractResult.dataFile);
+                  }
+                  else {
+                    if (extractResult.msg) {
+                      $.fancyDialog({
+                        title: indiciaData.lang.import_helper_2.uploadError,
+                        message: extractResult.msg,
+                        cancelButton: null
+                      });
+                    }
+                  }
+                }
+              })
+              .fail(
+                function(jqXHR, textStatus, errorThrown) {
+                  $.fancyDialog({
+                    // @todo i18n
+                    title: indiciaData.lang.import_helper_2.uploadError,
+                    message: indiciaData.lang.import_helper_2.errorExtractingZip + ':<br/>' + errorThrown,
+                    cancelButton: null
+                  });
+                }
+              );
+            }
+            else {
+              logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preparingToLoadRecords);
+              $('#data-file').val(sendFileResult.uploadedFile);
+              initServerConfig(sendFileResult.uploadedFile);
+            }
+          }
+          else {
+            if (sendFileResult.msg) {
+              $.fancyDialog({
+                title: indiciaData.lang.import_helper_2.uploadError,
+                message: sendFileResult.msg,
+                cancelButton: null
+              });
+            }
+          }
+        }
+      })
+      .fail(
+        function(jqXHR, textStatus, errorThrown) {
+          $.fancyDialog({
+            // @todo i18n
+            title: indiciaData.lang.import_helper_2.uploadError,
+            message: indiciaData.lang.import_helper_2.errorUploadingFile + ':<br/>' + errorThrown,
+            cancelButton: null
+          });
+        }
+      );
+    }
+
+    // Required fields state change handler - disables next step button if not
+    // filled in.
+    $('#settings-form').find(':input.\\{required\\:true\\}').change(setImportSettingsNextStepState);
+    setImportSettingsNextStepState();
+
+    /**
+     * Button handler to show the unrestricted version of a global values control.
+     *
+     * Appears if the settings list several options, plus a special option *
+     * which triggers the extra unrestricted control.
+     */
+    $('.show-unrestricted').click(function() {
+      const cntrRestricted = $(this).closest('.ctrl-cntr');
+      const inputRestricted = $(cntrRestricted).find('select');
+      const inputUnrestricted = $('.unrestricted [name="' + $(inputRestricted).attr('name') + '"]');
+      const cntrUnrestricted = $(inputUnrestricted).closest('.ctrl-cntr');
+      cntrRestricted.slideUp();
+      inputRestricted.attr('disabled', true);
+      inputUnrestricted.removeAttr('disabled');
+      cntrUnrestricted.slideDown();
+    });
+
+    /**
+     * Button handler to return to the restricted version of a global values control.
+     */
+    $('.show-restricted').click(function() {
+      const cntrUnrestricted = $(this).closest('.ctrl-cntr');
+      const inputUnrestricted = $(cntrUnrestricted).find('select');
+      const inputRestricted = $('.restricted [name="' + $(inputUnrestricted).attr('name') + '"]');
+      const cntrRestricted = $(inputRestricted).closest('.ctrl-cntr');
+      cntrUnrestricted.slideUp();
+      inputUnrestricted.attr('disabled', true);
+      inputRestricted.removeAttr('disabled');
+      cntrRestricted.slideDown();
+    });
+
+    // Unrestricted versions of global value controls initially disabled.
+    $.each($('.ctrl-cntr.unrestricted select'), function() {
+      $(this).attr('disabled', true);
+      // Also set the correct name for when the value is submitted.
+      $(this).attr('name', $(this).attr('name').replace(/-unrestricted$/, ''));
+    });
   }
-
-  /**
-   * Button handler to show the unrestricted version of a global values control.
-   *
-   * Appears if the settings list several options, plus a special option *
-   * which triggers the extra unrestricted control.
-   */
-  $('.show-unrestricted').click(function() {
-    const cntrRestricted = $(this).closest('.ctrl-cntr');
-    const inputRestricted = $(cntrRestricted).find('select');
-    const inputUnrestricted = $('.unrestricted [name="' + $(inputRestricted).attr('name') + '"]');
-    const cntrUnrestricted = $(inputUnrestricted).closest('.ctrl-cntr');
-    cntrRestricted.slideUp();
-    inputRestricted.attr('disabled', true);
-    inputUnrestricted.removeAttr('disabled');
-    cntrUnrestricted.slideDown();
-  });
-
-  /**
-   * Button handler to return to the restricted version of a global values control.
-   */
-  $('.show-restricted').click(function() {
-    const cntrUnrestricted = $(this).closest('.ctrl-cntr');
-    const inputUnrestricted = $(cntrUnrestricted).find('select');
-    const inputRestricted = $('.restricted [name="' + $(inputUnrestricted).attr('name') + '"]');
-    const cntrRestricted = $(inputRestricted).closest('.ctrl-cntr');
-    cntrUnrestricted.slideUp();
-    inputUnrestricted.attr('disabled', true);
-    inputRestricted.removeAttr('disabled');
-    cntrRestricted.slideDown();
-  });
-
-  // Unrestricted versions of global value controls initially disabled.
-  $.each($('.ctrl-cntr.unrestricted select'), function() {
-    $(this).attr('disabled', true);
-    // Also set the correct name for when the value is submitted.
-    $(this).attr('name', $(this).attr('name').replace(/-unrestricted$/, ''));
-  });
 
   /**
    * Map import columns page code.
@@ -1052,6 +1081,7 @@ jQuery(document).ready(function($) {
     if (!indiciaData.importOneOffFieldsToSaveDone) {
       postData.description = indiciaData.importDescription;
       postData.importTemplateTitle = indiciaData.importTemplateTitle;
+      postData.training = indiciaData.training;
       // If user has confirmed overwrite OK.
       if (forceTemplateOverwrite) {
         postData.forceTemplateOverwrite = true;
@@ -1137,6 +1167,7 @@ jQuery(document).ready(function($) {
               $('#import-details-precheck-done').show();
               if (result.errorsCount) {
                 showErrorInfo(result, state);
+                $('#import-details-import-another').show();
               }
               else {
                 // Update page title to importing.

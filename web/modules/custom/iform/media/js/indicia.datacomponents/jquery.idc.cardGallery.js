@@ -46,6 +46,7 @@
     actions: [],
     includeFieldCaptions: false,
     includeFullScreenTool: true,
+    includeImageClassifierInfo: false,
     includePager: true,
     includeSortTool: true,
     keyboardNavigation: false
@@ -492,7 +493,6 @@
         ];
       }
 
-      $('<div class="es-card-gallery">').appendTo(el);
       if (el.settings.includePager) {
         $('<div class="footer form-inline">' + indiciaFns.getFooterControls(el) + '</div>').appendTo(el);
       }
@@ -525,6 +525,7 @@
       // Add overlay for loading.
       $('<div class="loading-spinner" style="display: block"><div>Loading...</div></div>').appendTo(el);
       initHandlers(el);
+      indiciaFns.updateControlLayout();
     },
 
     /**
@@ -596,7 +597,8 @@
         } else {
           dataContainer = $('<ul>');
         }
-        dataContainer.addClass('data-container panel-body').appendTo(card);
+        const cardFooter = $('<div class="card-footer" />').appendTo(card);
+        dataContainer.addClass('data-container panel-body').appendTo(cardFooter);
         $.each(el.settings.columns, function() {
           value = indiciaFns.getValueForField(doc, this.field);
           var valueClass = 'field-' + this.field.replace(/\./g, '--').replace(/_/g, '-');
@@ -617,6 +619,10 @@
           } else {
             $('<li>' + value + '</li>').appendTo(dataContainer);
           }
+        }
+        if (el.settings.includeImageClassifierInfo && doc.identification.classifier) {
+          $(indiciaFns.getImageClassifierAgreementHtml(doc)).appendTo(cardFooter);
+          $(indiciaFns.getImageClassifierSuggestionsHtml(doc)).appendTo(cardFooter);
         }
         $('<button type="button" title="' + indiciaData.lang.cardGallery.expandCard + '" class="expand-card ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">' +
           '<i class="fas fa-expand-arrows-alt"></i></i></button>')

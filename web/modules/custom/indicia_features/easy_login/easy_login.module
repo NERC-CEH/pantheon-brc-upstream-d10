@@ -37,7 +37,7 @@ function easy_login_user_login(UserInterface $account) {
 /**
  * Implements hook_user_presave.
  *
- * * Creates or links to an existing warehouse if surnem filled in and not
+ * * Creates or links to an existing warehouse if surname filled in and not
  *   already done.
  * * Ensures any synchronisable custom person attribute values are kept up to
  *   date on the warehouse.
@@ -307,14 +307,17 @@ function easy_login_handle_get_user_id_response($account, $response, $save) {
       $request->query->set('destination', 'easy_login/resolve_multiple_users');
     }
     else {
-        // Alert the person editing the account to the problem.
-        \Drupal::messenger()->addWarning(t(
-          'There appear to be several existing users on the central records
-          database for %username. They need to log in to this website to
-          resolve the issue.',
-          ['%username' => $account->getDisplayName(),]
-        ));
+      // Alert the person editing the account to the problem.
+      \Drupal::messenger()->addWarning(t(
+        'There appear to be several existing users on the central records
+        database for %username. They need to log in to this website to
+        resolve the issue.',
+        ['%username' => $account->getDisplayName(),]
+      ));
     }
+  }
+  elseif (isset($response->code) && $response->code === 409 && isset($response->message) && $response->message === 'This email address already exists on another warehouse user account.') {
+    \Drupal::messenger()->addWarning(t('This email address already exists on another warehouse user account. Your warehouse user account email address has not been updated.'));
   }
   elseif (isset($response->error)) {
     \Drupal::messenger()->addWarning($response->error);

@@ -280,7 +280,8 @@
       // in the response document defined.
       $.each(el.settings.availableColumnInfo, function eachCol(field, colDef) {
         // Everything not in the aggregations list must be a field.
-        if (!sourceSettings.suppliedAggregation[field] && field !== 'doc_count') {
+        const fieldRoot = field.split('.')[0];
+        if (!sourceSettings.suppliedAggregation[fieldRoot] && field !== 'doc_count') {
           colDef.path = pathsPerMode[sourceSettings.mode];
         }
       });
@@ -494,24 +495,12 @@
         $(table).find('thead tr').prepend(
           '<th class="multiselect-cntr" />'
         );
-        $(table).find('thead tr:first-child th:first-child').append(
-          '<input type="checkbox" class="multiselect-all" />'
-        );
         $(table).find('tbody tr').prepend('<td class="multiselect-cntr"><input type="checkbox" title="' + indiciaData.lang.dataGrid.checkToIncludeInList + '" class="multiselect" /></td>');
         $(table).closest('div').prepend(
           $('.all-selected-buttons')
         );
       }
       setTableHeight(el);
-    });
-
-    /**
-     * Select all checkboxes event handler.
-     */
-    indiciaFns.on('click', '#' + el.id + ' .multiselect-all', {}, function onClick(e) {
-      $(e.currentTarget).closest('table')
-        .find('.multiselect')
-        .prop('checked', $(e.currentTarget).is(':checked'));
     });
 
     /**
@@ -579,6 +568,27 @@
       const panel = findSettingsPanel(el);
       var anyUnchecked = $([panel]).find('ol li :checkbox:not(:checked)').length > 0;
       $(panel).find('ol li :checkbox').prop('checked', anyUnchecked);
+    });
+
+    /**
+     * On text entry into the search box, filter the visible columns.
+     */
+    $('#' + el.id + ' .grid-settings-search').keyup(function(e) {
+      // Retrieve the search text from the input element and convert it to lowercase
+      const searchText = $(e.currentTarget).val().toLowerCase();
+
+      // Iterate over each list item within the element with class 'data-grid-settings'
+      $.each($('.data-grid-settings li'), function() {
+        const li = this;
+        // Check if the list item's text content contains the search text
+        if (li.textContent.toLowerCase().indexOf(searchText) === -1) {
+          // Hide the list item if it does not contain the search text
+          $(li).hide();
+        } else {
+          // Show the list item if it contains the search text
+          $(li).show();
+        }
+      });
     });
 
     // Public function so it can be called from bindControls event handlers.
@@ -930,7 +940,7 @@
         totalCols = el.settings.columns.length
           + (el.settings.responsive ? 1 : 0)
           + (el.settings.actions.length > 0 ? 1 : 0);
-        $('<tfoot><tr class="footer form-inline"><td colspan="' + totalCols + '">' + indiciaFns.getFooterControls(el) + '</td></tr></tfoot>').appendTo(table);
+        $('<tfoot><tr class="footer"><td colspan="' + totalCols + '"><div class="form-inline">' + indiciaFns.getFooterControls(el) + '</div></td></tr></tfoot>').appendTo(table);
       }
       setTableHeight(el);
       // Add tool icons for table settings, full screen and multiselect mode.
@@ -958,6 +968,7 @@
           $(table).trigger('footable_expand_all');
         });
       }
+      indiciaFns.updateControlLayout();
       window.addEventListener('resize', function resize() { setTableHeight(el); });
     },
 

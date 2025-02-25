@@ -1,7 +1,6 @@
 $default-block-height: 500px;
 
 #indicia-es-totals-block-container {
-  font-size: 150%;
   display: table;
   width: 100%;
   margin-bottom: 8px;
@@ -22,6 +21,17 @@ $default-block-height: 500px;
         margin-left: -8px;
       }
     }
+  }
+}
+
+@media screen and (min-width: 600px) {
+  #indicia-es-totals-block-container {
+    font-size: 125%;
+  }
+}
+@media screen and (min-width: 900px) {
+  #indicia-es-totals-block-container {
+    font-size: 150%;
   }
 }
 

@@ -3928,7 +3928,7 @@ RIJS;
         // Find the taxon in our preloaded list data that we want to output for
         // this row.
         $taxonIdx = 0;
-        while ($taxonIdx < count($taxalist) && $taxalist[$taxonIdx]['taxa_taxon_list_id'] != $ttlId) {
+        while ($taxonIdx < count($taxalist) && $taxalist[$taxonIdx]['id'] != $ttlId) {
           $taxonIdx += 1;
         }
         if ($taxonIdx >= count($taxalist)) {
@@ -4039,20 +4039,22 @@ RIJS;
         // If an occurrence does not have its original name available, then an alternative name
         // with same meaning can be used.
         // Switch back to the old taxa_taxon_list_id (but leave the updated name) so we don't fire a redetermination.
-        if (!empty($shiftedTtlIds) && array_key_exists($taxon['taxa_taxon_list_id'], $shiftedTtlIds)) {
-          $taxon['taxa_taxon_list_id'] = $shiftedTtlIds[$taxon['taxa_taxon_list_id']];
+        if (!empty($shiftedTtlIds) && array_key_exists($taxon['id'], $shiftedTtlIds)) {
+          $taxon['id'] = $shiftedTtlIds[$taxon['id']];
+          // For legacy templates.
+          $taxon['taxa_taxon_list_id'] = $taxon['id'];
         }
         if ($options['rowInclusionCheck'] === 'hasData') {
-          $row .= "<input type=\"hidden\" name=\"$fieldname\" id=\"$fieldname\" class=\"presence-checkbox\" value=\"$taxon[taxa_taxon_list_id]\"/>";
+          $row .= "<input type=\"hidden\" name=\"$fieldname\" id=\"$fieldname\" class=\"presence-checkbox\" value=\"$taxon[id]\"/>";
         }
         else {
           // This includes a control to force out a 0 value when the checkbox
           // is unchecked.
           $row .= "<input type=\"hidden\" class=\"scPresence\" name=\"$fieldname\" value=\"0\"/>" .
-            "<input type=\"checkbox\" class=\"scPresence\" name=\"$fieldname\" id=\"$fieldname\" value=\"$taxon[taxa_taxon_list_id]\" $checked />";
+            "<input type=\"checkbox\" class=\"scPresence\" name=\"$fieldname\" id=\"$fieldname\" value=\"$taxon[id]\" $checked />";
         }
         // Store additional useful info about the taxon.
-        $row .= "<input type=\"hidden\" class=\"scTaxaTaxonListId\" name=\"sc:$options[id]-$txIdx:$existingRecordId:ttlId\" value=\"$taxon[taxa_taxon_list_id]\" />";
+        $row .= "<input type=\"hidden\" class=\"scTaxaTaxonListId\" name=\"sc:$options[id]-$txIdx:$existingRecordId:ttlId\" value=\"$taxon[id]\" />";
         $row .= "<input type=\"hidden\" class=\"scTaxonGroupId\" value=\"$taxon[taxon_group_id]\" />";
         // If we have a grid ID attribute, output a hidden.
         if (!empty($options['gridIdAttributeId'])) {
@@ -4488,11 +4490,11 @@ if ($('#$options[id]').parents('.ui-tabs-panel').length) {
    * @return array
    *   Associative array of preferred flag values.
    */
-  private static function getPreferredFlagsByTtlId($taxonListItems) {
+  private static function getPreferredFlagsByTtlId(array $taxonListItems) {
     $preferredFlagsByTtlId = [];
     // Create array where the taxa_taxon_list_id is the key to make processing easier.
     foreach ($taxonListItems as $taxonListRowDetail) {
-      $preferredFlagsByTtlId[$taxonListRowDetail['taxa_taxon_list_id']] = $taxonListRowDetail['preferred'];
+      $preferredFlagsByTtlId[$taxonListRowDetail['id']] = $taxonListRowDetail['preferred'];
     }
     return $preferredFlagsByTtlId;
   }
@@ -4555,12 +4557,12 @@ if ($('#$options[id]').parents('.ui-tabs-panel').length) {
     }
     foreach ($taxonListItems as &$taxonListItem) {
       // If we find a name we are using that is not the original name on the occurrence
-      if (array_key_exists($taxonListItem['taxa_taxon_list_id'], $shiftedTtlIds)) {
+      if (array_key_exists($taxonListItem['id'], $shiftedTtlIds)) {
         // Then we are going make a label displaying the recorded name to the user.
         // To get the name, we need to get the recorded ttl from the $shiftedTtlIds,
         // then simply collect the taxon name from the array containing the taxon details.
         $taxonListItem['previously_recorded_as'] =
-            $fullDetailsRecordedTaxaFormatted[$shiftedTtlIds[$taxonListItem['taxa_taxon_list_id']]]['taxon'];
+            $fullDetailsRecordedTaxaFormatted[$shiftedTtlIds[$taxonListItem['id']]]['taxon'];
       } else {
         $taxonListItem['previously_recorded_as'] = '';
       }
@@ -4795,7 +4797,7 @@ JS;
         'disabled="disabled"' : '';
       // If the taxon has a parent then we need to setup both a child and parent.
       if (!empty($taxon['parent_id'])) {
-        $selectedChildId = $taxon['taxa_taxon_list_id'];
+        $selectedChildId = $taxon['id'];
         $selectedParentId = $taxon['parent']['id'];
         $selectedParentName = $taxon['parent']['taxon'];
       }
@@ -5457,7 +5459,10 @@ JS;
     if (isset($options['listId']) && !empty($options['listId'])) {
       // Apply the species list to the filter.
       $options['extraParams']['taxon_list_id'] = $options['listId'];
+      // Limit the fixed list to non-redundant taxa.
+      $options['extraParams']['allow_data_entry'] = 't';
       $taxalist = self::get_population_data($options);
+      unset($options['extraParams']['allow_data_entry']);
     }
     else {
       $taxalist = [];
@@ -5468,9 +5473,9 @@ JS;
         foreach ($taxalist as $taxon) {
           // Create a list of the rows we are going to add to the grid, with
           // the preloaded species names linked to them.
-          if ($taxonFilter == $taxon['taxa_taxon_list_id']) {
+          if ($taxonFilter == $taxon['id']) {
             $taxonRows[] = [
-              'ttlId' => $taxon['taxa_taxon_list_id'],
+              'ttlId' => $taxon['id'],
               'taxon_meaning_id' => $taxon['taxon_meaning_id'],
             ];
           }
@@ -5481,7 +5486,7 @@ JS;
       foreach ($taxalist as $taxon) {
         // create a list of the rows we are going to add to the grid, with the preloaded species names linked to them
         $taxonRows[] = [
-          'ttlId' => $taxon['taxa_taxon_list_id'],
+          'ttlId' => $taxon['id'],
           'taxon_meaning_id' => $taxon['taxon_meaning_id'],
         ];
       }
@@ -5558,7 +5563,7 @@ JS;
         }
         // Ensure the load of taxa is batched if there are lots to load.
         if (count($taxa_taxon_list_ids) >= 50 && !empty($options['lookupListId'])) {
-          $extraTaxonOptions['extraParams']['taxa_taxon_list_id'] = json_encode($taxa_taxon_list_ids);
+          $extraTaxonOptions['extraParams']['query'] = json_encode(['in' => ['id' => $taxa_taxon_list_ids]]);
           $taxalist = array_merge($taxalist, self::get_population_data($extraTaxonOptions));
           $taxa_taxon_list_ids = [];
         }
@@ -5566,10 +5571,18 @@ JS;
       // Load and append the remaining additional taxa to our list of taxa to
       // use in the grid.
       if (count($taxa_taxon_list_ids) && !empty($options['lookupListId'])) {
-        $extraTaxonOptions['extraParams']['taxa_taxon_list_id'] = json_encode($taxa_taxon_list_ids);
+        $extraTaxonOptions['extraParams']['query'] = json_encode(['in' => ['id' => $taxa_taxon_list_ids]]);
         $taxalist = array_merge($taxalist, self::get_population_data($extraTaxonOptions));
       }
     }
+    // As we now use cache_taxa_taxon_lists to obtain data for initial
+    // population of the grid but used to use cache_taxon_searchterms, provide
+    // aliases to some of the field values so that legacy taxon label templates
+    // still work.
+    array_walk($taxalist, function(&$v) {
+      $v['taxa_taxon_list_id'] = $v['id'];
+      $v['original'] = $v['taxon'];
+    });
     return $taxalist;
   }
 
@@ -5635,7 +5648,7 @@ JS;
       'speciesGridPageLinkUrl' => '',
       'speciesGridPageLinkParameter' => '',
       'speciesGridPageLinkTooltip' => '',
-      'table' => 'taxa_search',
+      'table' => 'cache_taxa_taxon_list',
       // Legacy - occurrenceImages means just local image support.
       'mediaTypes' => !empty($options['occurrenceImages']) && $options['occurrenceImages'] ? ['Image:Local'] : [],
       'mediaLicenceId' => NULL,
@@ -6045,6 +6058,9 @@ HTML;
    *   sub-sample.
    * * **location_name** - set to true to add a location name input control for
    *   each sub-sample.
+   * * **hideMapWhenEditingSubsample** - defaults to true. Set to false to
+   *   leave the map visible whilst a sub-sample's create/update form is
+   *   visible.
    */
   public static function multiple_places_species_checklist($options) {
     if (empty($options['spatialSystem'])) {
@@ -6061,6 +6077,7 @@ HTML;
       'id' => "species-grid-$code",
       'buttonsId' => "species-grid-buttons-$code",
       'speciesControlToUseSubSamples' => TRUE,
+      'hideMapWhenEditingSubsample' => TRUE,
       'base_url' => self::$base_url,
       'samplePhotos' => FALSE,
     ], $options);
@@ -7165,10 +7182,13 @@ JS;
   }
 
   /**
-   * Internal function to output either a select or listbox control depending on the templates
-   * passed.
-   * @param array $options Control options array
-   * @access private
+   * Output a select or listbox control.
+   *
+   * Internal function to output either a select or listbox control depending
+   * on the templates passed.
+   *
+   * @param array $options
+   *   Control options array.
    */
   private static function select_or_listbox($options) {
     global $indicia_templates;
@@ -7193,30 +7213,34 @@ JS;
         $options['blankText'] = lang::get($options['blankText']);
         $options['items'] = str_replace(
             ['{value}', '{caption}', '{selected}', '{attribute_list}'],
-            ['', htmlentities($options['blankText'], ENT_COMPAT, "UTF-8")],
+            ['', htmlentities($options['blankText'] ?? '', ENT_COMPAT, "UTF-8")],
             $indicia_templates[$options['itemTemplate']]
           ) . (isset($options['optionSeparator']) ? $options['optionSeparator'] : "\n");
       }
       $options['items'] .= implode((isset($options['optionSeparator']) ? $options['optionSeparator'] : "\n"), $lookupItems);
     }
-    if (isset($response['error']))
-      return $response['error'];
-    else
-      return self::apply_template($options['template'], $options);
+    return self::apply_template($options['template'], $options);
   }
 
   /**
-   * When populating a list control (select, listbox, checkbox or radio group), use either the
-   * table, captionfield and valuefield to build the list of values as an array, or if lookupValues
-   * is in the options array use that instead of making a database call.
+   * Retreive the list items from the database for a control's options.
+   *
+   * When populating a list control (select, listbox, checkbox or radio group),
+   * use either the table, captionfield and valuefield to build the list of
+   * values as an array, or if lookupValues is in the options array use that
+   * instead of making a database call.
+   *
    * @param array $options
    *   Options array for the control. If translate set to TRUE then option
    *   captions are run through translation.
-   * @param string $selectedItemAttribute Name of the attribute that should be set in each list element if the item is selected/checked. For
-   * option elements, pass "selected", for checkbox inputs, pass "checked".
-   * @return array Associative array of the lookup values and templated list items.
+   * @param string $selectedItemAttribute Name of the attribute that should be
+   *   set in each list element if the item is selected/checked. For option
+   *   elements, pass "selected", for checkbox inputs, pass "checked".
+   *
+   * @return array
+   *   Associative array of the lookup values and templated list items.
    */
-  private static function getListItemsFromOptions($options, $selectedItemAttribute) {
+  private static function getListItemsFromOptions(array $options, $selectedItemAttribute) {
     global $indicia_templates;
     if (!isset($options['lookupValues']) && empty($options['report']) && empty($options['table'])) {
       $name = empty($options['id']) ? $options['fieldname'] : $options['id'];
@@ -8103,17 +8127,22 @@ if (errors$uniq.length>0) {
       $occs = $sampleRecord['occurrences'];
       unset($sampleRecord['occurrences']);
       $sampleRecord['website_id'] = $website_id;
-      // copy essentials down to each subSample
-      if (!empty($arr['survey_id']))
-        $sampleRecord['survey_id'] = $arr['survey_id'];
-      if (!empty($arr['sample:date']))
-        $sampleRecord['date'] = $arr['sample:date'];
-      if (!empty($arr['sample:entered_sref_system']))
-        $sampleRecord['entered_sref_system'] = $arr['sample:entered_sref_system'];
-      if (!empty($arr['sample:location_name']) && empty($sampleRecord['location_name']))
-        $sampleRecord['location_name'] = $arr['sample:location_name'];
-      if (!empty($arr['sample:input_form']))
-        $sampleRecord['input_form'] = $arr['sample:input_form'];
+      // Copy missing essentials down from parent to each subSample.
+      if (!empty($arr['survey_id'])) {
+        $sampleRecord['sample:survey_id'] = $arr['survey_id'];
+      }
+      if (!empty($arr['sample:date'])) {
+        $sampleRecord['sample:date'] = $arr['sample:date'];
+      }
+      if (!empty($arr['sample:entered_sref_system'])) {
+        $sampleRecord['sample:entered_sref_system'] = $arr['sample:entered_sref_system'];
+      }
+      if (!empty($arr['sample:location_name']) && empty($sampleRecord['sample:location_name'])) {
+        $sampleRecord['sample:location_name'] = $arr['sample:location_name'];
+      }
+      if (!empty($arr['sample:input_form'])) {
+        $sampleRecord['sample:input_form'] = $arr['sample:input_form'];
+      }
       $subSample = submission_builder::wrap_with_images($sampleRecord, 'sample');
       // Add the subSample/soccurrences in as subModels without overwriting others such as a sample image
       if (array_key_exists('subModels', $subSample)) {

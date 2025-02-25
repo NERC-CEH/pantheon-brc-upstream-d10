@@ -438,6 +438,15 @@ jQuery(document).ready(function ($) {
             $('#identification_difficulty_op').find("option[value='" + op + "']").html() +
             ' ' + filterDef.identification_difficulty);
         }
+        if (filterDef.classifier_agreement) {
+          if (filterDef.classifier_agreement.toLowerCase() === 'y') {
+            r.push(indiciaData.lang.reportFilterParser.ClassifierAgrees);
+          } else if (filterDef.classifier_agreement.toLowerCase() === 'n') {
+            r.push(indiciaData.lang.reportFilterParser.ClassifierDisagrees);
+          } else if (filterDef.classifier_agreement.toLowerCase() === 'c') {
+            r.push(indiciaData.lang.reportFilterParser.ClassifierUsed);
+          }
+        }
         if (filterDef.has_photos && filterDef.has_photos === '1') {
           r.push(indiciaData.lang.reportFilterParser.HasPhotos);
         } else if (filterDef.has_photos && filterDef.has_photos === '0') {
@@ -929,6 +938,11 @@ jQuery(document).ready(function ($) {
             $('#identification_difficulty').prop('disabled', false);
             $('#identification_difficulty_op').prop('disabled', false);
           }
+          if (context.classifier_agreement) {
+            $('#classifier_agreement').prop('disabled', true);
+          } else {
+            $('#classifier_agreement').prop('disabled', false);
+          }
           if (context.has_photos) {
             $('#has_photos').prop('disabled', true);
           } else {
@@ -943,7 +957,7 @@ jQuery(document).ready(function ($) {
           }
           if ((context.quality && context.quality !== 'all') ||
               (context.certainty && context.certainty.split(',').length !== 4) ||
-              context.autochecks || context.identification_difficulty || context.has_photos ||
+              context.autochecks || context.identification_difficulty || context.classifier_agreement || context.has_photos ||
               context.licences || context.media_licences || context.coordinate_precision
             ) {
             $('#controls-filter_quality .context-instruct').show();

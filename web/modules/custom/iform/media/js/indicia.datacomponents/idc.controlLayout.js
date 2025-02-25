@@ -41,6 +41,9 @@ jQuery(document).ready(function($) {
     if (thisCtrl.hasClass('idc-dataGrid')) {
       return thisCtrl.find('tbody');
     }
+    if (thisCtrl.hasClass('idc-cardGallery')) {
+      return thisCtrl.find('.es-card-gallery');
+    }
     return thisCtrl;
   }
 
@@ -75,11 +78,10 @@ jQuery(document).ready(function($) {
      */
     indiciaFns.updateControlLayout = function updateLayout() {
       const belowBreakpoint = window.matchMedia('(max-width: ' + indiciaData.esControlLayout.breakpoint + 'px)').matches;
+      // setOriginY refers to a control used to consider as the top origin of
+      // the active area of the page. originY is the number of pixels between
+      // its visible top and the top of the browser viewport.
       const originY = $('#' + indiciaData.esControlLayout.setOriginY)[0].getBoundingClientRect().y;
-      // If originY is at the top of the page, find the bottom. The page
-      // starts below the body element's padding, as the latter is space for
-      // the Drupal admin toolbar.
-      const proposedPageBottom = originY + (window.innerHeight - getCtrlStyledSizing($('body'), 'paddingTop'));
       $.each(indiciaData.esControlLayout.alignTop, function() {
         const thisCtrl = $('#' + this);
         if (belowBreakpoint) {
@@ -101,7 +103,7 @@ jQuery(document).ready(function($) {
           // Below breakpoint, so revert to unstyled height.
           $('#' + id).css('height', '');
         } else {
-          $('#' + id).css('height', (window.innerHeight * height / 100) + 'px');
+          $('#' + id).css('height', ((window.innerHeight - originY) * height / 100) + 'px');
         }
       });
       $.each(indiciaData.esControlLayout.alignBottom, function() {
@@ -115,10 +117,16 @@ jQuery(document).ready(function($) {
           } else {
             const padding = 4;
             const resizeElTop = resizeEl[0].getBoundingClientRect().y;
+            // Unset any min-height defined for outer container - we want to
+            // know it's true intrinsic height.
+            $('#' + this).css('min-height', 'auto');
             // Allow for any footer area in the control that is under the scrollbox area (e.g. a tfoot).
             const allowForSpaceBelowResizeEl = $('#' + this)[0].getBoundingClientRect().height - resizeEl[0].getBoundingClientRect().height - (resizeElTop - $('#' + this)[0].getBoundingClientRect().y);
+            // Reset.
+            $('#' + this).css('min-height', '');
+            const controlHeight = window.innerHeight - resizeElTop - allowForSpaceBelowResizeEl - padding * 2;
             resizeEl.css('overflow-y', 'auto');
-            resizeEl.css('max-height', proposedPageBottom - resizeElTop - allowForSpaceBelowResizeEl - padding * 2);
+            resizeEl.css('max-height', Math.max(controlHeight, 50));
             $('body').css('padding-bottom', padding + 'px');
           }
         }

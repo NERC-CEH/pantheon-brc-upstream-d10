@@ -128,7 +128,10 @@
     };
     if (multiselectWholeTableMode()) {
       todoListInfo.mode = 'table';
-      todoListInfo.total = $(listOutputControl)[0].settings.sourceObject.settings.total;
+      todoListInfo.total = {
+        value: $(listOutputControl)[0].settings.sourceObject.settings.total,
+        relation: 'eq'
+      };
     } else {
       todoListInfo.mode =  $(listOutputControl).hasClass('multiselect-mode') ? 'selection' : 'single';
       selectedItems = $(listOutputControl).hasClass('multiselect-mode')
@@ -138,7 +141,10 @@
         const doc = JSON.parse($(this).attr('data-doc-source'));
         todoListInfo.ids.push(parseInt(doc.id, 10));
       });
-      todoListInfo.total = {value: todoListInfo.ids.length, relation: 'eq'};
+      todoListInfo.total = {
+        value: todoListInfo.ids.length,
+        relation: 'eq'
+      };
     }
     return todoListInfo;
   }
@@ -200,25 +206,13 @@
   }
 
   /**
-   * Display the redetermination form.
+   * Display the redetermination form for a specific set of records.
    */
-  function showRedetForm(el) {
-    const todoListInfo = getTodoListInfo();
-    redetToTaxon = null;
-    resetCommentForm('redet-form', 'Redetermined from {{ rank }} {{ taxon full name }} to {{ new rank }} {{ new taxon full name }}.');
+  function showRedetFormForOccurrenceIds(el, occurrenceIds) {
     if (el.settings.verificationTemplates) {
       loadVerificationTemplates('DT', '#redet-template');
     }
-    if (todoListInfo.mode === 'selection' && todoListInfo.total.value === 0) {
-      alert(indiciaData.lang.verificationButtons.nothingSelected);
-      return;
-    }
-    if (todoListInfo.total.value > 1) {
-      $('#redet-form .multiple-warning').show();
-    } else {
-      $('#redet-form .multiple-warning').hide();
-    }
-    $('#redet-form').data('ids', JSON.stringify(todoListInfo.ids));
+    $('#redet-form').data('ids', JSON.stringify(occurrenceIds));
     $.fancybox.open({
       src: $('#redet-form'),
       type: 'html',
@@ -230,6 +224,25 @@
         }
       }
     });
+  }
+
+  /**
+   * Display the redetermination form for the current record/selection.
+   */
+  function showRedetForm(el) {
+    const todoListInfo = getTodoListInfo();
+    redetToTaxon = null;
+    resetCommentForm('redet-form', 'Redetermined from {{ rank }} {{ taxon full name }} to {{ new rank }} {{ new taxon full name }}.');
+    if (todoListInfo.mode === 'selection' && todoListInfo.total.value === 0) {
+      alert(indiciaData.lang.verificationButtons.nothingSelected);
+      return;
+    }
+    if (todoListInfo.total.value > 1) {
+      $('#redet-form .multiple-warning').show();
+    } else {
+      $('#redet-form .multiple-warning').hide();
+    }
+    showRedetFormForOccurrenceIds(todoListInfo.ids);
   }
 
   /**
@@ -698,6 +711,37 @@
       var div = $(e.currentTarget).closest('.idc-verificationButtons-row');
       div.find('.apply-to button').not(e.currentTarget).removeClass('active');
       $(e.currentTarget).addClass('active');
+    });
+
+    /**
+     * Select all checkboxes event handler.
+     */
+    $(el).find('.multiselect-all').click(function selectAllClick(e) {
+      const el = $(e.currentTarget).closest('.idc-control');
+      const checkboxes = $(el).find('.multiselect:checkbox');
+      var anyUnchecked = $(checkboxes).filter(':not(:checked)').length > 0;
+      $(checkboxes).prop('checked', anyUnchecked);
+    });
+
+    indiciaFns.on('click', '.classifier-suggestion', [], (e) => {
+      $('#redet-form .multiple-warning').hide();
+      showRedetFormForOccurrenceIds(el, [$(e.currentTarget).data('occurrence_id')]);
+      $.getJSON(indiciaData.warehouseUrl + 'index.php/services/data/taxa_search' +
+        '?mode=json' +
+        '&nonce=' + indiciaData.read.nonce +
+        '&auth_token=' + indiciaData.read.auth_token +
+
+        // @todo Correct the list ID? Can we get away without it?
+        '&taxon_list_id=1' +
+
+        '&taxa_taxon_list_id=' + $(e.currentTarget).data('taxa_taxon_list_id') +
+        '&callback=?'
+      ).done(function(data) {
+        if (data.length > 0) {
+          $('#redet-species').val(data[0].taxa_taxon_list_id);
+          $('#redet-species\\:taxon').val(data[0].taxon);
+        }
+      });
     });
 
   }
@@ -1832,7 +1876,6 @@
           } else if (el.settings.editPath) {
             editPath = el.settings.editPath;
           }
-          console.log('path: ' + editPath);
           if (editPath) {
             $(buttonEl).find('.edit').attr('href', editPath + sep + 'occurrence_id=' + doc.id);
             $(buttonEl).find('.edit').show();

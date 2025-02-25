@@ -114,3 +114,16 @@ input.findme {
   width: 500px !important;
   box-sizing: border-box;
 }
+
+.columns {
+  .column {
+    float: left;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+  &.two {
+    .column {
+      width: 50%;
+    }
+  }
+}

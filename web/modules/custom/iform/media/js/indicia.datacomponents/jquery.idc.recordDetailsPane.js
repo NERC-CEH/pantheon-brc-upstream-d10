@@ -51,7 +51,8 @@
    * Declare default settings.
    */
   var defaults = {
-    controlLayoutDone: false
+    controlLayoutDone: false,
+    includeImageClassifierInfo: false
   };
 
   var callbacks = {
@@ -413,6 +414,15 @@
     });
   }
 
+  /**
+   * Load info onto the image classifier info tab.
+   */
+  function loadImageClassifierInfo(el, doc) {
+    let html = indiciaFns.getImageClassifierAgreementHtml(doc);
+    html += indiciaFns.getImageClassifierSuggestionsHtml(doc);
+    $(el).find('.classifier-info').html(html);
+  }
+
   function loadCurrentTabAjax(el) {
     var selectedItem = $(rowSourceControl).find('.selected');
     var doc;
@@ -420,12 +430,14 @@
     var functions = [
       loadAttributes,
       loadComments,
-      loadExperience
+      loadExperience,
+      loadImageClassifierInfo,
     ];
     var tabNames = [
       'Details',
       'Comments',
-      'Experience'
+      'Recorder experience',
+      'Image classifier info.'
     ]
     if (selectedItem.length > 0) {
       doc = JSON.parse(selectedItem.attr('data-doc-source'));
@@ -547,6 +559,11 @@
         }
       }
       $(el).find('.empty-message').hide();
+      if (el.settings.includeImageClassifierInfo && doc.identification.classifier) {
+        $('#classifier-info-tab').show();
+      } else {
+        $('#classifier-info-tab').hide();
+      }
       $(el).find('.tabs').show();
       if (!el.settings.controlLayoutDone) {
         // On first show, make sure controlLayout control can apply any changes.

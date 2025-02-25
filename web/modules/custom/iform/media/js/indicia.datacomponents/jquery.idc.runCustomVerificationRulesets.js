@@ -65,18 +65,26 @@
         dataType: 'json',
         data: request,
       })
-      .done(function(data) {
+      .done(function(data, code, jq) {
         dlg.find('.progress-cntr').hide();
         $.fancybox.close();
-        $.fancyDialog({
-          title: indiciaData.lang.runCustomVerificationRulesets.processComplete,
-          message: indiciaData.lang.runCustomVerificationRulesets.processCompleteMessage.replace('{1}', data.updated),
-          cancelButton: null,
-          callbackOk: () => {
-            // Do this after the message closed so ES lazy updates are completed.
-            source.populate(true);
-          }
-        });
+        if (jq.status === 200) {
+          $.fancyDialog({
+            title: indiciaData.lang.runCustomVerificationRulesets.processComplete,
+            message: indiciaData.lang.runCustomVerificationRulesets.processCompleteMessage.replace('{1}', data.updated),
+            cancelButton: null,
+            callbackOk: () => {
+              // Do this after the message closed so ES lazy updates are completed.
+              source.populate(true);
+            }
+          });
+        } else {
+          $.fancyDialog({
+            title: indiciaData.lang.runCustomVerificationRulesets.processNotComplete,
+            message: data.message || data.status,
+            cancelButton: null,
+          });
+        }
       })
       .fail(function(data) {
         dlg.find('.progress-cntr').hide();

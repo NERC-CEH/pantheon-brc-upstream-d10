@@ -1,0 +1,58 @@
+$verify-color: #00a000;
+$reject-color: #a00000;
+
+@mixin passfailicon {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  border: solid 1px;
+  border-radius: 4px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 2px 2px;
+  font-size: 0;
+}
+
+.pass-icon {
+  @include passfailicon;
+  border-color: $verify-color;
+  box-shadow: $verify-color 1px 1px 3px;
+  background-image: url("../images/p.png");
+}
+
+.auto-check-disabled-icon {
+  @include passfailicon;
+  border-color: #aaa;
+  box-shadow: #aaa 1px 1px 3px;
+  background-image: url("../images/no-entry.png");
+}
+
+.pending-icon {
+  @include passfailicon;
+  border-color: #aaa;
+  box-shadow: #aaa 1px 1px 3px;
+  background-image: url("../images/cog.png");
+}
+
+.fail-icon {
+  @include passfailicon;
+  border-color: $reject-color;
+  box-shadow: $reject-color 1px 1px 3px;
+  background-image: url("../images/nuvola/help-16px.png");
+  /* Rules for the Record Cleaner API plus inbuilt Data Cleaner */
+  &.record_cleaner_difficulty, &.data_cleaner_identification_difficulty {
+    background-image: url("../images/nuvola/xmag-16px.png");
+  }
+  &.record_cleaner_period, &.data_cleaner_period {
+    background-image: url("../images/nuvola/history-16px.png");
+  }
+  &.record_cleaner_phenology, &.data_cleaner_period_within_year {
+    background-image: url("../images/nuvola/date-16px.png");
+  }
+  &.record_cleaner_tenkm, &.data_cleaner_without_polygon {
+    background-image: url("../images/nuvola/browser-16px.png");
+  }
+  &.verification_check_species_designation {
+    background-image: url("../images/nuvola/bottom-16px.png");
+  }
+}

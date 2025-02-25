@@ -104,7 +104,7 @@ table.species-grid tr td input, table.species-grid tr td select {
   width: 100%;
   margin: 0;
   vertical-align: middle;
-  padding: 3px 0;
+  padding: 6px;
 }
 table.species-grid .footable-row-detail-value {
   padding: 8px 0;
@@ -535,6 +535,82 @@ table.report-grid .multi img {
   margin: 1px;
 }
 
+.pass-icon {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  border: solid 1px;
+  border-radius: 4px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 2px 2px;
+  font-size: 0;
+  border-color: #00a000;
+  box-shadow: #00a000 1px 1px 3px;
+  background-image: url("../images/p.png");
+}
+
+.auto-check-disabled-icon {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  border: solid 1px;
+  border-radius: 4px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 2px 2px;
+  font-size: 0;
+  border-color: #aaa;
+  box-shadow: #aaa 1px 1px 3px;
+  background-image: url("../images/no-entry.png");
+}
+
+.pending-icon {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  border: solid 1px;
+  border-radius: 4px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 2px 2px;
+  font-size: 0;
+  border-color: #aaa;
+  box-shadow: #aaa 1px 1px 3px;
+  background-image: url("../images/cog.png");
+}
+
+.fail-icon {
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  border: solid 1px;
+  border-radius: 4px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 2px 2px;
+  font-size: 0;
+  border-color: #a00000;
+  box-shadow: #a00000 1px 1px 3px;
+  background-image: url("../images/nuvola/help-16px.png");
+  /* Rules for the Record Cleaner API plus inbuilt Data Cleaner */
+}
+.fail-icon.record_cleaner_difficulty, .fail-icon.data_cleaner_identification_difficulty {
+  background-image: url("../images/nuvola/xmag-16px.png");
+}
+.fail-icon.record_cleaner_period, .fail-icon.data_cleaner_period {
+  background-image: url("../images/nuvola/history-16px.png");
+}
+.fail-icon.record_cleaner_phenology, .fail-icon.data_cleaner_period_within_year {
+  background-image: url("../images/nuvola/date-16px.png");
+}
+.fail-icon.record_cleaner_tenkm, .fail-icon.data_cleaner_without_polygon {
+  background-image: url("../images/nuvola/browser-16px.png");
+}
+.fail-icon.verification_check_species_designation {
+  background-image: url("../images/nuvola/bottom-16px.png");
+}
+
 /* Styling for the list of uploaded files. */
 .filelist {
   /* Highlight drop target if dropping enabled */
@@ -831,6 +907,9 @@ body > .loading-spinner {
   position: fixed;
 }
 
+.idc-control {
+  /* Multiselect checkboxes for grids and card galleries. */
+}
 .idc-control .idc-tools {
   position: absolute;
   top: 0;
@@ -847,6 +926,10 @@ body > .loading-spinner {
 }
 .idc-control .idc-tools span:hover {
   color: #333;
+}
+.idc-control .multiselect-cntr input[type=checkbox] {
+  width: 18px;
+  height: 18px;
 }
 
 /* idcCardGallery plugin */
@@ -948,13 +1031,13 @@ body > .loading-spinner {
 .idc-cardGallery .es-card-gallery .card .image-container {
   display: flex;
   padding: 4px;
+  justify-content: center;
 }
 .idc-cardGallery .es-card-gallery .card .image-container > * {
   max-width: 98%;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 0;
+  flex-basis: auto;
   margin-right: 4px;
+  margin-bottom: 8px;
 }
 .idc-cardGallery .es-card-gallery .card .image-container > * img {
   max-width: 100%;
@@ -977,7 +1060,6 @@ body > .loading-spinner {
 .idc-cardGallery .es-card-gallery .card .verification-buttons-cntr {
   padding: 8px;
   margin: 8px;
-  background: #ccc;
   border-radius: 4px;
 }
 .idc-cardGallery .es-card-gallery .card .verification-buttons-cntr button {
@@ -1017,8 +1099,35 @@ body > .loading-spinner {
   top: 6px;
   right: 12px;
 }
-.idc-cardGallery .es-card-gallery .card .multiselect-cntr .multiselect {
-  transform: scale(1.4);
+.idc-cardGallery .es-card-gallery .card .card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 8px;
+}
+.idc-cardGallery .es-card-gallery .card .card-footer > * {
+  margin-right: 15px;
+  border: solid silver 1px;
+  border-radius: 4px;
+}
+.idc-cardGallery .es-card-gallery .card .card-footer .data-container {
+  background-color: #eee;
+  color: #333;
+}
+.idc-cardGallery .es-card-gallery .card .card-footer .classifier-agreement {
+  background-color: #333;
+  color: #fff;
+  padding: 8px;
+}
+.idc-cardGallery .es-card-gallery .card .card-footer .classifier-suggestions {
+  background-color: #333;
+  color: #fff;
+  padding: 8px;
+}
+.idc-cardGallery .es-card-gallery .card .card-footer .classifier-suggestions .classifier-suggestion {
+  background-color: #eee;
+  color: #333;
 }
 @media (min-width: 801px) {
   .idc-cardGallery .es-card-gallery .card:not(.show-max-size) {
@@ -1050,7 +1159,7 @@ body > .loading-spinner {
     flex-basis: 98%;
   }
 }
-.idc-cardGallery .pager {
+.idc-cardGallery .footer {
   background-color: #eee;
   padding: 8px;
 }
@@ -1294,6 +1403,9 @@ body > .loading-spinner {
 .idc-verificationButtons-row button:focus:active, .idc-verificationButtons-row a:focus:active {
   background: #fbdbdb;
 }
+.idc-verificationButtons-row .apply-to {
+  margin-right: 8px;
+}
 .idc-verificationButtons-row .multi-only {
   display: none;
 }
@@ -1504,6 +1616,60 @@ body > .loading-spinner {
   display: inline-block;
   vertical-align: middle;
   text-align: right;
+}
+
+/* Image classifier info panels. */
+.classifier-suggestions .classifier-suggestion {
+  margin: 8px;
+  padding: 8px;
+  position: relative;
+  display: inline-block;
+  max-width: 150px;
+  border: solid #777 1px;
+}
+.classifier-suggestions .classifier-suggestion span {
+  display: block;
+}
+.classifier-suggestions .classifier-suggestion span.taxon {
+  font-style: italic;
+  font-weight: bold;
+  margin-top: 4px;
+}
+.classifier-suggestions .classifier-suggestion span.classifier-name {
+  font-size: 12px;
+  font-style: italic;
+}
+.classifier-suggestions .classifier-suggestion span.classifier-selection {
+  font-size: 12px;
+}
+.classifier-suggestions .classifier-suggestion span.probability {
+  position: absolute;
+  right: 8px;
+  top: -14px;
+  padding: 4px;
+  background: white;
+  border-radius: 1em;
+  border-style: solid;
+  border-width: 2px;
+}
+.classifier-suggestions .classifier-suggestion span.probability.high-probability {
+  border-color: olivedrab;
+}
+.classifier-suggestions .classifier-suggestion span.probability.med-probability {
+  border-color: orange;
+}
+.classifier-suggestions .classifier-suggestion span.probability.low-probability {
+  border-color: brown;
+}
+.classifier-suggestions .classifier-suggestion span.probability.vlow-probability {
+  border-color: red;
+}
+.classifier-suggestions .classifier-suggestion:hover {
+  -webkit-box-shadow: 3px 3px 6px #a7a7a7;
+  -moz-box-shadow: 3px 3px 6px #a7a7a7;
+  box-shadow: 3px 3px 6px #a7a7a7;
+  border-color: blue;
+  cursor: pointer;
 }
 
 @keyframes fadeIn {
@@ -1781,6 +1947,15 @@ input.findme {
 .control-width-6 {
   width: 500px !important;
   box-sizing: border-box;
+}
+
+.columns .column {
+  float: left;
+  padding: 8px;
+  box-sizing: border-box;
+}
+.columns.two .column {
+  width: 50%;
 }
 
 .loading-spinner {

@@ -127,14 +127,25 @@
    * Font Awesome icon classes for verification automatic check rules.
    */
   indiciaData.ruleClasses = {
-    WithoutPolygon: 'fas fa-globe',
-    PeriodWithinYear: 'far fa-calendar-times',
     IdentificationDifficulty: 'fas fa-microscope',
+    Period: 'far fa-calendar-alt',
+    PeriodWithinYear: 'far fa-calendar-times',
+    WithoutPolygon: 'fas fa-globe',
     default: 'fas fa-ruler',
     pass: 'fas fa-thumbs-up',
     fail: 'fas fa-thumbs-down',
     pending: 'fas fa-cog',
     checksDisabled: 'fas fa-eye-slash'
+  };
+
+  /**
+   * Also icons for where the Record Cleaner
+   */
+  indiciaData.recordCleanerRuleClasses = {
+    tenkm: 'fas fa-globe',
+    period: 'far fa-calendar-alt',
+    phenology: 'far fa-calendar-times',
+    difficulty: 'fas fa-microscope',
   };
 
   /**
@@ -295,6 +306,87 @@
   }
 
   /**
+   * Obtain HTML to display if the image classifier agrees with the record ID.
+   */
+  indiciaFns.getImageClassifierAgreementHtml = function getImageClassifierAgreementHtml(doc) {
+    // Check if the document has classifier information.
+    if (doc.identification.classifier) {
+      // Determine if the classifier agrees with the current determination.
+      const agreement = doc.identification.classifier.current_determination.classifier_chosen === 'true';
+      const iconClass = agreement ? 'fa-check-circle' : 'fa-times-circle';
+      const msg = agreement ? indiciaData.lang.classifier.imageClassifierAgrees : indiciaData.lang.classifier.imageClassifierDisagrees;
+      return `<div class="classifier-agreement"><i class="fas ${iconClass} fa-2x"></i>${msg}</div>`;
+    }
+    return '';
+  }
+
+  /**
+   * Obtain HTML to display the suggestions made by image classifiers for a record.
+   *
+   * @param object doc
+   *   Elasticsearch occurrence document.
+   *
+   * @returns string
+   *   HTML to explain image classifier results for this occurrence.
+   */
+  indiciaFns.getImageClassifierSuggestionsHtml = function getImageClassifierSuggestionsHtml(doc) {
+    var html = '';
+    var selection;
+    var probabilityPercent;
+    var probabilityClass;
+    // Check if the document has classifier information.
+    if (doc.identification.classifier) {
+      // Output a panel for each suggestion.
+      if (doc.identification.classifier.suggestions) {
+        // If verification buttons on the page, then clicking a suggestion
+        // triggers redetermination, so create a hint for the suggestion
+        // panels.
+        const clickHint = $('.verification-buttons-cntr').length > 0 ? ` title="${indiciaData.lang.classifier.clickToRedetermineAs}" ` : '';
+        $.each(doc.identification.classifier.suggestions, function() {
+          if (this.human_chosen === 'true' || this.classifier_chosen === 'true') {
+            let choiceInfo = [];
+            if (this.human_chosen === 'true') {
+              choiceInfo.push(indiciaData.lang.classifier.suggestionHumanChosen);
+            }
+            if (this.classifier_chosen === 'true') {
+              choiceInfo.push(indiciaData.lang.classifier.suggestionClassifierChosen);
+            }
+            selection = choiceInfo.join(' | ');
+          } else {
+            selection = indiciaData.lang.classifier.suggestionNotChosen;
+          }
+          probabilityPercent = this.probability_given * 100;
+          if (probabilityPercent > 90) {
+            probabilityClass = 'high';
+          }
+          else if (probabilityPercent > 60) {
+            probabilityClass = 'med';
+          }
+          else if (probabilityPercent > 20) {
+            probabilityClass = 'low';
+          }
+          else {
+            probabilityClass = 'vlow';
+          }
+          html += `<div class="classifier-suggestion" data-taxa_taxon_list_id="${this.taxa_taxon_list_id}" data-occurrence_id="${doc.id}" ${clickHint}>
+            <span class="taxon">${this.taxon_name_given}</span>
+            <span class="probability ${probabilityClass}-probability">${probabilityPercent}%</span>
+            <span class="classifier-name">${this.classifier} ${this.classifier_version}</span>
+            <span class="classifier-selection">${selection}</span>
+          </div>`;
+        });
+      }
+    } else {
+      // No classifier information available
+      html = indiciaData.templates.messageBox.replace('{message}', indiciaData.lang.classifier.noClassifierInfoAvailable);
+    }
+    return `<div class="classifier-suggestions">
+      <h3>${indiciaData.lang.classifier.classifierSuggestions}</h3>
+      ${html}
+    </div>`;
+  }
+
+  /**
    * Instantiate the data sources.
    */
   indiciaFns.initDataSources = function initDataSources() {
@@ -373,6 +465,10 @@
       'event.sampling_protocol',
       'identification.auto_checks.output.message',
       'identification.auto_checks.output.rule_type',
+      'identification.classifier.current_determination.taxon_name_given',
+      'identification.classifier.suggestions.classifier',
+      'identification.classifier.suggestions.classifier_version',
+      'identification.classifier.suggestions.taxon_name_given',
       'identification.identified_by',
       'identification.query',
       'identification.recorder_certainty',
@@ -833,10 +929,17 @@
           icons = ['<span title="The following automatic rule checks were triggered for this record." class="' + indiciaData.ruleClasses.fail + '"></span>'];
           // Add an icon for each rule violation.
           $.each(autoChecks.output, function eachViolation() {
-            // Set a default for any other rules.
-            var icon = Object.prototype.hasOwnProperty.call(indiciaData.ruleClasses, this.rule_type)
-              ? indiciaData.ruleClasses[this.rule_type] : indiciaData.ruleClasses.default;
-            icons.push('<span title="' + this.message + '" class="' + icon + '"></span>');
+            var icon;
+            let message = this.message;
+            if (this.rule_type.match(/^RecordCleaner/)) {
+              const rule = this.rule_type.replace(/^RecordCleaner/, '').toLowerCase();
+              icon = Object.prototype.hasOwnProperty.call(indiciaData.recordCleanerRuleClasses, rule)
+                ? indiciaData.recordCleanerRuleClasses[rule] : indiciaData.ruleClasses.default;
+            } else {
+              icon = Object.prototype.hasOwnProperty.call(indiciaData.ruleClasses, this.rule_type)
+                ? indiciaData.ruleClasses[this.rule_type] : indiciaData.ruleClasses.default;
+            }
+            icons.push('<span title="' + message + '" class="' + icon + '"></span>');
           });
         }
       } else {
@@ -948,6 +1051,36 @@
         text.push(typeof item === 'string' ? item : Object.values(item).join('; '));
       });
       return text.join(' | ');
+    },
+
+    /**
+     * Retrieve HTML representing classifier agreement with current det.
+     */
+    identification_classifier_agreement: function identificationClassifierAgreemenent(doc) {
+      if (doc.identification.classifier) {
+        return doc.identification.classifier.current_determination.classifier_chosen === 'true'
+          ? '<i class="fas fa-check-circle"></i>'
+          : '<i class="fas fa-times-circle"></i>';
+      }
+      return '';
+    },
+
+    /**
+     * Retrieve HTML representing classifier agreement with current det.
+     */
+    identification_classifier_suggestion: function identificationClassifierSuggestion(doc) {
+      if (doc.identification.classifier && doc.identification.classifier.suggestions) {
+        let topSuggestion = '';
+        let topProbability = 0;
+        $.each(doc.identification.classifier.suggestions, function() {
+          if (this.probability_given > topProbability) {
+            topProbability = this.probability_given;
+            topSuggestion = this.taxon_name_given;
+          }
+        });
+        return topSuggestion;
+      }
+      return '';
     },
 
     /**
@@ -1273,6 +1406,54 @@
     },
 
     /**
+     * Build a term query to filter on image classifier agreement.
+     *
+     * Pass Y or N to filter to image classifier top suggestion matching or not
+     * matching the current determination.
+     */
+    identification_classifier_agreement: function identificationClassifierAgreement(text) {
+      const query = {
+        term: {
+          'identification.classifier.current_determination.classifier_chosen': text.toLowerCase() === 'y'
+        }
+      };
+      return {
+        bool_clause: 'must',
+        value: '',
+        query: JSON.stringify(query)
+      };
+    },
+
+    /**
+     * Build a query on words used in the classifier's suggestions.
+     */
+    identification_classifier_suggestion: function identificationClassifierSuggestion(text) {
+      const query = {
+        nested: {
+          path: 'identification.classifier.suggestions',
+          query: {
+            bool: {
+              must: [
+                {
+                  simple_query_string: {
+                    query: text,
+                    fields: ['identification.classifier.suggestions.taxon_name_given'],
+                    default_operator: 'AND'
+                  }
+                }
+              ]
+            }
+          }
+        }
+      };
+      return {
+        bool_clause: 'must',
+        value: '',
+        query: JSON.stringify(query)
+      };
+    },
+
+    /**
      * Implement a filter for records near a lat long point.
      */
     lat_lon: function latLon(text) {
@@ -1305,6 +1486,8 @@
    * Allow special fields to provide custom hints for their filter row inputs.
    */
   indiciaFns.fieldConvertorQueryDescriptions = {
+    identification_classifier_agreement: 'Enter Y to filter to records where the current determination matches the image classifiers top suggestion, or N to filter to records where the determination and top suggestion do not match.',
+    identification_classifier_suggestion: 'Search for any word used in one of the suggested taxon names given by an image classifier. All suggested names given are searched, not just the most likely one.',
     lat_lon: 'Enter a latitude and longitude value to filter to records in the vicinity.',
     event_date: 'Enter a date in dd/mm/yyyy or yyyy-mm-dd format. Filtering to a year or range or years is possible ' +
       'using yyyy or yyyy-yyyy format.'
@@ -1321,6 +1504,8 @@
     data_cleaner_icons: ['identification.auto_checks.result'],
     datasource_code: ['metadata.website.id', 'metadata.survey.id'],
     event_date: ['event.date_start'],
+    identification_classifier_agreement: ['identification.classifier.current_determination.classifier_chosen'],
+    // identification_classifier_suggestion: [],
     // higher_geography: [],
     // locality: [],
     // Do a distance sort from the North Pole

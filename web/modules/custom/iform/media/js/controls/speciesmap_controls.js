@@ -12,12 +12,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.
  *
- * @package Client
- * @subpackage PrebuiltForms
- * @author  Indicia Team
  * @license http://www.gnu.org/licenses/gpl.html GPL 3.0
  * @link    http://code.google.com/p/indicia/
  */
+
+/**
+ * Add a function in indiciaFns.speciesMapModeChangeHooks to trigger any custom
+ * action when the map mode is changed.
+ */
+indiciaFns.speciesMapModeChangeHooks = [];
 
 var control_speciesmap_addcontrols;
 
@@ -118,14 +121,38 @@ var control_speciesmap_addcontrols;
         clonableRow.show();
       }
     };
+
+    /**
+     * Use the attributes of a sub-sample feature to build it's label as per config.
+     */
+    var rebuildFeatureLabel = function() {
+      var feature = (indiciaData.control_speciesmap_mode === 'Add' ?
+          indiciaData.control_speciesmap_new_feature : indiciaData.control_speciesmap_existing_feature);
+      if (!feature) {
+        return;
+      }
+      // need to remove then re-add feature to rebuild label
+      feature.attributes.count = $('[name$="\:sampleIDX"]')
+          .filter('[value=' + feature.attributes.subSampleIndex + ']').closest('tr').not('.scClonableRow').length;
+      feature.attributes.locationName = $('#scm-' + feature.attributes.subSampleIndex + '-block').find('[name$="sample\:location_name"]').val();
+      feature.style = null;
+      resetSubSampleFeatures();
+    };
+
     var switchToSubSampleForm = function switchToSubSampleForm() {
-      $(indiciaData.control_speciesmap_opts.mapDiv).hide(indiciaData.control_speciesmap_opts.animationDuration);
+      if (indiciaData.control_speciesmap_opts.hideMapWhenEditingSubsample) {
+        $(indiciaData.control_speciesmap_opts.mapDiv).hide(indiciaData.control_speciesmap_opts.animationDuration);
+      }
+      indiciaData.mapdiv.settings.disallowManualSrefUpdate = true;
       $('#' + indiciaData.control_speciesmap_opts.id + '-cluster')
         .hide(indiciaData.control_speciesmap_opts.animationDuration);
       $('#' + indiciaData.control_speciesmap_opts.id + '-container')
         .show(indiciaData.control_speciesmap_opts.animationDuration, function after() {
           // Trigger footable resize so visible columns are updated.
           $('#' + indiciaData.control_speciesmap_opts.id + '-container table').trigger('footable_resize');
+          // Ensure the form is in view and focused.
+          $('#' + indiciaData.control_speciesmap_opts.id + '-container')[0].scrollIntoView();
+          $('#' + indiciaData.control_speciesmap_opts.id + '-container').find(':input:visible:not([readonly]):first').focus();
         });
       // Hide tab navigation buttons as they are confusing in this state.
       $('.wizard-buttons').hide();
@@ -136,16 +163,20 @@ var control_speciesmap_addcontrols;
         .hide(indiciaData.control_speciesmap_opts.animationDuration);
       $('#' + indiciaData.control_speciesmap_opts.id + '-cluster')
         .hide(indiciaData.control_speciesmap_opts.animationDuration);
-      $(indiciaData.control_speciesmap_opts.mapDiv)
-        .show(indiciaData.control_speciesmap_opts.animationDuration, function after() {
-          // Trigger map resize to ensure redraws correctly.
-          var div = $(indiciaData.control_speciesmap_opts.mapDiv)[0];
-          if (div.map) {
-            div.map.updateSize();
-          }
-        });
+      indiciaData.mapdiv.settings.disallowManualSrefUpdate = false;
+      if (indiciaData.control_speciesmap_opts.hideMapWhenEditingSubsample) {
+        $(indiciaData.control_speciesmap_opts.mapDiv)
+          .show(indiciaData.control_speciesmap_opts.animationDuration, function after() {
+            // Trigger map resize to ensure redraws correctly.
+            var div = $(indiciaData.control_speciesmap_opts.mapDiv)[0];
+            if (div.map) {
+              div.map.updateSize();
+            }
+          });
+      }
       // Show tab navigation buttons that we previously hid.
       $('.wizard-buttons').show();
+      rebuildFeatureLabel();
     };
     var switchToClusterSelect = function switchToClusterSelect(a1) {
       var currentMsg = $('#' + indiciaData.control_speciesmap_opts.messageId).text();
@@ -220,6 +251,9 @@ var control_speciesmap_addcontrols;
       div.map.editLayer.clickControl.activate(); // to allow user to select new position.
       $('#' + indiciaData.control_speciesmap_opts.messageId).empty().append(indiciaData.lang.speciesMap.MoveMessage2);
       showButtons(['move', 'cancel']);
+      $.each(indiciaFns.speciesMapModeChangeHooks, function() {
+        this('Move', 'begin');
+      });
     };
     var endMove = function () {
       var div = $(indiciaData.control_speciesmap_opts.mapDiv)[0];
@@ -231,6 +265,7 @@ var control_speciesmap_addcontrols;
       indiciaData.control_speciesmap_new_feature.attributes.subSampleIndex = indiciaData.control_speciesmap_existing_feature.attributes.subSampleIndex;
       indiciaData.control_speciesmap_new_feature.attributes.count = indiciaData.control_speciesmap_existing_feature.attributes.count;
       indiciaData.control_speciesmap_new_feature.attributes.sRef = $('#imp-sref').val();
+      indiciaData.control_speciesmap_new_feature.attributes.locationName = indiciaData.control_speciesmap_existing_feature.attributes.locationName;
       indiciaData.control_speciesmap_new_feature.style = null; // needed so picks up style from new layer, including label
       resetSubSampleFeatures();
       fillInMainSref();
@@ -240,6 +275,9 @@ var control_speciesmap_addcontrols;
       showButtons(['add', 'mod', 'move', 'del']);
       indiciaData.control_speciesmap_existing_feature = null;
       indiciaData.control_speciesmap_new_feature = null;
+      $.each(indiciaFns.speciesMapModeChangeHooks, function() {
+        this('Move', 'end');
+      });
     };
     var doAddSref = function () {
       var div = $(indiciaData.control_speciesmap_opts.mapDiv)[0];
@@ -250,6 +288,7 @@ var control_speciesmap_addcontrols;
       destroyAllFeatures(div.map.editLayer, 'clickPoint');
       indiciaData.control_speciesmap_new_feature.attributes.subSampleIndex = gridIdx;
       indiciaData.control_speciesmap_new_feature.attributes.sRef = $('#imp-sref').val();
+      indiciaData.control_speciesmap_new_feature.attributes.locationName = 'new sample';
       indiciaData.control_speciesmap_new_feature.attributes.count = 0;
       indiciaData.control_speciesmap_new_feature.style = null;
       addSubSampleFtr(indiciaData.control_speciesmap_new_feature);
@@ -309,6 +348,9 @@ var control_speciesmap_addcontrols;
           enableImageUploader(photoCtrlCntr, gridIdx);
         }
       }
+      $.each(indiciaFns.speciesMapModeChangeHooks, function() {
+        this('Add', 'start');
+      });
     };
     var featureAdded = function (a1) { // on editLayer
       if (a1.feature.attributes.type !== 'clickPoint' ) {
@@ -513,10 +555,15 @@ var control_speciesmap_addcontrols;
       }
       // don't fire map events on the sref hidden control, otherwise the map zooms in
       $('#imp-sref').unbind('change');
+      // Reset when selecting new mode.
+      $('#imp-sref,#imp-geom').val('');
       indiciaData.control_speciesmap_mode = mode;
       // In case user has activated a control from a context where clustering disabled
       // (e.g. selecting from a cluster)
       setClusteringOn(true);
+      $.each(indiciaFns.speciesMapModeChangeHooks, function() {
+        this(mode, null);
+      });
     };
     var controlSpeciesmapAddbutton = function () {
       activate(this, 'Add', indiciaData.lang.speciesMap.AddMessage);
@@ -561,6 +608,9 @@ var control_speciesmap_addcontrols;
           setClusteringOn(true);
           break;
       }
+      $.each(indiciaFns.speciesMapModeChangeHooks, function() {
+        this(null, null);
+      });
     };
     var controlSpeciesmapFinishbutton = function () {
       // first check that any filled in species grid rows pass validation.
@@ -604,7 +654,8 @@ var control_speciesmap_addcontrols;
       messageClasses: '',
       animationDuration: 1000,
       sampleMapLabelContents: indiciaData.speciesInLabel ? ['speciesName', 'gridRef'] : ['recordsCount', 'gridRef'],
-      sampleClusterButtonContents: indiciaData.speciesInLabel ? ['speciesName', 'gridRef'] : ['recordsCount', 'gridRef']
+      sampleClusterButtonContents: indiciaData.speciesInLabel ? ['speciesName', 'gridRef'] : ['recordsCount', 'gridRef'],
+      hideMapWhenEditingSubsample: true
     };
     var getSubSampleLabel = function(feature, separator, clusterButton) {
       let labelContents = [];
@@ -612,6 +663,7 @@ var control_speciesmap_addcontrols;
       const contentItems = clusterButton ? opts.sampleClusterButtonContents : opts.sampleMapLabelContents;
       $.each(contentItems, function(idx, item) {
         const tokens = item.split('|');
+        var label;
         switch(tokens[0]) {
           case 'recordsCount':
             labelContents.push('Records: ' + feature.attributes.count);
@@ -627,23 +679,31 @@ var control_speciesmap_addcontrols;
             if (feature.attributes.count > 1) {
               labelSpecies = labelSpecies + " +" + (feature.attributes.count-1);
             }
-            labelContents.push('Species: ' + labelSpecies);
+            label = tokens[1] ? tokens[1] : 'Species';
+            labelContents.push(label + ': ' + labelSpecies);
             break;
 
           case 'gridRef':
-            labelContents.push('Grid: ' + feature.attributes.sRef);
+            label = tokens[1] ? tokens[1] : 'Grid';
+            labelContents.push(label + ': ' + feature.attributes.sRef);
+            break;
+
+          case 'locationName':
+            label = tokens[1] ? tokens[1] : 'Location';
+            labelContents.push(label + ': ' + feature.attributes.locationName);
             break;
 
           default:
             // Look for sample custom attributes.
             const matches = [...tokens[0].matchAll(/smpAttr:(\d*)$/g)];
+            label = tokens[1] ? tokens[1] : 'Value';
             if (matches.length > 0) {
               $.each($('#scm-' + feature.attributes.subSampleIndex + '-block .subsample-ctrl-cntr').find(':input'), function() {
                 if (typeof $(this).attr('id') !== 'undefined' && $(this).attr('id').match(new RegExp('smpAttr:' + matches[0][1] + '$'))) {
                   if ($(this).is('select')) {
-                    labelContents.push(tokens[1] + ': '  + $(this).find('option:selected').text());
+                    labelContents.push(label + ': '  + $(this).find('option:selected').text());
                   } else {
-                    labelContents.push(tokens[1] + ': '  + $(this).val());
+                    labelContents.push(label + ': '  + $(this).val());
                   }
                 }
               });
@@ -690,7 +750,6 @@ var control_speciesmap_addcontrols;
       var parentStyle = { fillOpacity: 0, strokeColor: 'Red', strokeWidth: 2 };
       var cloned;
       var first;
-      var rebuildFeatureLabel;
       if ('#' + div.id === opts.mapDiv) {
         defaultStyle.label = "${getLabel}";
         defaultStyle.labelOutlineColor = 'white';
@@ -751,6 +810,7 @@ var control_speciesmap_addcontrols;
           }
           feature.attributes.subSampleIndex = id[1];
           feature.attributes.sRef = $(block).find('[name$="sample\:entered_sref"]').val();
+          feature.attributes.locationName = $(block).find('[name$="sample\:location_name"]').val();
           feature.attributes.count = $('[name$="\:sampleIDX"]')
               .filter('[value=' + feature.attributes.subSampleIndex + ']').closest('tr').not('.scClonableRow').length;
           addSubSampleFtr(feature);
@@ -761,15 +821,6 @@ var control_speciesmap_addcontrols;
         } else if (indiciaData.ParentSampleLayer.features.length > 0) {
           indiciaData.ParentSampleLayer.map.zoomToExtent(indiciaData.ParentSampleLayer.getDataExtent());
         }
-        rebuildFeatureLabel = function() {
-          var feature = (indiciaData.control_speciesmap_mode === 'Add' ?
-              indiciaData.control_speciesmap_new_feature : indiciaData.control_speciesmap_existing_feature);
-          // need to remove then re-add feature to rebuild label
-          feature.attributes.count = $('[name$="\:sampleIDX"]')
-              .filter('[value=' + feature.attributes.subSampleIndex + ']').closest('tr').not('.scClonableRow').length;
-          feature.style = null;
-          resetSubSampleFeatures();
-        };
         window.hook_species_checklist_delete_row.push(rebuildFeatureLabel);
         window.hook_species_checklist_delete_row.push(showHideClonableRow);
         window.hook_species_checklist_new_row.push(showHideClonableRow);
