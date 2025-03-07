@@ -298,7 +298,8 @@
         "noli42/chosen": "3.0.0",
         "drupal/content_entity_builder": "^1.2",
         "drupal/flexistyle_bootstrap_scss": "^1.0",
-        "drupal/entity_reference_modal": "^1.0"
+        "drupal/entity_reference_modal": "^1.0",
+        "drupal/tfa": "^1.10"
     },
     "conflict": {
         "drupal/drupal": "*"

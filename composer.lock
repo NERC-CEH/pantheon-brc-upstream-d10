@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d023e5facc7b45a16a23abaccf40d1b2",
+    "content-hash": "879db872146e54741b38df62b2f39db7",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -315,6 +315,211 @@
                 "source": "https://github.com/Chi-teck/drupal-code-generator/tree/3.6.1"
             },
             "time": "2024-06-06T17:36:37+00:00"
+        },
+        {
+            "name": "chillerlan/php-qrcode",
+            "version": "4.4.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-qrcode.git",
+                "reference": "345ed8e4ffb56e6b3fcd9f42e3970b9026fa6ce4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-qrcode/zipball/345ed8e4ffb56e6b3fcd9f42e3970b9026fa6ce4",
+                "reference": "345ed8e4ffb56e6b3fcd9f42e3970b9026fa6ce4",
+                "shasum": ""
+            },
+            "require": {
+                "chillerlan/php-settings-container": "^2.1.6 || ^3.2.1",
+                "ext-mbstring": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "phan/phan": "^5.4.5",
+                "phpmd/phpmd": "^2.15",
+                "phpunit/phpunit": "^9.6",
+                "setasign/fpdf": "^1.8.2",
+                "squizlabs/php_codesniffer": "^3.11"
+            },
+            "suggest": {
+                "chillerlan/php-authenticator": "Yet another Google authenticator! Also creates URIs for mobile apps.",
+                "setasign/fpdf": "Required to use the QR FPDF output.",
+                "simple-icons/simple-icons": "SVG icons that you can use to embed as logos in the QR Code"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\QRCode\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kazuhiko Arase",
+                    "homepage": "https://github.com/kazuhikoarase"
+                },
+                {
+                    "name": "Smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                },
+                {
+                    "name": "Contributors",
+                    "homepage": "https://github.com/chillerlan/php-qrcode/graphs/contributors"
+                }
+            ],
+            "description": "A QR code generator with a user friendly API. PHP 7.4+",
+            "homepage": "https://github.com/chillerlan/php-qrcode",
+            "keywords": [
+                "phpqrcode",
+                "qr",
+                "qr code",
+                "qrcode",
+                "qrcode-generator"
+            ],
+            "support": {
+                "issues": "https://github.com/chillerlan/php-qrcode/issues",
+                "source": "https://github.com/chillerlan/php-qrcode/tree/4.4.2"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/codemasher",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2024-11-15T15:36:24+00:00"
+        },
+        {
+            "name": "chillerlan/php-settings-container",
+            "version": "3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chillerlan/php-settings-container.git",
+                "reference": "95ed3e9676a1d47cab2e3174d19b43f5dbf52681"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chillerlan/php-settings-container/zipball/95ed3e9676a1d47cab2e3174d19b43f5dbf52681",
+                "reference": "95ed3e9676a1d47cab2e3174d19b43f5dbf52681",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "phpmd/phpmd": "^2.15",
+                "phpstan/phpstan": "^1.11",
+                "phpstan/phpstan-deprecation-rules": "^1.2",
+                "phpunit/phpunit": "^10.5",
+                "squizlabs/php_codesniffer": "^3.10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "chillerlan\\Settings\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Smiley",
+                    "email": "smiley@chillerlan.net",
+                    "homepage": "https://github.com/codemasher"
+                }
+            ],
+            "description": "A container class for immutable settings objects. Not a DI container.",
+            "homepage": "https://github.com/chillerlan/php-settings-container",
+            "keywords": [
+                "Settings",
+                "configuration",
+                "container",
+                "helper"
+            ],
+            "support": {
+                "issues": "https://github.com/chillerlan/php-settings-container/issues",
+                "source": "https://github.com/chillerlan/php-settings-container"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.com/donate?hosted_button_id=WLYUNAT9ZTJZ4",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://ko-fi.com/codemasher",
+                    "type": "ko_fi"
+                }
+            ],
+            "time": "2024-07-16T11:13:48+00:00"
+        },
+        {
+            "name": "christian-riesen/otp",
+            "version": "2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ChristianRiesen/otp.git",
+                "reference": "aab865ae6d356993ad9d51f8a7e8f32b8a54730a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ChristianRiesen/otp/zipball/aab865ae6d356993ad9d51f8a7e8f32b8a54730a",
+                "reference": "aab865ae6d356993ad9d51f8a7e8f32b8a54730a",
+                "shasum": ""
+            },
+            "require": {
+                "paragonie/constant_time_encoding": "^1|^2",
+                "paragonie/random_compat": ">=1",
+                "php": ">=5.6.0",
+                "symfony/polyfill-php56": "^1"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7.11 || ^6.0.5"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Otp\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Riesen",
+                    "email": "chris.riesen@gmail.com",
+                    "homepage": "http://christianriesen.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "One Time Passwords, hotp and totp according to RFC4226 and RFC6238",
+            "homepage": "https://github.com/ChristianRiesen/otp",
+            "keywords": [
+                "googleauthenticator",
+                "hotp",
+                "otp",
+                "rfc4226",
+                "rfc6238",
+                "totp"
+            ],
+            "support": {
+                "issues": "https://github.com/ChristianRiesen/otp/issues",
+                "source": "https://github.com/ChristianRiesen/otp/tree/2.7.0"
+            },
+            "time": "2021-02-23T20:13:30+00:00"
         },
         {
             "name": "citation-style-language/locales",
@@ -7343,6 +7548,76 @@
             }
         },
         {
+            "name": "drupal/encrypt",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/encrypt.git",
+                "reference": "8.x-3.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/encrypt-8.x-3.2.zip",
+                "reference": "8.x-3.2",
+                "shasum": "32a700eeb59aac51f6ce4651718243a1641d5ef0"
+            },
+            "require": {
+                "drupal/core": "^8 || ^9 || ^10 || ^11",
+                "drupal/key": "^1"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-3.2",
+                    "datestamp": "1727640040",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                },
+                "drush": {
+                    "services": {
+                        "drush.services.yml": "^9 || ^10 || ^11"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "alexpott",
+                    "homepage": "https://www.drupal.org/user/157725"
+                },
+                {
+                    "name": "greggles",
+                    "homepage": "https://www.drupal.org/user/36762"
+                },
+                {
+                    "name": "nerdstein",
+                    "homepage": "https://www.drupal.org/user/1557710"
+                },
+                {
+                    "name": "rlhawk",
+                    "homepage": "https://www.drupal.org/user/352283"
+                },
+                {
+                    "name": "theunraveler",
+                    "homepage": "https://www.drupal.org/user/71548"
+                },
+                {
+                    "name": "zzolo",
+                    "homepage": "https://www.drupal.org/user/147331"
+                }
+            ],
+            "description": "Provides an API for two-way encryption.",
+            "homepage": "https://www.drupal.org/project/encrypt",
+            "support": {
+                "source": "https://git.drupalcode.org/project/encrypt"
+            }
+        },
+        {
             "name": "drupal/entity",
             "version": "1.6.0",
             "source": {
@@ -12378,17 +12653,17 @@
         },
         {
             "name": "drupal/media_library_importer",
-            "version": "2.1.2",
+            "version": "2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/media_library_importer.git",
-                "reference": "2.1.2"
+                "reference": "2.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/media_library_importer-2.1.2.zip",
-                "reference": "2.1.2",
-                "shasum": "fbdde01690c4cb2b384bb5dce63b71cdaf131a3f"
+                "url": "https://ftp.drupal.org/files/projects/media_library_importer-2.1.3.zip",
+                "reference": "2.1.3",
+                "shasum": "828f2eb1ba3f1700a29c0cc11749d7e64e465426"
             },
             "require": {
                 "drupal/core": "^9.2 || ^10 | ^11",
@@ -12397,8 +12672,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.2",
-                    "datestamp": "1736675631",
+                    "version": "2.1.3",
+                    "datestamp": "1741298418",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16447,6 +16722,94 @@
             "support": {
                 "source": "http://cgit.drupalcode.org/taxonomy_menu",
                 "issues": "http://drupal.org/project/taxonomy_menu"
+            }
+        },
+        {
+            "name": "drupal/tfa",
+            "version": "1.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/tfa.git",
+                "reference": "8.x-1.10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/tfa-8.x-1.10.zip",
+                "reference": "8.x-1.10",
+                "shasum": "c8314dfff47ad44ab78a1ea962f25e073abc9960"
+            },
+            "require": {
+                "chillerlan/php-qrcode": "^1.0.9 || ^2.0 || ^3.2 || ^4.0",
+                "christian-riesen/otp": "^2.1",
+                "drupal/core": "^8 || ^9 || ^10 || ^11",
+                "drupal/encrypt": "~3.0",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "drupal/encrypt": "*",
+                "drupal/key": "*",
+                "drupal/services": "*",
+                "drush/drush": "^10 || ^11 || ^12 || ^13",
+                "mglaman/phpstan-drupal": "^1.1",
+                "phpstan/extension-installer": "^1.2",
+                "phpstan/phpstan": "^1.9",
+                "phpstan/phpstan-deprecation-rules": "^1.1",
+                "phpstan/phpstan-phpunit": "^1.3"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.10",
+                    "datestamp": "1741198609",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                },
+                "drush": {
+                    "services": {
+                        "drush.services.yml": "^9 || ^10 || ^11"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "cmlara",
+                    "homepage": "https://www.drupal.org/user/1790054"
+                },
+                {
+                    "name": "coltrane",
+                    "homepage": "https://www.drupal.org/user/91990"
+                },
+                {
+                    "name": "daggerhart",
+                    "homepage": "https://www.drupal.org/user/167806"
+                },
+                {
+                    "name": "greggles",
+                    "homepage": "https://www.drupal.org/user/36762"
+                },
+                {
+                    "name": "jcnventura",
+                    "homepage": "https://www.drupal.org/user/122464"
+                },
+                {
+                    "name": "nerdstein",
+                    "homepage": "https://www.drupal.org/user/1557710"
+                },
+                {
+                    "name": "poker10",
+                    "homepage": "https://www.drupal.org/user/272316"
+                }
+            ],
+            "description": "Pluggable provider of two factor authentication for Drupal",
+            "homepage": "https://www.drupal.org/project/tfa",
+            "support": {
+                "source": "https://git.drupalcode.org/project/tfa"
             }
         },
         {
@@ -21670,6 +22033,73 @@
             }
         },
         {
+            "name": "paragonie/constant_time_encoding",
+            "version": "v2.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paragonie/constant_time_encoding.git",
+                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paragonie/constant_time_encoding/zipball/52a0d99e69f56b9ec27ace92ba56897fe6993105",
+                "reference": "52a0d99e69f56b9ec27ace92ba56897fe6993105",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7|^8"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6|^7|^8|^9",
+                "vimeo/psalm": "^1|^2|^3|^4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ParagonIE\\ConstantTime\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paragon Initiative Enterprises",
+                    "email": "security@paragonie.com",
+                    "homepage": "https://paragonie.com",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Steve 'Sc00bz' Thomas",
+                    "email": "steve@tobtu.com",
+                    "homepage": "https://www.tobtu.com",
+                    "role": "Original Developer"
+                }
+            ],
+            "description": "Constant-time Implementations of RFC 4648 Encoding (Base-64, Base-32, Base-16)",
+            "keywords": [
+                "base16",
+                "base32",
+                "base32_decode",
+                "base32_encode",
+                "base64",
+                "base64_decode",
+                "base64_encode",
+                "bin2hex",
+                "encoding",
+                "hex",
+                "hex2bin",
+                "rfc4648"
+            ],
+            "support": {
+                "email": "info@paragonie.com",
+                "issues": "https://github.com/paragonie/constant_time_encoding/issues",
+                "source": "https://github.com/paragonie/constant_time_encoding"
+            },
+            "time": "2024-05-08T12:18:48+00:00"
+        },
+        {
             "name": "paragonie/random_compat",
             "version": "v9.99.100",
             "source": {
@@ -25024,6 +25454,74 @@
             "time": "2024-09-09T11:45:10+00:00"
         },
         {
+            "name": "symfony/polyfill-php56",
+            "version": "v1.20.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/polyfill-php56.git",
+                "reference": "54b8cd7e6c1643d78d011f3be89f3ef1f9f4c675"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/polyfill-php56/zipball/54b8cd7e6c1643d78d011f3be89f3ef1f9f4c675",
+                "reference": "54b8cd7e6c1643d78d011f3be89f3ef1f9f4c675",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "metapackage",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/polyfill",
+                    "name": "symfony/polyfill"
+                },
+                "branch-alias": {
+                    "dev-main": "1.20-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 5.6+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/polyfill-php56/tree/v1.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-10-23T14:02:19+00:00"
+        },
+        {
             "name": "symfony/polyfill-php81",
             "version": "v1.31.0",
             "source": {
@@ -26683,16 +27181,16 @@
         },
         {
             "name": "composer/ca-bundle",
-            "version": "1.5.5",
+            "version": "1.5.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/ca-bundle.git",
-                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6"
+                "reference": "f65c239c970e7f072f067ab78646e9f0b2935175"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
-                "reference": "08c50d5ec4c6ced7d0271d2862dec8c1033283e6",
+                "url": "https://api.github.com/repos/composer/ca-bundle/zipball/f65c239c970e7f072f067ab78646e9f0b2935175",
+                "reference": "f65c239c970e7f072f067ab78646e9f0b2935175",
                 "shasum": ""
             },
             "require": {
@@ -26739,7 +27237,7 @@
             "support": {
                 "irc": "irc://irc.freenode.org/composer",
                 "issues": "https://github.com/composer/ca-bundle/issues",
-                "source": "https://github.com/composer/ca-bundle/tree/1.5.5"
+                "source": "https://github.com/composer/ca-bundle/tree/1.5.6"
             },
             "funding": [
                 {
@@ -26755,7 +27253,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-01-08T16:17:16+00:00"
+            "time": "2025-03-06T14:30:56+00:00"
         },
         {
             "name": "composer/class-map-generator",
@@ -28123,16 +28621,16 @@
         },
         {
             "name": "open-telemetry/exporter-otlp",
-            "version": "1.2.0",
+            "version": "1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/exporter-otlp.git",
-                "reference": "243d9657c44a06f740cf384f486afe954c2b725f"
+                "reference": "b7580440b7481a98da97aceabeb46e1b276c8747"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/exporter-otlp/zipball/243d9657c44a06f740cf384f486afe954c2b725f",
-                "reference": "243d9657c44a06f740cf384f486afe954c2b725f",
+                "url": "https://api.github.com/repos/opentelemetry-php/exporter-otlp/zipball/b7580440b7481a98da97aceabeb46e1b276c8747",
+                "reference": "b7580440b7481a98da97aceabeb46e1b276c8747",
                 "shasum": ""
             },
             "require": {
@@ -28183,7 +28681,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-01-08T23:50:03+00:00"
+            "time": "2025-03-06T23:21:56+00:00"
         },
         {
             "name": "open-telemetry/gen-otlp-protobuf",
