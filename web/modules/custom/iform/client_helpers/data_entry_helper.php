@@ -3425,6 +3425,11 @@ RIJS;
   *   * **taxonFilter** - If taxonFilterField is not set to none, then pass an
   *     array of values to filter against, i.e. an array of taxon preferred
   *     names, taxon meaning ids or taxon group titles.
+  *   * **taxonFilterIgnoredOnEdit - default true. Taxon filtering is not
+  *     applied to edited records being loaded back into the grid, as there is
+  *     a risk that changes to the filter list would result in records becoming
+  *     lost and uneditable. Set to false to apply the taxon filter even to
+  *     records being loaded into the grid.
   *   * **usersPreferredGroups** - If the user has defined a list of taxon
   *     groups they like to record, then supply an array of the taxon group IDs
   *     in this parameter. This lets the user easily opt to record against
@@ -3441,7 +3446,7 @@ RIJS;
   *       language option are included
   *     * excludeSynonyms - all names except synonyms (non-preferred latin
   *       names) are included.
-  *   * **header** - Include a header row in the grid? Defaults to true.
+    *   * **header** - Include a header row in the grid? Defaults to true.
   *   * **columns** - Number of repeating columns of output. For example, a
   *     simple grid of species checkboxes could be output in 2 or 3 columns.
   *     Defaults to 1.
@@ -3688,28 +3693,13 @@ RIJS;
     self::add_resource('autocomplete');
     self::add_resource('font_awesome');
     $filterArray = self::getSpeciesNamesFilter($options);
-    $filterNameTypes = [
-      'all',
-      'currentLanguage',
-      'preferred',
-      'excludeSynonyms',
-    ];
-    // Make a copy of the options so that we can maipulate it.
-    $overrideOptions = $options;
-
-    // We are going to cycle through each of the name filter types and save the
-    // parameters required for each type in an array so that the Javascript can
-    // quickly access the required parameters.
-    foreach ($filterNameTypes as $filterType) {
-      $overrideOptions['speciesNameFilterMode'] = $filterType;
-      $nameFilter[$filterType] = self::getSpeciesNamesFilter($overrideOptions);
-    }
     if (count($filterArray)) {
       $filterParam = json_encode($filterArray);
       self::$javascript .= "indiciaData['taxonExtraParams-$options[id]'] = $filterParam;\n";
-      // Apply a filter to extraParams that can be used when loading the initial species list, to get just the correct names.
+      // Apply a filter to extraParams that can be used when loading the
+      // initial species list, to get just the correct names.
       if (isset($options['speciesNameFilterMode']) && !empty($options['listId'])) {
-        $options['extraParams'] += self::parseSpeciesNameFilterMode($options);
+        $options['extraParams'] += self::parseSpeciesNameFilterModeForCacheTaxaTaxonLists($options);
       }
     }
 
@@ -4341,10 +4331,7 @@ HTML;
       }
       $r .= self::get_help_text($options, 'after');
       self::$javascript .= "$('#$options[id]').find('input,select').keydown(keyHandler);\n";
-      // NameFilter is an array containing all the parameters required to
-      // return data for each of the "Choose species names available for
-      // selection" filter types.
-      self::species_checklist_filter_popup($options, $nameFilter);
+      self::speciesChecklistFilterPopup($options);
       if ($options['subSamplePerRow']) {
         // Output a hidden block to contain sub-sample hidden input values.
         $r .= '<div id="' . $options['id'] . '-blocks">' .
@@ -4867,12 +4854,15 @@ JS;
   }
 
   /**
-   * Builds an array to filter for the appropriate selection of species names, e.g. how it accepts searches for
-   * common names and synonyms.
-   * @param array $options Options array as passed to the species grid.
+   * Builds an array to filter for the appropriate selection of species names.
+   *
+   * E.g. how it accepts searches for common names and synonyms.
+   *
+   * @param array $options
+   *   Options array as passed to the species grid.
    */
-  public static function getSpeciesNamesFilter(&$options) {
-    $filterFields = self::parseSpeciesNameFilterMode($options);
+  public static function getSpeciesNamesFilter(array &$options) {
+    $filterFields = self::parseSpeciesNameFilterModeForTaxaSearch($options);
     if (isset($options['subSpeciesColumn']) && $options['subSpeciesColumn']) {
       $filterFields['parent_id'] = "null";
     }
@@ -4894,7 +4884,7 @@ JS;
   }
 
   /**
-   * Get species name filtering information.
+   * Get species name filtering information for taxa search API.
    *
    * Utility function to extract the fields which need filtering against, plus
    * any complex SQL where clauses, required to do a species name filter
@@ -4907,7 +4897,7 @@ JS;
    *   Will be populated with the keys and values of any fields than need to be
    *   filtered.
    */
-  private static function parseSpeciesNameFilterMode(array $options) {
+  private static function parseSpeciesNameFilterModeForTaxaSearch(array $options) {
     $filterFields = [];
     if (isset($options['speciesNameFilterMode'])) {
       switch ($options['speciesNameFilterMode']) {
@@ -4935,17 +4925,76 @@ JS;
   }
 
   /**
-   * Adds JavaScript to popup a config box for the current filter on the species you can add to the grid.
-   * @param array $options Options array as passed to the species checklist grid.
-   * @param array $nameFilter array of optional name filtering modes, with the actual filter to apply
-   * as the value.
+   * Get species name filtering information for cache_taxa_taxon_lists.
+   *
+   * Version of parseSpeciesNameFilterModeForTaxaSearch for
+   * cache_taxa_taxon_lists requests which need slightly different parameters
+   * to the taxa search API.
+   *
+   * @param array $options
+   *   Species_checklist options array.
+   *
+   * @return array
+   *   Will be populated with the keys and values of any fields than need to be
+   *   filtered.
    */
-  public static function species_checklist_filter_popup($options, $nameFilter) {
-    self::add_resource('fancybox');
-    self::add_resource('speciesFilterPopup');
-    $defaultFilterMode = (isset($options['speciesNameFilterMode'])) ? $options['speciesNameFilterMode'] : 'all';
-    $filtersJson = json_encode($nameFilter);
+  private static function parseSpeciesNameFilterModeForCacheTaxaTaxonLists(array $options) {
+    $filterFields = [];
+    if (isset($options['speciesNameFilterMode'])) {
+      switch ($options['speciesNameFilterMode']) {
+        case 'preferred':
+          $filterFields['preferred'] = 't';
+          break;
+
+        case 'currentLanguage':
+          if (isset($options['language'])) {
+            $filterFields['language_iso'] = $options['language'];
+          }
+          elseif (function_exists('hostsite_get_user_field')) {
+            // If in Drupal we can use the user's language.
+            require_once 'prebuilt_forms/includes/language_utils.php';
+            $filterFields['language_iso'] = iform_lang_iso_639_2(hostsite_get_user_field('language'));
+          }
+          break;
+
+        case 'excludeSynonyms':
+          self::addQueryParameter($filterFields, ['where' => ["(preferred=true OR language_iso<>'lat')"]]);
+          break;
+      }
+    }
+    return $filterFields;
+  }
+
+  /**
+   * Species grid filter popup.
+   *
+   * Adds JavaScript to popup a config box for the current filter on the
+   * species you can add to the grid.
+   *
+   * @param array $options
+   *   Options array as passed to the species checklist grid.
+   */
+  public static function speciesChecklistFilterPopup(array $options) {
     if ($options['userControlsTaxonFilter'] && !empty($options['lookupListId'])) {
+      self::add_resource('fancybox');
+      self::add_resource('speciesFilterPopup');
+      $filterNameTypes = [
+        'all',
+        'currentLanguage',
+        'preferred',
+        'excludeSynonyms',
+      ];
+      // Make a copy of the options so that we can manipulate it.
+      $overrideOptions = $options;
+      // We are going to cycle through each of the name filter types and save the
+      // parameters required for each type in an array so that the Javascript can
+      // quickly access the required parameters.
+      foreach ($filterNameTypes as $filterType) {
+        $overrideOptions['speciesNameFilterMode'] = $filterType;
+        $nameFilter[$filterType] = self::getSpeciesNamesFilter($overrideOptions);
+      }
+      $defaultFilterMode = (isset($options['speciesNameFilterMode'])) ? $options['speciesNameFilterMode'] : 'all';
+      $filtersJson = json_encode($nameFilter);
       if ($options['taxonFilterField'] === 'none') {
         $defaultOptionLabel = lang::get('Input any species from the list available for this form');
       }
@@ -5431,6 +5480,67 @@ JS;
   }
 
   /**
+   * Ensures a data services query where is in associative format.
+   *
+   * A query can contain a where clause either as an associative list of key/
+   * value pairs, or as a single pair of 2 parameters in format (key, value).
+   * Converts the latter format to the former, so that arrays can be easily
+   * appended.
+   *
+   * @param array $params
+   *   Parameters for the query where clause.
+   *
+   * @return array
+   *   Modified parameters.
+   *
+   */
+  private static function convertQueryParamsToAssociative(array $params) {
+    if (count($params) === 2 && array_keys($params)[0] === 0) {
+      return [$params[0] => $params[1]];
+    }
+    return $params;
+  }
+
+  /**
+   * Adds or merges a query parameter into an extra params array.
+   *
+   * @param array $extraParams
+   *   Extra parameters array for a data services request which will be
+   *   modified.
+   * @param array $query
+   *   Query parameter array (e.g. where, in etc).
+   */
+  private static function addQueryParameter(array &$extraParams, array $query) {
+    if (!empty($extraParams['query'])) {
+      $origQuery = json_decode($extraParams['query'], TRUE);
+      if (isset($origQuery['where']) && isset($query['where'])) {
+        $origQuery['where'] = self::convertQueryParamsToAssociative($origQuery['where']) + self::convertQueryParamsToAssociative($query['in']);
+      }
+      if (isset($origQuery['orwhere']) && isset($query['orwhere'])) {
+        $origQuery['orwhere'] = self::convertQueryParamsToAssociative($origQuery['orwhere']) + self::convertQueryParamsToAssociative($query['in']);
+      }
+      if (isset($origQuery['in']) && isset($query['in'])) {
+        $origQuery['in'] = $origQuery['in'] + $query['in'];
+      }
+      if (isset($origQuery['notin']) && isset($query['notin'])) {
+        $origQuery['notin'] = $origQuery['notin'] + $query['notin'];
+      }
+      // Note that a query can't contain 2 like clauses, so the original takes
+      // precedent.
+      if (!isset($origQuery['like']) && isset($query['like'])) {
+        $origQuery['like'] = $query['like'];
+      }
+      if (!isset($origQuery['notlike']) && isset($query['notlike'])) {
+        $origQuery['notlike'] = $query['notlike'];
+      }
+      $extraParams['query'] = json_encode($origQuery);
+    }
+    else {
+      $extraParams['query'] = json_encode($query);
+    }
+  }
+
+  /**
    * Method to build the list of taxa to add to a species checklist grid.
    *
    * @param array $options
@@ -5453,7 +5563,9 @@ JS;
       if ($options['taxonFilterField'] === 'preferred_name') {
         $options['taxonFilterField'] = 'preferred_taxon';
       }
-      $options['extraParams'][$options['taxonFilterField']] = json_encode($options['taxonFilter']);
+      // Tolerate filter as an array or CSV list.
+      $filterList = is_array($options['taxonFilter']) ? $options['taxonFilter'] : explode(',', $options['taxonFilter']);
+      self::addQueryParameter($options['extraParams'], ['in' => [$options['taxonFilterField'] => $filterList]]);
     }
     // Load the species names that should be initially included in the grid.
     if (isset($options['listId']) && !empty($options['listId'])) {
@@ -5467,7 +5579,7 @@ JS;
     else {
       $taxalist = [];
     }
-    if ($options['taxonFilterField'] == 'id') {
+    if ($options['taxonFilterField'] === 'id') {
       // When using an id, sort by order provided.
       foreach ($options['taxonFilter'] as $taxonFilter) {
         foreach ($taxalist as $taxon) {
@@ -5513,7 +5625,12 @@ JS;
         'taxa_taxon_list_id',
       ];
       foreach ($filterFieldsToRemove as $field) {
-        unset($extraTaxonOptions['extraParams'][$field]);
+        // Keep the query if the taxon filter is being applied even to edited
+        // records as the query contains the taxon filter due to the code at
+        // the top of this method.
+        if ($options['taxonFilterIgnoredOnEdit'] || $field !== 'query') {
+          unset($extraTaxonOptions['extraParams'][$field]);
+        }
       }
       // Create an array to hold the IDs, so that get_population_data can
       // construct a single IN query, faster than multiple requests. We'll
@@ -5521,6 +5638,7 @@ JS;
       $taxa_taxon_list_ids = [];
       // Look through the data being loaded for the ttlIds associated with
       // existing occurrences.
+      $origQuery = $extraTaxonOptions['extraParams']['query'] ?? NULL;
       foreach (self::$entity_to_load as $key => $value) {
         $parts = explode(':', $key);
         // Is this an occurrence?
@@ -5574,7 +5692,8 @@ JS;
         }
         // Ensure the load of taxa is batched if there are lots to load.
         if (count($taxa_taxon_list_ids) >= 50 && !empty($options['lookupListId'])) {
-          $extraTaxonOptions['extraParams']['query'] = json_encode(['in' => ['id' => $taxa_taxon_list_ids]]);
+          $extraTaxonOptions['extraParams']['query'] = $origQuery;
+          self::addQueryParameter($extraTaxonOptions['extraParams'], ['in' => ['id' => $taxa_taxon_list_ids]]);
           $taxalist = array_merge($taxalist, self::get_population_data($extraTaxonOptions));
           $taxa_taxon_list_ids = [];
         }
@@ -5582,7 +5701,8 @@ JS;
       // Load and append the remaining additional taxa to our list of taxa to
       // use in the grid.
       if (count($taxa_taxon_list_ids) && !empty($options['lookupListId'])) {
-        $extraTaxonOptions['extraParams']['query'] = json_encode(['in' => ['id' => $taxa_taxon_list_ids]]);
+        $extraTaxonOptions['extraParams']['query'] = $origQuery;
+        self::addQueryParameter($extraTaxonOptions['extraParams'], ['in' => ['id' => $taxa_taxon_list_ids]]);
         $taxalist = array_merge($taxalist, self::get_population_data($extraTaxonOptions));
       }
     }
@@ -5643,6 +5763,7 @@ JS;
       'id' => 'species-grid-' . rand(0, 1000),
       'colWidths' => [],
       'taxonFilterField' => 'none',
+      'taxonFilterIgnoredOnEdit' => TRUE,
       'reloadExtraParams' => [],
       'useLoadedExistingRecords' => FALSE,
       'subSpeciesColumn' => FALSE,

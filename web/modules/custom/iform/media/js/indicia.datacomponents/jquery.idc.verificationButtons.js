@@ -242,7 +242,7 @@
     } else {
       $('#redet-form .multiple-warning').hide();
     }
-    showRedetFormForOccurrenceIds(todoListInfo.ids);
+    showRedetFormForOccurrenceIds(el, todoListInfo.ids);
   }
 
   /**
