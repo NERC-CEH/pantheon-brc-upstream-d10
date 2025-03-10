@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "879db872146e54741b38df62b2f39db7",
+    "content-hash": "ffd205ea6d759938479cfebfb2537118",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -567,16 +567,16 @@
         },
         {
             "name": "citation-style-language/styles",
-            "version": "v0.0.601",
+            "version": "v0.0.632",
             "source": {
                 "type": "git",
                 "url": "https://github.com/citation-style-language/styles.git",
-                "reference": "892a0eb98a0badf01646817cf30d704ad09fa3f1"
+                "reference": "88cf4433f77c5a580b6daed2dac1adafb67f8269"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/892a0eb98a0badf01646817cf30d704ad09fa3f1",
-                "reference": "892a0eb98a0badf01646817cf30d704ad09fa3f1",
+                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/88cf4433f77c5a580b6daed2dac1adafb67f8269",
+                "reference": "88cf4433f77c5a580b6daed2dac1adafb67f8269",
                 "shasum": ""
             },
             "type": "library",
@@ -594,7 +594,7 @@
             "homepage": "http://citationstyles.org/",
             "support": {
                 "issues": "https://github.com/citation-style-language/styles/issues",
-                "source": "https://github.com/citation-style-language/styles/tree/v0.0.601"
+                "source": "https://github.com/citation-style-language/styles/tree/v0.0.632"
             },
             "funding": [
                 {
@@ -602,7 +602,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-02-22T04:18:45+00:00"
+            "time": "2025-03-05T01:27:53+00:00"
         },
         {
             "name": "commerceguys/addressing",
@@ -10177,17 +10177,17 @@
         },
         {
             "name": "drupal/imce",
-            "version": "3.1.2",
+            "version": "3.1.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/imce.git",
-                "reference": "3.1.2"
+                "reference": "3.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/imce-3.1.2.zip",
-                "reference": "3.1.2",
-                "shasum": "bbca8eeacd532aea704a1feba27fe1dc4a5790df"
+                "url": "https://ftp.drupal.org/files/projects/imce-3.1.3.zip",
+                "reference": "3.1.3",
+                "shasum": "46f9f5780219012ed4a429097af7fc39791d3f14"
             },
             "require": {
                 "drupal/core": "^9.3 || ^10 || ^11"
@@ -10198,8 +10198,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.1.2",
-                    "datestamp": "1738492434",
+                    "version": "3.1.3",
+                    "datestamp": "1741468518",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12531,17 +12531,17 @@
         },
         {
             "name": "drupal/media_gallery",
-            "version": "3.0.1",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/media_gallery.git",
-                "reference": "3.0.1"
+                "reference": "3.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/media_gallery-3.0.1.zip",
-                "reference": "3.0.1",
-                "shasum": "7904e2e4834d70f9bc2bebd307a98dcfaa6466fa"
+                "url": "https://ftp.drupal.org/files/projects/media_gallery-3.0.2.zip",
+                "reference": "3.0.2",
+                "shasum": "401eb0dfbface8b35547cc67dbe1ca135c5429dd"
             },
             "require": {
                 "drupal/core": "^10 || ^11",
@@ -12554,8 +12554,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.1",
-                    "datestamp": "1735035281",
+                    "version": "3.0.2",
+                    "datestamp": "1741586686",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17442,6 +17442,54 @@
             }
         },
         {
+            "name": "drupal/username_enumeration_prevention",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/username_enumeration_prevention.git",
+                "reference": "8.x-1.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/username_enumeration_prevention-8.x-1.4.zip",
+                "reference": "8.x-1.4",
+                "shasum": "29fab36a86de64694b3074d42ac948547459aea6"
+            },
+            "require": {
+                "drupal/core": "^9.5 || ^10 || ^11"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "8.x-1.4",
+                    "datestamp": "1725566327",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "japerry",
+                    "homepage": "https://www.drupal.org/user/45640"
+                },
+                {
+                    "name": "nicksanta",
+                    "homepage": "https://www.drupal.org/user/87915"
+                }
+            ],
+            "description": "Prevents username enumeration on password reset and user pages.",
+            "homepage": "https://www.drupal.org/project/username_enumeration_prevention",
+            "support": {
+                "source": "https://git.drupalcode.org/project/username_enumeration_prevention"
+            }
+        },
+        {
             "name": "drupal/variationcache",
             "version": "1.5.0",
             "source": {
@@ -18185,17 +18233,17 @@
         },
         {
             "name": "drupal/views_bulk_operations",
-            "version": "4.3.3",
+            "version": "4.3.4",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_bulk_operations.git",
-                "reference": "4.3.3"
+                "reference": "4.3.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-4.3.3.zip",
-                "reference": "4.3.3",
-                "shasum": "60d83a18ef31fd1e85fb30137fd03a55cad275f3"
+                "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-4.3.4.zip",
+                "reference": "4.3.4",
+                "shasum": "c0974356f26d49ad9e99450e9db9650de94c6010"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11"
@@ -18212,8 +18260,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.3.3",
-                    "datestamp": "1739278730",
+                    "version": "4.3.4",
+                    "datestamp": "1741604495",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -29608,16 +29656,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.20",
+            "version": "1.12.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3240b1972042c7f73cf1045e879ea5bd5f761bb7"
+                "reference": "14276fdef70575106a3392a4ed553c06a984df28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3240b1972042c7f73cf1045e879ea5bd5f761bb7",
-                "reference": "3240b1972042c7f73cf1045e879ea5bd5f761bb7",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/14276fdef70575106a3392a4ed553c06a984df28",
+                "reference": "14276fdef70575106a3392a4ed553c06a984df28",
                 "shasum": ""
             },
             "require": {
@@ -29662,7 +29710,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-05T13:37:43+00:00"
+            "time": "2025-03-09T09:24:50+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

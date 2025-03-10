@@ -299,7 +299,8 @@
         "drupal/content_entity_builder": "^1.2",
         "drupal/flexistyle_bootstrap_scss": "^1.0",
         "drupal/entity_reference_modal": "^1.0",
-        "drupal/tfa": "^1.10"
+        "drupal/tfa": "^1.10",
+        "drupal/username_enumeration_prevention": "^1.4"
     },
     "conflict": {
         "drupal/drupal": "*"
