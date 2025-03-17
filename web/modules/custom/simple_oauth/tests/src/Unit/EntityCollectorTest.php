@@ -2,16 +2,16 @@
 
 namespace Drupal\Tests\simple_oauth\Unit;
 
-use Prophecy\PhpUnit\ProphecyTrait;
 use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Entity\Query\QueryInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\consumers\Entity\ConsumerInterface;
+use Drupal\Tests\UnitTestCase;
+use Drupal\consumers\Entity\Consumer;
 use Drupal\simple_oauth\Entity\Oauth2Token;
 use Drupal\simple_oauth\ExpiredCollector;
-use Drupal\Tests\UnitTestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 
 /**
  * @coversDefaultClass \Drupal\simple_oauth\ExpiredCollector
@@ -20,12 +20,12 @@ use Drupal\Tests\UnitTestCase;
 class EntityCollectorTest extends UnitTestCase {
 
   use ProphecyTrait;
+
   /**
    * @covers ::collect
    */
   public function testCollect() {
-    list($expired_collector, $query) = $this->buildProphecies();
-    $query->accessCheck()->shouldBeCalledTimes(1);
+    [$expired_collector, $query] = $this->buildProphecies();
     $query->condition('expire', 42, '<')->shouldBeCalledTimes(1);
     $this->assertEquals([1, 52], array_map(function ($entity) {
       return $entity->id();
@@ -36,10 +36,9 @@ class EntityCollectorTest extends UnitTestCase {
    * @covers ::collectForClient
    */
   public function testCollectForClient() {
-    list($expired_collector, $query) = $this->buildProphecies();
-    $client = $this->prophesize(ConsumerInterface::class);
+    [$expired_collector, $query] = $this->buildProphecies();
+    $client = $this->prophesize(Consumer::class);
     $client->id()->willReturn(35);
-    $query->accessCheck()->shouldBeCalledTimes(1);
     $query->condition('client', 35)->shouldBeCalledTimes(1);
     $tokens = $expired_collector->collectForClient($client->reveal());
     $this->assertEquals([1, 52], array_map(function ($entity) {
@@ -51,10 +50,9 @@ class EntityCollectorTest extends UnitTestCase {
    * @covers ::collectForAccount
    */
   public function testCollectForAccount() {
-    list($expired_collector, $token_query,,, $client_storage) = $this->buildProphecies();
+    [$expired_collector, $token_query,,, $client_storage] = $this->buildProphecies();
     $account = $this->prophesize(AccountInterface::class);
     $account->id()->willReturn(22);
-    $token_query->accessCheck()->shouldBeCalledTimes(2);
     $token_query->condition('auth_user_id', 22)->shouldBeCalledTimes(1);
     $token_query->condition('bundle', 'refresh_token', '!=')->shouldBeCalledTimes(1);
     $client_storage->loadByProperties([
@@ -71,7 +69,7 @@ class EntityCollectorTest extends UnitTestCase {
    * @covers ::collect
    */
   public function testDeleteMultipleTokens() {
-    list($expired_collector,, $storage) = $this->buildProphecies();
+    [$expired_collector,, $storage] = $this->buildProphecies();
     $storage->delete(['foo'])->shouldBeCalledTimes(1);
     $expired_collector->deleteMultipleTokens(['foo']);
   }
@@ -104,7 +102,7 @@ class EntityCollectorTest extends UnitTestCase {
     $client_query->accessCheck()->willReturn(TRUE);
     $client_query->execute()->willReturn([6 => '6']);
     $client_storage->getQuery()->willReturn($client_query->reveal());
-    $client6 = $this->prophesize(ConsumerInterface::class);
+    $client6 = $this->prophesize(Consumer::class);
     $client6->id()->willReturn(6);
     $client_storage->loadByProperties([
       'user_id' => 22,

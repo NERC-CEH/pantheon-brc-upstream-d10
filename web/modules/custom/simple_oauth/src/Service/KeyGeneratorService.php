@@ -4,11 +4,12 @@ namespace Drupal\simple_oauth\Service;
 
 use Drupal\Component\FileSecurity\FileSecurity;
 use Drupal\Core\File\FileSystemInterface;
-use Drupal\simple_oauth\Service\Filesystem\FileSystemChecker;
+use Drupal\simple_oauth\Service\Filesystem\FileSystemCheckerInterface;
 use Drupal\simple_oauth\Service\Filesystem\FilesystemValidator;
+use Drupal\simple_oauth\Service\Filesystem\FilesystemValidatorInterface;
 
 /**
- * Generates the signature keys.
+ * Provides a service to generate the signature keys.
  *
  * @internal
  */
@@ -19,31 +20,31 @@ class KeyGeneratorService {
    *
    * @var \Drupal\Core\File\FileSystemInterface
    */
-  private $fileSystem;
+  private FileSystemInterface $fileSystem;
 
   /**
    * The filesystem checker.
    *
-   * @var \Drupal\simple_oauth\Service\Filesystem\FileSystemChecker
+   * @var \Drupal\simple_oauth\Service\Filesystem\FileSystemCheckerInterface
    */
-  private $fileSystemChecker;
+  private FileSystemCheckerInterface $fileSystemChecker;
 
   /**
    * The filesystem validator.
    *
-   * @var \Drupal\simple_oauth\Service\Filesystem\FilesystemValidator
+   * @var \Drupal\simple_oauth\Service\Filesystem\FilesystemValidatorInterface
    */
-  private $validator;
+  private FilesystemValidatorInterface $validator;
 
   /**
    * KeyGeneratorService constructor.
    *
-   * @param \Drupal\simple_oauth\Service\Filesystem\FileSystemChecker $file_system_checker
+   * @param \Drupal\simple_oauth\Service\Filesystem\FileSystemCheckerInterface $file_system_checker
    *   The file system checker.
    * @param \Drupal\Core\File\FileSystemInterface $file_system
    *   The file system service.
    */
-  public function __construct(FileSystemChecker $file_system_checker, FileSystemInterface $file_system) {
+  public function __construct(FileSystemCheckerInterface $file_system_checker, FileSystemInterface $file_system) {
     $this->fileSystemChecker = $file_system_checker;
     $this->fileSystem = $file_system;
     $this->validator = new FilesystemValidator($file_system_checker);
@@ -61,7 +62,7 @@ class KeyGeneratorService {
    * @throws \Drupal\simple_oauth\Service\Exception\ExtensionNotLoadedException
    * @throws \Drupal\simple_oauth\Service\Exception\FilesystemValidationException
    */
-  public function generateKeys($dir_path) {
+  public function generateKeys(string $dir_path): void {
     // Create path array.
     $key_names = ['private', 'public'];
 
@@ -72,7 +73,12 @@ class KeyGeneratorService {
     $this->validator->validateNotFilePublicPath([$dir_path]);
 
     FileSecurity::writeHtaccess($dir_path);
-    FileSecurity::writeWebConfig($dir_path);
+    // As writeWebConfig method is deprecated and removed from D11.
+    // Also drupal dropped IIS support which require web.config so its ideal
+    // to have a check and handle the backward compatibility.
+    if (method_exists(FileSecurity::class, 'writeWebConfig')) {
+      FileSecurity::writeWebConfig($dir_path);
+    }
 
     // Create Keys array.
     $keys = KeyGenerator::generateKeys();

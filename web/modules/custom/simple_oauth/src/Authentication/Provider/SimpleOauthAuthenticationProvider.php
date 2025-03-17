@@ -6,13 +6,17 @@ use Drupal\Core\Authentication\AuthenticationProviderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\simple_oauth\Authentication\TokenAuthUser;
+use Drupal\simple_oauth\Exception\OAuthUnauthorizedHttpException;
 use Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface;
-use Drupal\simple_oauth\Server\ResourceServerInterface;
+use Drupal\simple_oauth\Server\ResourceServerFactoryInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
+use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
+ * OAuth2 authentication provider.
+ *
  * @internal
  */
 class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterface {
@@ -20,38 +24,66 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
   use StringTranslationTrait;
 
   /**
-   * @var \Drupal\simple_oauth\Server\ResourceServerInterface
+   * The resource server factory.
+   *
+   * @var \Drupal\simple_oauth\Server\ResourceServerFactoryInterface
    */
-  protected $resourceServer;
+  protected ResourceServerFactoryInterface $resourceServerFactory;
 
   /**
+   * The entity type manager.
+   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $entityTypeManager;
+  protected EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * The request policy.
+   *
    * @var \Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface
    */
-  protected $oauthPageCacheRequestPolicy;
+  protected SimpleOauthRequestPolicyInterface $oauthPageCacheRequestPolicy;
 
   /**
-   * Constructs a HTTP basic authentication provider object.
+   * The HTTP message factory.
    *
-   * @param \Drupal\simple_oauth\Server\ResourceServerInterface $resource_server
-   *   The resource server object.
+   * @var \Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface
+   */
+  protected HttpMessageFactoryInterface $httpMessageFactory;
+
+  /**
+   * The HTTP foundation factory.
+   *
+   * @var \Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface
+   */
+  protected HttpFoundationFactoryInterface $httpFoundationFactory;
+
+  /**
+   * Constructs an HTTP basic authentication provider object.
+   *
+   * @param \Drupal\simple_oauth\Server\ResourceServerFactoryInterface $resource_server_factory
+   *   The resource server factory.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager service.
    * @param \Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface $page_cache_request_policy
    *   The page cache request policy.
+   * @param \Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface $http_message_factory
+   *   The HTTP message factory.
+   * @param \Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface $http_foundation_factory
+   *   The HTTP foundation factory.
    */
   public function __construct(
-    ResourceServerInterface $resource_server,
+    ResourceServerFactoryInterface $resource_server_factory,
     EntityTypeManagerInterface $entity_type_manager,
-    SimpleOauthRequestPolicyInterface $page_cache_request_policy
+    SimpleOauthRequestPolicyInterface $page_cache_request_policy,
+    HttpMessageFactoryInterface $http_message_factory,
+    HttpFoundationFactoryInterface $http_foundation_factory,
   ) {
-    $this->resourceServer = $resource_server;
+    $this->resourceServerFactory = $resource_server_factory;
     $this->entityTypeManager = $entity_type_manager;
     $this->oauthPageCacheRequestPolicy = $page_cache_request_policy;
+    $this->httpMessageFactory = $http_message_factory;
+    $this->httpFoundationFactory = $http_foundation_factory;
   }
 
   /**
@@ -59,7 +91,7 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
    */
   public function applies(Request $request) {
     // The request policy service won't be used in case of non GET or HEAD
-    // methods so we have to explicitly call it.
+    // methods, so we have to explicitly call it.
     /* @see \Drupal\Core\PageCache\RequestPolicy\CommandLineOrUnsafeMethod::check() */
     return $this->oauthPageCacheRequestPolicy->isOauth2Request($request);
   }
@@ -75,15 +107,20 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
   public function authenticate(Request $request) {
     // Update the request with the OAuth information.
     try {
-      $auth_request = $this->resourceServer->validateAuthenticatedRequest($request);
+      // Create a PSR-7 message from the request that is compatible with the
+      // OAuth library.
+      $psr7_request = $this->httpMessageFactory->createRequest($request);
+      $resource_server = $this->resourceServerFactory->get();
+      $output_psr7_request = $resource_server->validateAuthenticatedRequest($psr7_request);
+
+      // Convert back to the Drupal/Symfony HttpFoundation objects.
+      $auth_request = $this->httpFoundationFactory->createRequest($output_psr7_request);
     }
     catch (OAuthServerException $exception) {
-      // Procedural code here is hard to avoid.
-      watchdog_exception('simple_oauth', $exception);
-
-      throw new HttpException(
-        $exception->getHttpStatusCode(),
-        $exception->getHint(),
+      // Forward authentication challenge to be interpreted by the requester.
+      throw new OAuthUnauthorizedHttpException(
+        $this->getUnauthorizedExceptionChallenge($request, $exception),
+        $exception->getMessage(),
         $exception
       );
     }
@@ -91,7 +128,6 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
     $tokens = $this->entityTypeManager->getStorage('oauth2_token')->loadByProperties([
       'value' => $auth_request->get('oauth_access_token_id'),
     ]);
-    /** @var \Drupal\simple_oauth\Entity\Oauth2Token $token */
     $token = reset($tokens);
 
     $account = new TokenAuthUser($token);
@@ -106,10 +142,9 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
           ['%name' => $account->getAccountName()]
         )
       );
-      watchdog_exception('simple_oauth', $exception);
-      throw new HttpException(
-        $exception->getHttpStatusCode(),
-        $exception->getHint(),
+      throw new OAuthUnauthorizedHttpException(
+        $this->getUnauthorizedExceptionChallenge($request, $exception),
+        $exception->getMessage(),
         $exception
       );
     }
@@ -122,6 +157,26 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
     $request->headers->set('X-Consumer-ID', $account->getConsumer()->getClientId());
 
     return $account;
+  }
+
+  /**
+   * Formats challenge for unauthorized exception.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Request.
+   * @param \League\OAuth2\Server\Exception\OAuthServerException $exception
+   *   Exception.
+   *
+   * @return string
+   *   Formatted challenge for result.
+   */
+  protected function getUnauthorizedExceptionChallenge(Request $request, OAuthServerException $exception) {
+    return sprintf(
+      '%s realm="OAuth", error="%s", error_description="%s"',
+      strpos($request->headers->get('Authorization'), 'Bearer') === 0 ? 'Bearer' : 'Basic',
+      $exception->getErrorType(),
+      $exception->getHint()
+    );
   }
 
 }

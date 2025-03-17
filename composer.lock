@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ecb408852402fd594ae079bae1ca668b",
+    "content-hash": "8bc97985fd35bb4313f7303927a810e2",
     "packages": [
         {
             "name": "academicpuma/locales",
