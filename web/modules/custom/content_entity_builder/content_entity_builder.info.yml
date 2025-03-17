@@ -1,0 +1,8 @@
+name: 'Content Entity Builder'
+type: module
+description: 'Content Entity Builder.'
+core_version_requirement: ^9.1 || ^10
+# Information added by Drupal.org packaging script on 2024-06-15
+version: '8.x-1.2'
+project: 'content_entity_builder'
+datestamp: 1718463606

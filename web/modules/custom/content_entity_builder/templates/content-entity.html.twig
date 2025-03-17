@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display an Content Entity Builer entity.
+ *
+ * Available variables:
+ * - content: All Content Entity items. Use {{ content }} to print them all,
+ *   or print a subset such as {{ content.field_example }}. Use
+ *   {{ content|without('field_example') }} to temporarily suppress the printing
+ *   of a given child element.
+ * - attributes: HTML attributes for the containing element.
+ *
+ * @ingroup themeable
+ */
+#}
+{% set classes = [
+  'content-entity',
+] %}
+<div{{ attributes.addClass(classes) }}>
+    {{ content }}
+</div>
