@@ -2,10 +2,8 @@
 
 namespace Drupal\simple_oauth\Plugin\Oauth2Grant;
 
-use Drupal\consumers\Entity\ConsumerInterface;
 use Drupal\simple_oauth\Plugin\Oauth2GrantBase;
-use League\OAuth2\Server\Grant\ClientCredentialsGrant;
-use League\OAuth2\Server\Grant\GrantTypeInterface;
+use Drupal\simple_oauth\Grant\ClientCredentialsOverrideGrant;
 
 /**
  * The client credentials grant plugin.
@@ -20,8 +18,8 @@ class ClientCredentials extends Oauth2GrantBase {
   /**
    * {@inheritdoc}
    */
-  public function getGrantType(ConsumerInterface $client): GrantTypeInterface {
-    return new ClientCredentialsGrant();
+  public function getGrantType() {
+    return new ClientCredentialsOverrideGrant();
   }
 
 }

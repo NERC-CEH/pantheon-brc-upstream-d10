@@ -3,17 +3,14 @@
 namespace Drupal\Tests\simple_oauth\Unit\Authentication\Provider;
 
 use Drupal\Core\Authentication\AuthenticationProviderInterface;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\PageCache\RequestPolicyInterface;
-use Drupal\TestTools\Random;
-use Drupal\Tests\UnitTestCase;
 use Drupal\simple_oauth\Authentication\Provider\SimpleOauthAuthenticationProvider;
 use Drupal\simple_oauth\PageCache\DisallowSimpleOauthRequests;
 use Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface;
-use Drupal\simple_oauth\Server\ResourceServerFactoryInterface;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Symfony\Bridge\PsrHttpMessage\HttpFoundationFactoryInterface;
-use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
+use Drupal\simple_oauth\Server\ResourceServerInterface;
+use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -23,13 +20,13 @@ use Symfony\Component\HttpFoundation\Request;
 class SimpleOauthAuthenticationTest extends UnitTestCase {
 
   use ProphecyTrait;
-
   /**
    * The authentication provider.
    *
    * @var \Drupal\Core\Authentication\AuthenticationProviderInterface
    */
   protected AuthenticationProviderInterface $provider;
+
   /**
    * The OAuth page cache request policy.
    *
@@ -43,17 +40,13 @@ class SimpleOauthAuthenticationTest extends UnitTestCase {
   protected function setUp(): void {
     parent::setUp();
 
-    $resource_server_factory = $this->prophesize(ResourceServerFactoryInterface::class);
+    $resource_server = $this->prophesize(ResourceServerInterface::class);
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
     $this->oauthPageCacheRequestPolicy = new DisallowSimpleOauthRequests();
-    $http_message_factory = $this->prophesize(HttpMessageFactoryInterface::class);
-    $http_foundation_factory = $this->prophesize(HttpFoundationFactoryInterface::class);
     $this->provider = new SimpleOauthAuthenticationProvider(
-      $resource_server_factory->reveal(),
+      $resource_server->reveal(),
       $entity_type_manager->reveal(),
-      $this->oauthPageCacheRequestPolicy,
-      $http_message_factory->reveal(),
-      $http_foundation_factory->reveal(),
+      $this->oauthPageCacheRequestPolicy
     );
   }
 
@@ -79,8 +72,8 @@ class SimpleOauthAuthenticationTest extends UnitTestCase {
   /**
    * Data provider for ::testHasTokenValue.
    */
-  public static function hasTokenValueProvider(): array {
-    $token = Random::string();
+  public function hasTokenValueProvider(): array {
+    $token = $this->randomMachineName();
     $data = [];
 
     // 1. Authentication header.

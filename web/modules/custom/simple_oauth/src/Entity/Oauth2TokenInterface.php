@@ -23,17 +23,6 @@ interface Oauth2TokenInterface extends ContentEntityInterface, EntityChangedInte
    * @return bool
    *   TRUE if the token is revoked. FALSE otherwise.
    */
-  public function isRevoked(): bool;
-
-  /**
-   * Checks whether a certain permission is set via the scopes.
-   *
-   * @param string $permission
-   *   The permission string to check.
-   *
-   * @return bool
-   *   TRUE if the token has the permission, FALSE otherwise.
-   */
-  public function hasPermission(string $permission): bool;
+  public function isRevoked();
 
 }

@@ -2,8 +2,6 @@
 
 namespace Drupal\simple_oauth;
 
-use Drupal\consumers\Entity\Consumer;
-
 /**
  * An interface that remembers known clients.
  */
@@ -14,15 +12,16 @@ interface KnownClientsRepositoryInterface {
    *
    * @param int $uid
    *   The user ID.
-   * @param \Drupal\consumers\Entity\Consumer $client
-   *   The consumer entity.
+   * @param string $client_id
+   *   The client ID.
    * @param string[] $scopes
    *   List of scopes to authorize for.
    *
    * @return bool
    *   TRUE if the client is authorized, FALSE otherwise.
+   *
    */
-  public function isAuthorized(int $uid, Consumer $client, array $scopes): bool;
+  public function isAuthorized($uid, $client_id, array $scopes);
 
   /**
    * Store a client with a set of scopes as authorized for a given user.
@@ -35,8 +34,8 @@ interface KnownClientsRepositoryInterface {
    * @param string $client_id
    *   The client ID.
    * @param string[] $scopes
-   *   List of scopes that should be authorized.
+   *   List of scopes that shuld be authorized.
    */
-  public function rememberClient(int $uid, string $client_id, array $scopes);
+  public function rememberClient($uid, $client_id, array $scopes);
 
 }

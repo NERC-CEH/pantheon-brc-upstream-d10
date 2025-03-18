@@ -36,29 +36,29 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface {
   /**
    * {@inheritdoc}
    */
-  public function getNewAuthCode(): AuthCodeEntityInterface {
+  public function getNewAuthCode() {
     return $this->getNew();
   }
 
   /**
    * {@inheritdoc}
    */
-  public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void {
-    $this->persistNew($authCodeEntity);
+  public function persistNewAuthCode(AuthCodeEntityInterface $auth_code_entity) {
+    $this->persistNew($auth_code_entity);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function revokeAuthCode($codeId): void {
-    $this->revoke($codeId);
+  public function revokeAuthCode($code_id) {
+    $this->revoke($code_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isAuthCodeRevoked($codeId): bool {
-    return $this->isRevoked($codeId);
+  public function isAuthCodeRevoked($code_id) {
+    return $this->isRevoked($code_id);
   }
 
 }

@@ -3,33 +3,19 @@
 namespace Drupal\simple_oauth\Plugin;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
-use Drupal\consumers\Entity\Consumer;
-use League\OAuth2\Server\Grant\GrantTypeInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 
 /**
  * Defines an interface for OAuth2 Grant plugins.
  */
-interface Oauth2GrantInterface extends PluginInspectionInterface {
+interface Oauth2GrantInterface extends PluginInspectionInterface, ContainerFactoryPluginInterface {
 
   /**
    * Gets the grant object.
    *
-   * @param \Drupal\consumers\Entity\Consumer $client
-   *   The consumer entity.
-   *
    * @return \League\OAuth2\Server\Grant\GrantTypeInterface
-   *   The grant type object.
-   *
-   * @throws \Exception
+   *   The grant type.
    */
-  public function getGrantType(Consumer $client): GrantTypeInterface;
-
-  /**
-   * Get the grant type label.
-   *
-   * @return string
-   *   Returns the grant type label.
-   */
-  public function label(): string;
+  public function getGrantType();
 
 }

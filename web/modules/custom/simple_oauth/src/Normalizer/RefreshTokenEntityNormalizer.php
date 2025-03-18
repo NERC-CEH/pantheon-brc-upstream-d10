@@ -3,11 +3,7 @@
 namespace Drupal\simple_oauth\Normalizer;
 
 use Drupal\serialization\Normalizer\NormalizerBase;
-use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 
-/**
- * Normalizes refresh token entity.
- */
 class RefreshTokenEntityNormalizer extends NormalizerBase implements TokenEntityNormalizerInterface {
 
   /**
@@ -20,20 +16,11 @@ class RefreshTokenEntityNormalizer extends NormalizerBase implements TokenEntity
   /**
    * {@inheritdoc}
    */
-  public function normalize(mixed $token_entity, ?string $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|null {
+  public function normalize($token_entity, $format = NULL, array $context = []) {
     /** @var \League\OAuth2\Server\Entities\TokenInterface $token_entity */
     return [
       'value' => $token_entity->getIdentifier(),
       'expire' => $token_entity->getExpiryDateTime()->format('U'),
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      RefreshTokenEntityInterface::class => TRUE,
     ];
   }
 

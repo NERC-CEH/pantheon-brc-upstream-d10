@@ -3,7 +3,6 @@
 namespace Drupal\simple_oauth\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
-use Drupal\Core\Annotation\Translation;
 
 /**
  * Defines a OAuth2 Grant item annotation object.
@@ -20,7 +19,7 @@ class Oauth2Grant extends Plugin {
    *
    * @var string
    */
-  public string $id;
+  public $id;
 
   /**
    * The label of the plugin.
@@ -29,6 +28,6 @@ class Oauth2Grant extends Plugin {
    *
    * @ingroup plugin_translatable
    */
-  public Translation $label;
+  public $label;
 
 }

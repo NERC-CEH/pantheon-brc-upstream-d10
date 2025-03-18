@@ -3,8 +3,6 @@
 namespace Drupal\simple_oauth\Service;
 
 /**
- * Generates the signature keys.
- *
  * @internal
  */
 class KeyGenerator {
@@ -18,8 +16,7 @@ class KeyGenerator {
   /**
    * Generate a private and public key.
    *
-   * @return array
-   *   An array with the generated public and private key
+   * @return array with the generated public and private key
    */
   public static function generateKeys() {
     // Generate Resource.

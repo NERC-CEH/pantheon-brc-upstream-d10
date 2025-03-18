@@ -29,14 +29,28 @@ class BasicAuthSwap implements HttpKernelInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Handles a Request to convert it to a Response.
    *
    * If the request appears to be an OAuth2 token request with Basic Auth,
    * swap the Basic Auth credentials into the request body and then remove the
    * Basic Auth credentials from the request so that core authentication is
    * not performed later.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The input request.
+   * @param int $type
+   *   The type of the request. One of HttpKernelInterface::MASTER_REQUEST or
+   *   HttpKernelInterface::SUB_REQUEST.
+   * @param bool $catch
+   *   Whether to catch exceptions or not.
+   *
+   * @throws \Exception
+   *   When an Exception occurs during processing.
+   *
+   * @return \Symfony\Component\HttpFoundation\Response
+   *   A Response instance
    */
-  public function handle(Request $request, $type = self::MAIN_REQUEST, $catch = TRUE): Response {
+  public function handle(Request $request, $type = self::MAIN_REQUEST, $catch = true): Response {
     if (
       strpos($request->getPathInfo(), '/oauth/token') !== FALSE &&
       $request->headers->has('PHP_AUTH_USER') &&

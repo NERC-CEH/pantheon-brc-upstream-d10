@@ -3,12 +3,11 @@
 namespace Drupal\simple_oauth\Controller;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\DependencyInjection\AutowireTrait;
-use Drupal\Core\DependencyInjection\ClassResolverInterface;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\simple_oauth\Authentication\TokenAuthUser;
 use Drupal\simple_oauth\Entities\JwksEntity;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -17,8 +16,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Controller for the User Info endpoint.
  */
 class Jwks implements ContainerInjectionInterface {
-
-  use AutowireTrait;
 
   /**
    * The authenticated user.
@@ -34,9 +31,27 @@ class Jwks implements ContainerInjectionInterface {
    */
   private $config;
 
-  private function __construct(AccountProxyInterface $user, ConfigFactoryInterface $config_factory, protected ClassResolverInterface $classResolver) {
+  /**
+   * Jwks constructor.
+   *
+   * @param \Drupal\Core\Session\AccountProxyInterface $user
+   *   The user.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The configuration factory.
+   */
+  private function __construct(AccountProxyInterface $user, ConfigFactoryInterface $config_factory) {
     $this->user = $user->getAccount();
     $this->config = $config_factory->get('simple_oauth.settings');
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('current_user'),
+      $container->get('config.factory')
+    );
   }
 
   /**
@@ -52,7 +67,7 @@ class Jwks implements ContainerInjectionInterface {
     if ($this->config->get('disable_openid_connect')) {
       throw new NotFoundHttpException('Not Found');
     }
-    return new JsonResponse(($this->classResolver->getInstanceFromDefinition(JwksEntity::class))->getKeys());
+    return new JsonResponse((new JwksEntity())->getKeys());
   }
 
 }

@@ -16,21 +16,21 @@ trait RevocableTokenRepositoryTrait {
    *
    * @var string
    */
-  protected static string $entityTypeId = 'oauth2_token';
+  protected static $entityTypeId = 'oauth2_token';
 
   /**
    * The entity type manager.
    *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected EntityTypeManagerInterface $entityTypeManager;
+  protected $entityTypeManager;
 
   /**
    * The serializer.
    *
    * @var \Symfony\Component\Serializer\SerializerInterface
    */
-  protected SerializerInterface $serializer;
+  protected $serializer;
 
   /**
    * Construct a revocable token.
@@ -46,17 +46,9 @@ trait RevocableTokenRepositoryTrait {
   }
 
   /**
-   * Persists a new access token to permanent storage.
-   *
-   * @param mixed $token_entity
-   *   The token entity.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
-   * @throws \Symfony\Component\Serializer\Exception\ExceptionInterface
+   * {@inheritdoc}
    */
-  public function persistNew($token_entity): void {
+  public function persistNew($token_entity) {
     if (!is_a($token_entity, static::$entityInterface)) {
       throw new \InvalidArgumentException(sprintf('%s does not implement %s.', get_class($token_entity), static::$entityInterface));
     }
@@ -75,56 +67,39 @@ trait RevocableTokenRepositoryTrait {
   }
 
   /**
-   * Revoke an access token.
-   *
-   * @param string $token_id
-   *   The token id.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
-   * @throws \Drupal\Core\Entity\EntityStorageException
+   * {@inheritdoc}
    */
-  public function revoke(string $token_id): void {
-    $tokens = $this
+  public function revoke($token_id) {
+    if (!$tokens = $this
       ->entityTypeManager
       ->getStorage(static::$entityTypeId)
-      ->loadByProperties(['value' => $token_id]);
-    if ($tokens) {
-      /** @var \Drupal\simple_oauth\Entity\Oauth2TokenInterface $token */
-      $token = reset($tokens);
-      $token->revoke();
-      $token->save();
+      ->loadByProperties(['value' => $token_id])) {
+      return;
     }
+    /** @var \Drupal\simple_oauth\Entity\Oauth2TokenInterface $token */
+    $token = reset($tokens);
+    $token->revoke();
+    $token->save();
   }
 
   /**
-   * Check if the token has been revoked.
-   *
-   * @param string $token_id
-   *   The token id.
-   *
-   * @return bool
-   *   Return true if this token has been revoked.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   * {@inheritdoc}
    */
-  public function isRevoked(string $token_id): bool {
-    $tokens = $this
+  public function isRevoked($token_id) {
+    if (!$tokens = $this
       ->entityTypeManager
       ->getStorage(static::$entityTypeId)
-      ->loadByProperties(['value' => $token_id]);
-    /** @var \Drupal\simple_oauth\Entity\Oauth2TokenInterface|null $token */
-    $token = $tokens ? reset($tokens) : NULL;
+      ->loadByProperties(['value' => $token_id])) {
+      return TRUE;
+    }
+    /** @var \Drupal\simple_oauth\Entity\Oauth2TokenInterface $token */
+    $token = reset($tokens);
 
-    return !$token || $token->isRevoked();
+    return $token->isRevoked();
   }
 
   /**
-   * Create a new token.
-   *
-   * @return mixed
-   *   Returns a new token entity.
+   * {@inheritdoc}
    */
   public function getNew() {
     $class = static::$entityClass;

@@ -15,9 +15,8 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
  */
 class UserClaimsNormalizer extends NormalizerBase implements NormalizerInterface {
 
-  /**
-   * {@inheritdoc}
-   */
+  protected $supportedInterfaceOrClass = UserEntityWithClaims::class;
+
   protected $format = 'json';
 
   /**
@@ -32,14 +31,14 @@ class UserClaimsNormalizer extends NormalizerBase implements NormalizerInterface
    *
    * @var string[]
    */
-  protected array $claims;
+  protected $claims;
 
   /**
    * The module handler.
    *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
-  protected ModuleHandlerInterface $moduleHandler;
+  protected $moduleHandler;
 
   /**
    * UserClaimsNormalizer constructor.
@@ -63,7 +62,7 @@ class UserClaimsNormalizer extends NormalizerBase implements NormalizerInterface
   /**
    * {@inheritdoc}
    */
-  public function normalize(mixed $user_entity, ?string $format = NULL, array $context = []): array|string|int|float|bool|\ArrayObject|null {
+  public function normalize($user_entity, $format = NULL, array $context = []) {
     assert($user_entity instanceof UserEntityWithClaims);
     $identifier = $user_entity->getIdentifier();
     // Check if the account is in $context. If not, load it from the database.
@@ -83,7 +82,8 @@ class UserClaimsNormalizer extends NormalizerBase implements NormalizerInterface
    * @return array
    *   The claims key/values.
    */
-  private function getClaimsFromAccount(AccountInterface $account): array {
+  private function getClaimsFromAccount(AccountInterface $account) {
+    /** @var \Drupal\simple_oauth\Authentication\TokenAuthUserInterface $profile_url */
     $profile_url = $account->toUrl('canonical', ['absolute' => TRUE])
       ->toString();
     $claim_values = [
@@ -102,15 +102,6 @@ class UserClaimsNormalizer extends NormalizerBase implements NormalizerInterface
     $context = ['account' => $account, 'claims' => $this->claims];
     $this->moduleHandler->alter('simple_oauth_oidc_claims', $claim_values, $context);
     return array_intersect_key($claim_values, array_flip($this->claims));
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public function getSupportedTypes(?string $format): array {
-    return [
-      UserEntityWithClaims::class => TRUE,
-    ];
   }
 
 }

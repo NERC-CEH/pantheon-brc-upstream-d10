@@ -171,7 +171,7 @@
         "drupal/pdf": "*",
         "drupal/permission_spreadsheet": "^2.1",
         "drupal/physical": "^1.5",
-        "drupal/profile": "^1.11",
+        "drupal/profile": "^1.12",
         "drupal/publishcontent": "^1.7",
         "drupal/quick_node_clone": "^1.17",
         "drupal/r4032login": "^2.2",
@@ -299,7 +299,7 @@
         "drupal/entity_reference_modal": "^1.0",
         "drupal/tfa": "^1.10",
         "drupal/username_enumeration_prevention": "^1.4",
-        "drupal/simple_oauth": "^6.0"
+        "drupal/simple_oauth": "5.2.5"
     },
     "conflict": {
         "drupal/drupal": "*"

@@ -11,7 +11,7 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *   id = "oauth2_token_type",
  *   label = @Translation("OAuth2 Token Type"),
  *   handlers = {
- *     "access" = "Drupal\simple_oauth\Entity\Access\LockableConfigEntityAccessControlHandler"
+ *     "access" = "Drupal\simple_oauth\LockableConfigEntityAccessControlHandler"
  *   },
  *   config_prefix = "oauth2_token.bundle",
  *   admin_permission = "administer simple_oauth entities",
@@ -37,33 +37,33 @@ class Oauth2TokenType extends ConfigEntityBase implements Oauth2TokenTypeInterfa
    *
    * @var string
    */
-  protected string $id;
+  protected $id;
 
   /**
    * The Access Token Type label.
    *
    * @var string
    */
-  protected string $label;
+  protected $label;
 
   /**
    * The Access Token Type label.
    *
    * @var string
    */
-  protected string $description = '';
+  protected $description = '';
 
   /**
    * {@inheritdoc}
    */
-  public function getDescription(): string {
+  public function getDescription() {
     return $this->description;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setDescription(string $description) {
+  public function setDescription($description) {
     $this->description = $description;
   }
 

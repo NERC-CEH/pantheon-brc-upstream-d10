@@ -3,52 +3,50 @@
 namespace Drupal\simple_oauth\Service\Filesystem;
 
 /**
- * The file system checker.
- *
  * @internal
  */
-class FileSystemChecker implements FileSystemCheckerInterface {
+class FileSystemChecker {
 
   /**
    * {@inheritdoc}
    */
-  public function isExtensionEnabled(string $extension): bool {
+  public function isExtensionEnabled($extension) {
     return @extension_loaded($extension);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isDirectory(string $file_path): bool {
-    return @is_dir($file_path);
+  public function isDirectory($uri) {
+    return @is_dir($uri);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isWritable(string $file_path): bool {
-    return @is_writable($file_path);
+  public function isWritable($uri) {
+    return @is_writable($uri);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function fileExist(string $file_path): bool {
-    return @file_exists($file_path);
+  public function fileExist($uri) {
+    return @file_exists($uri);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function write(string $file_path, mixed $data): mixed {
-    return @file_put_contents($file_path, $data);
+  public function write($uri, $content) {
+    return @file_put_contents($uri, $content);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isReadable(string $file_path): bool {
-    return @is_readable($file_path);
+  public function isReadable($uri) {
+    return @is_readable($uri);
   }
 
 }

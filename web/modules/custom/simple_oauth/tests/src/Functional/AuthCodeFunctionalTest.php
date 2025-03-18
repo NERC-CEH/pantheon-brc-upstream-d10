@@ -2,13 +2,10 @@
 
 namespace Drupal\Tests\simple_oauth\Functional;
 
+use GuzzleHttp\Psr7\Query;
 use Drupal\Core\Url;
-use Drupal\simple_oauth\Entity\Oauth2Scope;
-use Drupal\simple_oauth\Oauth2ScopeInterface;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
-use Drupal\user\UserInterface;
-use GuzzleHttp\Psr7\Query;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -26,36 +23,57 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
   protected Url $authorizeUrl;
 
   /**
-   * An extra scope for testing.
+   * The redirect URI.
    *
-   * @var \Drupal\simple_oauth\Oauth2ScopeInterface
+   * @var string
    */
-  protected Oauth2ScopeInterface $extraScope;
+  protected string $redirectUri;
+
+  /**
+   * An extra role for testing.
+   *
+   * @var \Drupal\user\RoleInterface
+   */
+  protected RoleInterface $extraRole;
+
+  /**
+   * {@inheritdoc}
+   */
+  protected static $modules = ['simple_oauth_test'];
 
   /**
    * {@inheritdoc}
    */
   protected function setUp(): void {
     parent::setUp();
-
+    $this->redirectUri = Url::fromRoute('oauth2_token.test_token', [], [
+      'absolute' => TRUE,
+    ])->toString();
+    $this->client->set('redirect', $this->redirectUri);
+    $this->client->set('description', $this->getRandomGenerator()
+      ->paragraphs());
+    $this->client->save();
     $this->authorizeUrl = Url::fromRoute('oauth2_token.authorize');
-
     $this->grantPermissions(Role::load(RoleInterface::AUTHENTICATED_ID), [
       'grant simple_oauth codes',
-      'access content',
     ]);
-
-    $this->extraScope = Oauth2Scope::create([
-      'name' => 'test:scope3',
-      'description' => 'Test scope 3 description',
-      'grant_types' => [
-        'authorization_code' => [
-          'status' => TRUE,
-        ],
-      ],
-      'umbrella' => TRUE,
+    // Add a scope so we can ensure all tests have at least 2 roles. That way we
+    // can test dropping a scope and still have at least one scope.
+    $additional_scope = $this->randomMachineName();
+    Role::create([
+      'id' => $additional_scope,
+      'label' => $this->getRandomGenerator()->word(5),
+      'is_admin' => FALSE,
+    ])->save();
+    $this->scope = $this->scope . ' ' . $additional_scope;
+    // Add a random scope that is not in the base scopes list to request so we
+    // can make extra checks on it.
+    $this->extraRole = Role::create([
+      'id' => $this->randomMachineName(),
+      'label' => $this->getRandomGenerator()->word(5),
+      'is_admin' => FALSE,
     ]);
-    $this->extraScope->save();
+    $this->extraRole->save();
   }
 
   /**
@@ -66,8 +84,10 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $valid_params = [
       'response_type' => 'code',
       'client_id' => $this->client->getClientId(),
-      'scope' => $this->scope,
-      'redirect_uri' => $this->redirectUri,
+      // Not sending a client secret.
+      'redirect_uri' => Url::fromRoute('oauth2_token.test_token', [], [
+        'absolute' => TRUE,
+      ])->toString(),
     ];
     // 1. Anonymous request invites the user to log in.
     $this->drupalGet($this->authorizeUrl->toString(), [
@@ -82,37 +102,37 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
       'query' => $valid_params,
     ]);
     $this->assertGrantForm();
+    $this->drupalGet($this->authorizeUrl, [
+      'query' => $valid_params,
+    ]);
 
     // 3. Grant access by submitting the form and get the code back.
-    $this->submitForm([], 'Allow');
-
+    $this->submitForm([], 'Grant');
     // Store the code for the second part of the flow.
     $code = $this->getAndValidateCodeFromResponse();
 
     // 4. Send the code to get the access token.
     $response = $this->postGrantedCodeWithScopes($code, $this->scope, FALSE);
-    $parsed_response = $this->assertValidTokenResponse($response, TRUE);
+    $this->assertValidTokenResponse($response, TRUE);
 
     // 5. Ensure codes cannot be re-used.
     $response = $this->postGrantedCodeWithScopes($code, $this->scope, FALSE);
     $this->assertEquals(400, $response->getStatusCode());
-
-    // 6. Test access token.
-    $this->assertAccessTokenOnResource($parsed_response['access_token']);
   }
 
   /**
-   * Test the automatic authorization when enabled on client.
+   * Test the valid AuthCode grant if the client is non 3rd party.
    */
-  public function testAutomaticAuthorization(): void {
-    $this->client->set('automatic_authorization', TRUE);
+  public function testNon3rdPartyClientAuthCodeGrant(): void {
+    $this->client->set('third_party', FALSE);
     $this->client->save();
 
     $valid_params = [
       'response_type' => 'code',
       'client_id' => $this->client->getClientId(),
-      'scope' => $this->scope,
-      'redirect_uri' => $this->redirectUri,
+      'redirect_uri' => Url::fromRoute('oauth2_token.test_token', [], [
+        'absolute' => TRUE,
+      ])->toString(),
     ];
     // 1. Anonymous request invites the user to log in.
     $this->drupalGet($this->authorizeUrl->toString(), [
@@ -131,26 +151,24 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $code = $this->getAndValidateCodeFromResponse();
 
     // 3. Send the code to get the access token, regardless of the scopes, since
-    // the consumer has automatic authorization enabled.
+    // the consumer is trusted.
     $response = $this->postGrantedCodeWithScopes(
       $code,
-      $this->scope . ' ' . $this->extraScope->id()
+      $this->scope . ' ' . $this->extraRole->id()
     );
-    $parsed_response = $this->assertValidTokenResponse($response, TRUE);
-
-    // 4. Test access token.
-    $this->assertAccessTokenOnResource($parsed_response['access_token']);
+    $this->assertValidTokenResponse($response, TRUE);
   }
 
   /**
-   * Tests functionality remember approval, which is enabled by default.
+   * Tests the remember client functionality.
    */
-  public function testDefaultEnabledRememberApproval(): void {
+  public function testRememberClient(): void {
     $valid_params = [
       'response_type' => 'code',
       'client_id' => $this->client->getClientId(),
-      'scope' => $this->scope,
-      'redirect_uri' => $this->redirectUri,
+      'redirect_uri' => Url::fromRoute('oauth2_token.test_token', [], [
+        'absolute' => TRUE,
+      ])->toString(),
     ];
     // 1. Anonymous request invites the user to log in.
     $this->drupalGet($this->authorizeUrl->toString(), [
@@ -167,21 +185,18 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $this->assertGrantForm();
 
     // 3. Grant access by submitting the form and get the token back.
-    $this->submitForm([], 'Allow');
+    $this->submitForm([], 'Grant');
 
     // Store the code for the second part of the flow.
     $code = $this->getAndValidateCodeFromResponse();
 
     // 4. Send the code to get the access token.
     $response = $this->postGrantedCodeWithScopes($code, $this->scope);
-    $parsed_response = $this->assertValidTokenResponse($response, TRUE);
+    $this->assertValidTokenResponse($response, TRUE);
 
     // 5. Ensure codes cannot be re-used.
     $response = $this->postGrantedCodeWithScopes($code, $this->scope);
     $this->assertEquals(400, $response->getStatusCode());
-
-    // 6. Test access token.
-    $this->assertAccessTokenOnResource($parsed_response['access_token']);
   }
 
   /**
@@ -193,8 +208,9 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
       'response_type' => 'code',
       'client_id' => $this->client->getClientId(),
       'client_secret' => $this->clientSecret,
-      'scope' => $this->scope,
-      'redirect_uri' => $this->redirectUri,
+      'redirect_uri' => Url::fromRoute('oauth2_token.test_token', [], [
+        'absolute' => TRUE,
+      ])->toString(),
     ];
     // 1. Anonymous request invites the user to log in.
     $this->drupalGet($this->authorizeUrl->toString(), [
@@ -211,14 +227,13 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $this->assertGrantForm();
 
     // 3. Grant access by submitting the form and get the code back.
-    $this->submitForm([], 'Allow');
-
+    $this->submitForm([], 'Grant');
     // Store the code for the second part of the flow.
     $code = $this->getAndValidateCodeFromResponse();
 
     // 4. Send a request without a client secret.
     $response = $this->postGrantedCodeWithScopes($code, $this->scope, FALSE);
-    $this->assertEquals(400, $response->getStatusCode());
+    $this->assertEquals(401, $response->getStatusCode());
 
     // 5. Confidential clients still work when passing a secret.
     $response = $this->postGrantedCodeWithScopes($code, $this->scope);
@@ -236,38 +251,40 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $this->assertValidTokenResponse($response, TRUE);
 
     // Do a third request with an additional scope.
-    $valid_params['scope'] .= ' ' . $this->extraScope->getName();
+    $valid_params['scope'] = $this->extraRole->id();
     $this->drupalGet($this->authorizeUrl->toString(), [
       'query' => $valid_params,
     ]);
 
     $this->assertGrantForm();
-    $this->assertSession()->pageTextContains($this->extraScope->getDescription());
-    $this->submitForm([], 'Allow');
+    $this->assertSession()->pageTextContains($this->extraRole->label());
+    $this->submitForm([], 'Grant');
 
     $code = $this->getAndValidateCodeFromResponse();
 
     $response = $this->postGrantedCodeWithScopes(
-      $code, $valid_params['scope']
+      $code, $this->scope . ' ' . $this->extraRole->id()
     );
     $this->assertValidTokenResponse($response, TRUE);
 
     // Do another request with the additional scope, this scope is now
     // remembered too.
+    $valid_params['scope'] = $this->extraRole->id();
     $this->drupalGet($this->authorizeUrl->toString(), [
       'query' => $valid_params,
     ]);
     $code = $this->getAndValidateCodeFromResponse();
 
     $response = $this->postGrantedCodeWithScopes(
-      $code, $valid_params['scope']
+      $code, $this->scope . ' ' . $this->extraRole->id()
     );
     $this->assertValidTokenResponse($response, TRUE);
 
-    // Disable remember approval feature, make sure that the redirect doesn't
+    // Disable the remember clients feature, make sure that the redirect doesn't
     // happen automatically anymore.
-    $this->client->set('remember_approval', FALSE);
-    $this->client->save();
+    $this->config('simple_oauth.settings')
+      ->set('remember_clients', FALSE)
+      ->save();
 
     $this->drupalGet($this->authorizeUrl->toString(), [
       'query' => $valid_params,
@@ -294,8 +311,9 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
       'client_id' => $this->client->getClientId(),
       'code_challenge' => $code_challenge,
       'code_challenge_method' => 'S256',
-      'scope' => $this->scope,
-      'redirect_uri' => $this->redirectUri,
+      'redirect_uri' => Url::fromRoute('oauth2_token.test_token', [], [
+        'absolute' => TRUE,
+      ])->toString(),
     ];
 
     // 1. Anonymous request redirect to log in.
@@ -313,7 +331,7 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $this->assertGrantForm();
 
     // 3. Grant access by submitting the form.
-    $this->submitForm([], 'Allow');
+    $this->submitForm([], 'Grant');
 
     // Store the code for the second part of the flow.
     $code = $this->getAndValidateCodeFromResponse();
@@ -323,120 +341,12 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
       'grant_type' => 'authorization_code',
       'client_id' => $this->client->getClientId(),
       'code_verifier' => $code_verifier,
-      'scope' => $this->scope . ' ' . $this->extraScope->getName(),
+      'scope' => $this->scope . ' ' . $this->extraRole->id(),
       'code' => $code,
       'redirect_uri' => $this->redirectUri,
     ];
     $response = $this->post($this->url, $valid_payload);
-    $parsed_response = $this->assertValidTokenResponse($response, TRUE);
-
-    // Test access token.
-    $this->assertAccessTokenOnResource($parsed_response['access_token']);
-  }
-
-  /**
-   * Test the optional redirect uri.
-   */
-  public function testOptionalRedirectUri(): void {
-    // Not providing redirect uri, this means the redirect uri set on the client
-    // will be used.
-    $valid_params = [
-      'response_type' => 'code',
-      'client_id' => $this->client->getClientId(),
-      'client_secret' => $this->clientSecret,
-      'scope' => $this->scope,
-    ];
-    // 1. Anonymous request invites the user to log in.
-    $this->drupalGet($this->authorizeUrl->toString(), [
-      'query' => $valid_params,
-    ]);
-    $assert_session = $this->assertSession();
-    $assert_session->buttonExists('Log in');
-
-    // 2. Log the user in and try again.
-    $this->drupalLogin($this->user);
-    $this->drupalGet($this->authorizeUrl->toString(), [
-      'query' => $valid_params,
-    ]);
-    $this->assertGrantForm();
-
-    // 3. Deny access by submitting the form.
-    $this->submitForm([], 'Deny');
-    $query = $this->getQueryAndValidateRedirect();
-    $this->assertArrayHasKey('error', $query);
-    $this->assertEquals('access_denied', $query['error']);
-
-    // Perform same request, but this time allow grant.
-    $this->drupalGet($this->authorizeUrl->toString(), [
-      'query' => $valid_params,
-    ]);
-    $this->submitForm([], 'Allow');
-    $this->getAndValidateCodeFromResponse();
-
-    // Set additional redirect uri on the client, and perform again request
-    // with redirect uri.
-    $this->client->set('redirect', [
-      'mobile://test',
-      $this->redirectUri,
-    ]);
-    $this->client->save();
-    $valid_params['redirect_uri'] = $this->redirectUri;
-    // Adding additional scope, because the 'remember approval' is enabled.
-    $valid_params['scope'] .= " {$this->extraScope->getName()}";
-    $this->drupalGet($this->authorizeUrl->toString(), [
-      'query' => $valid_params,
-    ]);
-    $this->submitForm([], 'Allow');
-    $this->getAndValidateCodeFromResponse();
-  }
-
-  /**
-   * Test registration with one time login.
-   */
-  public function testRegistrationWithOneTimeLogin(): void {
-    // Allow registration with administrator approval.
-    $this->config('user.settings')->set('register', UserInterface::REGISTER_VISITORS_ADMINISTRATIVE_APPROVAL)->save();
-    $valid_params = [
-      'response_type' => 'code',
-      'client_id' => $this->client->getClientId(),
-      'client_secret' => $this->clientSecret,
-      'scope' => $this->scope,
-      'redirect_uri' => $this->redirectUri,
-    ];
-
-    // 1. Register user.
-    $destination_url = $this->authorizeUrl->setOption('query', $valid_params)->toString();
-    $this->drupalGet('user/register', [
-      'query' => [
-        'destination' => $destination_url,
-      ],
-    ]);
-    $edit['name'] = $this->randomMachineName();
-    $edit['mail'] = $edit['name'] . '@example.com';
-    $this->submitForm($edit, 'Create new account');
-
-    // 2. Approve user.
-    $this->container->get('entity_type.manager')->getStorage('user')->resetCache();
-    $user_storage = $this->container->get('entity_type.manager')->getStorage('user');
-    /** @var \Drupal\user\UserInterface[] $accounts */
-    $accounts = $user_storage->loadByProperties($edit);
-    $new_user = reset($accounts);
-    // Unblock user.
-    $new_user
-      ->set('status', TRUE)
-      ->save();
-
-    // 3. Login via the one time login.
-    $reset_url = user_pass_reset_url($new_user);
-    $this->drupalGet($reset_url);
-    $this->submitForm([], 'Log in');
-
-    // 4. After saving the user, authorization form will be available.
-    $this->submitForm([
-      'pass[pass1]' => $pass = $this->randomString(),
-      'pass[pass2]' => $pass,
-    ], 'Save');
-    $this->assertGrantForm();
+    $this->assertValidTokenResponse($response, TRUE);
   }
 
   /**
@@ -449,8 +359,8 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
     $assert_session = $this->assertSession();
     $assert_session->statusCodeEquals(200);
     $assert_session->titleEquals('Grant Access to Client | Drupal');
-    $assert_session->buttonExists('Allow');
-    $assert_session->buttonExists('Deny');
+    $assert_session->buttonExists('Grant');
+    $assert_session->responseContains('Permissions');
   }
 
   /**
@@ -462,31 +372,13 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
    * @throws \Behat\Mink\Exception\ExpectationException
    */
   protected function getAndValidateCodeFromResponse(): string {
-    $query = $this->getQueryAndValidateRedirect();
-    $this->assertArrayHasKey('code', $query);
-    return $query['code'];
-  }
-
-  /**
-   * Get the parsed query and validate the redirect.
-   *
-   * @return array
-   *   The parsed URL query.
-   *
-   * @throws \Behat\Mink\Exception\ExpectationException
-   */
-  protected function getQueryAndValidateRedirect(): array {
     $assert_session = $this->assertSession();
     $session = $this->getSession();
     $assert_session->statusCodeEquals(200);
     $parsed_url = parse_url($session->getCurrentUrl());
-    $redirect_url = "{$parsed_url['scheme']}://{$parsed_url['host']}";
-    if (isset($parsed_url['port'])) {
-      $redirect_url .= ':' . $parsed_url['port'];
-    }
-    $redirect_url .= $parsed_url['path'];
-    $this->assertEquals($this->redirectUri, $redirect_url);
-    return Query::parse($parsed_url['query']);
+    $parsed_query = Query::parse($parsed_url['query']);
+    $this->assertArrayHasKey('code', $parsed_query);
+    return $parsed_query['code'];
   }
 
   /**
@@ -501,6 +393,8 @@ class AuthCodeFunctionalTest extends TokenBearerFunctionalTestBase {
    *
    * @return \Psr\Http\Message\ResponseInterface
    *   The response.
+   *
+   * @throws \GuzzleHttp\Exception\GuzzleException
    */
   protected function postGrantedCodeWithScopes(string $code, string $scopes, bool $send_secret = TRUE): ResponseInterface {
     $valid_payload = [

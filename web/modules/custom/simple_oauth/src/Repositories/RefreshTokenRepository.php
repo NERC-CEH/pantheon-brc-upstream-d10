@@ -4,10 +4,11 @@ namespace Drupal\simple_oauth\Repositories;
 
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
+
 /**
  * The refresh token repository.
  */
-class RefreshTokenRepository implements OptionalRefreshTokenRepositoryInterface {
+class RefreshTokenRepository implements RefreshTokenRepositoryInterface {
 
   use RevocableTokenRepositoryTrait;
 
@@ -16,65 +17,50 @@ class RefreshTokenRepository implements OptionalRefreshTokenRepositoryInterface 
    *
    * @var string
    */
-  protected static string $bundleId = 'refresh_token';
+  protected static $bundleId = 'refresh_token';
 
   /**
    * The OAuth2 entity class name.
    *
    * @var string
    */
-  protected static string $entityClass = 'Drupal\simple_oauth\Entities\RefreshTokenEntity';
+  protected static $entityClass = 'Drupal\simple_oauth\Entities\RefreshTokenEntity';
 
   /**
    * The OAuth2 entity interface name.
    *
    * @var string
    */
-  protected static string $entityInterface = 'League\OAuth2\Server\Entities\RefreshTokenEntityInterface';
-
-  /**
-   * Boolean indicating if the refresh token is enabled.
-   *
-   * @var bool
-   */
-  protected bool $refreshTokenEnabled = TRUE;
+  protected static $entityInterface = 'League\OAuth2\Server\Entities\RefreshTokenEntityInterface';
 
   /**
    * {@inheritdoc}
    */
-  public function getNewRefreshToken(): ?RefreshTokenEntityInterface {
+  public function getNewRefreshToken() {
     if ($_REQUEST['grant_type'] === 'password') {
       return $this->getNew();
-    } 
-    return $this->refreshTokenEnabled ? $this->getNew() : NULL;
+    }
   }
 
   /**
    * {@inheritdoc}
    */
-  public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void {
-    $this->persistNew($refreshTokenEntity);
+  public function persistNewRefreshToken(RefreshTokenEntityInterface $refresh_token_entity) {
+    $this->persistNew($refresh_token_entity);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function revokeRefreshToken($tokenId): void {
-    $this->revoke($tokenId);
+  public function revokeRefreshToken($token_id) {
+    //$this->revoke($token_id);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function isRefreshTokenRevoked($tokenId): bool {
-    return $this->isRevoked($tokenId);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function disableRefreshToken(): void {
-    $this->refreshTokenEnabled = FALSE;
+  public function isRefreshTokenRevoked($token_id) {
+    return $this->isRevoked($token_id);
   }
 
 }

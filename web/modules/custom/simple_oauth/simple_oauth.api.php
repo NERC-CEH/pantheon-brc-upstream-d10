@@ -1,12 +1,11 @@
 <?php
 
+use Drupal\simple_oauth\Entities\AccessTokenEntity;
+use Drupal\user\Entity\User;
 /**
  * @file
  * Hooks specific to the Simple OAuth module.
  */
-
-use Drupal\simple_oauth\Entities\AccessTokenEntity;
-use Drupal\user\Entity\User;
 
 /**
  * @defgroup simple_oauth Simple Oauth: Hooks
@@ -18,14 +17,13 @@ use Drupal\user\UserInterface;
 /**
  * Alter the private claims to prepare convert to JWT token.
  *
- * @param array $private_claims
+ * @param $private_claims
  *   The private claims array to be altered.
  * @param \Drupal\simple_oauth\Entities\AccessTokenEntity $access_token_entity
- *   The entity for the Access token.
  *
  * @see \Drupal\simple_oauth\Entities\AccessTokenEntity::convertToJWT()
  */
-function hook_simple_oauth_private_claims_alter(array &$private_claims, AccessTokenEntity $access_token_entity) {
+function hook_simple_oauth_private_claims_alter(&$private_claims, AccessTokenEntity $access_token_entity) {
   $user_id = $access_token_entity->getUserIdentifier();
   $user = User::load($user_id);
   $private_claims = [
@@ -40,7 +38,7 @@ function hook_simple_oauth_private_claims_alter(array &$private_claims, AccessTo
  * This will allow sites to connect their custom implementations and data model
  * to the different claims supported by OpenID Connect.
  *
- * @param array $claim_values
+ * @param array $private_claims
  *   The private claims array to be altered.
  * @param array $context
  *   Additional information relevant to the custom claims. It contains:
