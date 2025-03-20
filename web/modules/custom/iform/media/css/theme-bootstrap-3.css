@@ -1039,6 +1039,9 @@ body > .loading-spinner {
   margin-right: 4px;
   margin-bottom: 8px;
 }
+.idc-cardGallery .es-card-gallery .card .image-container > * a {
+  display: block;
+}
 .idc-cardGallery .es-card-gallery .card .image-container > * img {
   max-width: 100%;
 }

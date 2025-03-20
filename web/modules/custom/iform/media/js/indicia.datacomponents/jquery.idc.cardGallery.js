@@ -79,12 +79,13 @@
     });
     // Move verification buttons onto the card.
     if ($('.idc-verificationButtons').length > 0) {
-      $(card).find('.data-container').after($('.verification-buttons-cntr'));
+      $(card).closest('.idc-cardGallery').find('.footer').prepend($('.verification-buttons-cntr'));
     }
     // Show the navigation buttons.
-    $(card).find('.verification-buttons-cntr').append($('#card-nav-buttons'));
+    $('.verification-buttons-cntr').after($('#card-nav-buttons'));
     // Ensure card visible.
     $(card)[0].scrollIntoView();
+    indiciaFns.resizeMaxCard();
   }
 
   /**
@@ -100,6 +101,8 @@
       if ($(this).data('thumb-src')) {
         $(this).attr('src', $(this).data('thumb-src'));
       }
+      // Remove sizing limits if controlLayout was scaling image to fit.
+      $(this).css('max-height', '');
     });
   }
 
@@ -145,6 +148,21 @@
      * SetTimeout handle so the row load timeout can be cleared when navigating quickly.
      */
     var loadRowTimeout;
+
+    indiciaFns.resizeMaxCard = function() {
+      const spaceAvailable =
+        // Total available height of the card gallery.
+        parseInt($('.es-card-gallery').css('max-height'), 10)
+        // Minus the footer.
+        - $('.show-max-size .card-footer').outerHeight(true)
+        // Minus any margins/padding/borders for the elements that contain the image.
+        - ($('.show-max-size .image-container').outerHeight(true) - $('.show-max-size img').parent().height())
+        // Minus any margins/padding/borders for the card itself.
+        - ($('.show-max-size').outerHeight(true) - $('.show-max-size').height());
+      $('.show-max-size img').css('max-height', Math.min(Math.max(spaceAvailable, 100), 600));
+    }
+
+    indiciaFns.controlLayoutHooks.push(indiciaFns.resizeMaxCard);
 
     /**
      * Fire callbacks when a card has been selected.

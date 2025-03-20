@@ -26,6 +26,11 @@
 jQuery(document).ready(function($) {
 
   /**
+   * Functions that need to be notified when a control layout resize occurs.
+   */
+  indiciaFns.controlLayoutHooks = [];
+
+  /**
    * Get correct component(s) to set scrollbox on.
    *
    * For anchoring to the bottom of the page using alignBottom.
@@ -130,6 +135,10 @@ jQuery(document).ready(function($) {
             $('body').css('padding-bottom', padding + 'px');
           }
         }
+      });
+      // Allow control specific resize behaviour.
+      $.each(indiciaFns.controlLayoutHooks, function() {
+        this();
       });
     }
 

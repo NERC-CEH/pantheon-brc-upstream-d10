@@ -211,6 +211,9 @@ body {
           flex-basis: auto;
           margin-right: 4px;
           margin-bottom: 8px;
+          a {
+            display: block;
+          }
           img {
             max-width: 100%;
           }

@@ -2,7 +2,7 @@ name: 'Disable user login and registration'
 description: 'Disables normal drupal login and registration form and allows social auth login.'
 type: module
 core: '8.x'
-core_version_requirement: ^8 || ^9 || ^10
+core_version_requirement: ^10 || ^11
 package: 'user'
 # Information added by Drupal.org packaging script on 2021-02-06
 version: '8.x-1.1'
