@@ -300,7 +300,8 @@
         "drupal/tfa": "^1.10",
         "drupal/username_enumeration_prevention": "^1.4",
         "drupal/simple_oauth": "5.2.5",
-        "drupal/forum_access": "^2.0"
+        "drupal/forum_access": "^2.0",
+        "drupal/entity_notify": "^1.1"
     },
     "conflict": {
         "drupal/drupal": "*"
