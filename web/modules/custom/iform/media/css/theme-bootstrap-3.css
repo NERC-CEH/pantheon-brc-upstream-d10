@@ -1325,6 +1325,10 @@ body > .loading-spinner {
   padding: 4px;
   margin: 2px 4px;
   list-style-position: inside;
+  cursor: move;
+}
+.data-grid-settings ol li.sortable-ghost, .data-grid-settings ol li.sortable-chosen {
+  cursor: grabbing;
 }
 .data-grid-settings ol li .checkbox {
   display: inline-block;

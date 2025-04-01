@@ -481,6 +481,7 @@
       'location.verbatim_locality',
       'message',
       'metadata.group.title',
+      'metadata.import_guid',
       'metadata.licence_code',
       'metadata.query',
       'metadata.survey.title',
@@ -1483,12 +1484,14 @@
   };
 
   /**
-   * Allow special fields to provide custom hints for their filter row inputs.
+   * Allow fields to provide custom hints for their filter row inputs.
    */
-  indiciaFns.fieldConvertorQueryDescriptions = {
+  indiciaFns.fieldQueryDescriptions = {
     identification_classifier_agreement: 'Enter Y to filter to records where the current determination matches the image classifiers top suggestion, or N to filter to records where the determination and top suggestion do not match.',
     identification_classifier_suggestion: 'Search for any word used in one of the suggested taxon names given by an image classifier. All suggested names given are searched, not just the most likely one.',
     lat_lon: 'Enter a latitude and longitude value to filter to records in the vicinity.',
+    'location.input_sref': 'Search against the map reference as it was originally input. Use * at the end of map references to find references starting with the provided text. Use | between map references to request either/or searches',
+    'location.output_sref': 'Search against the output map reference. Use * at the end of map references to find references starting with the provided text. Use | between map references to request either/or searches',
     event_date: 'Enter a date in dd/mm/yyyy or yyyy-mm-dd format. Filtering to a year or range or years is possible ' +
       'using yyyy or yyyy-yyyy format.'
   };

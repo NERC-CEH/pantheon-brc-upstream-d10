@@ -234,12 +234,10 @@
       // special field function that can work out the query.
       if (typeof indiciaData.esMappings[this.field] !== 'undefined'
           || typeof indiciaFns.fieldConvertorQueryBuilders[this.field.simpleFieldName()] !== 'undefined') {
-        if (indiciaFns.fieldConvertorQueryBuilders[this.field.simpleFieldName()]) {
-          if (indiciaFns.fieldConvertorQueryDescriptions[this.field.simpleFieldName()]) {
-            title = indiciaFns.fieldConvertorQueryDescriptions[this.field.simpleFieldName()];
-          } else {
-            title = 'Enter a value to find matches in the ' + caption + ' column.';
-          }
+        if (indiciaFns.fieldQueryDescriptions[this.field.simpleFieldName()]) {
+          title = indiciaFns.fieldQueryDescriptions[this.field.simpleFieldName()];
+        } else if (indiciaFns.fieldConvertorQueryBuilders[this.field.simpleFieldName()]) {
+          title = 'Enter a value to find matches in the ' + caption + ' column.';
         } else if (indiciaData.esMappings[this.field].type === 'text' || indiciaData.esMappings[this.field].type === 'keyword') {
           title = 'Search for words in the ' + caption + ' column. Prefix with ! to exclude rows which contain words ' +
             'beginning with the text you enter. Use * at the end of words to find words starting with. Use ' +

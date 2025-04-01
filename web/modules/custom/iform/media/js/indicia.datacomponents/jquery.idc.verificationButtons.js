@@ -128,10 +128,7 @@
     };
     if (multiselectWholeTableMode()) {
       todoListInfo.mode = 'table';
-      todoListInfo.total = {
-        value: $(listOutputControl)[0].settings.sourceObject.settings.total,
-        relation: 'eq'
-      };
+      todoListInfo.total = $(listOutputControl)[0].settings.sourceObject.settings.total;
     } else {
       todoListInfo.mode =  $(listOutputControl).hasClass('multiselect-mode') ? 'selection' : 'single';
       selectedItems = $(listOutputControl).hasClass('multiselect-mode')
@@ -232,16 +229,26 @@
   function showRedetForm(el) {
     const todoListInfo = getTodoListInfo();
     redetToTaxon = null;
+    let heading;
     resetCommentForm('redet-form', 'Redetermined from {{ rank }} {{ taxon full name }} to {{ new rank }} {{ new taxon full name }}.');
     if (todoListInfo.mode === 'selection' && todoListInfo.total.value === 0) {
       alert(indiciaData.lang.verificationButtons.nothingSelected);
       return;
     }
     if (todoListInfo.total.value > 1) {
+      const totalAsText = (todoListInfo.total.relation === 'gte' ? 'at least ' : '') + todoListInfo.total.value;
+      heading = 'Redetermine ' + totalAsText + ' records'
       $('#redet-form .multiple-warning').show();
     } else {
+      todoListInfo.mode =  $(listOutputControl).hasClass('multiselect-mode') ? 'selection' : 'single';
+      const selectedItem = todoListInfo.mode === 'selection'
+        ? $(listOutputControl).find('.multiselect:checked').closest('tr,.card')
+        : $(listOutputControl).find('.selected');
+      const doc = JSON.parse(selectedItem.attr('data-doc-source'));
+      heading = 'Redetermine record ' + doc.id;
       $('#redet-form .multiple-warning').hide();
     }
+    $('#redet-form legend span:last-child').text('').append(heading);
     showRedetFormForOccurrenceIds(el, todoListInfo.ids);
   }
 

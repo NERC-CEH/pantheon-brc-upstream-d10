@@ -1,0 +1,16 @@
+{
+    "name": "drupal/indicia_features",
+    "description": "Additional indicia modules for Drupal integration with Indicia.",
+    "type": "drupal-custom-module",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url":  "https://github.com/Indicia-Team/drupal-8-modules-indicia_features.git"
+        }
+	],
+    "extra": {
+        "installer-paths": {
+            "web/modules/custom/indicia_features/{$name}": ["type:drupal-custom-module"]
+        }
+    }
+}

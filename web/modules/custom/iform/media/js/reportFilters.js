@@ -232,44 +232,49 @@ jQuery(document).ready(function ($) {
     },
     when: {
       getDescription: function (filterDef, sep) {
-        var r = [];
-        var dateType = typeof filterDef.date_type === 'undefined' ? 'recorded' : filterDef.date_type;
-        var dateFromField = 'date_from';
-        var dateToField = 'date_to';
-        var dateAgeField = 'date_age';
-        if (filterDef.date_year_op && filterDef.date_year) {
-          if (filterDef.date_year_op === '=') {
-            dateFromField = 'date_year';
-            dateToField = 'date_year';
-          } else if (filterDef.date_year_op === '<=') {
-            // Disable the date from field.
-            dateFromField = 'not_used';
-            dateToField = 'date_year';
-          } else if (filterDef.date_year_op === '>=') {
-            dateFromField = 'date_year';
-            // Disable the date to field.
-            dateToField = 'not_used';
-          }
+        let r = [];
+        const dateType = typeof filterDef.date_type === 'undefined' ? 'recorded' : filterDef.date_type;
+        let fields = {
+          dateFrom: 'date_from',
+          dateTo: 'date_to',
+          dateAge: 'date_age',
+          dateYear: 'date_year',
+          dateYearOp: 'date_year_op',
         }
         if (dateType !== 'recorded') {
-          dateFromField = dateType + '_' + dateFromField;
-          dateToField = dateType + '_' + dateToField;
-          dateAgeField = dateType + '_' + dateAgeField;
+          Object.keys(fields).forEach(key => {
+            fields[key] = dateType + '_' + fields[key];
+          });
         }
-        if (filterDef[dateFromField] && filterDef[dateToField] && filterDef[dateFromField] === filterDef[dateToField]) {
+        let fromDate = filterDef[fields.dateFrom];
+        let toDate = filterDef[fields.dateTo];
+        if (filterDef[fields.dateYearOp] && filterDef[fields.dateYear]) {
+          if (filterDef[fields.dateYearOp] === '=') {
+            fromDate = filterDef[fields.dateYear];
+            toDate = filterDef[fields.dateYear];
+          } else if (filterDef[fields.dateYearOp] === '<=') {
+            // Disable the date from field.
+            fromDate = null;
+            toDate = filterDef[fields.dateYear];
+          } else if (filterDef[fields.dateYearOp] === '>=') {
+            fromDate = filterDef[fields.dateYear];
+            // Disable the date to field.
+            toDate = null;
+          }
+        }
+        if (fromDate && toDate && fromDate === toDate) {
           // Correct grammar.
-          const inOrOn = filterDef.date_year_op && filterDef.date_year ? 'in' : 'on';
-          r.push('Records ' + dateType + ' ' + inOrOn + ' ' + filterDef[dateFromField]);
-        } else if (filterDef[dateFromField] && filterDef[dateToField]) {
-          r.push('Records ' + dateType + ' between ' + filterDef[dateFromField] + ' and ' +
-            filterDef[dateToField]);
-        } else if (filterDef[dateFromField]) {
-          r.push('Records ' + dateType + ' on or after ' + filterDef[dateFromField]);
-        } else if (filterDef[dateToField]) {
-          r.push('Records ' + dateType + ' on or before ' + filterDef[dateToField]);
+          const inOrOn = filterDef[fields.dateYearOp] && filterDef[fields.dateYear] ? 'in' : 'on';
+          r.push(`Records ${dateType} ${inOrOn} ${fromDate}`);
+        } else if (fromDate && toDate) {
+          r.push(`Records ${dateType} between ${fromDate} and ${toDate}`);
+        } else if (fromDate) {
+          r.push(`Records ${dateType} on or after ${fromDate}`);
+        } else if (toDate) {
+          r.push(`Records ${dateType} on or before ${toDate}`);
         }
-        if (filterDef[dateAgeField]) {
-          r.push('Records ' + dateType + ' in last ' + filterDef[dateAgeField]);
+        if (filterDef[fields.dateAge]) {
+          r.push(`Records ${dateType} in last ${filterDef[fields.dateAge]}`);
         }
         return r.join(sep);
       },
@@ -1760,6 +1765,12 @@ jQuery(document).ready(function ($) {
       $('#date_year').val('');
     }
   });
+  // Change the year date, fill in equals as operation default.
+  $('#date_year').change(function() {
+    if ($('#date_year_op option:selected').val() === '') {
+      $('#date_year_op').val('=');
+    }
+  });
 
   // Select a named location - deactivate the drawFeature and hide modifyFeature controls.
   $('#location_list\\:search\\:name').change(function () {
@@ -1816,15 +1827,20 @@ jQuery(document).ready(function ($) {
     $.each($(e.currentTarget).find(':input[name]').not('.filter-exclude'), function (idx, ctrl) {
       // Skip open layers switcher.
       if (!$(ctrl).hasClass('olButton')) {
-        // Skip radio/checkboxes unless checked.
+        // If an array control, store the name of the array ready to populate
+        // with values of the checked checkboxes.
+        if ($(ctrl).attr('name').match(/\[\]$/)) {
+          arrayName = $(ctrl).attr('name').substring(0, $(ctrl).attr('name').length-2);
+          if (typeof arrays[arrayName] === 'undefined') {
+            arrays[arrayName] = [];
+          }
+        }
+        // Get control value - ensuring that only checked radio's/checkboxes
+        // are included.
         if (($(ctrl).attr('type') !== 'checkbox' && $(ctrl).attr('type') !== 'radio') || $(ctrl).is(':checked')) {
           // array control?
           if ($(ctrl).attr('name').match(/\[\]$/)) {
             // store array control data to handle later
-            arrayName = $(ctrl).attr('name').substring(0, $(ctrl).attr('name').length-2);
-            if (typeof arrays[arrayName] === 'undefined') {
-              arrays[arrayName] = [];
-            }
             arrays[arrayName].push($(ctrl).val());
           } else {
             // normal control

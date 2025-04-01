@@ -443,6 +443,10 @@ body {
       padding: 4px;
       margin: 2px 4px;
       list-style-position: inside;
+      cursor: move;
+      &.sortable-ghost, &.sortable-chosen {
+        cursor: grabbing;
+      }
       .checkbox {
         display: inline-block;
         vertical-align: middle;
