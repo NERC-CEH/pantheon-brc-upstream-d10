@@ -3589,6 +3589,23 @@ var destroyAllFeatures;
                 fillOpacity: 0.1,
                 graphicName: "square",
                 rotation: 45
+              },
+              activate: function() {
+                let featuresToSelect = [];
+                // Find the features which could be edited.
+                $.each(div.map.editLayer.features, function() {
+                  if (this.attributes.type && this.attributes.type.match(/^(clickPoint|boundary)$/)) {
+                    featuresToSelect.push(this);
+                  }
+                });
+                // If only 1 then auto-select it.
+                if (featuresToSelect.length === 1) {
+                  this.selectFeature(featuresToSelect[0]);
+                  this.moveLayerToTop();
+                  this.handlers.drag.activate();
+                  this.handlers.keyboard.activate();
+                }
+                OpenLayers.Control.prototype.activate.call(this);
               }
             }
           );
