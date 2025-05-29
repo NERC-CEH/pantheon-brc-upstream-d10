@@ -279,6 +279,7 @@
             var val = this.value.match(/^http(s)?:\/\//)
               ? '<a href="' + this.value + '" target="_blank">' + this.value + '</a>'
               : this.value;
+            val = indiciaFns.escapeHtml(val);
             $('<tr><th>' + this.caption + '</th><td>' + val + '</td></tr>').appendTo(tbody);
             if (title === 'Recorder attributes' && this.system_function === 'email' && val.match(/@/)) {
               // Store recorder email address for querying etc.

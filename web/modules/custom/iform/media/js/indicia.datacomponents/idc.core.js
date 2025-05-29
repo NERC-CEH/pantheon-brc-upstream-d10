@@ -264,6 +264,7 @@
       var item;
       var link;
       var params = [];
+      var target;
       if (this.hideIfFromOtherWebsite && doc.metadata.website.id != indiciaData.website_id) {
         // Skip this action.
         return true;
@@ -279,7 +280,7 @@
         html += '<span class="fas fa-times-circle error" title="Invalid action definition - missing title"></span>';
       } else {
         if (this.iconClass) {
-          item = '<span class="' + this.iconClass + '" title="' + this.title + '"></span>';
+          item = `<span class="${this.iconClass}" title="${this.title}"></span>`;
         } else {
           item = this.title;
         }
@@ -294,7 +295,8 @@
             });
             link += params.join('&');
           }
-          item = '<a href="' + indiciaFns.applyFieldReplacements(el, doc, link, this.tokenDefaults) + '" title="' + this.title + '">' + item + '</a>';
+          target = this.target || '_self';
+          item = `<a href="${indiciaFns.applyFieldReplacements(el, doc, link, this.tokenDefaults)}" title="${this.title}" target="${target}">${item}</a>`
         }
         else if (this.onClickFn) {
           item = '<a onclick="indiciaFns.' + this.onClickFn + '(JSON.parse(jQuery(this).closest(\'tr\').attr(\'data-doc-source\')), jQuery(this).closest(\'tr\')[0]);" title="' + this.title + '">' + item + '</a>';
@@ -795,7 +797,7 @@
     if (sort) {
       $.each(sort, function eachSortField(field, dir) {
         if (indiciaData.fieldConvertorSortFields[field.simpleFieldName()] &&
-            $.isArray(indiciaData.fieldConvertorSortFields[field.simpleFieldName()])) {
+            Array.isArray(indiciaData.fieldConvertorSortFields[field.simpleFieldName()])) {
           $.each(indiciaData.fieldConvertorSortFields[field.simpleFieldName()], function eachUnderlyingField() {
             sortInfo[this] = dir;
           });
@@ -1487,11 +1489,19 @@
    * Allow fields to provide custom hints for their filter row inputs.
    */
   indiciaFns.fieldQueryDescriptions = {
-    identification_classifier_agreement: 'Enter Y to filter to records where the current determination matches the image classifiers top suggestion, or N to filter to records where the determination and top suggestion do not match.',
-    identification_classifier_suggestion: 'Search for any word used in one of the suggested taxon names given by an image classifier. All suggested names given are searched, not just the most likely one.',
+    identification_classifier_agreement: 'Enter Y to filter to records where the current determination matches the ' +
+      'image classifiers top suggestion, or N to filter to records where the determination and top suggestion do ' +
+      'not match.',
+    identification_classifier_suggestion: 'Search for any word used in one of the suggested taxon names given by an ' +
+      'image classifier. All suggested names given are searched, not just the most likely one.',
     lat_lon: 'Enter a latitude and longitude value to filter to records in the vicinity.',
-    'location.input_sref': 'Search against the map reference as it was originally input. Use * at the end of map references to find references starting with the provided text. Use | between map references to request either/or searches',
-    'location.output_sref': 'Search against the output map reference. Use * at the end of map references to find references starting with the provided text. Use | between map references to request either/or searches',
+    'location.input_sref': 'Search against the map reference as it was originally input. Use * at the end of map ' +
+      'references to find references starting with the provided text. Use | between map references to request ' +
+      'either/or searches.',
+    'location.output_sref': 'Search against the output map reference in the recommended local grid system format. ' +
+      'Use * at the end of map references to find references starting with the provided text. Use | between map ' +
+      'references to request either/or searches. Enable the Input spatial reference column to output the reference ' +
+      'as it was originally input.',
     event_date: 'Enter a date in dd/mm/yyyy or yyyy-mm-dd format. Filtering to a year or range or years is possible ' +
       'using yyyy or yyyy-yyyy format.'
   };
@@ -1600,9 +1610,9 @@
     // Path might be to an aggregation response object, in which case we just
     // want the value (or value_as_string if aggregation format specified).
     if (valuePath && typeof (valuePath.value_as_string || valuePath.value) !== 'undefined') {
-      return valuePath.value_as_string || valuePath.value;
+      return indiciaFns.escapeHtml(valuePath.value_as_string || valuePath.value);
     }
-    return valuePath;
+    return indiciaFns.escapeHtml(valuePath);
   };
 
   /**
@@ -1827,11 +1837,14 @@
    *
    * @param bounds bounds
    *   Bounds object.
+   * @param float buffer
+   *  Buffer to apply to the bounds as a fraction of the viewport dimension
+   *  being buffered.
    *
    * @return object
    *   Bounds data buffered.
    */
-  function getBufferedBBforQuery(bounds) {
+  function getBufferedBBforQuery(bounds, buffer) {
     var width;
     var height;
     if (typeof indiciaData.lastBufferedBB === 'undefined'
@@ -1839,14 +1852,15 @@
         || bounds.getSouth() < indiciaData.lastBufferedBB.south
         || bounds.getEast() > indiciaData.lastBufferedBB.east
         || bounds.getWest() < indiciaData.lastBufferedBB.west) {
-      // Need a new query bounding box. Build one with a wide buffer.
+      // Need a new query bounding box.
       width = bounds.getEast() - bounds.getWest();
       height = bounds.getNorth() - bounds.getSouth();
+      // Buffer the bounding box to reduce ES hits if the map is panned.
       indiciaData.lastBufferedBB = {
-        north: Math.max(-90, Math.min(90, bounds.getNorth() + height * 2)),
-        south: Math.max(-90, Math.min(90, bounds.getSouth() - height * 2)),
-        east: Math.max(-180, Math.min(180, bounds.getEast() + width * 2)),
-        west: Math.max(-180, Math.min(180, bounds.getWest() - width * 2))
+        north: Math.max(-90, Math.min(90, bounds.getNorth() + height * buffer)),
+        south: Math.max(-90, Math.min(90, bounds.getSouth() - height * buffer)),
+        east: Math.max(-180, Math.min(180, bounds.getEast() + width * buffer)),
+        west: Math.max(-180, Math.min(180, bounds.getWest() - width * buffer))
       };
     }
     return indiciaData.lastBufferedBB;
@@ -1943,7 +1957,10 @@
         alert('Data source incorrectly configured. @filterBoundsUsingMap does not point to a valid map.');
       } else if (!doingCount && !source.settings.initialMapBounds || mapToFilterTo[0].settings.initialBoundsSet) {
         if (bounds.getNorth() !== bounds.getSouth() && bounds.getEast() !== bounds.getWest()) {
-          bufferedBB = getBufferedBBforQuery(bounds);
+          // Get bounding box with buffer. Increase buffer for verification so
+          // that small pans between close records do not trigger multiple
+          // queries.
+          bufferedBB = getBufferedBBforQuery(bounds, indiciaData.esScope === 'verification' ? 2 : 0.1);
           data.bool_queries.push({
             bool_clause: 'must',
             query_type: 'geo_bounding_box',
@@ -2056,7 +2073,7 @@ jQuery(document).ready(function docReady() {
     const isHigherGeoSelect = $(this).hasClass('es-higher-geography-select');
     var thisSelect;
     var baseId;
-    var selectToLoadFilterFor;
+    var selectToLoadFilterFor = select;
     let locIdToLoad = '';
     let idx = 0;
     // Find the most specific polyon in the series of linked selects.
@@ -2064,11 +2081,14 @@ jQuery(document).ready(function docReady() {
       baseId = select.id.replace(/\-\d+$/, '');
       thisSelect = $('#' + baseId + '-' + idx);
       while (thisSelect.length) {
+        // If value filled in, grab it, though it might get replaced by a more
+        // specific select in the hierarchy as we continue in the loop.
         if ($(thisSelect).val() && $(thisSelect).val().match(/^\d+$/)) {
           locIdToLoad = $(thisSelect).val();
           selectToLoadFilterFor = thisSelect;
         }
         idx++;
+        // Move to the next linked select.
         thisSelect = $('#' + baseId + '-' + idx);
       }
     } else {

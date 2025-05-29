@@ -194,7 +194,7 @@ $.Autocompleter = function(input, options) {
         break;
 
       // matches also semicolon
-      case options.multiple && $.trim(options.multipleSeparator) == "," && KEY.COMMA:
+      case options.multiple && options.multipleSeparator.trim() == "," && KEY.COMMA:
       case KEY.RETURN:
         // stop default to prevent a form submit, Opera needs special handling
         event.preventDefault();
@@ -352,8 +352,8 @@ $.Autocompleter = function(input, options) {
     var words = value.split( options.multipleSeparator );
     var result = [];
     $.each(words, function(i, value) {
-      if ( $.trim(value) )
-        result[i] = $.trim(value);
+      if (value.trim())
+        result[i] = value.trim();
     });
     return result;
   }
@@ -513,7 +513,7 @@ $.Autocompleter = function(input, options) {
     var parsed = [];
     var rows = data.split("\n");
     for (var i=0; i < rows.length; i++) {
-      var row = $.trim(rows[i]);
+      var row = rows[i].trim();
       if (row) {
         row = row.split("|");
         parsed[parsed.length] = {

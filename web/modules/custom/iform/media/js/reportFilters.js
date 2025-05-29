@@ -38,8 +38,6 @@ jQuery(document).ready(function ($) {
     return origRemove.apply(this, arguments).trigger('remove');
   };
 
-  indiciaData.filter = { def: {}, id: null, title: null };
-
   function removeSite() {
     var idToRemove = $(this).find('input[name="location_list[]"]').val();
     var toRemove = [];
@@ -542,7 +540,7 @@ jQuery(document).ready(function ($) {
         } else {
           // store the list of names in the def, though not used for the report they save web service hits later
           $.each($('input[name="taxon_group_list\\[\\]"]'), function (idx, ctrl) {
-            indiciaData.filter.def.taxon_group_names[$(ctrl).val()] = $.trim($(ctrl).parent().text());
+            indiciaData.filter.def.taxon_group_names[$(ctrl).val()] = $(ctrl).parent().text().trim();
           });
         }
         if ($('input[name="taxa_taxon_list_list\\[\\]"]').length === 0) {
@@ -550,7 +548,7 @@ jQuery(document).ready(function ($) {
         } else {
           // store the list of names in the def, though not used for the report they save web service hits later
           $.each($('input[name="taxa_taxon_list_list\\[\\]"]'), function (idx, ctrl) {
-            indiciaData.filter.def.taxa_taxon_list_names[$(ctrl).val()] = $.trim($(ctrl).parent().text());
+            indiciaData.filter.def.taxa_taxon_list_names[$(ctrl).val()] = $(ctrl).parent().text().trim();
           });
         }
         if ($('input[name="taxon_designation_list\\[\\]"]').length === 0) {
@@ -558,7 +556,7 @@ jQuery(document).ready(function ($) {
         } else {
           // store the list of names in the def, though not used for the report they save web service hits later
           $.each($('input[name="taxon_designation_list\\[\\]"]'), function (idx, ctrl) {
-            indiciaData.filter.def.taxon_designation_list_names[$(ctrl).val()] = $.trim($(ctrl).parent().text());
+            indiciaData.filter.def.taxon_designation_list_names[$(ctrl).val()] = $(ctrl).parent().text().trim();
           });
         }
         // because the rank sort order key includes both the sort order and rank ID, clean this up for the actual filter
@@ -1715,7 +1713,11 @@ jQuery(document).ready(function ($) {
       }
       $('#pane-filter_' + name + ' .filter-desc').html(desc);
     });
-    $('#filter-details').slideDown();
+    $('#filter-details').slideDown(400, function() {
+      if (indiciaFns.updateControlLayout) {
+        indiciaFns.updateControlLayout();
+      }
+    });
     $('#filter-build').addClass('disabled');
   });
 
@@ -1748,7 +1750,11 @@ jQuery(document).ready(function ($) {
   });
 
   $('#filter-done').click(function () {
-    $('#filter-details').slideUp();
+    $('#filter-details').slideUp(400, function() {
+      if (indiciaFns.updateControlLayout) {
+        indiciaFns.updateControlLayout();
+      }
+    });
     $('#filter-build').removeClass('disabled');
   });
 
@@ -1888,7 +1894,7 @@ jQuery(document).ready(function ($) {
     if (saving) {
       return;
     }
-    if ($.trim($('#filter\\:title').val()) === '') {
+    if ($('#filter\\:title').val().trim() === '') {
       alert('Please provide a name for your filter.');
       $('#filter\\:title').focus();
       return;

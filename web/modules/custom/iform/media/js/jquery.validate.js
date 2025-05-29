@@ -168,9 +168,9 @@ $.extend($.fn, {
 // Custom selectors
 $.extend($.expr[":"], {
 	// http://docs.jquery.com/Plugins/Validation/blank
-	blank: function(a) {return !$.trim("" + a.value);},
+	blank: function(a) {return !("" + a.value).trim();},
 	// http://docs.jquery.com/Plugins/Validation/filled
-	filled: function(a) {return !!$.trim("" + a.value);},
+	filled: function(a) {return !!("" + a.value).trim();},
 	// http://docs.jquery.com/Plugins/Validation/unchecked
 	unchecked: function(a) {return !a.checked;}
 });
@@ -501,7 +501,7 @@ $.extend($.validator, {
 				var rule = { method: method, parameters: rules[method] };
 				try {
           // For indicia, all data is trimmed before validation on the warehouse, so need to do this here as well.
-					var result = $.validator.methods[method].call( this, $.trim(element.value).replace(/\r/g, ""), element, rule.parameters );
+					var result = $.validator.methods[method].call( this, element.value.trim().replace(/\r/g, ""), element, rule.parameters );
 
 					// if a method indicates that the field is optional and therefore valid,
 					// don't mark it as valid when there are no other rules
@@ -736,7 +736,7 @@ $.extend($.validator, {
 		},
 
 		optional: function(element) {
-			return !$.validator.methods.required.call(this, $.trim(element.value), element) && "dependency-mismatch";
+			return !$.validator.methods.required.call(this, element.value.trim(), element) && "dependency-mismatch";
 		},
 
 		startRequest: function(element) {
@@ -874,7 +874,7 @@ $.extend($.validator, {
 
 		// evaluate parameters
 		$.each(rules, function(rule, parameter) {
-			rules[rule] = $.isFunction(parameter) ? parameter(element) : parameter;
+			rules[rule] = typeof parameter === 'function' ? parameter(element) : parameter;
 		});
 
 		// clean number parameters
@@ -950,7 +950,7 @@ $.extend($.validator, {
 				if ( this.checkable(element) )
 					return this.getLength(value, element) > 0;
 			default:
-				return $.trim(value).length > 0;
+				return value.trim().length > 0;
 			}
 		},
 
@@ -997,7 +997,7 @@ $.extend($.validator, {
 					} else {
 						var errors = {};
 						var message = response || validator.defaultMessage( element, "remote" );
-						errors[element.name] = previous.message = $.isFunction(message) ? message(value) : message;
+						errors[element.name] = previous.message = typeof message === 'function' ? message(value) : message;
 						validator.showErrors(errors);
 					}
 					previous.valid = valid;
@@ -1009,17 +1009,17 @@ $.extend($.validator, {
 
 		// http://docs.jquery.com/Plugins/Validation/Methods/minlength
 		minlength: function(value, element, param) {
-			return this.optional(element) || this.getLength($.trim(value), element) >= param;
+			return this.optional(element) || this.getLength(value.trim(), element) >= param;
 		},
 
 		// http://docs.jquery.com/Plugins/Validation/Methods/maxlength
 		maxlength: function(value, element, param) {
-			return this.optional(element) || this.getLength($.trim(value), element) <= param;
+			return this.optional(element) || this.getLength(value.trim(), element) <= param;
 		},
 
 		// http://docs.jquery.com/Plugins/Validation/Methods/rangelength
 		rangelength: function(value, element, param) {
-			var length = this.getLength($.trim(value), element);
+			var length = this.getLength(value.trim(), element);
 			return this.optional(element) || ( length >= param[0] && length <= param[1] );
 		},
 

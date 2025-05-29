@@ -120,7 +120,11 @@ jQuery(document).ready(function($) {
      * available attributes.
      */
     function setImportSettingsNextStepState() {
-      if ($('#settings-form').find('input,select')
+      if (
+        // File upload completed.
+        $('#file-progress:visible').length === 0
+        // Mandatory fields on form have been filled in.
+        && $('#settings-form').find('input,select')
           // Only visible required inputs.
           .filter(':visible.\\{required\\:true\\}')
           // With no data value.
@@ -132,6 +136,22 @@ jQuery(document).ready(function($) {
       else {
         $('#next-step').attr('disabled', true);
       }
+    }
+
+    /**
+     * Ajax error handler for the file upload and processing.
+     *
+     * @param string msgKey
+     *   Key for the message to show (from indiciaData.lang.import_helper_2)
+     */
+    function handleAjaxError(jqXHR, textStatus, errorThrown, msgKey) {
+      let message = jqXHR.responseJSON && jqXHR.responseJSON.msg ? jqXHR.responseJSON.msg : errorThrown;
+      $.fancyDialog({
+        // @todo i18n
+        title: indiciaData.lang.import_helper_2.uploadError,
+        message: indiciaData.lang.import_helper_2[msgKey] + ':<br/>' + message,
+        cancelButton: null
+      });
     }
 
     function transferDataToTempTable(fileName) {
@@ -213,12 +233,7 @@ jQuery(document).ready(function($) {
               })
               .fail(
                 function(jqXHR, textStatus, errorThrown) {
-                  $.fancyDialog({
-                    // @todo i18n
-                    title: indiciaData.lang.import_helper_2.uploadError,
-                    message: indiciaData.lang.import_helper_2.errorExtractingZip + ':<br/>' + errorThrown,
-                    cancelButton: null
-                  });
+                  handleAjaxError(jqXHR, textStatus, errorThrown, 'errorExtractingZip');
                 }
               );
             }
@@ -241,12 +256,7 @@ jQuery(document).ready(function($) {
       })
       .fail(
         function(jqXHR, textStatus, errorThrown) {
-          $.fancyDialog({
-            // @todo i18n
-            title: indiciaData.lang.import_helper_2.uploadError,
-            message: indiciaData.lang.import_helper_2.errorUploadingFile + ':<br/>' + errorThrown,
-            cancelButton: null
-          });
+          handleAjaxError(jqXHR, textStatus, errorThrown, 'errorUploadingFile');
         }
       );
     }

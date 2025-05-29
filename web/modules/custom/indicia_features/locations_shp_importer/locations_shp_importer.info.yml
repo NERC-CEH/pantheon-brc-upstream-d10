@@ -1,7 +1,7 @@
 name: 'Locations SHP file importer'
 description: 'Import Indicia locations from SHP files.'
-core_version_requirement: ^9 || ^10
-version: "8.13.0"
+core_version_requirement: ^10 || ^11
+version: "9.11.0"
 package: "Indicia"
 type: module
 configure: locations_shp_importer.settings

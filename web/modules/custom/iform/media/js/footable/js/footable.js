@@ -21,7 +21,7 @@
             },
             parsers: {  // The default parser to parse the value out of a cell (values are used in building up row detail)
                 alpha: function (cell) {
-                    return $(cell).data('value') || $.trim($(cell).text());
+                    return $(cell).data('value') || $(cell).text().trim();
                 },
                 numeric: function (cell) {
                     var val = $(cell).data('value') || $(cell).text().replace(/[^0-9.\-]/g, '');
@@ -146,7 +146,7 @@
                 ///<summary>Simple validation of the <paramref name="plugin"/> to make sure any members called by FooTable actually exist.</summary>
                 ///<param name="plugin">The object defining the plugin, this should implement a string property called "name" and a function called "init".</param>
 
-                if (!$.isFunction(plugin)) {
+                if (!typeof plugin === 'function') {
                   if (w.footable.options.debug === true) console.error('Validation failed, expected type "function", received type "{0}".', typeof plugin);
                   return false;
                 }
@@ -155,7 +155,7 @@
                     if (w.footable.options.debug === true) console.error('Validation failed, plugin does not implement a string property called "name".', p);
                     return false;
                 }
-                if (!$.isFunction(p['init'])) {
+                if (!typeof p['init'] === 'function') {
                     if (w.footable.options.debug === true) console.error('Validation failed, plugin "' + p['name'] + '" does not implement a function called "init".', p);
                     return false;
                 }
@@ -449,13 +449,13 @@
             var $th = $(th), hide = $th.data('hide'), index = $th.index();
             hide = hide || '';
             hide = jQuery.map(hide.split(','), function (a) {
-                return jQuery.trim(a);
+                return a.trim();
             });
             var data = {
                 'index': index,
                 'hide': { },
                 'type': $th.data('type') || 'alpha',
-                'name': $th.data('name') || $.trim($th.text()),
+                'name': $th.data('name') || $th.text().trim(),
                 'ignore': $th.data('ignore') || false,
                 'toggle': $th.data('toggle') || false,
                 'className': $th.data('class') || null,
@@ -503,7 +503,7 @@
         };
 
         ft.calculateWidth = function ($table, info) {
-            if (jQuery.isFunction(opt.calculateWidthOverride)) {
+            if (typeof opt.calculateWidthOverride === 'function') {
                 return opt.calculateWidthOverride($table, info);
             }
             if (info.viewportWidth < info.width) info.width = info.viewportWidth;
@@ -648,13 +648,13 @@
                             // Move bound inputs to where they will be visible.
                             ft.toggleInput(this);
                         });
-                    }              
+                    }
                 })
                 .end()
                 .find('> tbody > tr.' + cls.detailShow).each(function () {
                     ft.createOrUpdateDetailRow(this);
                 });
-                
+
             $table.find('> tbody > tr.' + cls.detailShow + ':visible').each(function () {
                 var $next = $(this).next();
                 if ($next.hasClass(cls.detail)) {
@@ -783,7 +783,7 @@
 
         ft.raise = function (eventName, args) {
 
-            if (ft.options.debug === true && $.isFunction(ft.options.log)) ft.options.log(eventName, 'event');
+            if (ft.options.debug === true && typeof ft.options.log === 'function') ft.options.log(eventName, 'event');
 
             args = args || { };
             var def = { 'ft': ft };

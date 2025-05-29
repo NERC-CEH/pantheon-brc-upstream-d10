@@ -6,11 +6,11 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 
 /**
- * Provides a 'Recent Elasticsearch Records' block.
+ * Provides an 'Elasticsearch species table' block.
  *
  * @Block(
  *   id = "es_species_table_block",
- *   admin_label = @Translation("Recent Elasticsearch records block"),
+ *   admin_label = @Translation("Elasticsearch species table block"),
  * )
  */
 class IndiciaEsSpeciesTableBlock extends IndiciaBlockBase {

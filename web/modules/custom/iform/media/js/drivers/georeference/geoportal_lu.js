@@ -26,8 +26,7 @@ var Georeferencer;
 (function ($) {
   Georeferencer = function georef(mapdiv, callback) {
     this.georeference = function(searchtext) {
-      var request = indiciaData.proxyUrl +
-          '?url=https://apiv3.geoportail.lu/fulltextsearch&query=' + searchtext;
+      var request = 'https://apiv3.geoportail.lu/fulltextsearch?query=' + searchtext;
       $.getJSON(request, function onResponse(data) {
         // an array to store the responses in the required country
         var places = [];

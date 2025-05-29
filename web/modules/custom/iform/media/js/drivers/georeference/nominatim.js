@@ -40,8 +40,7 @@
 
     this.georeference = function georeference(searchtext) {
       var fullsearchtext = near ? searchtext + ', ' + near : searchtext;
-      var request = indiciaData.proxyUrl +
-          '?url=https://nominatim.openstreetmap.org?format=json&q=' + fullsearchtext;
+      var request = 'https://nominatim.openstreetmap.org?format=json&q=' + fullsearchtext;
       $.getJSON(request, function handleResponse(data) {
         // an array to store the responses in the required country
         var places = [];

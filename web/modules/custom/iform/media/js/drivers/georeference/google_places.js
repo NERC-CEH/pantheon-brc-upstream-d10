@@ -42,7 +42,7 @@ var Georeferencer;
     this.georeference = function doGeoref(searchtext) {
       $.ajax({
         dataType: 'json',
-        url: indiciaData.proxyUrl,
+        url: indiciaData.placeSearchProxyUrl,
         data: {
           url: 'https://maps.googleapis.com/maps/api/place/textsearch/json',
           key: settings.google_api_key,
@@ -53,7 +53,11 @@ var Georeferencer;
           // an array to store the responses in the required country, because Google search will not limit to a country
           var places = [];
           var converted = {};
-          jQuery.each(data.results, function handlePlaceInResponse() {
+          if (data.error_message) {
+            alert('Error from Google Places API: ' + data.error_message);
+            return;
+          }
+          $.each(data.results, function handlePlaceInResponse() {
             converted = {
               name: this.name,
               display: this.name + ', ' + this.formatted_address,

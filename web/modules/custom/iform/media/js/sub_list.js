@@ -47,7 +47,7 @@
       value = search$.find('option:selected').val();
     } else {
       search$ = $('#' + escapedId + '\\:search\\:' + escapedCaptionField);
-      caption = $.trim(search$.val());
+      caption = search$.val().trim();
       value = $('#' + escapedId + '\\:search').val();
     }
     if (caption === '') {

@@ -31,6 +31,7 @@ window.indiciaData.lang = [];
 window.indiciaData.ctrlPressed = false;
 window.indiciaData.shiftPressed = false;
 window.indiciaData.linkedSelects = [];
+window.indiciaData.filter = { def: {}, id: null, title: null };
 // A namespace for Indicia related functions.
 window.indiciaFns = {};
 
@@ -322,6 +323,9 @@ window.indiciaFns = {};
    * @returns string
    */
   indiciaFns.escapeHtml = function (text) {
+    if (text === null || typeof text === 'undefined') {
+      return '';
+    }
     var map = {
       '&': '&amp;',
       '<': '&lt;',

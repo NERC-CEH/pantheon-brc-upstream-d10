@@ -28,6 +28,18 @@ class ImportOptionsForm extends FormBase {
 
   private $nameCodeCombinations;
 
+  private $SHPFile;
+
+  private $shapeType;
+
+  private array $SHPData;
+
+  private string $firstPoint;
+
+  private $recordStart;
+
+  private $recordLength;
+
   /**
    * {@inheritdoc}
    */
@@ -48,7 +60,7 @@ class ImportOptionsForm extends FormBase {
     catch (\Exception $e) {
       $this->messenger()->addError($this->t('Unable to open DBF file.'));
       $this->messenger()->addError($e->getMessage());
-      return;
+      return [];
     }
     $columns = array_combine(array_keys($dBaseTable->getColumns()), array_keys($dBaseTable->getColumns()));
     $locationTypes = $this->getLocationTypes();
@@ -395,7 +407,7 @@ class ImportOptionsForm extends FormBase {
    *   Field value.
    */
   private function getDbaseRecordFieldValue(Record $record, $name) {
-    return trim(utf8_encode($record->forceGetString($name)));
+    return trim(mb_convert_encoding($record->forceGetString($name), 'UTF-8', 'ISO-8859-1'));
   }
 
   function loadData($type, $data) {

@@ -335,7 +335,7 @@
    */
   function saveRedeterminationForSelection(el, occurrenceIds, newTaxaTaxonListId, comment) {
     const pgUpdates = getRedetPgUpdates(newTaxaTaxonListId, comment);
-    const esUpdates = getRedetEsUpdates(occurrenceIds);
+    const esUpdates = getRemoveAndRequeueRecordUpdates(occurrenceIds);
     rowsToRemove = [];
     listWillBeEmptied = $(listOutputControl).find('[data-row-id]').length - occurrenceIds.length <= 0;
     activeRequests = 0;
@@ -700,7 +700,7 @@
     indiciaFns.on('click', '.comment-popup button.save', {}, saveCommentPopup);
 
     /**
-     * Redet, query and verification dialog cancel button click handler.
+     * Popup dialog cancel button click handler.
      */
     indiciaFns.on('click', 'button.cancel', {}, () => {
       $.fancybox.close();
@@ -843,7 +843,7 @@
   /**
    * Fetch the ES document updates required for a redetermination event.
    */
-  function getRedetEsUpdates(occurrenceIds) {
+  function getRemoveAndRequeueRecordUpdates(occurrenceIds) {
     // This just wipes the website ID, disabling the record until Logstash
     // updates it properly.
     return {
@@ -1401,6 +1401,104 @@
   }
 
   /**
+   * Display the force linked location popup.
+   *
+   * Display the dialog allowing a verifier to select which boundary to
+   * spatially index a record against.
+   */
+  function forceLinkedLocationPopup(el) {
+    const todoListInfo = getTodoListInfo();
+    let infoMessage = '';
+    if (todoListInfo.mode === 'selection' && todoListInfo.total.value === 0) {
+      alert(indiciaData.lang.verificationButtons.nothingSelected);
+      return;
+    }
+    if (todoListInfo.total.value === 1) {
+      const doc = JSON.parse($(listOutputControl).find('.selected').attr('data-doc-source'));
+      let existingLocations = [];
+      $.each(doc.location.higher_geography, function eachHigherGeography() {
+        if (this.type === el.settings.allowForceLinkedLocationsUsingLocType) {
+          existingLocations.push(this.name);
+        }
+      });
+      if (existingLocations.length > 0) {
+        infoMessage = indiciaData.lang.verificationButtons.forceLinkedLocationInfo.replace('{{ location name }}', existingLocations.join(', '));
+      } else {
+        infoMessage = indiciaData.lang.verificationButtons.forceLinkedLocationInfoNoExisting;
+      }
+    }
+    else {
+      infoMessage = indiciaData.lang.verificationButtons.forceLinkedLocationInfoMultiple.replace('{{ count }}', todoListInfo.total.value);
+    }
+    $('#force-linked-location-form button[type="submit"]').prop('disabled', true);
+    $('#force-linked-location-form form').data('todo-list-info', todoListInfo);
+    $('#force-linked-location-form form').data('location-type-id', el.settings.allowForceLinkedLocationsUsingLocTypeId);
+    $('#force-linked-location-info').html(infoMessage);
+    $('#force-linked-location').val('');
+    $('#force-linked-location\\:name').val('');
+    $.fancybox.open({
+      src: $('#force-linked-location-form'),
+      type: 'html',
+      opts: {
+        modal: true
+      }
+    });
+  }
+
+  /**
+   * Selecting a force linked location enables the submit button.
+   */
+  $('#force-linked-location').change(function() {
+    $('#force-linked-location-form button[type="submit"]').prop('disabled', $('#force-linked-location').val() === '');
+  });
+
+  /**
+   * Submit handler for the force linked location form.
+   */
+  $('#force-linked-location-form form').submit(function(e) {
+    e.preventDefault();
+    activeRequests = 0;
+    const todoListInfo = $(this).data('todo-list-info');
+    let data = {
+      location_id: $('#force-linked-location').val(),
+      todoListInfo: todoListInfo,
+      location_type_id: $(this).data('location-type-id'),
+    };
+    if (todoListInfo.mode === 'table') {
+      // Loop sources and apply the filter data, only 1 will apply.
+      $.each($(listOutputControl)[0].settings.source, function eachSource(sourceId) {
+        data.idsFromElasticFilter = indiciaFns.getFormQueryData(indiciaData.esSourceObjects[sourceId]);
+      });
+    }
+    activeRequests++;
+    $.ajax({
+      url: indiciaData.esProxyAjaxUrl + '/saveLinkedLocation/' + indiciaData.nid,
+      type: 'post',
+      data: data
+    })
+    .done(function(r) {
+      $.fancybox.close();
+      // Now post update to Elasticsearch. Remove the website ID to temporarily
+      // disable the record until it is refreshed with the correct new taxonomy
+      // info.
+      console.log(todoListInfo.ids)
+      const esUpdates = getRemoveAndRequeueRecordUpdates(todoListInfo.ids);
+      rowsToRemove = disableRowsForIds(todoListInfo.ids);
+      activeRequests++;
+      $.ajax({
+        url: indiciaData.esProxyAjaxUrl + '/redetids/' + indiciaData.nid,
+        type: 'post',
+        data: esUpdates
+      })
+      .always(cleanupAfterAjaxUpdate);
+    })
+    .fail(function(r) {
+      alert(indiciaData.lang.verificationButtons.forceLinkedLocationError + ': ' + r.responseJSON.message);
+    })
+    .always(cleanupAfterAjaxUpdate);
+  });
+
+  /**
    * Get HTML for the query by email tab's form.
    */
    function getEmailExpertForm(doc) {
@@ -1798,7 +1896,7 @@
       'common name': [doc.taxon.vernacular_name, doc.taxon.accepted_name, doc.taxon.taxon_name],
       'preferred name': [doc.taxon.accepted_name, doc.taxon.taxon_name],
       'taxon full name': getTaxonNameLabel(doc),
-      'rank': doc.taxon.taxon_rank.charAt(0).toLowerCase() +  doc.taxon.taxon_rank.slice(1),
+      'rank': doc.taxon.taxon_rank ? doc.taxon.taxon_rank.charAt(0).toLowerCase() +  doc.taxon.taxon_rank.slice(1) : indiciaData.lang.verificationButtons.unknown,
       action: actionTerm,
       'location name': doc.location.verbatim_locality
     };
@@ -1950,6 +2048,11 @@
       // Query button click handler pop's up dialog.
       $(el).find('button.query').click(function buttonClick() {
         queryPopup(el);
+      });
+
+      // Force linked location button click handler pop's up dialog.
+      $(el).find('button.force-linked-location').click(function buttonClick() {
+        forceLinkedLocationPopup(el);
       });
 
       // Apply to parent sample click toggles active state.

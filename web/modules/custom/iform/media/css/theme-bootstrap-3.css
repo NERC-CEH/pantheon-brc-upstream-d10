@@ -1293,7 +1293,7 @@ body > .loading-spinner {
 }
 .idc-dataGrid table.es-data-grid.fixed-header .multiselect-cntr {
   padding: 0;
-  width: 12px;
+  width: 20px;
 }
 .idc-dataGrid table.es-data-grid tfoot span {
   margin: 0 1em;

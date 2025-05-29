@@ -73,7 +73,8 @@
 			nosp.replace(/^[a-zA-Z]([a-zA-Z])?/, '').length <= params;
 	}, 'Please supply a {0} figure grid reference precision or less');
 
-	// Make sure user cannot enter junk into the taxon cell and continue with submit
+	// Specialist handler for taxon input in species checklist control - make
+	// sure user cannot enter junk into the taxon cell and continue with submit.
 	$.validator.addMethod('speciesMustBeFilled', function (value, element) {
 		var presenceCellInput = $(element).parents('tr:first').find('.scPresenceCell').children(':input');
 		if ($(presenceCellInput).val() || !$(element).val()) {
@@ -87,6 +88,16 @@
 		return locationId === '' || typeof indiciaData.allPossibleLocationIds === 'undefined' ||
 				$.inArray(locationId, indiciaData.allPossibleLocationIds) > -1;
 	}, 'The location is not in the chosen grid square.');
+
+	// Custom validation for autocompletes so we check the lookup succeeded and a
+  // value is stored in the hidden input.
+	$.validator.addMethod('autocompleteRequired', function (value, element) {
+		// Don't validate if the field is empty and the autocomplete is not visible.
+		if (value !== '' && !$('.ac_results').is(':visible') && $(element).data('hiddenvalueinput')) {
+			return $('#' + $(element).data('hiddenvalueinput').replace(':', '\\:')).val() !== '';
+		}
+		return true;
+	});
 
 	/**
 	* Return true, if the value is a valid vehicle identification number (VIN).

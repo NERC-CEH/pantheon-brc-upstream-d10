@@ -397,7 +397,7 @@ var addMediaRowOnClick;
       $(taxonCell).parent().removeClass('scClonableRow');
       $(taxonCell).parent().find('input,select,textarea').removeClass('inactive');
       // Do we use a JavaScript fn, or a standard template, to format the species label?
-      if ($.isFunction(formatter)) {
+      if (typeof formatter === 'function') {
         $(taxonCell).html(formatter(data));
       } else {
         // Just a simple PHP template
@@ -489,7 +489,7 @@ var addMediaRowOnClick;
       }
     }
 
-    if (typeof formatter === 'undefined' || !$.isFunction(formatter)) {
+    if (typeof formatter === 'undefined' || !typeof formatter === 'function') {
       // provide a default format function
       formatter = function (item) {
         return item.taxon;
@@ -505,7 +505,7 @@ var addMediaRowOnClick;
     var selectorId = gridId + '-' + indiciaData['gridCounter-' + gridId];
     var selectorClass = 'grid-required {speciesMustBeFilled:true} ' + indiciaData.formControlClass;
     // Build an auto-complete control for selecting the species to add to the bottom of the grid.
-    speciesSelector = '<input type="text" id="' + selectorId + '" class="' + selectorClass + '" />';
+    speciesSelector = `<input type="text" id="${selectorId}" name="species-autocomplete-${gridId}" class="${selectorClass}" />`;
     // put this inside the new row template in place of the species label.
     $(newRow).html($(newRow.html().replace('{content}', speciesSelector)));
     // Replace the tags in the row template with a unique row ID
@@ -573,7 +573,7 @@ var addMediaRowOnClick;
       var selectorId = gridId + '-' + indiciaData['gridCounter-' + gridId];
       var taxonTextBeforeUserEdit;
       // When moving into edit mode we need to create an autocomplete box for the user to fill in
-      var speciesAutocomplete = '<input type="text" id="' + selectorId + '" class="grid-required ac_input {speciesMustBeFilled:true}" />';
+      var speciesAutocomplete = `<input type="text" id="${selectorId}" name="species-autocomplete-${gridId}" class="grid-required ac_input {speciesMustBeFilled:true}" />`;
       var ctrl;
       if ($('.ac_results:visible').length > 0 || !$(e.target).is(':visible')) {
         // Don't go into edit mode if they are picking a species name already.

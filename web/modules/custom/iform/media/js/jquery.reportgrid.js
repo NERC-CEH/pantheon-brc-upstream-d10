@@ -384,7 +384,7 @@
       // were any predefined parameter values supplied?
       if (typeof div.settings.filters !== 'undefined') {
         $.each(div.settings.filters, function (name, value) {
-          if ($.isArray(value)) {
+          if (Array.isArray(value)) {
             if (typeof query.in === 'undefined') {
               query.in = {};
             }
@@ -632,7 +632,7 @@
                     value = getActions(div, row, col.actions, queryParams);
                     tdclasses.push('col-actions');
                   } else {
-                    value = row[col.fieldname];
+                    value = indiciaFns.escapeHtml(row[col.fieldname]);
                     tdclasses.push('data');
                   }
                   if (col.fieldname) {
@@ -836,7 +836,7 @@
           $.each(filterRow, function(id, val) {
             $('#' + opts.id + ' .col-filter#' + id).val(val);
             fieldname = id.match(new RegExp('^col-filter-(.*)-' + opts.id + '$'))[1];
-            if ($.trim(val) !== '') {
+            if (val.trim() !== '') {
               opts.extraParams[fieldname] = val;
               resetButtonNeeded = true;
             }
@@ -1240,7 +1240,7 @@
         if (e.target.hasChanged) {
           errorShownOnFilter = false;
           fieldname = e.target.id.match(new RegExp('^col-filter-(.*)-' + div.id + '$'))[1];
-          if ($.trim($(e.target).val()) === '') {
+          if ($(e.target).val().trim() === '') {
             delete div.settings.extraParams[fieldname];
           } else {
             div.settings.extraParams[fieldname] = $(e.target).val();

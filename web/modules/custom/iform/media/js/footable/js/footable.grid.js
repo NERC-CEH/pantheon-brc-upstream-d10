@@ -228,7 +228,7 @@
      */
     grid.getItem = function(index) {
       if (index !== undefined) {
-        if ($.isArray(index)) {
+        if (Array.isArray(index)) {
           return $.map(index, function(item) {
             return grid._items[item];
           });
@@ -250,7 +250,7 @@
     grid._makeRow = function(item, index) {
       var options = grid.footable.options.grid;
       var $row;
-      if ($.isFunction(options.template)) {
+      if (typeof options.template === 'function') {
         $row = $(options.template($.extend({}, {
           __index: index
         }, item)));
@@ -271,7 +271,7 @@
       var $tbody = $(grid.footable.table).find('tbody');
       var detailClass = grid.footable.options.classes.detail;
       $tbody.find('tr.emptyInfo').remove();
-      if ($.isArray(item)) {
+      if (Array.isArray(item)) {
         for (var atom;
           (atom = item.pop());) {
           grid.newItem(atom, index, true);
@@ -339,7 +339,7 @@
       var $tbody = $(grid.footable.table).find('tbody');
       var detailClass = grid.footable.options.classes.detail;
       var result = [];
-      if ($.isArray(index)) {
+      if (Array.isArray(index)) {
         for (var i;
           (i = index.pop());) {
           result.push(grid.removeItem(i));

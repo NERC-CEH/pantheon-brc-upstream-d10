@@ -351,7 +351,7 @@
        */
       testSq *= testSq;   //compare squares rather than doing a square root to save time
       // can either be a single array for both dims, or 2 arrays in the intervals
-      if ($.isArray(this.intervals[0])) {
+      if (Array.isArray(this.intervals[0])) {
         xIntervals = this.intervals[0];
         yIntervals = this.intervals[1];
       } else {

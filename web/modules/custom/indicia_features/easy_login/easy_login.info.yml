@@ -1,7 +1,7 @@
 name: 'Easy login'
 description: 'Configures Drupal login to integrate with Indicia.'
-core_version_requirement: ^9 || ^10
-version: "9.9.0"
+core_version_requirement: ^10 || ^11
+version: "9.11.0"
 package: "Indicia"
 type: module
 dependencies:
