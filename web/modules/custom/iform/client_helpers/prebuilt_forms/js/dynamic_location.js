@@ -1,5 +1,4 @@
-jQuery(document).ready(function ($) {
-  'use strict';
+(function ($) {
   // If there is a parent location selected we would like to
   //  a. Show its boundary,
   //  b. Zoom to its extents,
@@ -17,72 +16,67 @@ jQuery(document).ready(function ($) {
       // Indicate to user we are thinking.
       $('#location\\:parent_id').addClass('loading');
       // Construct request to warehouse services.
-      const url = indiciaData.read.url + 'index.php/services/data/location/' + locationID;
+      var request = indiciaData.read.url + 'index.php/services/data/location/' +
+        locationID +
+        '?mode=json&view=detail' +
+        '&auth_token=' + indiciaData.read.auth_token +
+        '&reset_timeout=true&nonce=' + indiciaData.read.nonce;
+      // Proxy the request as cross-origin requests not allowed.
+      var proxyRequest = indiciaData.proxyUrl + '?url=' + request;
       // Make the request
-      $.ajax({
-        url: url,
-        dataType: 'jsonp',
-        data: {
-          auth_token: indiciaData.read.auth_token,
-          nonce: indiciaData.read.nonce,
-          mode: 'json',
-          reset_timeout: true,
-          view: 'detail'
-        },
-        success: function(ldata) {
-          // Callback performed on reply from warehouse.
-          $.each(ldata, function(idx, parent) {
+      $.getJSON(proxyRequest, function(ldata) {
+        // Callback performed on reply from warehouse.
+        $.each(ldata, function(idx, parent) {
 
-            // Make a feature from the response information.
-            var parser = new OpenLayers.Format.WKT();
-            var features = parser.read(parent.boundary_geom);
+          // Make a feature from the response information.
+          var parser = new OpenLayers.Format.WKT();
+          var features = parser.read(parent.boundary_geom);
 
-            // Reproject parent location if map projection is not the same as
-            // default projection.
-            if (
-              div.map.infoLayer.projection.projCode != 'EPSG:900913' &&
-              div.map.infoLayer.projection.projCode != 'EPSG:3857'
-            ) {
-              var cloned = features.geometry.clone();
-              features.geometry = cloned.transform(
-                new OpenLayers.Projection('EPSG:3857'),
-                div.map.infoLayer.projection.projCode
-              );
-            }
-            // Add the parent to the infoLayer.
-            if (!Array.isArray(features)) features = [features];
-            div.map.infoLayer.addFeatures(features);
-          });
-
-          // Test if location is within parent boundary.
-          if(!locationInParent(div)) {
-            // Warn if not.
-            $('<p>' + indiciaData.lang.locationParent.locationOutsideNewParent + '</p>').dialog({
-              title: indiciaData.lang.locationParent.locationOutsideParent,
-              buttons: [
-                {
-                  'text': indiciaData.lang.locationParent.OK,
-                  'click' : function() { $(this).dialog('close'); }
-                }
-              ],
-              classes: {"ui-dialog": "above-map"}
-            });
+          // Reproject parent location if map projection is not the same as
+          // default projection.
+          if (
+            div.map.infoLayer.projection.projCode != 'EPSG:900913' &&
+            div.map.infoLayer.projection.projCode != 'EPSG:3857'
+          ) {
+            var cloned = features.geometry.clone();
+            features.geometry = cloned.transform(
+              new OpenLayers.Projection('EPSG:3857'),
+              div.map.infoLayer.projection.projCode
+            );
           }
+          // Add the parent to the infoLayer.
+          if (!Array.isArray(features)) features = [features];
+          div.map.infoLayer.addFeatures(features);
+        });
 
-          // Remove indication to user we were thinking.
-          $('#location\\:parent_id').removeClass('loading');
+        // Test if location is within parent boundary.
+        if(!locationInParent(div)) {
+          // Warn if not.
+          $('<p>' + indiciaData.langLocationOutsideNewParent + '</p>').dialog({
+            title: indiciaData.langLocationOutsideParent,
+            buttons: [
+              {
+                'text': indiciaData.langOK,
+                'click' : function() { $(this).dialog('close'); }
+              }
+            ],
+            classes: {"ui-dialog": "above-map"}
+          });
+        }
 
-          // Alter extents of map if there is no location yet.
-          if(div.map.editLayer.features.length === 0) {
-            var infoExtent = div.map.infoLayer.getDataExtent();
-            if(infoExtent !== null) {
-              // Zoom to the extents of the parent, if present.
-              div.map.zoomToExtent(infoExtent);
-            }
-            else {
-              // Else return to default centre and zoom.
-              div.map.setCenter(div.map.defaultLayers.centre, div.map.defaultLayers.zoom, false, true);
-            }
+        // Remove indication to user we were thinking.
+        $('#location\\:parent_id').removeClass('loading');
+
+        // Alter extents of map if there is no location yet.
+        if(div.map.editLayer.features.length === 0) {
+          var infoExtent = div.map.infoLayer.getDataExtent();
+          if(infoExtent !== null) {
+            // Zoom to the extents of the parent, if present.
+            div.map.zoomToExtent(infoExtent);
+          }
+          else {
+            // Else return to default centre and zoom.
+            div.map.setCenter(div.map.defaultLayers.centre, div.map.defaultLayers.zoom, false, true);
           }
         }
       });
@@ -102,11 +96,11 @@ jQuery(document).ready(function ($) {
     var div = $('#map')[0];
 
     if(!locationInParent(div)) {
-      $('<p>' + indiciaData.lang.locationParent.newLocationOutsideParent + '</p>').dialog({
-        title: indiciaData.lang.locationParent.locationOutsideParent,
+      $('<p>' + indiciaData.langNewLocationOutsideParent + '</p>').dialog({
+        title: indiciaData.langLocationOutsideParent,
         buttons: [
           {
-            'text': indiciaData.lang.locationParent.OK,
+            'text': indiciaData.langOK,
             'click' : function() { $(this).dialog('close'); }
           }
         ],
@@ -139,12 +133,12 @@ jQuery(document).ready(function ($) {
   }
 
   // Code for handling parents - can skip if parent control not on form.
-  if (indiciaData.lang && indiciaData.lang.locationParent && typeof indiciaData.lang.locationParent.parentLayerTitle !== 'undefined') {
+  if (typeof indiciaData.langParentLayerTitle !== 'undefined') {
     // Push function to be executed when map is initialised.
     mapInitialisationHooks.push(function(div) {
       // Initialise layer for showing a parent location.
       div.map.infoLayer = new OpenLayers.Layer.Vector(
-        indiciaData.lang.locationParent.parentLayerTitle,
+        indiciaData.langParentLayerTitle,
         {
           style: {
             fillOpacity : 0,
@@ -171,4 +165,4 @@ jQuery(document).ready(function ($) {
     });
   }
 
-});
+})(jQuery);

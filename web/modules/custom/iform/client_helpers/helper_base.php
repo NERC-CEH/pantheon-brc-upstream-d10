@@ -126,7 +126,7 @@ $indicia_templates = [
   'tree_browser' => '<div{outerClass} id="{divId}"></div><input type="hidden" name="{fieldname}" id="{id}" value="{default}"{class}/>',
   'tree_browser_node' => '<span>{caption}</span>',
   'autocomplete' => '<input type="hidden" class="hidden" id="{id}" name="{fieldname}" value="{default}" />' .
-      '<input id="{inputId}" name="{inputId}" type="text" value="{defaultCaption}" {class} {disabled} {title} {attribute_list} data-hiddenvalueinput="{id}" />' . "\n",
+      '<input id="{inputId}" name="{inputId}" type="text" value="{defaultCaption}" {class} {disabled} {title} {attribute_list}/>' . "\n",
   'autocomplete_javascript' => "
 $('input#{escaped_input_id}').change(function() {
   if ($('input#{escaped_id}').data('set-for') !== $('input#{escaped_input_id}').val()) {
@@ -260,6 +260,16 @@ class helper_base {
    * @var string
    */
   public static $base_url = '';
+
+  /**
+   * Path to proxy script for calls to the warehouse.
+   *
+   * Allows the warehouse to sit behind a firewall only accessible from the
+   * server.
+   *
+   * @var string
+   */
+  public static $warehouse_proxy = NULL;
 
   /**
    * Base URL of the GeoServer we are linked to if GeoServer is used.
@@ -561,7 +571,7 @@ class helper_base {
   public static $default_validation_rules = [
     'sample:date' => ['required', 'date'],
     'sample:entered_sref' => ['required'],
-    'occurrence:taxa_taxon_list_id' => ['required', 'autocompleteRequired'],
+    'occurrence:taxa_taxon_list_id' => ['required'],
     'location:name' => ['required'],
     'location:centroid_sref' => ['required'],
   ];
@@ -680,6 +690,16 @@ class helper_base {
   protected static $indiciaFnsDone = FALSE;
 
   /**
+   * Returns the URL to access the warehouse by, respecting proxy settings.
+   *
+   * @return string
+   *   URL.
+   */
+  public static function getProxiedBaseUrl() {
+    return empty(self::$warehouse_proxy) ? self::$base_url : self::$warehouse_proxy;
+  }
+
+  /**
    * Returns the folder to store uploaded images in before submission.
    *
    * When an image has been uploaded on a form but not submitted to the
@@ -708,110 +728,6 @@ class helper_base {
       default:
         return $folder;
     }
-  }
-
-  /**
-   * Checks the extension of a file against the allowed upload file types.
-   *
-   * @param string $fileName
-   *   Name of the file to check, including extension.
-   *
-   * @return bool
-   *   True if the file type is allowed, otherwise false.
-   */
-  public static function checkUploadFileType($fileName) {
-    // Check the file type is allowed.
-    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-    foreach (self::$upload_file_types as $extensions) {
-      if (in_array($ext, $extensions)) {
-        return TRUE;
-      }
-    }
-    return FALSE;
-  }
-
-  /**
-   * Checks the mime type of a file against the allowed upload mime types.
-   *
-   * @param string $filePath
-   *   Path to the file to check.
-   *
-   * @return bool
-   *   True if the mime type is allowed, otherwise false.
-   */
-  public static function checkUploadMimeType($filePath) {
-    $finfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($finfo, $filePath);
-    finfo_close($finfo);
-    if ($mimeType) {
-      list ($mainType, $subType) = explode('/', $mimeType);
-      if (in_array($subType, self::$upload_mime_types[$mainType])) {
-        return TRUE;
-      }
-    }
-    return FALSE;
-  }
-
-  /**
-   * Validation rule to test if an uploaded file is allowed by file size.
-   *
-   * File sizes are obtained from the $maxUploadSize setting, and defined as:
-   * SB, where S is the size (1, 15, 300, etc) and
-   * B is the byte modifier: (B)ytes, (K)ilobytes, (M)egabytes, (G)igabytes.
-   * Eg: to limit the size to 1MB or less, you would use "1M".
-   *
-   * @param array $file
-   *   Item from the $_FILES array.
-   *
-   * @return bool
-   *   True if the file size is acceptable, otherwise false.
-   */
-  public static function checkUploadSize(array $file) {
-    if ((int) $file['error'] !== UPLOAD_ERR_OK) {
-      return TRUE;
-    }
-
-    $size = self::$upload_max_filesize;
-
-    if (!preg_match('/[0-9]++[BKMG]/', $size)) {
-      return FALSE;
-    }
-
-    $size = self::convertToBytes($size);
-
-    // Test that the file is under or equal to the max size
-    return $file['size'] <= $size;
-  }
-
-  /**
-   * Convert a memory size string (e.g. 1K, 1M) into the number of bytes.
-   *
-   * @param string $size
-   *   Size string to convert. Valid suffixes as G (gigabytes), M (megabytes),
-   *   K (kilobytes) or nothing.
-   *
-   * @return int
-   *   Number of bytes.
-   */
-  protected static function convertToBytes($size) {
-    // Make the size into a power of 1024
-    switch (substr($size, -1)) {
-      case 'G':
-        $size = intval($size) * pow(1024, 3);
-        break;
-
-      case 'M':
-        $size = intval($size) * pow(1024, 2);
-        break;
-
-      case 'K':
-        $size = intval($size) * pow(1024, 1);
-        break;
-
-      default:
-        $size = intval($size);
-    }
-    return $size;
   }
 
   /**
@@ -1588,10 +1504,15 @@ class helper_base {
   }
 
   /**
-   * Calculates the folder that submitted images end up in.
+   * Calculates the folder that submitted images end up in according to the helper_config.
    */
   public static function get_uploaded_image_folder() {
-    return self::$base_url . (isset(self::$indicia_upload_path) ? self::$indicia_upload_path : 'upload/');
+    if (!isset(self::$final_image_folder) || self::$final_image_folder === 'warehouse') {
+      return self::getProxiedBaseUrl() . (isset(self::$indicia_upload_path) ? self::$indicia_upload_path : 'upload/');
+    }
+    else {
+      return self::getRootFolder() . self::client_helper_path() . self::$final_image_folder;
+    }
   }
 
   /**
@@ -2480,6 +2401,8 @@ HTML;
     global $indicia_templates;
     self::$indiciaData['imagesPath'] = self::$images_path;
     self::$indiciaData['warehouseUrl'] = self::$base_url;
+    $proxyUrl = self::getRootFolder() . self::relative_client_helper_path() . 'proxy.php';
+    self::$indiciaData['proxyUrl'] = $proxyUrl;
     $protocol = empty($_SERVER['HTTPS']) || $_SERVER['HTTPS'] === 'off' ? 'http' : 'https';
     self::$indiciaData['protocol'] = $protocol;
     // Add some useful templates.
@@ -2614,7 +2537,7 @@ JS;
       }
 
       if (self::$js_read_tokens) {
-        self::$js_read_tokens['url'] = self::$base_url;
+        self::$js_read_tokens['url'] = self::getProxiedBaseUrl();
         $script .= "indiciaData.read = " . json_encode(self::$js_read_tokens) . ";\n";
       }
       if (!self::$is_ajax) {
@@ -3011,9 +2934,6 @@ if (typeof validator!=='undefined') {
     if (lang::get('validation_required') != 'validation_required') {
       self::$late_javascript .= "$.validator.messages.required = \"" . lang::get('validation_required') . "\";\n";
     }
-    if (lang::get('validation_autocompleteRequired') != 'validation_autocompleteRequired') {
-      self::$late_javascript .= "$.validator.messages.autocompleteRequired = \"" . lang::get('validation_autocompleteRequired') . "\";\n";
-    }
     if (lang::get('validation_max') != 'validation_max') {
       self::$late_javascript .= "$.validator.messages.max = $.validator.format(\"" . lang::get('validation_max') . "\");\n";
     }
@@ -3021,13 +2941,13 @@ if (typeof validator!=='undefined') {
       self::$late_javascript .= "$.validator.messages.min = $.validator.format(\"" . lang::get('validation_min') . "\");\n";
     }
     if (lang::get('validation_number') != 'validation_number') {
-      self::$late_javascript .= "$.validator.messages.number = \"" . lang::get('validation_number') . "\";\n";
+      self::$late_javascript .= "$.validator.messages.number = $.validator.format(\"" . lang::get('validation_number') . "\");\n";
     }
     if (lang::get('validation_digits') != 'validation_digits') {
-      self::$late_javascript .= "$.validator.messages.digits = \"" . lang::get('validation_digits') . "\";\n";
+      self::$late_javascript .= "$.validator.messages.digits = $.validator.format(\"" . lang::get('validation_digits') . "\");\n";
     }
     if (lang::get('validation_integer') != 'validation_integer') {
-      self::$late_javascript .= "$.validator.messages.integer = \"" . lang::get('validation_integer') . "\";\n";
+      self::$late_javascript .= "$.validator.messages.integer = $.validator.format(\"" . lang::get('validation_integer') . "\");\n";
     }
   }
 
@@ -3282,7 +3202,6 @@ if (typeof validator!=='undefined') {
       $rule = trim($rule);
       $mappings = [
         'required' => ['jqRule' => 'required'],
-        'autocompleteRequired' => ['jqRule' => 'autocompleteRequired'],
         'dateISO' => ['jqRule' => 'dateISO'],
         'email' => ['jqRule' => 'email'],
         'url' => ['jqRule' => 'url'],
@@ -3511,34 +3430,22 @@ if (typeof validator!=='undefined') {
    * @param array $cacheOpts
    *   Options array which defines the cache "key", i.e. the unique set of
    *   options being cached.
-   * @param int $expireEarlyIfLoggedIn
-   *   Number of seconds earlier a cached item is treated as expired if the
-   *   user is logged in. This is useful for reducing the load on the server on
-   *   pages that are hit by a high volume of anonymous users where you want
-   *   the data to be more recent for logged in users. I.e. set a large number
-   *   of seconds in the $expireAfter parameter for the hostsite_cache_set
-   *   function, but reduce the time for logged in users by specifying a
-   *   smaller value here.
    *
    * @return mixed
    *   String read from the cache, or false if not read.
    */
-  public static function cacheGet(array $cacheOpts, int $expireEarlyIfLoggedIn = NULL) {
+  public static function cacheGet(array $cacheOpts) {
     $key = self::getCacheKey($cacheOpts);
-    $r = self::getCachedResponse($key, $cacheOpts, $expireEarlyIfLoggedIn);
+    $r = self::getCachedResponse($key, $cacheOpts);
     return $r === FALSE ? $r : $r['output'];
   }
 
   /**
    * Utility function for external writes to the iform cache.
    *
-   * @param array $cacheOpts
-   *   Options array which defines the cache "key", i.e. the unique set of
-   *   options being cached.
-   * @param string $toCache
-   *   String data to cache.
-   * @param integer $cacheTimeout
-   *   Timeout in seconds, if overriding the default cache timeout.
+   * @param array $cacheOpts Options array which defines the cache "key", i.e. the unique set of options being cached.
+   * @param string $toCache String data to cache.
+   * @param integer $cacheTimeout Timeout in seconds, if overriding the default cache timeout.
    */
   public static function cacheSet($cacheOpts, $toCache, $cacheTimeout = 0) {
     if (!$cacheTimeout) {
@@ -3778,25 +3685,22 @@ if (typeof validator!=='undefined') {
    *
    * @param string $key
    *   Cache key to be used.
-   * @param array $cacheOpts
-   *   Options array which defines the cache "key", i.e. the unique set of
-   *   options being cached.
-   * @param int $expireEarlyIfLoggedIn
-   *   Number of seconds earlier a cached item is treated as expired if the
-   *   user is logged in. This is useful for reducing the load on the server on
-   *   pages that are hit by a high volume of anonymous users where you want
-   *   the data to be more recent for logged in users. I.e. set a large number
-   *   of seconds in the $expireAfter parameter for the hostsite_cache_set
-   *   function, but reduce the time for logged in users by specifying a
-   *   smaller value here.
+   * @param integer $timeout
+   *   Will be false if no caching to take place.
+   * @param array $options
+   *   Options array : contents used to confirm what this data is.
+   * @param boolean $random
+   *   Should a random element be introduced to prevent simultaneous expiry of multiple
+   *   caches? Default true.
    *
    * @return bool|array
    *   Equivalent of call to http_post, else FALSE if data not read from the
    *   cache.
    */
-  private static function getCachedResponse($key, array $cacheOpts, int $expireEarlyIfLoggedIn = NULL) {
+  private static function getCachedResponse($key, $options) {
+
     if (self::$delegate_caching_to_hostsite && function_exists('hostsite_cache_get')) {
-      return hostsite_cache_get($key, $cacheOpts, $expireEarlyIfLoggedIn);
+      return hostsite_cache_get($key, $options);
     }
     else {
       $cacheFolder = self::$cache_folder ? self::$cache_folder : self::relative_client_helper_path() . 'cache/';
@@ -3812,13 +3716,13 @@ if (typeof validator!=='undefined') {
         }
         // Make double sure this cache entry was for the same request options.
         $tags = fgets($handle);
-        if ($tags !== http_build_query($cacheOpts)."\n") {
+        if ($tags !== http_build_query($options)."\n") {
           return FALSE;
         }
         // Check not expired.
         $expiry = trim(fgets($handle));
-        if (!empty($expireEarlyIfLoggedIn) && hostsite_get_user_field('id') > 0) {
-          $expiry -= $expireEarlyIfLoggedIn;
+        if ($expiry < time()) {
+          return FALSE;
         }
         if (self::getProbabilisticEarlyExpiration($expiry)) {
           return FALSE;
@@ -4026,6 +3930,9 @@ if (!function_exists('get_called_class')) {
 if (class_exists('helper_config')) {
   if (isset(helper_config::$base_url)) {
     helper_base::$base_url = helper_config::$base_url;
+  }
+  if (isset(helper_config::$warehouse_proxy)) {
+    helper_base::$warehouse_proxy = helper_config::$warehouse_proxy;
   }
   if (isset(helper_config::$geoserver_url)) {
     helper_base::$geoserver_url = helper_config::$geoserver_url;

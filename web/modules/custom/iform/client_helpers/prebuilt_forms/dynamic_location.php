@@ -525,13 +525,14 @@ function switchToSatelliteBaseLayerForZoom(map) {
   }
 
   protected static function get_control_locationparent($auth, $args, $tabalias, $options) {
-    helper_base::addLanguageStringsToJs('locationParent', [
-      'newLocationOutsideParent' => 'LANG_New_location_outside_parent',
-      'locationOutsideNewParent' => 'LANG_Location_outside_new_parent',
-      'locationOutsideParent' => 'LANG_Location_outside_parent',
-      'OK' => 'LANG_OK',
-      'parentLayerTitle' => 'LANG_Parent_layer_title',
-    ]);
+
+    data_entry_helper::$javascript .=
+      "indiciaData.langLocationOutsideParent=\"" . lang::get('LANG_Location_outside_parent') . "\";\n" .
+      "indiciaData.langNewLocationOutsideParent=\"" . lang::get('LANG_New_location_outside_parent') . "\";\n" .
+      "indiciaData.langLocationOutsideNewParent=\"" . lang::get('LANG_Location_outside_new_parent') . "\";\n" .
+      "indiciaData.langOK=\"" . lang::get('LANG_OK') . "\";\n" .
+      "indiciaData.langParentLayerTitle=\"" . lang::get('LANG_Parent_layer_title') . "\";\n";
+
     $extraParams = $auth['read'];
     if (array_key_exists('extraParams', $options)) {
       $extraParams = array_merge($extraParams, $options['extraParams']);
@@ -570,6 +571,7 @@ function switchToSatelliteBaseLayerForZoom(map) {
       'table' => 'location_medium',
       'readAuth' => $auth['read'],
       'caption' => lang::get('File upload'),
+      'readAuth' => $auth['read'],
     ], $options));
   }
 

@@ -563,25 +563,14 @@ Sample ID',
         'sample_id' => self::$id,
         'sharing' => $args['sharing'],
       ];
-      // Is the provided sample ID for a section or transect
-      // (use different report for section).
-      if (!empty(self::$sample['parent_sample_id'])) {
-        $geoms = report_helper::get_report_data([
-          'readAuth' => $auth['read'],
-          'dataSource' => 'reports_for_prebuilt_forms/sample_details/extra_geoms_for_child_parent_sample_details',
-          'extraParams' => $params,
-        ]);
+      $geoms = report_helper::get_report_data([
+        'readAuth' => $auth['read'],
+        'dataSource' => 'reports_for_prebuilt_forms/sample_details/extra_geoms_for_parent_child_sample_details',
+        'extraParams' => $params,
+      ]);
+      if (count($geoms) > 0) {
+        map_helper::$indiciaData['parentChildGeoms'] = $geoms;
       }
-      else {
-        $geoms = report_helper::get_report_data([
-          'readAuth' => $auth['read'],
-          'dataSource' => 'reports_for_prebuilt_forms/sample_details/extra_geoms_for_parent_child_sample_details',
-          'extraParams' => $params,
-        ]);
-      }
-    }
-    if (!empty($geoms) && count($geoms) > 0) {
-      map_helper::$indiciaData['parentChildGeoms'] = $geoms;
     }
     if (!empty(self::$sample['sref_precision'])) {
       // Set radius if imprecise.

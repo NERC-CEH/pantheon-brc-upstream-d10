@@ -173,7 +173,8 @@
       offset = typeof data.from === 'undefined' ? 0 : data.from;
       // Enable or disable the paging buttons.
       $(footer).find('.prev').prop('disabled', offset <= 0);
-      $(footer).find('.next').prop('disabled', offset + response.hits.hits.length > response.hits.total.value);
+      const actualPageSize = response.hits.hits ? response.hits.hits.length : 0;
+      $(footer).find('.next').prop('disabled', offset + actualPageSize > response.hits.total.value);
     }
     indiciaFns.drawPager($(footer).find('.showing'), pageSize, sourceSettings);
   }

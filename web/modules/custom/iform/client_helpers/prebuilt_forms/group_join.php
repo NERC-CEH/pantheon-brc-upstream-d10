@@ -138,7 +138,7 @@ class iform_group_join implements PrebuiltFormInterface {
   }
 
   private static function success($auth, $group, $args) {
-    Drupal::moduleHandler()->loadInclude('iform', 'inc', 'iform.groups');
+    module_load_include('inc', 'iform', 'iform.groups');
     return iform_show_group_join_success($group, $auth, false, $args['group_home_path'], $args['groups_page_path']);
   }
 }

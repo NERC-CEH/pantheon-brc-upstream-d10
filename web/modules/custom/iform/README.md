@@ -1,12 +1,5 @@
-# Drupal IForm module
-
-Drupal modules which integrate Indicia online wildlife recording functionality into the Drupal
-content management system.
-
-# Requirements
-
-* Drupal version 10 or 11.
-* Indicia warehouse version 9.11.0 or higher.
+# drupal-8
+Drupal 8 modules for Indicia
 
 # Development
 
