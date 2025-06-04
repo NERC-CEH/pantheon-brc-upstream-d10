@@ -719,11 +719,22 @@ HTML;
           }
           if (isset($field['visible']) && ($field['visible']==='false' || $field['visible']===false))
             continue; // skip this column as marked invisible
-          if (isset($field['img']) && $field['img']=='true' && !empty($row[$field['fieldname']]) && !isset($field['template'])) {
-            $imgs = explode(',', $row[$field['fieldname']]);
-            $value='';
-            $row[$field['fieldname']] = self::mediaToThumbnails($imgs, $options['imageThumbPreset'], $entity, $rowId);
+          if (!empty($row[$field['fieldname'] ?? ''] ?? '') && !isset($field['template'])) {
+            if (isset($field['img']) && $field['img']=='true') {
+              $imgs = explode(',', $row[$field['fieldname']]);
+              $value='';
+              $row[$field['fieldname']] = self::mediaToThumbnails($imgs, $options['imageThumbPreset'], $entity, $rowId);
+            }
+            elseif (isset($field['html_safe']) && $field['html_safe']=='true') {
+              // HTML output from report column so no escaping.
+              $value = $row[$field['fieldname']];
+            }
+            else {
+              // Fields that are neither images nor templates can be HTML escaped.
+              $row[$field['fieldname']] = htmlspecialchars($row[$field['fieldname']]);
+            }
           }
+
           if (isset($field['img']) && $field['img']=='true')
             $classes[] = 'table-gallery';
           if (isset($field['actions'])) {
@@ -782,7 +793,7 @@ JS;
             $class = ' class="'.implode(' ', $classes).'"';
           else
             $class = '';
-          $tr .= str_replace(array('{class}','{content}'), array($class, $value), $indicia_templates['report-tbody-td']);
+          $tr .= str_replace(array('{class}','{content}'), [$class, $value], $indicia_templates['report-tbody-td']);
         }
         if ($rowIdx % $options['galleryColCount']==$options['galleryColCount']-1) {
           $rowInProgress=false;
@@ -901,7 +912,7 @@ $callToCallback}";
       // Now AJAXify the grid
       self::add_resource('reportgrid');
       global $indicia_templates;
-      $warehouseUrl = parent::getProxiedBaseUrl();
+      $warehouseUrl = self::$base_url;
       $rootFolder = self::getRootFolder() . (empty($pathParam) ? '' : "?$pathParam=");
       if (isset($options['sharing'])) {
         $options['extraParams']['sharing']=$options['sharing'];
@@ -2542,8 +2553,7 @@ mapSettingsHooks.push(function(opts) { $setLocationJs
     if (isset($options['userId']))
       $request .= '&user_id='.$options['userId'];
     if (isset($options['linkOnly']) && $options['linkOnly']) {
-      // a link must be proxied as can be used client-site
-      return parent::getProxiedBaseUrl() . $request;
+      return self::$base_url . $request;
     }
     return self::getCachedServicesCall($request, $options);
   }

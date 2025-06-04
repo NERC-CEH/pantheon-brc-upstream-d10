@@ -640,6 +640,9 @@
                     if (col.img === true || col.img === 'true') {
                       tdclasses.push('table-gallery');
                       value = getImagesFromValue(row[col.fieldname], div);
+                    } else if (col.html_safe && col.html_safe === 'true') {
+                      // HTML output from report column so no escaping.
+                      value = row[col.fieldname];
                     } else {
                       // Normal string output, escape HTML to prevent XSS.
                       value = indiciaFns.escapeHtml(row[col.fieldname]);
