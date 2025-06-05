@@ -451,6 +451,57 @@
       return rowsToDisplay;
     }
 
+    /**
+     * For columns where img=true, return the images and media as HTML.
+     */
+    function getImagesFromValue(value, div, rowIdValue) {
+      if (value) {
+        var imgs = value.split(',');
+        var match;
+        var r = '';
+        var imgclass = imgs.length > 1 ? 'multi' : 'single';
+        var group = imgs.length > 1 && rowIdValue ? 'group-' + rowIdValue + '"' : '';
+        $.each(imgs, function(idx, img) {
+          var mediaInfo;
+          var mediaInfoAttr = '';
+          var entity;
+          var matches;
+          var iNatThumbnail;
+          var iNatOriginal;
+          var domainClass;
+          if (div.settings.rowId) {
+            if (matches = div.settings.rowId.match(/([a-z_]+)_id$/)) {
+              entity = matches[1];
+            } else {
+              entity = div.settings.entity ? div.settings.entity : 'occurrence';
+            }
+            mediaInfo = {
+              path: img
+            };
+            mediaInfo[entity + '_id'] = rowIdValue;
+            mediaInfoAttr = 'data-media-info="' + indiciaFns.escapeHtml(JSON.stringify(mediaInfo)) + '" ';
+          }
+          match = img.match(/^http(s)?:\/\/(www\.)?([a-z]+(\.kr)?)/);
+          if (match !== null) {
+            if (img.match(/^https:\/\/static\.inaturalist\.org/)) {
+              iNatThumbnail = div.settings.imageThumbPreset === 'med' ? img.replace('/square.', '/medium.') : img;
+              iNatOriginal = img.replace('/square.', '/original.');
+              r += `<a ${mediaInfoAttr} href="${iNatOriginal}" data-fancybox="${group}" class="inaturalist ${imgclass}"><img src="${iNatThumbnail}" /></a>`;
+            } else {
+              domainClass = match[3].replace('.', '');
+              r += `<a ${mediaInfoAttr} href="${img}" class="social-icon ${domainClass}"></a>`;
+            }
+          } else if ($.inArray(img.split('.').pop(), ['mp3', 'wav']) > -1) {
+            r += `<audio controls ${mediaInfoAttr} src="${div.settings.imageFolder}${img}" type="audio/mpeg"/>`;
+          } else {
+            r += `<a ${mediaInfoAttr} href="${div.settings.imageFolder}${img}" class="${imgclass}" data-fancybox="${group}"><img src="${div.settings.imageFolder}${div.settings.imageThumbPreset}-${img}" /></a>`;
+          }
+        });
+        return r;
+      }
+      return value;
+    }
+
     function loadGridFrom(div, request, clearExistingRows, callback) {
       var rowTitle;
       $(div).find('.loading-spinner').show();
@@ -565,8 +616,8 @@
                 tdclasses = [];
                 if (div.settings.sendOutputToMap && typeof indiciaData.reportlayer !== 'undefined' &&
                     typeof col.mappable !== 'undefined' && (col.mappable === 'true' || col.mappable === true)) {
-                  map=indiciaData.mapdiv.map;
-                  geom=OpenLayers.Geometry.fromWKT(row[col.fieldname]);
+                  map = indiciaData.mapdiv.map;
+                  geom = OpenLayers.Geometry.fromWKT(row[col.fieldname]);
                   if (map.projection.getCode() != map.div.indiciaProjection.getCode()) {
                     geom.transform(map.div.indiciaProjection, map.projection);
                   }
@@ -578,53 +629,7 @@
                   features.push(feature);
                 }
                 if (col.visible !== false && col.visible !== 'false') {
-                  if ((col.img === true || col.img === 'true') && row[col.fieldname] !== null && row[col.fieldname] !== '' && typeof col.template === 'undefined') {
-                    var imgs = row[col.fieldname].split(','), match, value='',
-                      imgclass=imgs.length>1 ? 'multi' : 'single',
-                      group=imgs.length>1 && div.settings.rowId !== '' ? 'group-' + row[div.settings.rowId] + '"' : '';
-                    $.each(imgs, function(idx, img) {
-                      var mediaInfo;
-                      var mediaInfoAttr = '';
-                      var entity;
-                      var matches;
-                      var iNatThumbnail;
-                      if (div.settings.rowId) {
-                        if (matches = div.settings.rowId.match(/([a-z_]+)_id$/)) {
-                          entity = matches[1];
-                        } else {
-                          entity = div.settings.entity ? div.settings.entity : 'occurrence';
-                        }
-                        mediaInfo = {
-                          path: img
-                        };
-                        mediaInfo[entity + '_id'] = row[div.settings.rowId];
-                        mediaInfoAttr = 'data-media-info="' + indiciaFns.escapeHtml(JSON.stringify(mediaInfo)) + '" ';
-                      }
-                      match = img.match(/^http(s)?:\/\/(www\.)?([a-z]+(\.kr)?)/);
-                      if (match !== null) {
-                        if (img.match(/^https:\/\/static\.inaturalist\.org/)) {
-                          iNatThumbnail = div.settings.imageThumbPreset === 'med' ? img.replace('/square.', '/medium.') : img;
-                          value += '<a ' + mediaInfoAttr +
-                            'href="' + img.replace('/square.', '/original.') + '" ' +
-                            'data-fancybox="' + group + '" class="inaturalist ' + imgclass + '"><img src="' + iNatThumbnail + '" /></a>';
-                        } else {
-                          value += '<a ' + mediaInfoAttr +
-                            'href="' + img + '" class="social-icon ' + match[3].replace('.', '') + '"></a>';
-                        }
-                      } else if ($.inArray(img.split('.').pop(), ['mp3', 'wav']) > -1) {
-                        value += '<audio controls src="' + div.settings.imageFolder + img + '" ' + mediaInfoAttr + 'type="audio/mpeg"/>';
-                      } else {
-                        value += '<a ' + mediaInfoAttr +
-                            'href="' + div.settings.imageFolder + img + '" ' + 'class="' + imgclass + '" data-fancybox="' + group + '">' +
-                            '<img src="' + div.settings.imageFolder + div.settings.imageThumbPreset + '-' + img + '" />' +
-                            '</a>';
-                      }
-                    });
-                    row[col.fieldname] = value;
-                  }
-                  if (col.img === true || col.img === 'true') {
-                    tdclasses.push('table-gallery');
-                  }
+                  var value = '';
                   // either template the output, or just use the content according to the fieldname
                   if (typeof col.template !== 'undefined') {
                     value = mergeParamsIntoTemplate(div, row, col.template);
@@ -632,7 +637,16 @@
                     value = getActions(div, row, col.actions, queryParams);
                     tdclasses.push('col-actions');
                   } else {
-                    value = indiciaFns.escapeHtml(row[col.fieldname]);
+                    if (col.img === true || col.img === 'true') {
+                      tdclasses.push('table-gallery');
+                      value = getImagesFromValue(row[col.fieldname], div, div.settings.rowId ? row[div.settings.rowId] : null);
+                    } else if (col.html_safe && col.html_safe === 'true') {
+                      // HTML output from report column so no escaping.
+                      value = row[col.fieldname];
+                    } else {
+                      // Normal string output, escape HTML to prevent XSS.
+                      value = indiciaFns.escapeHtml(row[col.fieldname]);
+                    }
                     tdclasses.push('data');
                   }
                   if (col.fieldname) {
