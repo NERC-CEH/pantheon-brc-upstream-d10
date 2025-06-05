@@ -326,10 +326,7 @@ window.indiciaFns = {};
     if (text === null || typeof text === 'undefined') {
       return '';
     }
-    if (typeof text !== 'string') {
-      return text;
-    }
-    const map = {
+    var map = {
       '&': '&amp;',
       '<': '&lt;',
       '>': '&gt;',
