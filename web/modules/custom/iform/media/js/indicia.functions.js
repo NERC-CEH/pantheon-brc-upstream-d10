@@ -791,13 +791,13 @@ window.indiciaFns = {};
 
   indiciaFns.cookie = function cookie(key, value, options) {
     if (!$.cookie) {
-      return;
+      return null;
     }
     if (indiciaData.cookieCompliance && indiciaData.cookieCompliance === 'eu_cookie_compliance' && ($.cookie('cookie-agreed') === '0' || $.cookie('cookie-agreed') === null)) {
-      return;
+      return null;
     }
     options = typeof options === 'undefined' ? {} : options;
-    $.cookie(key, value, options);
+    return $.cookie(key, value, options);
   }
 
 }(jQuery));

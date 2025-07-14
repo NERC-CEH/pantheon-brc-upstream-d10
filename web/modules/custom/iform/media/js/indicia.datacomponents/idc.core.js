@@ -478,7 +478,9 @@
       'indexed_location_ids',
       'location.name',
       'location.output_sref',
+      'location.output_sref_blurred',
       'location.output_sref_system',
+      'location.output_sref_system_blurred',
       'location.parent.name',
       'location.verbatim_locality',
       'message',
@@ -540,6 +542,64 @@
     if ($('.selected:visible').length) {
       $('.selected:visible').focus();
     }
+  }
+
+  /**
+   * Calculate area under a normal distribution from left to a given x position.
+   */
+  function normalCDF(x, mean = 0.5, stdDev = 0.15) {
+    // CDF of normal distribution using erf approximation.
+    const z = (x - mean) / (stdDev * Math.sqrt(2));
+    return 0.5 * (1 + erf(z));
+  }
+
+  /**
+   * Approximation to error function for normal distribution calc.
+   */
+  function erf(z) {
+    const sign = z >= 0 ? 1 : -1;
+    z = Math.abs(z);
+
+    const a1 =  0.254829592;
+    const a2 = -0.284496736;
+    const a3 =  1.421413741;
+    const a4 = -1.453152027;
+    const a5 =  1.061405429;
+    const p  =  0.3275911;
+
+    const t = 1 / (1 + p * z);
+    const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-z * z);
+    return sign * y;
+  }
+
+  /**
+   * Calculate opacity of a feature.
+   *
+   * Result is a combination of opacity implied by the data value (e.g.
+   * occurrence density) and the slider on the map tools popup. The
+   * data value opacity has more weight when the slider is near the centre.
+   *
+   * @param float sliderOpacity
+   *   Opacity set on the map tools slider (0-1).
+   * @param float dataOpacity
+   *   Opacity implied by the feature's data value (0-1).
+   *
+   * @return float
+   *   Calculated display opacity.
+   */
+  indiciaFns.calculateFeatureOpacity = function calculateFeatureOpacity(sliderOpacity, dataOpacity) {
+    // Weight given to the data value based on area under a normal distribution
+    // cut off horizontally at the slider position. Therefore the data value
+    // has more impact when the slider is nearer the centre. Slider at either
+    // end causes the result to tend towards fully transparent or fully opaque.
+    // Using a pow(n, 0.25) adds extra emphasis to the data value near the
+    // centre.
+    const dataWeight = Math.pow(normalCDF(sliderOpacity), 0.25);
+    // Slider weight is the inverse of the area under the cut-off normal
+    // distribution. The value 2 is the total area of a normal-distribution
+    // graph, including area=1 under the curve and area=1 over the curve.
+    const sliderWeight = 2 * sliderOpacity - dataWeight;
+    return sliderOpacity * sliderWeight + dataOpacity * dataWeight;
   }
 
   /**

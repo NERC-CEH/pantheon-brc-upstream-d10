@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.
  *
- * @author Indicia Team
  * @license http://www.gnu.org/licenses/gpl.html GPL 3.0
  * @link https://github.com/indicia-team/client_helpers
  */
@@ -38,10 +37,6 @@
    * Declare default settings.
    */
   var defaults = {
-    initialBoundsSet: false,
-    initialLat: 54.093409,
-    initialLng: -2.89479,
-    initialZoom: 5,
     baseLayer: 'OpenStreetMap',
     baseLayerConfig: {
       OpenStreetMap: {
@@ -54,10 +49,22 @@
       }
     },
     cookies: true,
+    initialBoundsSet: false,
+    initialLat: 54.093409,
+    initialLng: -2.89479,
+    initialZoom: 5,
     selectedFeatureStyle: {
       color: '#FF0000',
       fillColor: '#FF0000',
-    }
+    },
+    tools: [
+      'baseLayers',
+      'overlayLayers',
+      // Following are disabled by default.
+      // 'dataLayerOpacity',
+      // 'gridSquareSize',
+      // 'queryLimitTo1kmOrBetter',
+    ],
   };
 
   /**
@@ -69,7 +76,9 @@
     moveEnd: [],
     zoomEnd: [],
     itemSelect: [],
-    drawDataLayerEnd: []
+    populateDataLayerEnd: [],
+    // Layer style changes, e.g. hook this to update a legend or scale.
+    dataLayerStyleChange: []
   };
 
   /**
@@ -225,7 +234,11 @@
     var wkt;
     var sourceSettings = indiciaData.esSourceObjects[sourceId].settings;
     var size = {};
-    fillOpacity = fillOpacity === null || typeof fillOpacity === "undefined" ? 0.5 : fillOpacity;
+    const savedOpacityCookieValue = indiciaFns.cookie('leafletMapDataLayerOpacity');
+    let defaultFillOpacity = fillOpacity === null || typeof fillOpacity === "undefined" ? 0.5 : fillOpacity;
+    defaultFillOpacity = indiciaFns.calculateFeatureOpacity(savedOpacityCookieValue ? savedOpacityCookieValue : 0.5, defaultFillOpacity);
+    // Read square size user setting cookie if it exists.
+    const userSettingSqSize = indiciaFns.cookie('leafletMapGridSquareSize');
     $.each(layerIds, function eachLayer() {
       var layerId = this;
       var layerConfig = el.settings.layerConfig[layerId];
@@ -247,13 +260,22 @@
         });
       }
       if (config.type === 'circle' || config.type === 'square' || config.type === 'geom') {
-        config.options = $.extend({ radius: 'metric', fillOpacity: fillOpacity }, config.options);
-        if (!config.options.size && sourceSettings.mapGridSquareSize) {
+        config.options = $.extend({
+          radius: 'metric',
+          fillOpacity: defaultFillOpacity,
+        }, config.options);
+        // Config.options.size will contain square size option if defined in
+        // layer config at this point.
+        if (userSettingSqSize) {
+          // User setting on tools popup always takes precedence.
+          config.options.size = userSettingSqSize;
+        } else if (!config.options.size && sourceSettings.mapGridSquareSize) {
+          // Use source square size only if not otherwise specified.
           config.options.size = sourceSettings.mapGridSquareSize;
-          if (config.options.size === 'autoGridSquareSize') {
-            // Calculate according to map zoom.
-            config.options.size = $(el).idcLeafletMap('getAutoSquareSize');
-          }
+        }
+        if (config.options.size === 'autoGridSquareSize') {
+          // Calculate according to map zoom.
+          config.options.size = $(el).idcLeafletMap('getAutoSquareSize');
         }
         // If outputting a geohash as geometry (not heat), calculate the geohash rectangle.
         if (sourceSettings.mode === 'mapGeoHash' && (config.type === 'geom' || config.type === 'square') && geohash) {
@@ -331,6 +353,17 @@
           mapObject = L.marker(location, config.options);
       }
       if (typeof mapObject !== 'undefined') {
+        if (mapObject.options.fillOpacity) {
+          const opacitySetting = savedOpacityCookieValue ? savedOpacityCookieValue : 0.5;
+          // Combine the opacity setting from the tools popup with the opacity
+          // implied by the data value.
+          const calculatedOpacity = indiciaFns.calculateFeatureOpacity(opacitySetting, mapObject.options.fillOpacity);
+          mapObject.options.origFillOpacity = mapObject.options.fillOpacity;
+          mapObject.options.fillOpacity = calculatedOpacity;
+          // Stroke opacity also set, but on a scale of 0.3 to 1 so it never
+          // completely disappears and reaches 1 roughly half way along scale.
+          mapObject.options.opacity = Math.min(1, 0.3 + calculatedOpacity * 1.5);
+        }
         el.outputLayers[this].addLayer(mapObject);
         if (layerConfig.labels && label) {
           layerConfig.labels === 'permanent' ? mapObject.bindTooltip(label, {permanent: true}) : mapObject.bindTooltip(label);
@@ -445,7 +478,7 @@
     var val;
     var settings = {};
     $.each(cookieNames, function eachCookie() {
-      val = $.cookie(this + '-' + el.id);
+      val = indiciaFns.cookie(this + '-' + el.id);
       if (val !== null && val !== 'undefined') {
         settings[this] = val;
       }
@@ -476,7 +509,7 @@
       });
     }
     getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
-      $.each(callbacks.drawDataLayerEnd, function eachCallback() {
+      $.each(callbacks.populateDataLayerEnd, function eachCallback() {
         this(el, 'aggregation', response, null, maxMetric, layer);
       });
     });
@@ -491,15 +524,16 @@
   function mapGridSquareAggregation(el, response, sourceSettings) {
     var buckets = indiciaFns.findValue(response.aggregations, 'buckets');
     var subBuckets;
+    // Set a minimum of 10 for calculating opacity.
     var maxMetric = Math.sqrt(10);
-    var maxCount = 0;
+    var maxCount = 10;
     var filterField = $(el).idcLeafletMap('getAutoSquareField');
     if (typeof buckets !== 'undefined') {
       $.each(buckets, function eachBucket() {
         subBuckets = indiciaFns.findValue(this, 'buckets');
         if (typeof subBuckets !== 'undefined') {
           $.each(subBuckets, function eachSubBucket() {
-            maxMetric = Math.max(Math.sqrt(this.doc_count), maxMetric);
+            //maxMetric = Math.max(Math.sqrt(this.doc_count), maxMetric);
             maxCount = Math.max(this.doc_count, maxCount);
           });
         }
@@ -514,7 +548,8 @@
               coords = this.key.split(' ');
               // On a scale of 0 to 20000 (the range allowed for metrics), we
               // want 20% to 70% opacity according to number of records.
-              metric = Math.round((Math.sqrt(this.doc_count) / maxMetric) * 10000) + 2000;
+              metric = Math.round(Math.sqrt(this.doc_count / maxCount) * 10000) + 4000;
+              maxMetric = Math.max(metric, maxMetric);
               if (typeof location !== 'undefined') {
                 addFeature(el, sourceSettings.id, { lat: coords[1], lon: coords[0] }, null, metric, null, filterField, this.key);
               }
@@ -523,7 +558,7 @@
         }
       });
       getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
-        $.each(callbacks.drawDataLayerEnd, function eachCallback() {
+        $.each(callbacks.populateDataLayerEnd, function eachCallback() {
           this(el, 'aggregation', response, maxCount, maxMetric, layer);
         });
       });
@@ -589,7 +624,7 @@
       indiciaData.esSourceObjects[el.settings.layerConfig[id].source].populate();
     }
     if (el.settings.cookies) {
-      layerState = $.cookie('layerState-' + el.id);
+      layerState = indiciaFns.cookie('layerState-' + el.id);
       if (layerState) {
         layerState = JSON.parse(layerState);
       } else {
@@ -608,7 +643,7 @@
   function onRemoveLayer(el, id) {
     var layerState;
     if (el.settings.cookies) {
-      layerState = $.cookie('layerState-' + el.id);
+      layerState = indiciaFns.cookie('layerState-' + el.id);
       if (layerState) {
         layerState = JSON.parse(layerState);
       } else {
@@ -727,6 +762,28 @@
   }
 
   /**
+   * Adds tool controls to the map.
+   */
+  function addTools(el, baseLayers, overlays) {
+    const baseLayersInTool = el.settings.tools.indexOf('baseLayers') === -1 ? [] : baseLayers;
+    const overlaysInTool = el.settings.tools.indexOf('overlayLayers') === -1 ? [] : overlays;
+    if (baseLayersInTool || overlaysInTool) {
+      const layersControl = L.control.layers(baseLayersInTool, overlaysInTool);
+      layersControl.addTo(el.map);
+    }
+    // Add the tools control if requested.
+    const availableTools = ['dataLayerOpacity', 'gridSquareSize', 'queryLimitTo1kmOrBetter'];
+    const enabledTools = el.settings.tools.filter(tool => availableTools.includes(tool));
+    if (enabledTools.length) {
+      const toolsControl = new idcLeafletTools({
+        mapEl: el,
+        tools: enabledTools
+      });
+      toolsControl.addTo(el.map);
+    }
+  }
+
+  /**
    * Declare public methods.
    */
   methods = {
@@ -739,7 +796,6 @@
       var el = this;
       var baseMaps;
       var overlays = {};
-      var layersControl;
       el.outputLayers = {};
 
       indiciaFns.registerOutputPluginClass('idcLeafletMap');
@@ -883,6 +939,14 @@
                       field: e.layer.options.filterField,
                       value: JSON.stringify(filterValues)
                     });
+                    const savedQueryLimitCookieValue = indiciaFns.cookie('leafletMapQueryLimitTo1kmOrBetter') === 'true';
+                    if (savedQueryLimitCookieValue) {
+                      source.settings.filterBoolClauses.must.push({
+                        query_type: 'range',
+                        field: 'location.coordinate_uncertainty_in_meters',
+                        value: [0, 1000]
+                      });
+                    }
                     // Temporarily populate just the linked grid with the
                     // filter to show the selected row.
                     source.settings.filterToRestore = origFilter;
@@ -912,8 +976,7 @@
           group.addTo(el.map);
         }
       });
-      layersControl = L.control.layers(baseMaps, overlays);
-      layersControl.addTo(el.map);
+      addTools(el, baseMaps, overlays);
       el.map.on('zoomend', function zoomEnd() {
         $.each(callbacks.zoomEnd, function eachCallback() {
           this(el);
@@ -993,7 +1056,6 @@
       var bounds;
       let geomCounts = {};
       let maxCount = 0;
-      var fillOpacity;
       $.each(layers, function eachLayer() {
         if (this.clearLayers) {
           this.clearLayers();
@@ -1020,11 +1082,11 @@
             this._source.event.recorded_by + '<br/>' +
             indiciaFns.fieldConvertors.event_date(this._source);
           // Work out an opacity scale so that a zero count is 20%, max count is 70%.
-          fillOpacity = (0.4 / maxCount) + (0.1 / geomCounts[this._source.location.point]);
+          const fillOpacity = (0.4 / maxCount) + (0.1 / geomCounts[this._source.location.point]);
           addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, '_id', this._id, label);
         });
         getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
-          $.each(callbacks.drawDataLayerEnd, function eachCallback() {
+          $.each(callbacks.populateDataLayerEnd, function eachCallback() {
             this(el, 'aggregation', response, maxCount, null, layer);
           });
         });

@@ -3,6 +3,6 @@
     "description": "Media module for Drupal integration with Indicia.",
     "type": "drupal-custom-module",
 	"require": {
-		"drupal/core": "^10.0"
+		"drupal/core": "^11.0"
 	}	
 }

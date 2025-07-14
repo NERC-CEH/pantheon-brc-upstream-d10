@@ -42,6 +42,15 @@
     */
   var callbacks = {};
 
+  /**
+   * Converts a hexadecimal colour string to RGB.
+   *
+   * @param string hex
+   *   Colour as Hexadecimal.
+   *
+   * @returns array
+   *   Array containing r, g and b values.
+   */
   function hexToRgb(hex) {
     var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? {
@@ -49,6 +58,24 @@
       g: parseInt(result[2], 16),
       b: parseInt(result[3], 16)
     } : null;
+  }
+
+  /**
+   * Update the colour/opacity of the scale.
+   */
+  function updateScaleStyle(el, scale) {
+    const hex = $('#' + el.settings.linkToDataControl)[0].settings.layerConfig[el.settings.layer].style.color;
+    const rgb = hexToRgb(hex);
+    const savedOpacityCookieValue = indiciaFns.cookie('leafletMapDataLayerOpacity');
+    for (let i = 0; i <= 10; i++) {
+      // Scale is 0.2 to 0.7.
+      const dataValue = i / 20 + 0.2;
+      const opacity = indiciaFns.calculateFeatureOpacity(savedOpacityCookieValue ? savedOpacityCookieValue : 0.5, dataValue);
+      // Ensure text legible according to background.
+      const fontColour = opacity > 0.35 ? '#ffffff' : '#000000';
+      $(scale).find(`.scale-box-${i}`).css('background-color', `rgba(${rgb.r},${rgb.g},${rgb.b},${opacity}`);
+      $(scale).find(`.scale-box-${i}`).css('color', fontColour);
+    }
   }
 
   /**
@@ -77,17 +104,23 @@
         $.extend(el.settings, options);
       }
       // Prepare the sequence of shaded boxes.
-      var hex = $('#' + el.settings.linkToDataControl)[0].settings.layerConfig[el.settings.layer].style.color;
-      var rgb = hexToRgb(hex);
+      const hex = $('#' + el.settings.linkToDataControl)[0].settings.layerConfig[el.settings.layer].style.color;
+      const rgb = hexToRgb(hex);
       for (let i = 0; i < 11; i++) {
         const opacity = i / 20 + .1;
-        $(scale).append('<span style="border: solid #3333ff 1px; background-color: rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + opacity + ')"></span>');
+        $(scale).append(`<span class="scale-box-${i}" style="border: solid ${hex} 1px;"></span>`);
       }
       $(scale).find('span:first-child').html('1');
       // Link to the map.
-      $('#' + el.settings.linkToDataControl).idcLeafletMap('on', 'drawDataLayerEnd', function(mapEl, mode, response, maxCount, maxMetric, layer) {
+      $('#' + el.settings.linkToDataControl).idcLeafletMap('on', 'dataLayerStyleChange', function(mapEl, layer) {
+        if (el.settings.layer === layer) {
+          updateScaleStyle(el, scale);
+        }
+      });
+      $('#' + el.settings.linkToDataControl).idcLeafletMap('on', 'populateDataLayerEnd', function(mapEl, mode, response, maxCount, maxMetric, layer) {
         if (el.settings.layer === layer) {
           if (maxCount > 0) {
+            updateScaleStyle(el, scale);
             $(el).show();
             scale.find('span:last-child').html(maxCount);
           }
