@@ -64,7 +64,7 @@ var idcLeafletTools;
     getCtrl_gridSquareSize: function(ctrlId, label, options) {
       const savedGridSquareSizeValue = indiciaFns.cookie('leafletMapGridSquareSize');
       options.mapEl.settings.overrideGridSquareSize = savedGridSquareSizeValue;
-      if (savedGridSquareSizeValue !== 'autoGridSquareSize') {
+      if (savedGridSquareSizeValue && savedGridSquareSizeValue !== 'autoGridSquareSize') {
         // Less than 10km squares should not be zoomed out too far due to data volumes.
         options.mapEl.map.setMinZoom(Math.max(0, 10 - (savedGridSquareSizeValue / 1000)));
       }
@@ -73,9 +73,9 @@ var idcLeafletTools;
         class: 'form-control'
       });
       $(`<option value="autoGridSquareSize">${indiciaData.lang.leafletTools.autoLayerTitle}</option>`).appendTo(select);
-      $(`<option value="10000">10km</option>`).appendTo(select);
-      $(`<option value="2000">2km</option>`).appendTo(select);
-      $(`<option value="1000">1km</option>`).appendTo(select);
+      $('<option value="10000">10km</option>').appendTo(select);
+      $('<option value="2000">2km</option>').appendTo(select);
+      $('<option value="1000">1km</option>').appendTo(select);
       select.on('change', function() {
         const sqSize = $(this).val();
         indiciaFns.cookie('leafletMapGridSquareSize', sqSize);
@@ -100,6 +100,8 @@ var idcLeafletTools;
         });
       });
       select.val(savedGridSquareSizeValue ? savedGridSquareSizeValue : 'autoGridSquareSize');
+      // Apply initial settings.
+      select.change();
       let rowDiv = $(indiciaData.templates.twoCol50);
       rowDiv.find('.col-1').append($(`<label for="${ctrlId}">${label}</label>`));
       rowDiv.find('.col-2').append(select);
