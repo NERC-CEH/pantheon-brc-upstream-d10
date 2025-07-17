@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3d79d7b65ff3bf71c2649cc1bed0437",
+    "content-hash": "f19bc47dee618f41059c43c432b04e96",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -7256,17 +7256,17 @@
         },
         {
             "name": "drupal/editor_advanced_link",
-            "version": "2.3.1",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/editor_advanced_link.git",
-                "reference": "2.3.1"
+                "reference": "2.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/editor_advanced_link-2.3.1.zip",
-                "reference": "2.3.1",
-                "shasum": "5ceb0eb21a4015389cfe77fff9e7c3d53ef41667"
+                "url": "https://ftp.drupal.org/files/projects/editor_advanced_link-2.3.0.zip",
+                "reference": "2.3.0",
+                "shasum": "bd567b4f6a11ec80989ad2f420eaec6614653f88"
             },
             "require": {
                 "drupal/core": "^10.5 || ^11.2"
@@ -7278,8 +7278,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.3.1",
-                    "datestamp": "1751979921",
+                    "version": "2.3.0",
+                    "datestamp": "1751299046",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7928,17 +7928,17 @@
         },
         {
             "name": "drupal/entity_print",
-            "version": "2.17.0",
+            "version": "2.18.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/entity_print.git",
-                "reference": "8.x-2.17"
+                "reference": "8.x-2.18"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.17.zip",
-                "reference": "8.x-2.17",
-                "shasum": "3a368ef56864f669f5dcf4f31626aea6e4792ee5"
+                "url": "https://ftp.drupal.org/files/projects/entity_print-8.x-2.18.zip",
+                "reference": "8.x-2.18",
+                "shasum": "4f64e1893269f3fef1ad18d52f1d5681fba4a9a2"
             },
             "require": {
                 "dompdf/dompdf": ">=2.0.7",
@@ -7954,8 +7954,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.17",
-                    "datestamp": "1752570567",
+                    "version": "8.x-2.18",
+                    "datestamp": "1752758007",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
