@@ -11,7 +11,7 @@ var idcLeafletTools;
       tools: [
         'dataLayerOpacity',
         'gridSquareSize',
-        'queryLimitTo1kmOrBetter'
+        'impreciseMapRefHandling',
       ]
     },
 
@@ -23,7 +23,7 @@ var idcLeafletTools;
         min: 0,
         max: 1,
         step: 0.01,
-        value: savedOpacityCookieValue ? savedOpacityCookieValue : 0.5,
+        value: savedOpacityCookieValue ? savedOpacityCookieValue : 0.2,
         class: 'opacity-slider form-control'
       });
 
@@ -39,7 +39,6 @@ var idcLeafletTools;
                 // original opacity implied by the data value.
                 const calculatedOpacity = indiciaFns.calculateFeatureOpacity(opacitySetting, this.options.origFillOpacity);
                 $(this.getElement()).attr('fill-opacity', calculatedOpacity);
-                //console.log(opacitySetting + ' :: ' + this.options.origFillOpacity + ' :: ' + calculatedOpacity);
                 // Stroke opacity also set, but on a scale of 0.3 to 1 so it
                 // never completely disappears and reaches 1 roughly half way
                 // along scale.
@@ -55,17 +54,31 @@ var idcLeafletTools;
         });
         indiciaFns.cookie('leafletMapDataLayerOpacity', opacitySetting);
       });
-      let rowDiv = $(indiciaData.templates.twoCol50);
-      rowDiv.find('.col-1').append($(`<label for="${ctrlId}">${label}</label>`));
-      rowDiv.find('.col-2').append(slider);
-      return rowDiv;
+      let div = $('<div>');
+      div.append($(`<label for="${ctrlId}">${label}:</label>`));
+      div.append(slider);
+      return div;
     },
 
     getCtrl_gridSquareSize: function(ctrlId, label, options) {
+      let foundValidLayer = false;
+      $.each(options.mapEl.settings.layerConfig, function() {
+        if ((this.type === 'circle' || this.type === 'square')
+          && indiciaData.esSourceObjects[this.source].settings.aggregation
+          && indiciaData.esSourceObjects[this.source].settings.aggregation.by_srid
+        ) {
+          foundValidLayer = true;
+        }
+      });
+      if (!foundValidLayer) {
+        console.log('The grid square size control is not available because no layers are configured to use it.');
+        return '';
+      }
       const savedGridSquareSizeValue = indiciaFns.cookie('leafletMapGridSquareSize');
       options.mapEl.settings.overrideGridSquareSize = savedGridSquareSizeValue;
       if (savedGridSquareSizeValue && savedGridSquareSizeValue !== 'autoGridSquareSize') {
-        // Less than 10km squares should not be zoomed out too far due to data volumes.
+        // Less than 10 km squares should not be zoomed out too far due to data
+        // volumes.
         options.mapEl.map.setMinZoom(Math.max(0, 10 - (savedGridSquareSizeValue / 1000)));
       }
       const select = $('<select>', {
@@ -73,9 +86,9 @@ var idcLeafletTools;
         class: 'form-control'
       });
       $(`<option value="autoGridSquareSize">${indiciaData.lang.leafletTools.autoLayerTitle}</option>`).appendTo(select);
-      $('<option value="10000">10km</option>').appendTo(select);
-      $('<option value="2000">2km</option>').appendTo(select);
-      $('<option value="1000">1km</option>').appendTo(select);
+      $('<option value="10000">10 km</option>').appendTo(select);
+      $('<option value="2000">2 km</option>').appendTo(select);
+      $('<option value="1000">1 km</option>').appendTo(select);
       select.on('change', function() {
         const sqSize = $(this).val();
         indiciaFns.cookie('leafletMapGridSquareSize', sqSize);
@@ -87,41 +100,109 @@ var idcLeafletTools;
           const sqSizeInKms = sqSize / 1000;
           options.mapEl.settings.maxSqSizeKms = sqSizeInKms;
           options.mapEl.settings.minSqSizeKms = sqSizeInKms;
-          // Less than 10km squares should not be zoomed out too far due to data volumes.
+          // Less than 10 km squares should not be zoomed out too far due to data volumes.
           options.mapEl.map.setMinZoom(Math.max(0, 10 - sqSizeInKms));
         }
         $.each(options.mapEl.settings.layerConfig, function() {
           let sqFieldName;
-          if (this.type === 'circle' || this.type === 'square') {
+          if ((this.type === 'circle' || this.type === 'square')
+            && indiciaData.esSourceObjects[this.source].settings.aggregation
+            && indiciaData.esSourceObjects[this.source].settings.aggregation.by_srid
+          ) {
             sqFieldName = sqSize === 'autoGridSquareSize' ? 'autoGridSquareField' : $(options.mapEl).idcLeafletMap('getAutoSquareField');
             indiciaFns.findAndSetValue(indiciaData.esSourceObjects[this.source].settings.aggregation.by_srid.aggs.by_square, 'field', sqFieldName);
             indiciaData.esSourceObjects[this.source].populate();
           }
         });
+        // Hide messages and controls depending on grid square size.
+        if (sqSize === '1000' || sqSize === '2000') {
+          $('.sq-size-help-text').show();
+        } else {
+          $('.sq-size-help-text').hide();
+        }
+        if (sqSize === 'autoGridSquareSize') {
+          $('.imprecise-map-ref-handling').show();
+        } else {
+          $('.imprecise-map-ref-handling').hide();
+        }
       });
       select.val(savedGridSquareSizeValue ? savedGridSquareSizeValue : 'autoGridSquareSize');
       // Apply initial settings.
       select.change();
-      let rowDiv = $(indiciaData.templates.twoCol50);
-      rowDiv.find('.col-1').append($(`<label for="${ctrlId}">${label}</label>`));
-      rowDiv.find('.col-2').append(select);
-      return rowDiv;
+      let row = $('<div>')
+        .append($(`<label for="${ctrlId}">${label}:</label>`))
+        .append(select)
+        .append($('<div>')
+          .addClass('sq-size-help-text')
+          .append($('<i class="fas fa-exclamation-triangle"></i>'))
+          .append($('<span>').text(indiciaData.lang.leafletTools.gridSquareSizeHelp))
+        );
+      if (select.val() !== '1000' && select.val() !== '2000') {
+        row.find('.sq-size-help-text').hide();
+      }
+      return row;
     },
 
-    getCtrl_queryLimitTo1kmOrBetter: function(ctrlId, label) {
-      const savedQueryLimitCookieValue = indiciaFns.cookie('leafletMapQueryLimitTo1kmOrBetter') === 'true';
-      const checkbox = $('<input>', {
-        id: ctrlId,
-        type: 'checkbox',
-        class: 'query-limiter',
-        checked: savedQueryLimitCookieValue ? savedQueryLimitCookieValue : false,
+    getCtrl_impreciseMapRefHandling: function(ctrlId, label, options) {
+      const savedMapRefLimitCookieValue = indiciaFns.cookie('impreciseMapRefHandlingLimitTo1kmOrBetter') === 'true';
+      const savedGridSquareSizeValue = indiciaFns.cookie('leafletMapGridSquareSize');
+      const radioAll = $('<input>', {
+        id: `${ctrlId}-all`,
+        type: 'radio',
+        name: 'mapref-limiter',
+        checked: savedMapRefLimitCookieValue ? !savedMapRefLimitCookieValue : true,
       });
-      checkbox.on('change', function() {
-        indiciaFns.cookie('leafletMapQueryLimitTo1kmOrBetter', $(this).prop('checked') ? true : false);
+      const radioLimited = $('<input>', {
+        id: `${ctrlId}-limited`,
+        type: 'radio',
+        name: 'mapref-limiter',
+        checked: savedMapRefLimitCookieValue ? savedMapRefLimitCookieValue : false,
       });
-      return $('<div>')
-          .append(checkbox)
-          .append($(`<label for="${ctrlId}">${label}</label>`));
+      const div = $('<div>')
+        .addClass('imprecise-map-ref-handling')
+        .append($(`<p>${label}:</p>`));
+      div.append($('<div>')
+        .append(radioAll)
+        .append($(`<label for="${ctrlId}-all">${indiciaData.lang.leafletTools.impreciseMapRefHandlingNotLimited}</label>`))
+      );
+      div.append($('<div>')
+        .append(radioLimited)
+        .append($(`<label for="${ctrlId}-limited">${indiciaData.lang.leafletTools.impreciseMapRefHandlingLimitTo1kmOrBetter}</label>`))
+      );
+      $([radioAll, radioLimited]).map (function () {return this.toArray(); } ).on('change', function() {
+        const limited = $(this).prop('checked') === ($(this).attr('id') === `${ctrlId}-limited`);
+        indiciaFns.cookie('impreciseMapRefHandlingLimitTo1kmOrBetter', limited);
+        const opacitySetting = indiciaFns.cookie('leafletMapDataLayerOpacity');
+        // Update all the output layer features to either hide or show as
+        // required.
+        $.each(options.mapEl.outputLayers, function(layerName, layer) {
+          if (layer.getLayers) {
+            $.each(layer.getLayers(), function() {
+              if (this.options.origFillOpacity && (!limited || this.options.metric <= 1000)) {
+                // Only re-show if previuosly hidden.
+                if (this.options.hidden) {
+                  const calculatedOpacity = indiciaFns.calculateFeatureOpacity(opacitySetting ? opacitySetting : 0.5, this.options.origFillOpacity);
+                  $(this.getElement()).attr('fill-opacity', calculatedOpacity);
+                  // Stroke opacity also set, but on a scale of 0.3 to 1 so it
+                  // never completely disappears and reaches 1 roughly half way
+                  // along scale.
+                  $(this.getElement()).attr('stroke-opacity', Math.min(1, 0.3 + calculatedOpacity * 1.5));
+                  this.options.hidden = false;
+                }
+              } else if (limited && this.options.metric > 1000) {
+                $(this.getElement()).attr('fill-opacity', 0);
+                $(this.getElement()).attr('stroke-opacity', 0);
+                this.options.hidden = true;
+              }
+            });
+          }
+        });
+      });
+      if (savedGridSquareSizeValue !== 'autoGridSquareSize') {
+        // Hide this control if grid square size set to anything other than auto.
+        div.attr('style', 'display: none;');
+      }
+      return div;
     },
 
     onAdd: function (map) {
@@ -139,7 +220,7 @@ var idcLeafletTools;
         const label = {
           'dataLayerOpacity': indiciaData.lang.leafletTools.dataLayerOpacity,
           'gridSquareSize': indiciaData.lang.leafletTools.gridSquareSize ,
-          'queryLimitTo1kmOrBetter': indiciaData.lang.leafletTools.queryLimitTo1kmOrBetter
+          'impreciseMapRefHandling': indiciaData.lang.leafletTools.impreciseMapRefHandling
         }[opt];
         const ctrlId = `ctrl-${opt}`;
         const fn = 'getCtrl_' + opt;
@@ -154,6 +235,8 @@ var idcLeafletTools;
       // Toggle collapse
       title[0].addEventListener('mouseenter', () => {
         container.removeClass('collapsed');
+        const availableHeight = (map.getContainer().getBoundingClientRect().height - controlsContainer[0].getBoundingClientRect().top + map.getContainer().getBoundingClientRect().top) - 10
+        controlsContainer.css('max-height', availableHeight + 'px');
       });
       container[0].addEventListener('mouseleave', () => {
         container.addClass('collapsed');

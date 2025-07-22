@@ -50,30 +50,30 @@ indiciaData.srefHandlers['osie'] = {
   getPrecisionInfo: function(accuracy) {
     switch (accuracy) {
       case 2: return {
-        display: '10km',
+        display: '10 km',
         metres: 10000,
         type: 'square'
       };
       case 3: return {
-        display:'2km',
+        display:'2 km',
         metres:2000,
         type: 'square'
       };
       case 4: return {
-        display:'1km',
+        display:'1 km',
         metres:1000,
         type: 'square'
       };
       case 6: return {
-        display:'100m',
+        display:'100 m',
         metres:100, type: 'square'};
       case 8: return {
-        display:'10m',
+        display:'10 m',
         metres:10,
         type: 'square'
       };
       case 10: return {
-        display:'1m',
+        display:'1 m',
         metres:1,
         type: 'square'
       };
@@ -82,7 +82,8 @@ indiciaData.srefHandlers['osie'] = {
   },
 
   valueToAccuracy: function(value) {
-    // OSIE grid ref length correspond exactly to the scale of accuracy used on the warehouse, excluding the 100km square letter
+    // OSIE grid ref length correspond exactly to the scale of accuracy used on
+    // the warehouse, excluding the 100 km square letter.
     return value.length-1;
   },
 

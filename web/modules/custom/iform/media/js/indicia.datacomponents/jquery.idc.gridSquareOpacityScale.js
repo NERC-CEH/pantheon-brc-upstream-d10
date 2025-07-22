@@ -70,7 +70,7 @@
     for (let i = 0; i <= 10; i++) {
       // Scale is 0.2 to 0.7.
       const dataValue = i / 20 + 0.2;
-      const opacity = indiciaFns.calculateFeatureOpacity(savedOpacityCookieValue ? savedOpacityCookieValue : 0.5, dataValue);
+      const opacity = indiciaFns.calculateFeatureOpacity(savedOpacityCookieValue ? savedOpacityCookieValue : 0.2, dataValue);
       // Ensure text legible according to background.
       const fontColour = opacity > 0.35 ? '#ffffff' : '#000000';
       $(scale).find(`.scale-box-${i}`).css('background-color', `rgba(${rgb.r},${rgb.g},${rgb.b},${opacity}`);
@@ -83,7 +83,7 @@
     */
   methods = {
     /**
-      * Initialise the idcFilterSummary plugin.
+      * Initialise the idcGridSquareOpacityScale plugin.
       *
       * @param array options
       */

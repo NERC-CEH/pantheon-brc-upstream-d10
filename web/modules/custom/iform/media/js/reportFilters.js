@@ -2404,8 +2404,8 @@ jQuery(document).ready(function ($) {
 
   $('#coordinate_precision_op').change(function() {
     if ($('#coordinate_precision_op input:checked').length > 0 && $('#coordinate_precision input:checked').val() === '') {
-      // Setting a coordinate precision op, so set the default precision to 1km
-      // if not already set.
+      // Setting a coordinate precision op, so set the default precision to 1
+      // km if not already set.
       $('#coordinate_precision input[value="1000"]').prop('checked', true);
     }
   });

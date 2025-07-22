@@ -110,7 +110,7 @@
         "drupal/draggableviews": "^2.1",
         "drupal/dropzonejs": "^2.11",
         "drupal/ds": "^3.24",
-        "drupal/editor_advanced_link": "2.3.0",
+        "drupal/editor_advanced_link": "^2.3",
         "drupal/editor_file": "^1.8",
         "drupal/embed": "^1.9",
         "drupal/entity": "^1.6",
@@ -302,7 +302,8 @@
         "drupal/simple_oauth": "5.2.5",
         "drupal/forum_access": "^2.0",
         "drupal/entity_notify": "^1.1",
-        "drupal/etracker": "^3.1"
+        "drupal/etracker": "^3.1",
+        "drupal/linkit": "^7.0"
     },
     "conflict": {
         "drupal/drupal": "*"

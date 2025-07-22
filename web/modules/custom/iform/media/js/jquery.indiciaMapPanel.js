@@ -640,7 +640,7 @@ var destroyAllFeatures;
                   // The plot is drawn from a lat long position, Just take the first value to draw the plot from for
                   // lat/long. For OSGB, take an average of all the points to get a single point to draw the plot from
                   // as there are multiple points in that instance representing the OSGB square. Note the OSGB value
-                  // will be a small square such as 1m (we obviously need to draw a plot that is bigger than the OSGB square we draw from)
+                  // will be a small square such as 1 m (we obviously need to draw a plot that is bigger than the OSGB square we draw from)
                   var openlayersLatlong = new OpenLayers.LonLat();
                   var splitPointFromWkt;
                   openlayersLatlong.lon = 0;
@@ -1056,7 +1056,7 @@ var destroyAllFeatures;
         tileOrigin: new OpenLayers.LonLat(-20037508, 20037508),
         tileSize: new OpenLayers.Size(256, 256),
         /* resolutions in web mercator result from assuming an earth with
-         * equatorial radius 6378137m being shown on a 256 pixel wide map at
+         * equatorial radius 6378137 m being shown on a 256 pixel wide map at
          * zoom level 0, i.e
          *   resolution[0] (m/pixel) = 2 * pi * 6378137 (m) / 256 (pixel)
          * Each subsequent zoom level has half the resolution of the preceeding
@@ -1905,7 +1905,7 @@ var destroyAllFeatures;
      * clickedSrefPrecisionMax settings. Set accountForModifierKey to false to disable adjustments
      * made for the plus and minus key.
      * @return Number of letters required in OSGB style notation to describe a ref to this precision.
-     * Therefore 0 = 100km precision, 2 = 10km precision, 4=1km precision etc.
+     * Therefore 0 = 100 km precision, 2 = 10 km precision, 4=1 km precision etc.
      */
     function getPrecisionInfo(div, precision, accountForModifierKey) {
       if (typeof accountForModifierKey === 'undefined') {

@@ -1388,17 +1388,25 @@ body > .loading-spinner {
 .leaflet-control-indicia-tools .title {
   display: none;
 }
-.leaflet-control-indicia-tools .controls label {
-  line-height: 30px;
+.leaflet-control-indicia-tools .controls {
+  width: 500px;
+  overflow-y: auto;
 }
-.leaflet-control-indicia-tools .controls input[type=checkbox] {
+.leaflet-control-indicia-tools .controls .tool {
+  margin-bottom: 15px;
+}
+.leaflet-control-indicia-tools .controls .tool label {
+  line-height: 30px;
+  margin-bottom: 0;
+}
+.leaflet-control-indicia-tools .controls .tool input[type=radio] {
   width: 18px;
   height: 18px;
   margin-right: 8px;
+  margin-left: 15px;
 }
-.leaflet-control-indicia-tools .opacity-slider {
-  margin: 4px 5%;
-  width: 90%;
+.leaflet-control-indicia-tools .controls .tool .sq-size-help-text {
+  font-size: 0.9em;
 }
 .leaflet-control-indicia-tools.collapsed {
   padding: 4px;

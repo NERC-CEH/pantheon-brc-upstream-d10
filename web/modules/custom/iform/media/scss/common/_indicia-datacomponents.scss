@@ -512,18 +512,24 @@ body {
     display: none;
   }
   .controls {
-    label {
-      line-height: 30px;
+    width: 500px;
+    overflow-y: auto;
+    .tool {
+      margin-bottom: 15px;
+      label {
+        line-height: 30px;
+        margin-bottom: 0;
+      }
+      input[type="radio"] {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        margin-left: 15px;
+      }
+      .sq-size-help-text {
+        font-size: 0.9em;
+      }
     }
-    input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-right: 8px;
-    }
-  }
-  .opacity-slider {
-    margin: 4px 5%;
-    width: 90%;
   }
   &.collapsed {
     padding: 4px;

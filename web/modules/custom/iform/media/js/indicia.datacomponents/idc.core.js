@@ -2040,8 +2040,11 @@
           });
         }
       }
-      source.settings.showGeomsAsTooClose = source.settings.mode === 'mapGridSquare' && source.settings.switchToGeomsAt
-        && mapToFilterTo[0].map.getZoom() >= source.settings.switchToGeomsAt;
+      source.settings.showGeomsAsTooClose =
+        source.settings.mode === 'mapGridSquare'
+        && source.settings.switchToGeomsAt
+        && mapToFilterTo[0].map.getZoom() >= source.settings.switchToGeomsAt
+        && (!indiciaFns.cookie('leafletMapGridSquareSize') || indiciaFns.cookie('leafletMapGridSquareSize') === 'autoGridSquareSize');
     }
     if (source.settings.showGeomsAsTooClose) {
       // Maximum

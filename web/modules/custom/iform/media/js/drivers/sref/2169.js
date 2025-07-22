@@ -43,7 +43,7 @@ indiciaData.srefHandlers['2169'] = {
   },
 
   valueToAccuracy: function() {
-    // accuracy value 10 corresponds to 1m.
+    // accuracy value 10 corresponds to 1 m.
     return 10;
   },
 

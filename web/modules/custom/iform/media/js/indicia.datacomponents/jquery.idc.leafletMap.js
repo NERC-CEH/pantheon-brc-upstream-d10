@@ -63,7 +63,7 @@
       // Following are disabled by default.
       // 'dataLayerOpacity',
       // 'gridSquareSize',
-      // 'queryLimitTo1kmOrBetter',
+      // 'impreciseMapRefHandling',
     ],
   };
 
@@ -220,6 +220,9 @@
    * @param float fillOpacity
    *   Default fillOpacity, unless overridden by fillOpacity=metric in config
    *   options. Defaults to 0.5
+   * @param bool hide
+   *   If set to true, then the feature is temporarily hidden by setting
+   *   opacity to 0.
    * @param string filterField
    *   Optional field for filter to apply if this feature selected.
    * @param string filterValue
@@ -227,7 +230,7 @@
    * @param string label
    *   Optional label for a tooltip to be added to the feature.
    */
-  function addFeature(el, sourceId, location, geom, metric, fillOpacity, filterField, filterValue, label, geohash) {
+  function addFeature(el, sourceId, location, geom, metric, fillOpacity, hide, filterField, filterValue, label, geohash) {
     var layerIds = getLayerIdsForSource(el, sourceId);
     var circle;
     var config;
@@ -236,9 +239,8 @@
     var size = {};
     const savedOpacityCookieValue = indiciaFns.cookie('leafletMapDataLayerOpacity');
     let defaultFillOpacity = fillOpacity === null || typeof fillOpacity === "undefined" ? 0.5 : fillOpacity;
-    defaultFillOpacity = indiciaFns.calculateFeatureOpacity(savedOpacityCookieValue ? savedOpacityCookieValue : 0.5, defaultFillOpacity);
     // Read square size user setting cookie if it exists.
-    const userSettingSqSize = indiciaFns.cookie('leafletMapGridSquareSize');
+    const userSettingSqSize = el.settings.tools.gridSquareSize ? el.settings.tools. indiciaFns.cookie('leafletMapGridSquareSize') : null;
     $.each(layerIds, function eachLayer() {
       var layerId = this;
       var layerConfig = el.settings.layerConfig[layerId];
@@ -285,6 +287,7 @@
          // If size is auto, override it.
         indiciaFns.findAndSetValue(config.options, 'size', $(el).idcLeafletMap('getAutoSquareSize'), 'autoGridSquareSize');
         // Apply metric to any options that are supposed to use it.
+        config.options.metric = metric;
         $.each(config.options, function eachOption(key, value) {
           if (value === 'metric') {
             if (key === 'fillOpacity') {
@@ -354,15 +357,16 @@
       }
       if (typeof mapObject !== 'undefined') {
         if (mapObject.options.fillOpacity) {
-          const opacitySetting = savedOpacityCookieValue ? savedOpacityCookieValue : 0.5;
+          const opacitySetting = savedOpacityCookieValue ? savedOpacityCookieValue : 0.2;
           // Combine the opacity setting from the tools popup with the opacity
           // implied by the data value.
           const calculatedOpacity = indiciaFns.calculateFeatureOpacity(opacitySetting, mapObject.options.fillOpacity);
           mapObject.options.origFillOpacity = mapObject.options.fillOpacity;
-          mapObject.options.fillOpacity = calculatedOpacity;
+          mapObject.options.fillOpacity = hide ? 0 : calculatedOpacity;
+          mapObject.options.hidden = hide;
           // Stroke opacity also set, but on a scale of 0.3 to 1 so it never
           // completely disappears and reaches 1 roughly half way along scale.
-          mapObject.options.opacity = Math.min(1, 0.3 + calculatedOpacity * 1.5);
+          mapObject.options.opacity = hide ? 0 : Math.min(1, 0.3 + calculatedOpacity * 1.5);
         }
         el.outputLayers[this].addLayer(mapObject);
         if (layerConfig.labels && label) {
@@ -491,26 +495,28 @@
    */
   function mapGeoHashAggregation(el, response, sourceSettings) {
     var buckets = indiciaFns.findValue(response.aggregations, 'buckets');
-    var maxMetric = 10;
+    // Set a minimum of 10 for calculating opacity.
+    var maxMetric = Math.sqrt(10);
+    var maxCount = 10;
     if (typeof buckets !== 'undefined') {
       $.each(buckets, function eachBucket() {
-        var count = indiciaFns.findValue(this, 'count');
-        maxMetric = Math.max(count, maxMetric);
+        maxCount = Math.max(indiciaFns.findValue(this, 'count'), maxCount);
       });
       $.each(buckets, function eachBucket() {
         var location = indiciaFns.findValue(this, 'location');
         var count = indiciaFns.findValue(this, 'count');
         // On a scale of 0 to 20000 (the range allowed for metrics), we
-        // want 10% to 60% opacity according to number of records.
-        var metric = Math.round((count / maxMetric) * 10000) + 2000;
+        // want 20% to 70% opacity according to number of records.
+        metric = Math.round(Math.sqrt(count / maxCount) * 10000) + 4000;
+        maxMetric = Math.max(metric, maxMetric);
         if (typeof location !== 'undefined') {
-          addFeature(el, sourceSettings.id, location, null, metric, null, null, null, null, this.key);
+          addFeature(el, sourceSettings.id, location, null, metric, null, false, null, null, null, this.key);
         }
       });
     }
     getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
       $.each(callbacks.populateDataLayerEnd, function eachCallback() {
-        this(el, 'aggregation', response, null, maxMetric, layer);
+        this(el, 'aggregation', response, maxCount, maxMetric, layer);
       });
     });
   }
@@ -533,7 +539,6 @@
         subBuckets = indiciaFns.findValue(this, 'buckets');
         if (typeof subBuckets !== 'undefined') {
           $.each(subBuckets, function eachSubBucket() {
-            //maxMetric = Math.max(Math.sqrt(this.doc_count), maxMetric);
             maxCount = Math.max(this.doc_count, maxCount);
           });
         }
@@ -551,7 +556,7 @@
               metric = Math.round(Math.sqrt(this.doc_count / maxCount) * 10000) + 4000;
               maxMetric = Math.max(metric, maxMetric);
               if (typeof location !== 'undefined') {
-                addFeature(el, sourceSettings.id, { lat: coords[1], lon: coords[0] }, null, metric, null, filterField, this.key);
+                addFeature(el, sourceSettings.id, { lat: coords[1], lon: coords[0] }, null, metric, null, false, filterField, this.key);
               }
             }
           });
@@ -736,7 +741,7 @@
       else if (feature._latlng) {
         bounds = L.latLngBounds(feature._latlng, feature._latlng);
       }
-      if (feature.options.filterField && feature.options.filterField === filterField && bounds && bounds._northEast && clickBounds.intersects(bounds)) {
+      if (!feature.options.hide && feature.options.filterField && feature.options.filterField === filterField && bounds && bounds._northEast && clickBounds.intersects(bounds)) {
         // Intersects is using the outer bounding box of the square which is
         // only rough as square may be at an angle. So do an accurate point in
         // polygon test to confirm.
@@ -765,14 +770,14 @@
    * Adds tool controls to the map.
    */
   function addTools(el, baseLayers, overlays) {
-    const baseLayersInTool = el.settings.tools.indexOf('baseLayers') === -1 ? [] : baseLayers;
-    const overlaysInTool = el.settings.tools.indexOf('overlayLayers') === -1 ? [] : overlays;
-    if (baseLayersInTool || overlaysInTool) {
+    const baseLayersInTool = el.settings.tools.indexOf('baseLayers') === -1 ? {} : baseLayers;
+    const overlaysInTool = el.settings.tools.indexOf('overlayLayers') === -1 ? {} : overlays;
+    if (Object.keys(baseLayersInTool).length + Object.keys(overlaysInTool).length > 0) {
       const layersControl = L.control.layers(baseLayersInTool, overlaysInTool);
       layersControl.addTo(el.map);
     }
     // Add the tools control if requested.
-    const availableTools = ['dataLayerOpacity', 'gridSquareSize', 'queryLimitTo1kmOrBetter'];
+    const availableTools = ['dataLayerOpacity', 'gridSquareSize', 'impreciseMapRefHandling'];
     const enabledTools = el.settings.tools.filter(tool => availableTools.includes(tool));
     if (enabledTools.length) {
       const toolsControl = new idcLeafletTools({
@@ -939,8 +944,8 @@
                       field: e.layer.options.filterField,
                       value: JSON.stringify(filterValues)
                     });
-                    const savedQueryLimitCookieValue = indiciaFns.cookie('leafletMapQueryLimitTo1kmOrBetter') === 'true';
-                    if (savedQueryLimitCookieValue) {
+                    const excludeImpreciseRecords = indiciaFns.cookie('impreciseMapRefHandlingLimitTo1kmOrBetter') === 'true';
+                    if (excludeImpreciseRecords) {
                       source.settings.filterBoolClauses.must.push({
                         query_type: 'range',
                         field: 'location.coordinate_uncertainty_in_meters',
@@ -1066,6 +1071,7 @@
 
       // Are there document hits to map?
       if (response.hits.hits.length > 0) {
+        const excludeImpreciseRecords = indiciaFns.cookie('impreciseMapRefHandlingLimitTo1kmOrBetter') === 'true';
         // First find the counts per polygon and the max count.
         $.each(response.hits.hits, function eachHit(i) {
           if (typeof geomCounts[this._source.location.point] === 'undefined') {
@@ -1075,6 +1081,7 @@
           maxCount = Math.max(maxCount, geomCounts[this._source.location.point]);
         });
         $.each(response.hits.hits, function eachHit(i) {
+          var fillOpacity;
           var latlon = this._source.location.point.split(',');
           var label = typeof this._source.taxon === 'undefined' || typeof this._source.event === 'undefined'
             ? null
@@ -1082,8 +1089,12 @@
             this._source.event.recorded_by + '<br/>' +
             indiciaFns.fieldConvertors.event_date(this._source);
           // Work out an opacity scale so that a zero count is 20%, max count is 70%.
-          const fillOpacity = (0.4 / maxCount) + (0.1 / geomCounts[this._source.location.point]);
-          addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, '_id', this._id, label);
+          const targetOpacity = (0.2 + (0.5 * geomCounts[this._source.location.point] / maxCount));
+          // Because we overlay multiple geometries, we reduce the opacity so
+          // the end result is as expected.
+          fillOpacity = 1 - Math.pow(1 - targetOpacity, 1 / geomCounts[this._source.location.point]);
+          let hide = excludeImpreciseRecords && this._source.location.coordinate_uncertainty_in_meters > 1000;
+          addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, hide, '_id', this._id, label);
         });
         getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
           $.each(callbacks.populateDataLayerEnd, function eachCallback() {
