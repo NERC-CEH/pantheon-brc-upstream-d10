@@ -1829,6 +1829,95 @@
   }
 
   /**
+   * Apply map related settings to a mapped data source.
+   *
+   * Includes bounding box filters for the map viewport as well as setting the
+   * correct field for aggregations when using mapGridSquare modes.
+   */
+  function applyMapSettingsToRequest(source, data, doingCount) {
+    const mapToFilterTo = $('#' + source.settings.filterBoundsUsingMap);
+    const bounds = mapToFilterTo[0].map.getBounds();
+    if (mapToFilterTo.length === 0 || !mapToFilterTo[0].map) {
+      alert('Data source incorrectly configured. @filterBoundsUsingMap does not point to a valid map.');
+      return;
+    }
+    const showGeoms = source.settings.mode === 'mapGridSquare'
+      && source.settings.switchToGeomsAt
+      && mapToFilterTo[0].map.getZoom() >= source.settings.switchToGeomsAt
+      && (!indiciaFns.cookie('leafletMapGridSquareSize') || indiciaFns.cookie('leafletMapGridSquareSize') === 'autoGridSquareSize');
+    const changingShowGeomsMode = showGeoms !== source.settings.showGeomsAsTooClose;
+    const autoSquareField = $(mapToFilterTo).idcLeafletMap('getAutoSquareField');
+    const changingSquareField = !showGeoms && autoSquareField !== source.settings.lastLoadedSquareField;
+    if (changingShowGeomsMode || changingSquareField) {
+      // If switching between showing geoms and not showing geoms, or changing square field,
+      // we need to clear the last buffered bounding box.
+      delete indiciaData.lastBufferedBB;
+    }
+    source.settings.showGeomsAsTooClose = showGeoms;
+    if (!doingCount && !source.settings.initialMapBounds || mapToFilterTo[0].settings.initialBoundsSet) {
+      if (bounds.getNorth() !== bounds.getSouth() && bounds.getEast() !== bounds.getWest()) {
+        // Get bounding box with buffer. Increase buffer for verification so
+        // that small pans between close records do not trigger multiple
+        // queries.
+        const bufferedBB = getBufferedBBforQuery(bounds, indiciaData.esScope === 'verification' ? 2 : 0.1);
+        const boundingBox = {
+          top_left: {
+            lat: bufferedBB.north,
+            lon: bufferedBB.west
+          },
+          bottom_right: {
+            lat: bufferedBB.south,
+            lon: bufferedBB.east
+          }
+        };
+        data.bool_queries.push({
+          bool_clause: 'must',
+          query_type: 'geo_bounding_box',
+          value: {
+            ignore_unmapped: true,
+            'location.point': boundingBox
+          }
+        });
+      }
+    }
+    if (source.settings.showGeomsAsTooClose) {
+      // Set maximum geoms and optimise fields returned.
+      data.size = 10000;
+      data._source = ['location.geom', 'location.point', 'location.coordinate_uncertainty_in_meters'];
+    } else if (source.settings.aggregation) {
+      let agg = {};
+      // Copy to avoid changing original.
+      $.extend(true, agg, source.settings.aggregation);
+      if (source.settings.mode === 'mapGridSquare') {
+        // Set grid square size if auto.
+        source.settings.lastLoadedSquareField = $(mapToFilterTo).idcLeafletMap('getAutoSquareField');
+        indiciaFns.findAndSetValue(agg, 'field', source.settings.lastLoadedSquareField, 'autoGridSquareField');
+        // Don't display unsuitably imprecise data.
+        data.numericFilters['location.coordinate_uncertainty_in_meters'] = '0-' + $(mapToFilterTo).idcLeafletMap('getAutoSquareSize');
+      } else if (source.settings.mode === 'mapGeoHash') {
+        // Set geohash_grid precision.
+        // See https://gis.stackexchange.com/questions/231719/calculating-optimal-geohash-precision-from-bounding-box
+        // We use the viewport cropped to a max 2:1 ratio for our calculations,
+        // otherwise a very tall or very wide map selects an inappropriate
+        // square size.
+        const shortestEdge = Math.min(bounds.getEast() - bounds.getWest(), bounds.getNorth() - bounds.getSouth());
+        const longEdgeForCalc = Math.min(shortestEdge * 2, Math.max(bounds.getEast() - bounds.getWest(), bounds.getNorth() - bounds.getSouth()));
+        const viewportCroppedAreaSqDegrees = shortestEdge * longEdgeForCalc;
+        const hashPrecisionAreas = [2025, 63.281, 1.97754, 0.061799, 0.0019311904, 0.0000603497028, 0.000001885928, 0.0000000589352567];
+        let precision = 1;
+        for (var i = 8; i >= 1; i--) {
+          if (viewportCroppedAreaSqDegrees / hashPrecisionAreas[i - 1] < 10000) {
+            precision = i;
+            break;
+          }
+        }
+        indiciaFns.findAndSetValue(agg, 'precision', precision);
+      }
+      data.aggs = agg;
+    }
+  }
+
+  /**
    * Applies any filters defined by inputs with class es-filter-param to an API request.
    */
   function applyFilterParameterControlsToRequest(data) {
@@ -1950,11 +2039,8 @@
       user_filters: [],
       refresh_user_filters: false
     };
-    var mapToFilterTo = null;
-    var bounds;
     var agg = {};
     var filterRows;
-    var bufferedBB;
     if (typeof source.settings.size !== 'undefined') {
       data.size = source.settings.size;
     }
@@ -2011,76 +2097,15 @@
     }
     // Find the map bounds if limited to the viewport of a map and not counting total.
     if (source.settings.filterBoundsUsingMap) {
-      mapToFilterTo = $('#' + source.settings.filterBoundsUsingMap);
-      bounds = mapToFilterTo[0].map.getBounds();
-      if (mapToFilterTo.length === 0 || !mapToFilterTo[0].map) {
-        alert('Data source incorrectly configured. @filterBoundsUsingMap does not point to a valid map.');
-      } else if (!doingCount && !source.settings.initialMapBounds || mapToFilterTo[0].settings.initialBoundsSet) {
-        if (bounds.getNorth() !== bounds.getSouth() && bounds.getEast() !== bounds.getWest()) {
-          // Get bounding box with buffer. Increase buffer for verification so
-          // that small pans between close records do not trigger multiple
-          // queries.
-          bufferedBB = getBufferedBBforQuery(bounds, indiciaData.esScope === 'verification' ? 2 : 0.1);
-          data.bool_queries.push({
-            bool_clause: 'must',
-            query_type: 'geo_bounding_box',
-            value: {
-              ignore_unmapped: true,
-              'location.point': {
-                top_left: {
-                  lat: bufferedBB.north,
-                  lon: bufferedBB.west
-                },
-                bottom_right: {
-                  lat: bufferedBB.south,
-                  lon: bufferedBB.east
-                }
-              }
-            }
-          });
-        }
-      }
-      source.settings.showGeomsAsTooClose =
-        source.settings.mode === 'mapGridSquare'
-        && source.settings.switchToGeomsAt
-        && mapToFilterTo[0].map.getZoom() >= source.settings.switchToGeomsAt
-        && (!indiciaFns.cookie('leafletMapGridSquareSize') || indiciaFns.cookie('leafletMapGridSquareSize') === 'autoGridSquareSize');
+      applyMapSettingsToRequest(source, data, doingCount);
     }
-    if (source.settings.showGeomsAsTooClose) {
-      // Maximum
-      data.size = 10000;
-      data._source = ['location.geom', 'location.point', 'location.coordinate_uncertainty_in_meters'];
-    } else if (source.settings.aggregation) {
+    else if (source.settings.aggregation) {
       // Copy to avoid changing original.
       $.extend(true, agg, source.settings.aggregation);
-      if (doingCount && source.settings.mode === 'termAggregation' && agg._idfield) {
-        delete agg._idfield.terms.order;
-      }
-      if (source.settings.mode === 'mapGridSquare' && mapToFilterTo) {
-        // Set grid square size if auto.
-        indiciaFns.findAndSetValue(agg, 'field', $(mapToFilterTo).idcLeafletMap('getAutoSquareField'), 'autoGridSquareField');
-        // Don't display unsuitably imprecise data.
-        data.numericFilters['location.coordinate_uncertainty_in_meters'] = '0-' + $(mapToFilterTo).idcLeafletMap('getAutoSquareSize');
-      } else if (source.settings.mode === 'mapGeoHash' && mapToFilterTo) {
-        // Set geohash_grid precision.
-        // See https://gis.stackexchange.com/questions/231719/calculating-optimal-geohash-precision-from-bounding-box
-        // We use the viewport cropped to a max 2:1 ratio for our calculations,
-        // otherwise a very tall or very wide map selects an inappropriate
-        // square size.
-        const shortestEdge = Math.min(bounds.getEast() - bounds.getWest(), bounds.getNorth() - bounds.getSouth());
-        const longEdgeForCalc = Math.min(shortestEdge * 2, Math.max(bounds.getEast() - bounds.getWest(), bounds.getNorth() - bounds.getSouth()));
-        const viewportCroppedAreaSqDegrees = shortestEdge * longEdgeForCalc;
-        const hashPrecisionAreas = [2025, 63.281, 1.97754, 0.061799, 0.0019311904, 0.0000603497028, 0.000001885928, 0.0000000589352567];
-        let precision = 1;
-        for (var i = 8; i >= 1; i--) {
-          if (viewportCroppedAreaSqDegrees / hashPrecisionAreas[i - 1] < 10000) {
-            precision = i;
-            break;
-          }
-        }
-        indiciaFns.findAndSetValue(agg, 'precision', precision);
-      }
       data.aggs = agg;
+      if (source.settings.aggregation && doingCount && source.settings.mode === 'termAggregation' && data.aggs._idfield) {
+        delete data.aggs._idfield.terms.order;
+      }
     }
     if (data.filter_def && data.filter_def.searchArea && indiciaData.leafletSearchPolygon !== data.filter_def.searchArea) {
       indiciaData.leafletSearchPolygon = data.filter_def.searchArea;

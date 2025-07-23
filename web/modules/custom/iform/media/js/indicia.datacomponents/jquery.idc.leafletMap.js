@@ -504,10 +504,10 @@
       });
       $.each(buckets, function eachBucket() {
         var location = indiciaFns.findValue(this, 'location');
-        var count = indiciaFns.findValue(this, 'count');
+        const count = indiciaFns.findValue(this, 'count');
         // On a scale of 0 to 20000 (the range allowed for metrics), we
         // want 20% to 70% opacity according to number of records.
-        metric = Math.round(Math.sqrt(count / maxCount) * 10000) + 4000;
+        const metric = Math.round(Math.sqrt(count / maxCount) * 10000) + 4000;
         maxMetric = Math.max(metric, maxMetric);
         if (typeof location !== 'undefined') {
           addFeature(el, sourceSettings.id, location, null, metric, null, false, null, null, null, this.key);
