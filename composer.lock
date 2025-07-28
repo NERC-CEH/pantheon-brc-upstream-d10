@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9bcc8ee523f05d15d4af6287da938134",
+    "content-hash": "32d7be4e7733aa443b731369ad52e23a",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -523,16 +523,16 @@
         },
         {
             "name": "citation-style-language/locales",
-            "version": "v0.0.43",
+            "version": "v0.0.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/citation-style-language/locales.git",
-                "reference": "3bad433936712a0c41ffe300442e7f519b51c89f"
+                "reference": "ea1b54f24b6773ca4aac35cd5e328d28aa1a7e89"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/citation-style-language/locales/zipball/3bad433936712a0c41ffe300442e7f519b51c89f",
-                "reference": "3bad433936712a0c41ffe300442e7f519b51c89f",
+                "url": "https://api.github.com/repos/citation-style-language/locales/zipball/ea1b54f24b6773ca4aac35cd5e328d28aa1a7e89",
+                "reference": "ea1b54f24b6773ca4aac35cd5e328d28aa1a7e89",
                 "shasum": ""
             },
             "type": "library",
@@ -555,7 +555,7 @@
             "homepage": "http://citationstyles.org/",
             "support": {
                 "issues": "https://github.com/citation-style-language/locales/issues",
-                "source": "https://github.com/citation-style-language/locales/tree/v0.0.43"
+                "source": "https://github.com/citation-style-language/locales/tree/v0.0.45"
             },
             "funding": [
                 {
@@ -563,20 +563,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-10T22:17:44+00:00"
+            "time": "2025-07-18T16:35:59+00:00"
         },
         {
             "name": "citation-style-language/styles",
-            "version": "v0.0.681",
+            "version": "v0.0.706",
             "source": {
                 "type": "git",
                 "url": "https://github.com/citation-style-language/styles.git",
-                "reference": "59f124dc67441738d8823bc59d517edef8f43e06"
+                "reference": "2041a7f95ede30e343d45f50cebe31e0d2e4487e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/59f124dc67441738d8823bc59d517edef8f43e06",
-                "reference": "59f124dc67441738d8823bc59d517edef8f43e06",
+                "url": "https://api.github.com/repos/citation-style-language/styles/zipball/2041a7f95ede30e343d45f50cebe31e0d2e4487e",
+                "reference": "2041a7f95ede30e343d45f50cebe31e0d2e4487e",
                 "shasum": ""
             },
             "type": "library",
@@ -594,7 +594,7 @@
             "homepage": "http://citationstyles.org/",
             "support": {
                 "issues": "https://github.com/citation-style-language/styles/issues",
-                "source": "https://github.com/citation-style-language/styles/tree/v0.0.681"
+                "source": "https://github.com/citation-style-language/styles/tree/v0.0.706"
             },
             "funding": [
                 {
@@ -602,7 +602,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-07-11T14:20:28+00:00"
+            "time": "2025-07-25T15:28:54+00:00"
         },
         {
             "name": "commerceguys/addressing",
@@ -953,16 +953,16 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "4.10.1",
+            "version": "4.10.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "362310b13ececa9f6f0a4a880811fa08fecc348b"
+                "reference": "e550ea4f177f199e0e9451168342bf3f321d92b0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/362310b13ececa9f6f0a4a880811fa08fecc348b",
-                "reference": "362310b13ececa9f6f0a4a880811fa08fecc348b",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/e550ea4f177f199e0e9451168342bf3f321d92b0",
+                "reference": "e550ea4f177f199e0e9451168342bf3f321d92b0",
                 "shasum": ""
             },
             "require": {
@@ -1003,9 +1003,9 @@
             "description": "Initialize Symfony Console commands from annotated command class methods.",
             "support": {
                 "issues": "https://github.com/consolidation/annotated-command/issues",
-                "source": "https://github.com/consolidation/annotated-command/tree/4.10.1"
+                "source": "https://github.com/consolidation/annotated-command/tree/4.10.2"
             },
-            "time": "2024-12-13T19:55:40+00:00"
+            "time": "2025-07-16T20:54:09+00:00"
         },
         {
             "name": "consolidation/config",
@@ -1462,16 +1462,16 @@
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
-            "version": "v1.1.1",
+            "version": "v1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "6e0fa428497bf560152ee73ffbb8af5c6a56b0dd"
+                "reference": "e9cf5e4bbf7eeaf9ef5db34938942602838fc2b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/6e0fa428497bf560152ee73ffbb8af5c6a56b0dd",
-                "reference": "6e0fa428497bf560152ee73ffbb8af5c6a56b0dd",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/e9cf5e4bbf7eeaf9ef5db34938942602838fc2b1",
+                "reference": "e9cf5e4bbf7eeaf9ef5db34938942602838fc2b1",
                 "shasum": ""
             },
             "require": {
@@ -1554,7 +1554,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-06-27T17:24:01+00:00"
+            "time": "2025-07-17T20:45:56+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -2870,17 +2870,17 @@
         },
         {
             "name": "drupal/ai",
-            "version": "1.1.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ai.git",
-                "reference": "1.1.1"
+                "reference": "1.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ai-1.1.1.zip",
-                "reference": "1.1.1",
-                "shasum": "bd01919cc1432337c2e090a2a442b408df0c7a77"
+                "url": "https://ftp.drupal.org/files/projects/ai-1.1.2.zip",
+                "reference": "1.1.2",
+                "shasum": "012880b427056541212f126a308429a150bb2749"
             },
             "require": {
                 "drupal/core": "^10.2 || ^11",
@@ -2898,7 +2898,8 @@
                 "drupal/key": "*",
                 "drupal/search_api": "^1.x-dev",
                 "drupal/search_api_solr": "^4.0",
-                "drupal/token": "^1.14"
+                "drupal/token": "^1.14",
+                "drush/drush": "^12|^13"
             },
             "suggest": {
                 "league/commonmark": "Allows previewing of chunked content when configuring the fields to be indexed in AI Search, and formats messages in the AI Chatbot module."
@@ -2906,8 +2907,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.1.1",
-                    "datestamp": "1752063616",
+                    "version": "1.1.2",
+                    "datestamp": "1753276186",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3293,17 +3294,17 @@
         },
         {
             "name": "drupal/bibcite",
-            "version": "3.0.0-beta5",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bibcite.git",
-                "reference": "3.0.0-beta5"
+                "reference": "3.0.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bibcite-3.0.0-beta5.zip",
-                "reference": "3.0.0-beta5",
-                "shasum": "d453d6b76f806011a8a2ce31447a0e80fdc34d48"
+                "url": "https://ftp.drupal.org/files/projects/bibcite-3.0.0.zip",
+                "reference": "3.0.0",
+                "shasum": "cf6ec3a2106c8c240d37ed2b4d61c64e7941d478"
             },
             "require": {
                 "adci/full-name-parser": "^0.2.4",
@@ -3312,8 +3313,8 @@
                 "drupal/core": "^10 || ^11",
                 "drupal/entity": "^1.0",
                 "drupal/token": "^1.0",
-                "seboettg/citeproc-php": "^2.6",
-                "technosophos/libris": "~2.0"
+                "researchgate/libris": "~2.0",
+                "seboettg/citeproc-php": "^2.6"
             },
             "require-dev": {
                 "drupal/bibcite_entity": "*",
@@ -3330,8 +3331,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.0-beta5",
-                    "datestamp": "1750450262",
+                    "version": "3.0.0",
+                    "datestamp": "1753481722",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Project has not opted into security advisory coverage!"
@@ -4278,17 +4279,17 @@
         },
         {
             "name": "drupal/captcha",
-            "version": "2.0.7",
+            "version": "2.0.8",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/captcha.git",
-                "reference": "2.0.7"
+                "reference": "2.0.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/captcha-2.0.7.zip",
-                "reference": "2.0.7",
-                "shasum": "8e97ba41810811bcd5d7e8b714cdc0b664dd8eec"
+                "url": "https://ftp.drupal.org/files/projects/captcha-2.0.8.zip",
+                "reference": "2.0.8",
+                "shasum": "7000566e8ee60d2aa4d0b038ba8d59ccf9663891"
             },
             "require": {
                 "drupal/core": "^9.5 || ^10 || ^11"
@@ -4296,8 +4297,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.7",
-                    "datestamp": "1732250192",
+                    "version": "2.0.8",
+                    "datestamp": "1753284367",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8271,17 +8272,17 @@
         },
         {
             "name": "drupal/eu_cookie_compliance",
-            "version": "1.27.0",
+            "version": "1.28.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/eu-cookie-compliance.git",
-                "reference": "8.x-1.27"
+                "reference": "8.x-1.28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/eu_cookie_compliance-8.x-1.27.zip",
-                "reference": "8.x-1.27",
-                "shasum": "c8293061df6748fb6fefd57affc751b39ce6470e"
+                "url": "https://ftp.drupal.org/files/projects/eu_cookie_compliance-8.x-1.28.zip",
+                "reference": "8.x-1.28",
+                "shasum": "963991f5ead59e5fcf57fb100f30267ded5929f2"
             },
             "require": {
                 "drupal/core": "^8.9 || ^9 || ^10 || ^11"
@@ -8289,8 +8290,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.27",
-                    "datestamp": "1750814952",
+                    "version": "8.x-1.28",
+                    "datestamp": "1753332673",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12209,17 +12210,17 @@
         },
         {
             "name": "drupal/mailchimp",
-            "version": "3.0.1",
+            "version": "3.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/mailchimp.git",
-                "reference": "3.0.1"
+                "reference": "3.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/mailchimp-3.0.1.zip",
-                "reference": "3.0.1",
-                "shasum": "9976869097284f81b50dd9b10542944789ce58c1"
+                "url": "https://ftp.drupal.org/files/projects/mailchimp-3.0.2.zip",
+                "reference": "3.0.2",
+                "shasum": "fe090a99600cff85f18765cb512199f5ee53b350"
             },
             "require": {
                 "drupal/core": "^10 || ^11",
@@ -12235,8 +12236,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.1",
-                    "datestamp": "1753105888",
+                    "version": "3.0.2",
+                    "datestamp": "1753452273",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16190,17 +16191,17 @@
         },
         {
             "name": "drupal/spammaster",
-            "version": "2.63.0",
+            "version": "2.64.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/spammaster.git",
-                "reference": "8.x-2.63"
+                "reference": "8.x-2.64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.63.zip",
-                "reference": "8.x-2.63",
-                "shasum": "6a356334dea00ba29b8917ed0a0dfa6c1539c281"
+                "url": "https://ftp.drupal.org/files/projects/spammaster-8.x-2.64.zip",
+                "reference": "8.x-2.64",
+                "shasum": "af7331ed92efb1ce932e21acb8c9f11d13f05f3a"
             },
             "require": {
                 "drupal/core": "^8 || ^9 || ^10 || ^11"
@@ -16208,8 +16209,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.63",
-                    "datestamp": "1750839391",
+                    "version": "8.x-2.64",
+                    "datestamp": "1753436060",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -19628,16 +19629,16 @@
         },
         {
             "name": "drush/drush",
-            "version": "13.6.0",
+            "version": "13.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drush-ops/drush.git",
-                "reference": "570a05dce7aea9770f17306808804290764127ad"
+                "reference": "fde8e2593fe78824acf7305c8faf8ff6c3ac352c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drush-ops/drush/zipball/570a05dce7aea9770f17306808804290764127ad",
-                "reference": "570a05dce7aea9770f17306808804290764127ad",
+                "url": "https://api.github.com/repos/drush-ops/drush/zipball/fde8e2593fe78824acf7305c8faf8ff6c3ac352c",
+                "reference": "fde8e2593fe78824acf7305c8faf8ff6c3ac352c",
                 "shasum": ""
             },
             "require": {
@@ -19677,7 +19678,7 @@
                 "drupal/semver_example": "2.3.0",
                 "jetbrains/phpstorm-attributes": "^1.0",
                 "mglaman/phpstan-drupal": "^1.2",
-                "phpunit/phpunit": "^9 || ^10",
+                "phpunit/phpunit": "^9 || ^10 || ^11",
                 "rector/rector": "^1",
                 "squizlabs/php_codesniffer": "^3.7"
             },
@@ -19764,7 +19765,7 @@
                 "issues": "https://github.com/drush-ops/drush/issues",
                 "security": "https://github.com/drush-ops/drush/security/advisories",
                 "slack": "https://drupal.slack.com/messages/C62H9CWQM",
-                "source": "https://github.com/drush-ops/drush/tree/13.6.0"
+                "source": "https://github.com/drush-ops/drush/tree/13.6.1"
             },
             "funding": [
                 {
@@ -19772,7 +19773,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-04-22T12:14:13+00:00"
+            "time": "2025-07-24T10:42:08+00:00"
         },
         {
             "name": "egulias/email-validator",
@@ -21953,16 +21954,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.5.0",
+            "version": "v5.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9"
+                "reference": "221b0d0fdf1369c71047ad1d18bb5880017bbc56"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/ae59794362fe85e051a58ad36b289443f57be7a9",
-                "reference": "ae59794362fe85e051a58ad36b289443f57be7a9",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/221b0d0fdf1369c71047ad1d18bb5880017bbc56",
+                "reference": "221b0d0fdf1369c71047ad1d18bb5880017bbc56",
                 "shasum": ""
             },
             "require": {
@@ -22005,9 +22006,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.5.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.6.0"
             },
-            "time": "2025-05-31T08:24:38+00:00"
+            "time": "2025-07-27T20:03:57+00:00"
         },
         {
             "name": "noli42/chosen",
@@ -23489,6 +23490,59 @@
             "time": "2019-03-08T08:55:37+00:00"
         },
         {
+            "name": "researchgate/libris",
+            "version": "2.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/researchgate/libris.git",
+                "reference": "b8236b0ee240fadfb0fee6d3be81c4504db193ac"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/researchgate/libris/zipball/b8236b0ee240fadfb0fee6d3be81c4504db193ac",
+                "reference": "b8236b0ee240fadfb0fee6d3be81c4504db193ac",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">= 7.4"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.1",
+                "phan/phan": "^5.2",
+                "phpstan/phpstan": "^1.7",
+                "phpunit/phpunit": "^9.5",
+                "vimeo/psalm": "^4.23"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "LibRIS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "(MIT or GPL-2.0-only)"
+            ],
+            "authors": [
+                {
+                    "name": "M Butcher",
+                    "homepage": "http://technosophos.com"
+                }
+            ],
+            "description": "An RIS parser. RIS is a format for reference metadata. A fork of technosophos/LibRIS.",
+            "homepage": "https://github.com/thompsonsj/LibRIS",
+            "keywords": [
+                "Bibliography",
+                "File parser",
+                "RIS",
+                "Reference"
+            ],
+            "support": {
+                "source": "https://github.com/researchgate/libris/tree/2.4.1"
+            },
+            "time": "2025-04-02T10:44:09+00:00"
+        },
+        {
             "name": "sabberworm/php-css-parser",
             "version": "v8.9.0",
             "source": {
@@ -23857,32 +23911,32 @@
         },
         {
             "name": "slevomat/coding-standard",
-            "version": "8.19.1",
+            "version": "8.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/slevomat/coding-standard.git",
-                "reference": "458d665acd49009efebd7e0cb385d71ae9ac3220"
+                "reference": "b4f9f02edd4e6a586777f0cabe8d05574323f3eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/458d665acd49009efebd7e0cb385d71ae9ac3220",
-                "reference": "458d665acd49009efebd7e0cb385d71ae9ac3220",
+                "url": "https://api.github.com/repos/slevomat/coding-standard/zipball/b4f9f02edd4e6a586777f0cabe8d05574323f3eb",
+                "reference": "b4f9f02edd4e6a586777f0cabe8d05574323f3eb",
                 "shasum": ""
             },
             "require": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2 || ^0.7 || ^1.0",
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2 || ^0.7 || ^1.1.2",
                 "php": "^7.4 || ^8.0",
-                "phpstan/phpdoc-parser": "^2.1.0",
-                "squizlabs/php_codesniffer": "^3.13.0"
+                "phpstan/phpdoc-parser": "^2.2.0",
+                "squizlabs/php_codesniffer": "^3.13.2"
             },
             "require-dev": {
-                "phing/phing": "3.0.1",
+                "phing/phing": "3.0.1|3.1.0",
                 "php-parallel-lint/php-parallel-lint": "1.4.0",
-                "phpstan/phpstan": "2.1.17",
+                "phpstan/phpstan": "2.1.19",
                 "phpstan/phpstan-deprecation-rules": "2.0.3",
-                "phpstan/phpstan-phpunit": "2.0.6",
-                "phpstan/phpstan-strict-rules": "2.0.4",
-                "phpunit/phpunit": "9.6.8|10.5.45|11.4.4|11.5.21|12.1.3"
+                "phpstan/phpstan-phpunit": "2.0.7",
+                "phpstan/phpstan-strict-rules": "2.0.6",
+                "phpunit/phpunit": "9.6.8|10.5.48|11.4.4|11.5.27|12.2.7"
             },
             "type": "phpcodesniffer-standard",
             "extra": {
@@ -23906,7 +23960,7 @@
             ],
             "support": {
                 "issues": "https://github.com/slevomat/coding-standard/issues",
-                "source": "https://github.com/slevomat/coding-standard/tree/8.19.1"
+                "source": "https://github.com/slevomat/coding-standard/tree/8.20.0"
             },
             "funding": [
                 {
@@ -23918,7 +23972,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-06-09T17:53:57+00:00"
+            "time": "2025-07-26T15:35:10+00:00"
         },
         {
             "name": "squizlabs/php_codesniffer",
@@ -26752,54 +26806,6 @@
                 }
             ],
             "time": "2025-06-03T06:46:12+00:00"
-        },
-        {
-            "name": "technosophos/libris",
-            "version": "2.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/technosophos/LibRIS.git",
-                "reference": "5b6628ece0e57e90bd54f3b2d8de922dc4cc662c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/technosophos/LibRIS/zipball/5b6628ece0e57e90bd54f3b2d8de922dc4cc662c",
-                "reference": "5b6628ece0e57e90bd54f3b2d8de922dc4cc662c",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "LibRIS": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT or GPLv2"
-            ],
-            "authors": [
-                {
-                    "name": "M Butcher",
-                    "homepage": "http://technosophos.com"
-                }
-            ],
-            "description": "An RIS parser. RIS is a format for reference metadata.",
-            "homepage": "https://github.com/technosophos/LibRIS",
-            "keywords": [
-                "Bibliography",
-                "File parser",
-                "RIS",
-                "Reference"
-            ],
-            "support": {
-                "issues": "https://github.com/technosophos/LibRIS/issues",
-                "source": "https://github.com/technosophos/LibRIS/tree/master"
-            },
-            "abandoned": true,
-            "time": "2012-03-14T16:36:15+00:00"
         },
         {
             "name": "thinkshout/mailchimp-api-php",
@@ -29871,16 +29877,16 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.12.27",
+            "version": "1.12.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "3a6e423c076ab39dfedc307e2ac627ef579db162"
+                "reference": "fcf8b71aeab4e1a1131d1783cef97b23a51b87a9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/3a6e423c076ab39dfedc307e2ac627ef579db162",
-                "reference": "3a6e423c076ab39dfedc307e2ac627ef579db162",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/fcf8b71aeab4e1a1131d1783cef97b23a51b87a9",
+                "reference": "fcf8b71aeab4e1a1131d1783cef97b23a51b87a9",
                 "shasum": ""
             },
             "require": {
@@ -29925,7 +29931,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-05-21T20:51:45+00:00"
+            "time": "2025-07-17T17:15:39+00:00"
         },
         {
             "name": "phpstan/phpstan-deprecation-rules",

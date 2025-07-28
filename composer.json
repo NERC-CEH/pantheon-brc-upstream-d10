@@ -36,7 +36,7 @@
         "drupal/views_tree": "^2.0-rc1",
         "seboettg/citeproc-php": "*",
         "academicpuma/locales": "*",
-        "drupal/bibcite": "3.0-beta5",
+        "drupal/bibcite": "^3.0",
         "drupal/acl": "2.0.1",
         "drupal/advancedqueue": "^1.2",
         "drupal/calendar": "1.0-beta3",
