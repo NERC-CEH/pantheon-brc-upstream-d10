@@ -69,6 +69,7 @@ class IndiciaEsAccumulationChartBlock extends IndiciaBlockBase {
         'by_week' => [
           'terms' => [
             'field' => 'event.week',
+            'size' => 53,
           ],
           'aggs' => [
             'by_taxon' => [

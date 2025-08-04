@@ -326,11 +326,11 @@ jQuery(document).ready(function($) {
       fieldTokens.pop();
       key = fieldTokens.join(':');
     }
-    found = typeof indiciaData.globalValues[key] !== 'undefined';
+    found = typeof indiciaData.globalValues[key] !== 'undefined' && indiciaData.globalValues[key] !== '';
     // Global values also works if not entity specific.
     parts = key.split(':');
     if (parts.length > 1) {
-      found = found || typeof indiciaData.globalValues[parts[1]] !== 'undefined';
+      found = found || typeof indiciaData.globalValues[parts[1]] !== 'undefined' && indiciaData.globalValues[parts[1]] !== '';
     }
     return found;
   }
@@ -1063,6 +1063,24 @@ jQuery(document).ready(function($) {
    */
 
   /**
+   * Show a message with a link to download the errors file.
+   *
+   * @param string msg
+   *   Message to show in the dialog.
+   * @param bool includeNotImported
+   *   If true, include a parameter in the download link to include records
+   *   that aren't yet imported.
+   */
+  function showFailureMessage(msg, includeNotImported) {
+    const urlSep = indiciaData.getErrorFileUrl.indexOf('?') === -1 ? '?' : '&';
+    const includeNotImportedParam = includeNotImported ? '&include-not-imported=true' : '';
+    const fileLink = indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + includeNotImportedParam;
+    $('#error-info').append(msg);
+    $('#error-info').append('<div><a class="btn btn-info" download href="' + fileLink + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
+    $('#error-info').fadeIn();
+  }
+
+  /**
    * When an import or precheck has validation errors, warn the user.
    *
    * @param obj result
@@ -1072,16 +1090,13 @@ jQuery(document).ready(function($) {
    */
   function showErrorInfo(result, state) {
     var msg = result.errorsCount === 1 ? indiciaData.lang.import_helper_2.errorInImportFile : indiciaData.lang.import_helper_2.errorsInImportFile;
-    var urlSep = indiciaData.getErrorFileUrl.indexOf('?') === -1 ? '?' : '&';
     msg = msg.replace('{1}', result.errorsCount);
     if (state === 'precheck') {
       msg += ' ' + indiciaData.lang.import_helper_2.precheckFoundErrors;
     } else {
       msg += ' ' + indiciaData.lang.import_helper_2.importingFoundErrors;
     }
-    $('#error-info').append(msg);
-    $('#error-info').append('<div><a class="btn btn-info" download href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
-    $('#error-info').fadeIn();
+    showFailureMessage(msg);
   }
 
   function importNextChunk(state, forceTemplateOverwrite) {
@@ -1213,12 +1228,7 @@ jQuery(document).ready(function($) {
       },
     ).fail(
       function(jqXHR, textStatus, errorThrown) {
-        $.fancyDialog({
-          // @todo i18n
-          title: 'Import error',
-          message: 'An error occurred on the server whilst importing your data:<br/>' + errorThrown,
-          cancelButton: null
-        });
+        showFailureMessage(indiciaData.lang.import_helper_2.importingCrashInfo + '<br/>' + errorThrown, true);
       }
     );
   }

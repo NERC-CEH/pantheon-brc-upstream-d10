@@ -2034,7 +2034,7 @@
   indiciaFns.getFormQueryData = function getFormQueryData(source, doingCount) {
     var data = {
       textFilters: {},
-      numericFilters: {},
+      numericFilters: source.settings.numericFilters ? source.settings.numericFilters : {},
       bool_queries: [],
       user_filters: [],
       refresh_user_filters: false
