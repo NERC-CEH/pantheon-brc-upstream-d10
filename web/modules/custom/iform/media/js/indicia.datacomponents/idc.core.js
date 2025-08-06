@@ -417,6 +417,9 @@
    *   page of data.
    */
   indiciaFns.populateDataSources = function populateDataSources(resetPage) {
+    // Track if an error message has been shown to the user for this set of
+    // requests so we don't show it again.
+    indiciaData.sourceErrorsShown = []
     // Build the Elasticsearch source objects and run initial population.
     $.each(indiciaData.esSourceObjects, function eachSource() {
       if (resetPage) {
