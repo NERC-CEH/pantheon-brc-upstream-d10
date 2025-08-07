@@ -1,0 +1,13 @@
+name: Responsive Wrappers
+description: Responsive wrappers input content filter.
+type: module
+package: filter
+core_version_requirement: ^9.4 || ^10
+configure: responsivewrappers.settings
+dependencies:
+  - drupal:filter
+
+# Information added by Drupal.org packaging script on 2024-03-06
+version: '2.0.3'
+project: 'responsivewrappers'
+datestamp: 1709725374

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "83cebff353e7652ebaaded21cf261e8f",
+    "content-hash": "9f1385d39f3c6e597838921ea7a54e55",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -6123,16 +6123,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "10.5.1",
+            "version": "10.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "551442fec1db69cf6eedb1601a348d8a6268060f"
+                "reference": "f7daa3932311b473a3b480be94fa91883eb42391"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/551442fec1db69cf6eedb1601a348d8a6268060f",
-                "reference": "551442fec1db69cf6eedb1601a348d8a6268060f",
+                "url": "https://api.github.com/repos/drupal/core/zipball/f7daa3932311b473a3b480be94fa91883eb42391",
+                "reference": "f7daa3932311b473a3b480be94fa91883eb42391",
                 "shasum": ""
             },
             "require": {
@@ -6181,6 +6181,7 @@
                 "twig/twig": "^3.15.0"
             },
             "conflict": {
+                "dealerdirect/phpcodesniffer-composer-installer": "1.1.0",
                 "drush/drush": "<12.4.3"
             },
             "replace": {
@@ -6281,13 +6282,13 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/10.5.1"
+                "source": "https://github.com/drupal/core/tree/10.5.2"
             },
-            "time": "2025-06-26T14:05:15+00:00"
+            "time": "2025-08-07T10:36:31+00:00"
         },
         {
             "name": "drupal/core-composer-scaffold",
-            "version": "10.5.1",
+            "version": "10.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-composer-scaffold.git",
@@ -6331,13 +6332,13 @@
                 "drupal"
             ],
             "support": {
-                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.5.1"
+                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.5.2"
             },
             "time": "2024-08-22T14:31:30+00:00"
         },
         {
             "name": "drupal/core-project-message",
-            "version": "10.5.1",
+            "version": "10.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-project-message.git",
@@ -6378,16 +6379,16 @@
         },
         {
             "name": "drupal/core-recommended",
-            "version": "10.5.1",
+            "version": "10.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-recommended.git",
-                "reference": "60b76ba11c2ae9088283a1e6963b929ca976f4fc"
+                "reference": "fde5c3c87e8dc8b28ece04f7503e3d602fd7d4ed"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/60b76ba11c2ae9088283a1e6963b929ca976f4fc",
-                "reference": "60b76ba11c2ae9088283a1e6963b929ca976f4fc",
+                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/fde5c3c87e8dc8b28ece04f7503e3d602fd7d4ed",
+                "reference": "fde5c3c87e8dc8b28ece04f7503e3d602fd7d4ed",
                 "shasum": ""
             },
             "require": {
@@ -6396,7 +6397,7 @@
                 "doctrine/annotations": "~1.14.4",
                 "doctrine/deprecations": "~1.1.5",
                 "doctrine/lexer": "~2.1.1",
-                "drupal/core": "10.5.1",
+                "drupal/core": "10.5.2",
                 "egulias/email-validator": "~4.0.4",
                 "guzzlehttp/guzzle": "~7.9.3",
                 "guzzlehttp/promises": "~2.2.0",
@@ -6457,9 +6458,9 @@
             ],
             "description": "Core and its dependencies with known-compatible minor versions. Require this project INSTEAD OF drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-recommended/tree/10.5.1"
+                "source": "https://github.com/drupal/core-recommended/tree/10.5.2"
             },
-            "time": "2025-06-26T14:05:15+00:00"
+            "time": "2025-08-07T10:36:31+00:00"
         },
         {
             "name": "drupal/cshs",
@@ -14180,17 +14181,17 @@
         },
         {
             "name": "drupal/queue_ui",
-            "version": "3.2.1",
+            "version": "3.2.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/queue_ui.git",
-                "reference": "3.2.1"
+                "reference": "3.2.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/queue_ui-3.2.1.zip",
-                "reference": "3.2.1",
-                "shasum": "1578dc075f83c0f318a3a61f89e0d62f00fa0786"
+                "url": "https://ftp.drupal.org/files/projects/queue_ui-3.2.2.zip",
+                "reference": "3.2.2",
+                "shasum": "d4fb0647005f4fdf2abcb54368e6f7b6c90c85ce"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11.0"
@@ -14202,8 +14203,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.2.1",
-                    "datestamp": "1729672832",
+                    "version": "3.2.2",
+                    "datestamp": "1754517514",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -14965,56 +14966,6 @@
             "homepage": "https://www.drupal.org/project/responsive_tables_filter",
             "support": {
                 "source": "https://git.drupalcode.org/project/responsive_tables_filter"
-            }
-        },
-        {
-            "name": "drupal/responsivewrappers",
-            "version": "2.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/responsivewrappers.git",
-                "reference": "2.0.3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/responsivewrappers-2.0.3.zip",
-                "reference": "2.0.3",
-                "shasum": "0456ab10f15357e33b1f1c2fdcffc69aa55a2c2a"
-            },
-            "require": {
-                "drupal/core": "^9.4 || ^10"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.3",
-                    "datestamp": "1709725372",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "Oriol Roselló Castells",
-                    "homepage": "https://www.drupal.org/u/oriol_e9g",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "oriol_e9g",
-                    "homepage": "https://www.drupal.org/user/66422"
-                }
-            ],
-            "description": "Responsive bootstrap wrappers input content filter.",
-            "homepage": "https://www.drupal.org/project/responsivewrappers",
-            "support": {
-                "source": "https://git.drupalcode.org/project/responsivewrappers",
-                "issues": "https://www.drupal.org/project/issues/responsivewrappers"
             }
         },
         {
@@ -28010,7 +27961,7 @@
         },
         {
             "name": "drupal/core-dev",
-            "version": "10.5.1",
+            "version": "10.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-dev.git",
@@ -28060,7 +28011,7 @@
             ],
             "description": "require-dev dependencies from drupal/drupal; use in addition to drupal/core-recommended to run tests from drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-dev/tree/10.5.1"
+                "source": "https://github.com/drupal/core-dev/tree/10.5.2"
             },
             "time": "2025-05-14T07:11:14+00:00"
         },
@@ -28847,16 +28798,16 @@
         },
         {
             "name": "open-telemetry/context",
-            "version": "1.2.1",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/context.git",
-                "reference": "1eb2b837ee9362db064a6b65d5ecce15a9f9f020"
+                "reference": "4d5d98f1d4311a55b8d07e3d4c06d2430b4e6efc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/1eb2b837ee9362db064a6b65d5ecce15a9f9f020",
-                "reference": "1eb2b837ee9362db064a6b65d5ecce15a9f9f020",
+                "url": "https://api.github.com/repos/opentelemetry-php/context/zipball/4d5d98f1d4311a55b8d07e3d4c06d2430b4e6efc",
+                "reference": "4d5d98f1d4311a55b8d07e3d4c06d2430b4e6efc",
                 "shasum": ""
             },
             "require": {
@@ -28902,7 +28853,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-05-07T23:36:50+00:00"
+            "time": "2025-08-04T03:25:06+00:00"
         },
         {
             "name": "open-telemetry/exporter-otlp",
@@ -29033,16 +28984,16 @@
         },
         {
             "name": "open-telemetry/sdk",
-            "version": "1.6.0",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sdk.git",
-                "reference": "1c0371794e4c0700afd4a9d4d8511cb5e3f78e6a"
+                "reference": "86287cf30fd6549444d7b8f7d8758d92e24086ac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/1c0371794e4c0700afd4a9d4d8511cb5e3f78e6a",
-                "reference": "1c0371794e4c0700afd4a9d4d8511cb5e3f78e6a",
+                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/86287cf30fd6549444d7b8f7d8758d92e24086ac",
+                "reference": "86287cf30fd6549444d7b8f7d8758d92e24086ac",
                 "shasum": ""
             },
             "require": {
@@ -29061,7 +29012,7 @@
                 "ramsey/uuid": "^3.0 || ^4.0",
                 "symfony/polyfill-mbstring": "^1.23",
                 "symfony/polyfill-php82": "^1.26",
-                "tbachert/spi": "^1.0.1"
+                "tbachert/spi": "^1.0.5"
             },
             "suggest": {
                 "ext-gmp": "To support unlimited number of synchronous metric readers",
@@ -29074,6 +29025,9 @@
                     "OpenTelemetry\\API\\Configuration\\ConfigEnv\\EnvComponentLoader": [
                         "OpenTelemetry\\API\\Instrumentation\\Configuration\\General\\ConfigEnv\\EnvComponentLoaderHttpConfig",
                         "OpenTelemetry\\API\\Instrumentation\\Configuration\\General\\ConfigEnv\\EnvComponentLoaderPeerConfig"
+                    ],
+                    "OpenTelemetry\\SDK\\Common\\Configuration\\Resolver\\ResolverInterface": [
+                        "OpenTelemetry\\SDK\\Common\\Configuration\\Resolver\\SdkConfigurationResolver"
                     ],
                     "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\HookManagerInterface": [
                         "OpenTelemetry\\API\\Instrumentation\\AutoInstrumentation\\ExtensionHookManager"
@@ -29123,20 +29077,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-06-19T23:36:51+00:00"
+            "time": "2025-08-06T03:07:06+00:00"
         },
         {
             "name": "open-telemetry/sem-conv",
-            "version": "1.32.1",
+            "version": "1.36.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sem-conv.git",
-                "reference": "94daa85ea61a8e2b7e1b0af6be0e875bedda7c22"
+                "reference": "60dd18fd21d45e6f4234ecab89c14021b6e3de9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/94daa85ea61a8e2b7e1b0af6be0e875bedda7c22",
-                "reference": "94daa85ea61a8e2b7e1b0af6be0e875bedda7c22",
+                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/60dd18fd21d45e6f4234ecab89c14021b6e3de9a",
+                "reference": "60dd18fd21d45e6f4234ecab89c14021b6e3de9a",
                 "shasum": ""
             },
             "require": {
@@ -29180,7 +29134,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-06-24T02:32:27+00:00"
+            "time": "2025-08-04T03:22:08+00:00"
         },
         {
             "name": "phar-io/manifest",
