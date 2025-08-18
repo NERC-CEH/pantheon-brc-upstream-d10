@@ -15,7 +15,44 @@ var idcLeafletTools;
       ]
     },
 
-    getCtrl_dataLayerOpacity: function(ctrlId, label, options) {
+    /**
+     * Check if a map includes a clickable data layer.
+     *
+     * Checks if the map has layers that can be clicked, set opacity etc.
+     *
+     * @returns bool
+     *   True if the map has a gridded data layer (square, circle).
+     */
+    hasClickableLayer: function(allowed) {
+      let foundClickableLayer = false;
+      if (typeof allowed === 'undefined') {
+        allowed = ['circle', 'square', 'geom'];
+      }
+      $.each(this.options.mapEl.settings.layerConfig, function() {
+        if (allowed.indexOf(this.type) !== -1) {
+          foundClickableLayer = true;
+        }
+      });
+      return foundClickableLayer;
+    },
+
+    isValidCtrl_dataLayerOpacity() {
+      return this.hasClickableLayer();
+    },
+
+    isValidCtrl_gridSquareSize() {
+      // GeoHash (geom) mode does not allow control over grid square size
+      // currently.
+      return this.hasClickableLayer(['circle', 'square']);
+    },
+
+    isValidCtrl_impreciseMapRefHandling() {
+      // GeoHash (geom) mode does not switch to precise geoms at any level, so
+      // this control is not required.
+      return this.hasClickableLayer(['circle', 'square']);
+    },
+
+    getCtrl_dataLayerOpacity: function(ctrlId, label) {
       const savedOpacityCookieValue = indiciaFns.cookie('leafletMapDataLayerOpacity');
       const slider = $('<input>', {
         id: ctrlId,
@@ -26,6 +63,7 @@ var idcLeafletTools;
         value: savedOpacityCookieValue ? savedOpacityCookieValue : 0.2,
         class: 'opacity-slider form-control'
       });
+      var options = this.options;
 
       slider.on('input', function () {
         const opacitySetting = parseFloat(slider.val());
@@ -60,26 +98,13 @@ var idcLeafletTools;
       return div;
     },
 
-    getCtrl_gridSquareSize: function(ctrlId, label, options) {
-      let foundValidLayer = false;
-      $.each(options.mapEl.settings.layerConfig, function() {
-        if ((this.type === 'circle' || this.type === 'square')
-          && indiciaData.esSourceObjects[this.source].settings.aggregation
-          && indiciaData.esSourceObjects[this.source].settings.aggregation.by_srid
-        ) {
-          foundValidLayer = true;
-        }
-      });
-      if (!foundValidLayer) {
-        console.log('The grid square size control is not available because no layers are configured to use it.');
-        return '';
-      }
+    getCtrl_gridSquareSize: function(ctrlId, label) {
       const savedGridSquareSizeValue = indiciaFns.cookie('leafletMapGridSquareSize');
-      options.mapEl.settings.overrideGridSquareSize = savedGridSquareSizeValue;
+      this.options.mapEl.settings.overrideGridSquareSize = savedGridSquareSizeValue;
       if (savedGridSquareSizeValue && savedGridSquareSizeValue !== 'autoGridSquareSize') {
         // Less than 10 km squares should not be zoomed out too far due to data
         // volumes.
-        options.mapEl.map.setMinZoom(Math.max(0, 10 - (savedGridSquareSizeValue / 1000)));
+        this.options.mapEl.map.setMinZoom(Math.max(0, 10 - (savedGridSquareSizeValue / 1000)));
       }
       const select = $('<select>', {
         id: ctrlId,
@@ -89,6 +114,7 @@ var idcLeafletTools;
       $('<option value="10000">10 km</option>').appendTo(select);
       $('<option value="2000">2 km</option>').appendTo(select);
       $('<option value="1000">1 km</option>').appendTo(select);
+      var options = this.options;
       select.on('change', function() {
         const sqSize = $(this).val();
         indiciaFns.cookie('leafletMapGridSquareSize', sqSize);
@@ -216,7 +242,6 @@ var idcLeafletTools;
       L.DomEvent.disableClickPropagation(container[0]);
 
       this.options.tools.forEach(opt => {
-        const toolDiv = $('<div>').addClass('tool').appendTo(controlsContainer);
         const label = {
           'dataLayerOpacity': indiciaData.lang.leafletTools.dataLayerOpacity,
           'gridSquareSize': indiciaData.lang.leafletTools.gridSquareSize ,
@@ -225,14 +250,18 @@ var idcLeafletTools;
         const ctrlId = `ctrl-${opt}`;
         const fn = 'getCtrl_' + opt;
         if (this[fn]) {
-          this[fn](ctrlId, label, this.options).appendTo(toolDiv);
+          if (this['isValidCtrl_' + opt]()) {
+            const toolDiv = $('<div>').addClass('tool').appendTo(controlsContainer);
+            this[fn](ctrlId, label).appendTo(toolDiv);
+          } else {
+            console.log('LeafletTool not compatible with any available map layer: ' + opt);
+          }
         } else {
           console.log('Invalid control option for leafletTools: ' + opt);
         }
       });
 
-
-      // Toggle collapse
+      // Toggle collapse.
       title[0].addEventListener('mouseenter', () => {
         container.removeClass('collapsed');
         const availableHeight = (map.getContainer().getBoundingClientRect().height - controlsContainer[0].getBoundingClientRect().top + map.getContainer().getBoundingClientRect().top) - 10
