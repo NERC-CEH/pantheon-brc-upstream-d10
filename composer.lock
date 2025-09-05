@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3a6cc92446f83bc373faf4a364309c6d",
+    "content-hash": "381741d7cf6f85ff9bb99f305050ed25",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -9525,68 +9525,6 @@
             }
         },
         {
-            "name": "drupal/forum_access",
-            "version": "2.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/forum_access.git",
-                "reference": "2.0.1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/forum_access-2.0.1.zip",
-                "reference": "2.0.1",
-                "shasum": "68bd5eec59cf720d5005c8cb5336360a732ced5a"
-            },
-            "require": {
-                "drupal/acl": "^2.0",
-                "drupal/core": "^10.3 || ^11 || ^12",
-                "drupal/forum": "*",
-                "php": ">=8.1"
-            },
-            "require-dev": {
-                "drupal/migrate_plus": "^6.0"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.1",
-                    "datestamp": "1741690776",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Hans Salvisberg (salvis)",
-                    "homepage": "https://www.drupal.org/u/salvis",
-                    "role": "Maintainer"
-                },
-                {
-                    "name": "Mikhail Khasaya (dillix)",
-                    "homepage": "https://www.drupal.org/u/dillix",
-                    "role": "Co-maintainer"
-                },
-                {
-                    "name": "István Kurucz (nevergone)",
-                    "homepage": "https://www.drupal.org/u/nevergone",
-                    "role": "Co-maintainer, D8 port"
-                }
-            ],
-            "description": "Forum Access leverages Core's node access mechanism to protect forums by role and user.",
-            "homepage": "https://drupal.org/project/forum_access",
-            "support": {
-                "source": "https://git.drupalcode.org/project/forum_access",
-                "issues": "https://drupal.org/project/issues/forum_access"
-            }
-        },
-        {
             "name": "drupal/galleriajs",
             "version": "1.1.1",
             "source": {
@@ -13064,17 +13002,17 @@
         },
         {
             "name": "drupal/metatag",
-            "version": "2.1.1",
+            "version": "2.1.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/metatag.git",
-                "reference": "2.1.1"
+                "reference": "2.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/metatag-2.1.1.zip",
-                "reference": "2.1.1",
-                "shasum": "94f272db388cbf1e4df775a2677f8c35818c9382"
+                "url": "https://ftp.drupal.org/files/projects/metatag-2.1.2.zip",
+                "reference": "2.1.2",
+                "shasum": "0ef6232c40a3b7a45ea40d033e124b9698941e9d"
             },
             "require": {
                 "drupal/core": "^9.4 || ^10 || ^11",
@@ -13086,7 +13024,7 @@
                 "drupal/hal": "^1 || ^2 || ^9",
                 "drupal/metatag_dc": "*",
                 "drupal/metatag_open_graph": "*",
-                "drupal/page_manager": "^4.0",
+                "drupal/page_manager": "*",
                 "drupal/redirect": "^1.0",
                 "ergebnis/composer-normalize": "*",
                 "mpyw/phpunit-patch-serializable-comparison": "*"
@@ -13094,8 +13032,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.1",
-                    "datestamp": "1752433708",
+                    "version": "2.1.2",
+                    "datestamp": "1757006643",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -23887,16 +23825,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "3.13.2",
+            "version": "3.13.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/PHP_CodeSniffer.git",
-                "reference": "5b5e3821314f947dd040c70f7992a64eac89025c"
+                "reference": "ad545ea9c1b7d270ce0fc9cbfb884161cd706119"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/5b5e3821314f947dd040c70f7992a64eac89025c",
-                "reference": "5b5e3821314f947dd040c70f7992a64eac89025c",
+                "url": "https://api.github.com/repos/PHPCSStandards/PHP_CodeSniffer/zipball/ad545ea9c1b7d270ce0fc9cbfb884161cd706119",
+                "reference": "ad545ea9c1b7d270ce0fc9cbfb884161cd706119",
                 "shasum": ""
             },
             "require": {
@@ -23967,7 +23905,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-06-17T22:17:01+00:00"
+            "time": "2025-09-05T05:47:09+00:00"
         },
         {
             "name": "steverhoades/oauth2-openid-connect-server",
@@ -27222,25 +27160,25 @@
         },
         {
             "name": "brick/math",
-            "version": "0.13.1",
+            "version": "0.14.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "fc7ed316430118cc7836bf45faff18d5dfc8de04"
+                "reference": "113a8ee2656b882d4c3164fa31aa6e12cbb7aaa2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/fc7ed316430118cc7836bf45faff18d5dfc8de04",
-                "reference": "fc7ed316430118cc7836bf45faff18d5dfc8de04",
+                "url": "https://api.github.com/repos/brick/math/zipball/113a8ee2656b882d4c3164fa31aa6e12cbb7aaa2",
+                "reference": "113a8ee2656b882d4c3164fa31aa6e12cbb7aaa2",
                 "shasum": ""
             },
             "require": {
-                "php": "^8.1"
+                "php": "^8.2"
             },
             "require-dev": {
                 "php-coveralls/php-coveralls": "^2.2",
-                "phpunit/phpunit": "^10.1",
-                "vimeo/psalm": "6.8.8"
+                "phpstan/phpstan": "2.1.22",
+                "phpunit/phpunit": "^11.5"
             },
             "type": "library",
             "autoload": {
@@ -27270,7 +27208,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.13.1"
+                "source": "https://github.com/brick/math/tree/0.14.0"
             },
             "funding": [
                 {
@@ -27278,7 +27216,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-29T13:50:30+00:00"
+            "time": "2025-08-29T12:40:03+00:00"
         },
         {
             "name": "colinodell/psr-testlogger",
@@ -28746,16 +28684,16 @@
         },
         {
             "name": "open-telemetry/api",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "b3a9286f9c1c8247c83493c5b1fa475cd0cec7f7"
+                "reference": "7692075f486c14d8cfd37fba98a08a5667f089e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/b3a9286f9c1c8247c83493c5b1fa475cd0cec7f7",
-                "reference": "b3a9286f9c1c8247c83493c5b1fa475cd0cec7f7",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/7692075f486c14d8cfd37fba98a08a5667f089e5",
+                "reference": "7692075f486c14d8cfd37fba98a08a5667f089e5",
                 "shasum": ""
             },
             "require": {
@@ -28812,7 +28750,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-06-19T23:36:51+00:00"
+            "time": "2025-08-07T23:07:38+00:00"
         },
         {
             "name": "open-telemetry/context",
@@ -29002,22 +28940,22 @@
         },
         {
             "name": "open-telemetry/sdk",
-            "version": "1.7.0",
+            "version": "1.7.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sdk.git",
-                "reference": "86287cf30fd6549444d7b8f7d8758d92e24086ac"
+                "reference": "52690d4b37ae4f091af773eef3c238ed2bc0aa06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/86287cf30fd6549444d7b8f7d8758d92e24086ac",
-                "reference": "86287cf30fd6549444d7b8f7d8758d92e24086ac",
+                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/52690d4b37ae4f091af773eef3c238ed2bc0aa06",
+                "reference": "52690d4b37ae4f091af773eef3c238ed2bc0aa06",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
                 "nyholm/psr7-server": "^1.1",
-                "open-telemetry/api": "~1.4.0",
+                "open-telemetry/api": "^1.4",
                 "open-telemetry/context": "^1.0",
                 "open-telemetry/sem-conv": "^1.0",
                 "php": "^8.1",
@@ -29095,20 +29033,20 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-08-06T03:07:06+00:00"
+            "time": "2025-09-05T07:17:06+00:00"
         },
         {
             "name": "open-telemetry/sem-conv",
-            "version": "1.36.0",
+            "version": "1.37.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sem-conv.git",
-                "reference": "60dd18fd21d45e6f4234ecab89c14021b6e3de9a"
+                "reference": "8da7ec497c881e39afa6657d72586e27efbd29a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/60dd18fd21d45e6f4234ecab89c14021b6e3de9a",
-                "reference": "60dd18fd21d45e6f4234ecab89c14021b6e3de9a",
+                "url": "https://api.github.com/repos/opentelemetry-php/sem-conv/zipball/8da7ec497c881e39afa6657d72586e27efbd29a1",
+                "reference": "8da7ec497c881e39afa6657d72586e27efbd29a1",
                 "shasum": ""
             },
             "require": {
@@ -29152,7 +29090,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2025-08-04T03:22:08+00:00"
+            "time": "2025-09-03T12:08:10+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -30532,20 +30470,20 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "4.9.0",
+            "version": "4.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "4e0e23cc785f0724a0e838279a9eb03f28b092a0"
+                "reference": "81f941f6f729b1e3ceea61d9d014f8b6c6800440"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/4e0e23cc785f0724a0e838279a9eb03f28b092a0",
-                "reference": "4e0e23cc785f0724a0e838279a9eb03f28b092a0",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/81f941f6f729b1e3ceea61d9d014f8b6c6800440",
+                "reference": "81f941f6f729b1e3ceea61d9d014f8b6c6800440",
                 "shasum": ""
             },
             "require": {
-                "brick/math": "^0.8.8 || ^0.9 || ^0.10 || ^0.11 || ^0.12 || ^0.13",
+                "brick/math": "^0.8.8 || ^0.9 || ^0.10 || ^0.11 || ^0.12 || ^0.13 || ^0.14",
                 "php": "^8.0",
                 "ramsey/collection": "^1.2 || ^2.0"
             },
@@ -30604,9 +30542,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/uuid/issues",
-                "source": "https://github.com/ramsey/uuid/tree/4.9.0"
+                "source": "https://github.com/ramsey/uuid/tree/4.9.1"
             },
-            "time": "2025-06-25T14:20:11+00:00"
+            "time": "2025-09-04T20:59:21+00:00"
         },
         {
             "name": "react/promise",
