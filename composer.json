@@ -58,7 +58,7 @@
         "drupal/shs": "^2.0",
         "drupal/sitemap": "^2.0",
         "drupal/typed_data": "^2.1",
-        "drupal/views_base_url": "2.1-rc1",
+        "drupal/views_base_url": "^2.1",
         "drupal/views_entity_form_field": "^1.0@beta",
         "drupal/views_field_view": "1.0-beta6",
         "drupal/address": "^2.0",

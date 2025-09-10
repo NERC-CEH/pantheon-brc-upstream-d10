@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "381741d7cf6f85ff9bb99f305050ed25",
+    "content-hash": "3cd2f8c0d9a18bf3a5e02ce22aa64731",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -5690,17 +5690,17 @@
         },
         {
             "name": "drupal/commerce_shipping",
-            "version": "2.14.0",
+            "version": "2.15.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/commerce_shipping.git",
-                "reference": "8.x-2.14"
+                "reference": "8.x-2.15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/commerce_shipping-8.x-2.14.zip",
-                "reference": "8.x-2.14",
-                "shasum": "82c9fb8544200e8b7fcb532bfd8245b6cdcd1959"
+                "url": "https://ftp.drupal.org/files/projects/commerce_shipping-8.x-2.15.zip",
+                "reference": "8.x-2.15",
+                "shasum": "42e3f317ad022adff628012af97dc044820ae4ca"
             },
             "require": {
                 "drupal/commerce": "^2.29 || ^3",
@@ -5712,8 +5712,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.14",
-                    "datestamp": "1747640139",
+                    "version": "8.x-2.15",
+                    "datestamp": "1757407008",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13822,27 +13822,27 @@
         },
         {
             "name": "drupal/phpmailer_smtp",
-            "version": "2.2.6",
+            "version": "2.3.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/phpmailer_smtp.git",
-                "reference": "2.2.6"
+                "reference": "2.3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/phpmailer_smtp-2.2.6.zip",
-                "reference": "2.2.6",
-                "shasum": "37a7a2324f421fb1980346ef809eee2ee0b87c66"
+                "url": "https://ftp.drupal.org/files/projects/phpmailer_smtp-2.3.0.zip",
+                "reference": "2.3.0",
+                "shasum": "ad235443e9bc0608f1fc892e647319dd02ae2e1d"
             },
             "require": {
-                "drupal/core": "^8.8 || ^9 || ^10 || ^11",
-                "phpmailer/phpmailer": "^6.9.1"
+                "drupal/core": "^10.3 || ^11",
+                "phpmailer/phpmailer": "^6.10.0"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.2.6",
-                    "datestamp": "1723783758",
+                    "version": "2.3.0",
+                    "datestamp": "1757455981",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17081,17 +17081,17 @@
         },
         {
             "name": "drupal/token",
-            "version": "1.15.0",
+            "version": "1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/token.git",
-                "reference": "8.x-1.15"
+                "reference": "8.x-1.16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/token-8.x-1.15.zip",
-                "reference": "8.x-1.15",
-                "shasum": "5916fbccc86458a5f51e71f832ac70ff4c84ebdf"
+                "url": "https://ftp.drupal.org/files/projects/token-8.x-1.16.zip",
+                "reference": "8.x-1.16",
+                "shasum": "f7ae77316ef8135068d995c09507da7517b20572"
             },
             "require": {
                 "drupal/core": "^9.2 || ^10 || ^11"
@@ -17102,8 +17102,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.15",
-                    "datestamp": "1722206211",
+                    "version": "8.x-1.16",
+                    "datestamp": "1757151197",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -18188,17 +18188,17 @@
         },
         {
             "name": "drupal/views_base_url",
-            "version": "2.1.0-rc1",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_base_url.git",
-                "reference": "2.1.0-rc1"
+                "reference": "2.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_base_url-2.1.0-rc1.zip",
-                "reference": "2.1.0-rc1",
-                "shasum": "dcb3c149cc4417a529b03a5fccac014cfaa59deb"
+                "url": "https://ftp.drupal.org/files/projects/views_base_url-2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": "9e834e55c0bc548f6d2354a7fa602040ff1b3127"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9 || ^10 || ^11",
@@ -18207,11 +18207,11 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.0-rc1",
-                    "datestamp": "1754835853",
+                    "version": "2.1.0",
+                    "datestamp": "1757413923",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "RC releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
