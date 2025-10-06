@@ -297,7 +297,7 @@
         "drupal/entity_reference_modal": "^1.0",
         "drupal/tfa": "^1.10",
         "drupal/username_enumeration_prevention": "^1.4",
-        "drupal/simple_oauth": "6.0.2",
+        "drupal/simple_oauth": "5.2.5",
         "drupal/entity_notify": "^1.1",
         "drupal/etracker": "^3.1",
         "drupal/linkit": "^7.0"
