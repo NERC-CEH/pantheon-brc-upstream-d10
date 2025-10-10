@@ -334,7 +334,7 @@
             var fbLink = oldSelected.find('[data-fancybox]');
             if (fbLink.length) {
               // Open first image in set.
-              $(fbLink[0]).click();
+              $(fbLink[0]).trigger('click');
             }
           }
         }
@@ -391,28 +391,28 @@
     /**
      * Next page click.
      */
-    $(el).find('.footer .next').click(function clickNext() {
+    $(el).find('.footer .next').on('click', function clickNext() {
       indiciaFns.movePage(el, true, '.card');
     });
 
     /**
      * Previous page click.
      */
-    $(el).find('.footer .prev').click(function clickPrev() {
+    $(el).find('.footer .prev').on('click', function clickPrev() {
       indiciaFns.movePage(el, false, '.card');
     });
 
     /**
      * Rows per page change.
      */
-    $(el).find('.rows-per-page select').change(function changeRowsPerPage() {
+    $(el).find('.rows-per-page select').on('change', function changeRowsPerPage() {
       indiciaFns.rowsPerPageChange(el);
     });
 
     /**
      * Multi-select switch toggle handler.
      */
-    $(el).find('.multiselect-switch').click(function clickMultiselectSwitch(e) {
+    $(el).find('.multiselect-switch').on('click', function clickMultiselectSwitch(e) {
       if ($(el).hasClass('multiselect-mode')) {
         $(el).removeClass('multiselect-mode');
         $(el).find('.multiselect-cntr').remove();
@@ -429,19 +429,19 @@
     /**
      * Fullscreen tool.
      */
-    $(el).find('.fullscreen-tool').click(function settingsIconClick() {
+    $(el).find('.fullscreen-tool').on('click', function settingsIconClick() {
       indiciaFns.goFullscreen(el);
     });
 
     /**
      * Sort tool.
      */
-    $(el).find('.sort-tool').click(function settingsIconClick() {
+    $(el).find('.sort-tool').on('click', function settingsIconClick() {
       $('.sort-dropdown').fadeIn();
     });
 
     /* Sort tool close icon. */
-    $(el).find('.sort-close').click(function closeIconClick() {
+    $(el).find('.sort-close').on('click', function closeIconClick() {
       $('.sort-dropdown').fadeOut();
     });
   }

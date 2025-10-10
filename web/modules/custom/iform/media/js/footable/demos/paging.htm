@@ -200,14 +200,14 @@
         $(function () {
 			$('table').footable();
 
-					$('#change-page-size').change(function (e) {
+					$('#change-page-size').on('change', function (e) {
 						e.preventDefault();
 						var pageSize = $(this).val();
 						$('.footable').data('page-size', pageSize);
 						$('.footable').trigger('footable_initialized');
 					});
 
-					$('#change-nav-size').change(function (e) {
+					$('#change-nav-size').on('change', function (e) {
 						e.preventDefault();
 						var navSize = $(this).val();
 						$('.footable').data('limit-navigation', navSize);

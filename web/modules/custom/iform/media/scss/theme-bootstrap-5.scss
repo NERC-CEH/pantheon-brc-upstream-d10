@@ -1,0 +1,24 @@
+/* Theme extension to the default_site.css file which provides Bootstrap 3 optimised style output */
+@import "common/variables";
+@import "common/mixins";
+@import "bootstrap-5/variables";
+@import "common/form-controls";
+@import "common/toggle-slider";
+@import "common/sort-handle";
+@import "common/map-controls";
+@import "common/report-filters";
+@import "common/report-grid";
+@import "common/verification-icons";
+@import "common/uploader";
+@import "common/media";
+@import "common/status-icons";
+@import "common/tooltip";
+@import "common/licence-icons";
+@import "common/indicia-datacomponents";
+@import "common/progress-circle";
+@import "bootstrap-5/form-controls";
+@import "bootstrap-5/indicia-datacomponents";
+@import "common/loading-spinner";
+@import "common/ol2-map";
+@import "common/import-helper-2";
+@import "common/fancy-dialog";

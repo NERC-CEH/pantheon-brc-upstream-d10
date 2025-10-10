@@ -278,7 +278,7 @@
      * Download button click handler. Note that the selector must directly
      * find the button as it might not be a child of the element.
      */
-    $('#' + el.id + '-button').click(function doDownload() {
+    $('#' + el.id + '-button').on('click', function doDownload() {
       var sep = indiciaData.esProxyAjaxUrl.match(/\?/) ? '&' : '?';
       var query = sep + 'state=initial';
       var columnSettings;

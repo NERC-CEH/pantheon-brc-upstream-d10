@@ -150,13 +150,13 @@
                 <p><code>footable_expand_first_row</code> - trigger FooTable to expand the first row's detail row if possible</p>
                 <h4>Forcing FooTable to redraw</h4>
                 <pre>
-$(&#39;.do_something&#39;).click(function(e) {
+$(&#39;.do_something&#39;).on('click', function(e) {
     e.preventDefault();
     $(&#39;.footable&#39;).trigger(&#39;footable_redraw&#39;); //force a redraw
 });</pre>
                 <h4>Toggle a random row</h4>
                 <pre>
-$(&#39;.toggle_random_row&#39;).click(function(e) {
+$(&#39;.toggle_random_row&#39;).on('click', function(e) {
     e.preventDefault();
 
     var rows = $(&#39;.footable tbody tr:not(&quot;.footable-row-detail&quot;)&#39;);
@@ -182,13 +182,13 @@ $(&#39;.toggle_random_row&#39;).click(function(e) {
                 }
             });
 
-            $('.table_trigger').click(function(e) {
+            $('.table_trigger').on('click', function(e) {
                 e.preventDefault();
                 var trigger = $(this).data('trigger');
                 $('table').trigger(trigger);
             });
 
-            $('.row_trigger').click(function(e) {
+            $('.row_trigger').on('click', function(e) {
                 e.preventDefault();
                 var trigger = $(this).data('trigger');
 

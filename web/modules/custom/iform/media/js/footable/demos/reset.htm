@@ -153,7 +153,7 @@
 
             <h5>Example</h5>
             <p>In this demo, I reset the FooTable, then add a column onto the table structure, and then initialize FooTable again afterwards:</p>
-            <pre>$(&#39;.reset&#39;).click(function (e) {
+            <pre>$(&#39;.reset&#39;).on('click', function (e) {
 	e.preventDefault();
 
 	extraCols++;
@@ -180,7 +180,7 @@
 
         var extraCols = 0;
 
-        $('.reset').click(function (e) {
+        $('.reset').on('click', function (e) {
             e.preventDefault();
 
             extraCols++;

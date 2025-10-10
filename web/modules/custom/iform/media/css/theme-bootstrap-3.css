@@ -4,7 +4,7 @@
   margin-bottom: 8px;
 }
 
-.input-group-addon > * {
+.input-group-text > *, .input-group-addon > * {
   display: inline-block;
   vertical-align: middle;
 }
@@ -631,6 +631,10 @@ table.report-grid .multi img {
 }
 .filelist .delete-file {
   float: right;
+  color: #444;
+}
+.filelist .delete-file:hover {
+  color: #000;
 }
 
 .media-gallery ul {
@@ -2197,24 +2201,23 @@ label#click-buffer {
   margin-right: 15px;
 }
 
-#uploaded-files {
+.file-cntr {
   position: relative;
 }
-#uploaded-files .remove-file {
+.file-cntr .remove-file {
   position: absolute;
-  top: 6px;
-  /* x 3 to allow for file icon which is also padded - we want to move inside the edge. */
-  left: 18px;
-  height: 28px;
-  width: 28px;
+  top: -2px;
+  left: -2px;
+  height: 24px;
+  width: 24px;
   border: solid darkgray 2px;
   color: darkgrey;
-  border-radius: 14px;
+  border-radius: 12px;
   background-color: white;
-  padding: 6px;
+  padding: 4px;
   cursor: pointer;
 }
-#uploaded-files .remove-file:hover {
+.file-cntr .remove-file:hover {
   border-color: lightcoral;
   background-color: silver;
   color: black;

@@ -138,7 +138,7 @@ footable.removeRow(row_to_delete);</pre>
                 <p>Some functions you may want to call include <code>resize, redraw, toggleDetail, removeRow, appendRow, createOrUpdateDetailRow, raise</code></p>
                 <h4>Example code from demo</h4>
                 <pre>
-$(&#39;.row_actions a&#39;).click(function(e) {
+$(&#39;.row_actions a&#39;).on('click', function(e) {
     e.preventDefault();
 
     //get the FooTable object from the table
@@ -173,13 +173,13 @@ $(&#39;.row_actions a&#39;).click(function(e) {
                 }
             });
 
-            $('.table_redraw').click(function(e) {
+            $('.table_redraw').on('click', function(e) {
                 e.preventDefault();
                 var footable = $('.footable').data('footable');
                 footable.redraw();
             });
 
-            $('.random_row_toggle').click(function(e) {
+            $('.random_row_toggle').on('click', function(e) {
                 e.preventDefault();
                 var trigger = $(this).data('trigger');
 
@@ -191,7 +191,7 @@ $(&#39;.row_actions a&#39;).click(function(e) {
                 footable.toggleDetail(random_row);
             });
 
-            $('.row_actions a').click(function(e) {
+            $('.row_actions a').on('click', function(e) {
                 e.preventDefault();
 
                 //get the FooTable object from the table

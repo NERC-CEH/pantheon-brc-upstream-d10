@@ -38,7 +38,7 @@ $.fn.extend({
     });
   },
   result: function(handler) {
-    return this.bind("result", handler);
+    return this.on("result", handler);
   },
   search: function(handler) {
     return this.trigger("search", [handler]);
@@ -122,7 +122,7 @@ $.Autocompleter = function(input, options) {
     function hideList() {
         hideResultsNow(false);
     }
-    $input.blur(function() {
+    $input.on('blur', function() {
       //Make sure the select list is already displayed before we hide it onBlur, if we don't do this, if the user is focussed
       //in the input box and clicks the arrow to expand the list, then it is hidden straight away as soon as it opens.
   if (overSelectList!==true) {
@@ -132,7 +132,7 @@ $.Autocompleter = function(input, options) {
       }
       }
     });
-    btn.click(function() {
+    btn.on('click', function() {
       if (select.visible()) {
         hideResultsNow(false);
       } else {
@@ -144,7 +144,7 @@ $.Autocompleter = function(input, options) {
     });
   }
   // prevent form submit in opera when selecting with return key
-  /opera/.test(navigator.userAgent.toLowerCase()) && $(input.form).bind("submit.autocomplete", function() {
+  /opera/.test(navigator.userAgent.toLowerCase()) && $(input.form).on("submit.autocomplete", function() {
     if (blockSubmit) {
       blockSubmit = false;
       return false;
@@ -152,7 +152,7 @@ $.Autocompleter = function(input, options) {
   });
 
   // only opera doesn't trigger keydown multiple times while pressed, others don't work with keypress at all
-  $input.bind((/opera/.test(navigator.userAgent.toLowerCase()) ? "keypress" : "keydown") + ".autocomplete", function(event) {
+  $input.on((/opera/.test(navigator.userAgent.toLowerCase()) ? "keypress" : "keydown") + ".autocomplete", function(event) {
     // track last key pressed
     lastKeyPressCode = event.keyCode;
     switch(event.keyCode) {
@@ -231,17 +231,17 @@ $.Autocompleter = function(input, options) {
         timeout = setTimeout(onChange, options.delay);
         break;
     }
-  }).blur(function() {
+  }).on('blur', function() {
     if (!config.mouseDownOnSelect && !options.continueOnBlur) {
       hideResults();
     }
-  }).click(function() {
+  }).on('click', function() {
     // show select when clicking in a focused field
     var hasFocus = $input[0].id===document.activeElement.id;
     if ( hasFocus && !select.visible() ) {
       onChange(0, false);
     }
-  }).bind("moreClick", function() {
+  }).on("moreClick", function() {
     options.max=options.max * 2;
     options.doneMore=true;
     cache.flush();
@@ -250,7 +250,7 @@ $.Autocompleter = function(input, options) {
     }
     hideResultsNow(false);
     onChange(0, true);
-  }).bind("search", function() {
+  }).on("search", function() {
     // TODO why not just specifying both arguments?
     var fn = (arguments.length > 1) ? arguments[1] : null;
     function findValueCallback(q, data) {
@@ -269,26 +269,26 @@ $.Autocompleter = function(input, options) {
     $.each(trimWords($input.val()), function(i, value) {
       request(value, findValueCallback, findValueCallback);
     });
-  }).bind("flushCache", function() {
+  }).on("flushCache", function() {
     cache.flush();
-  }).bind("refresh", function() {
+  }).on("refresh", function() {
     hideResultsNow(false);
     onChange(0, true);
-  }).bind("setOptions", function() {
+  }).on("setOptions", function() {
     $.extend(options, arguments[1]);
     // if we've updated the data, repopulate
     if ( "data" in arguments[1] )
       cache.populate();
-  }).bind("setExtraParams", function() {
+  }).on("setExtraParams", function() {
     $.extend(options.extraParams, arguments[1]);
     cache.flush();
-  }).bind("unsetExtraParams", function() {
+  }).on("unsetExtraParams", function() {
     delete options.extraParams[arguments[1]];
     cache.flush();
-  }).bind("unautocomplete", function() {
-    select.unbind();
-    $input.unbind();
-    $(input.form).unbind(".autocomplete");
+  }).on("unautocomplete", function() {
+    select.off();
+    $input.off();
+    $(input.form).off(".autocomplete");
   });
 
   function selectCurrent() {
@@ -727,12 +727,12 @@ $.Autocompleter.Select = function (options, input, select, config) {
     .css("position", "absolute")
     .appendTo(document.body);
 
-    list = $("<ul/>").appendTo(element).mouseover( function(event) {
+    list = $("<ul/>").appendTo(element).on('mouseover',  function(event) {
       if(target(event).nodeName && target(event).nodeName.toUpperCase() == 'LI') {
               active = $("li", list).removeClass(CLASSES.ACTIVE).index(target(event));
           $(target(event)).addClass(CLASSES.ACTIVE);
           }
-    }).click(function(event) {
+    }).on('click', function(event) {
       $(target(event)).addClass(CLASSES.ACTIVE);
       // If in a species grid, selecting an item should move input focus to next input.
       var sg = $(input).closest('.species-grid');
@@ -750,9 +750,9 @@ $.Autocompleter.Select = function (options, input, select, config) {
         $(input).focus();
       }
       return false;
-    }).mousedown(function() {
+    }).on('mousedown', function() {
       config.mouseDownOnSelect = true;
-    }).mouseup(function() {
+    }).on('mouseup', function() {
       config.mouseDownOnSelect = false;
     });
 
@@ -825,7 +825,7 @@ $.Autocompleter.Select = function (options, input, select, config) {
     }
     if (options.tooMuch & !options.doneMore) {
       list.append('<li class="ac_more"><span title="' + options.langMoreDetails + '">' + options.langMore + '...</span></li>');
-      list.find('.ac_more').click(function() {
+      list.find('.ac_more').on('click', function() {
         $(input).trigger('moreClick');
       });
     } else if (options.tooMuch) {

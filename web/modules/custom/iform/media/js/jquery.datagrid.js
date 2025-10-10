@@ -116,12 +116,12 @@
         // TODO enable filtering once this is sensible
         // $("div.filter", div).html(filter);
         $("th."+div.settings.cssSortHeader, div).each(function(i){
-          $(this).click(function(e){
+          $(this).on('click', function(e){
             apply_sort(div, this);
           });
         });
         $("input.filterButton", div).each(function(i){
-          $(this).click(function(e){
+          $(this).on('click', function(e){
             e.preventDefault();
             apply_filter(div);
           });
@@ -285,25 +285,25 @@
       if (totalPages>1) {
         $(pagerDiv).html(div.settings.formatPager(div));
         $(".first", pagerDiv).each(function(i){
-          $(this).click(function(e){
+          $(this).on('click', function(e){
             e.preventDefault();
             apply_page(div, 1);
           });
         });
         $(".previous", pagerDiv).each(function(i){
-          $(this).click(function(e){
+          $(this).on('click', function(e){
             e.preventDefault();
             apply_page(div, pageNo - 1);
           });
         });
         $(".next", pagerDiv).each(function(i){
-          $(this).click(function(e){
+          $(this).on('click', function(e){
             e.preventDefault();
             apply_page(div, pageNo + 1);
           });
         });
         $(".last", pagerDiv).each(function(i){
-          $(this).click(function(e){
+          $(this).on('click', function(e){
             e.preventDefault();
             apply_page(div, totalPages);
           });

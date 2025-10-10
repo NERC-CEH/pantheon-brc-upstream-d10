@@ -18,5 +18,9 @@
   /* Anchor image delete button to right */
   .delete-file {
     float: right;
+    color: $colour-dark-text;
+    &:hover {
+      color: $colour-dark-text-active;
+    }
   }
 }

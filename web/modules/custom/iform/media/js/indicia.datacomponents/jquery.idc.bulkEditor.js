@@ -403,17 +403,17 @@
    * Register the various user interface event handlers.
    */
   function initHandlers(el) {
-    $(el).find('.bulk-edit-records-btn').click(bulkEditRecordsBtnClickHandler);
+    $(el).find('.bulk-edit-records-btn').on('click', bulkEditRecordsBtnClickHandler);
 
-    $(el).find('.preview-bulk-edit').click(() => {
+    $(el).find('.preview-bulk-edit').on('click', () => {
       previewClickHandler(el);
     });
 
-    $(el).find('.proceed-bulk-edit').click(() => {
+    $(el).find('.proceed-bulk-edit').on('click', () => {
       proceedClickHandler(el);
     });
 
-    $(el).find('.close-bulk-edit-dlg').click(() => {
+    $(el).find('.close-bulk-edit-dlg').on('click', () => {
       $.fancybox.close();
     });
   }

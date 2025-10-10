@@ -18,7 +18,7 @@
  */
 
 $(document).ready(function() {
-  $('#verify-btn').click(function() {
+  $('#verify-btn').on('click', function() {
     $('#verification-panel div.messages').css('opacity', 0.3);
     var info, occurrences=[], species, includes, grids, gridId;
     if ($('#sample\\:date').val()==='' || $('#imp-sref').val()===''  || $('#imp-sref-system').val()==='') {

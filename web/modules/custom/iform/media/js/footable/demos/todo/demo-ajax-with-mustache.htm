@@ -3,33 +3,33 @@
 <head>
   <title>FooTable - jQuery plugin for responsive HTML tables</title>
   <meta name="viewport" content = "width = device-width, initial-scale = 1.0, minimum-scale = 1.0, maximum-scale = 1.0, user-scalable = no" />
-  
+
   <link href="css/footable-0.1.css" rel="stylesheet" type="text/css" />
-  
+
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js" type="text/javascript"></script>
   <script src="js/footable.js" type="text/javascript"></script>
   <script src="js/mustache.js" type="text/javascript"></script>
   <script type="text/javascript">
-	 
+
     $(function() {
 		$('table').footable();
-	  
-		$('.get_data').click(function() {
-		
+
+		$('.get_data').on('click', function() {
+
 			var url = 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=json&callback=?';
-			
+
 			var template = $('#row_template').val();
 
 			$.getJSON(url,function(response) {
-			
+
 				var rows = Mustache.render(template, response.responseData);
-				
+
 				$('table tbody').append(rows);
-				
+
 				$('table').trigger('footable_initialized');
 			});
-		});	  
-	  
+		});
+
     });
 
 
@@ -66,6 +66,6 @@
       <tbody>
       </tbody>
     </table>
-    
+
   </body>
 </html>

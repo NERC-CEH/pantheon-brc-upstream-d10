@@ -419,7 +419,7 @@
   indiciaFns.populateDataSources = function populateDataSources(resetPage) {
     // Track if an error message has been shown to the user for this set of
     // requests so we don't show it again.
-    indiciaData.sourceErrorsShown = []
+    indiciaData.sourceErrorsShown = [];
     // Build the Elasticsearch source objects and run initial population.
     $.each(indiciaData.esSourceObjects, function eachSource() {
       if (resetPage) {
@@ -2203,11 +2203,20 @@ jQuery(document).ready(function docReady() {
       // A selected location which differs from the previously loaded one.
       // Remember which one we are loading so we don't reload the same one.
       indiciaData.loadedFilterLocationId = locIdToLoad;
-      $.getJSON(indiciaData.warehouseUrl + 'index.php/services/report/requestReport?' +
-          'report=library/locations/location_boundary_projected.xml' +
-          '&reportSource=local&srid=4326&location_id=' + locIdToLoad +
-          '&nonce=' + indiciaData.read.nonce + '&auth_token=' + indiciaData.read.auth_token +
-          '&mode=json&callback=?', function(data) {
+      $.ajax({
+        url: indiciaData.warehouseUrl + 'index.php/services/report/requestReport?report=library/locations/location_boundary_projected.xml',
+        data: {
+          reportSource: 'local',
+          srid: 4326,
+          location_id: locIdToLoad,
+          nonce: indiciaData.read.nonce,
+          auth_token: indiciaData.read.auth_token,
+          mode: 'json'
+        },
+        dataType: 'jsonp',
+        crossDomain: true,
+      })
+      .done(function(data) {
         if (data.length > 0) {
           if (!isHigherGeoSelect) {
             // Clear any other filter geoms.
@@ -2225,14 +2234,14 @@ jQuery(document).ready(function docReady() {
   }
 
   // Hook up event handler to location select controls.
-  $('.es-higher-geography-select,.es-location-select').change(function selectChange() {
+  $('.es-higher-geography-select,.es-location-select').on('change', function selectChange() {
     onLocationSelectChange(this);
   });
 
   /**
    * Change event handlers on filter inputs.
    */
-  $('.es-filter-param, .user-filter, .permissions-filter').change(function eachFilter() {
+  $('.es-filter-param, .user-filter, .permissions-filter').on('change', function eachFilter() {
     // Force map to update viewport for new data.
     $.each($('.idc-leafletMap'), function eachMap() {
       this.settings.initialBoundsSet = false;

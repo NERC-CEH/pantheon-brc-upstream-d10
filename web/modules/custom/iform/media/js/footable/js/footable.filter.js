@@ -33,8 +33,8 @@
                 if ($(ft.table).data('filter') === false) return;
                 ft.timers.register('filter');
                 $(ft.table)
-                    .unbind('.filtering')
-                    .bind({
+                    .off('.filtering')
+                    .on({
                         'footable_initialized.filtering': function (e) {
                             var $table = $(ft.table);
                             var data = {
@@ -44,21 +44,21 @@
                                 'disableEnter': $table.data('filter-disable-enter') || ft.options.filter.disableEnter
                             };
                             if (data.disableEnter) {
-                                $(data.input).keypress(function (event) {
+                                $(data.input).on('keypress', function (event) {
                                     if (window.event)
                                         return (window.event.keyCode !== 13);
                                     else
                                         return (event.which !== 13);
                                 });
                             }
-                            $table.bind('footable_clear_filter', function () {
+                            $table.on('footable_clear_filter', function () {
                                 $(data.input).val('');
                                 p.clearFilter();
                             });
-                            $table.bind('footable_filter', function (event, args) {
+                            $table.on('footable_filter', function (event, args) {
                                 p.filter(args.filter);
                             });
-                            $(data.input).keyup(function (eve) {
+                            $(data.input).on('keyup', function (eve) {
                                 ft.timers.filter.stop();
                                 if (eve.which === 27) {
                                     $(data.input).val('');

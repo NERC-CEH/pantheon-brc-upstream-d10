@@ -154,7 +154,7 @@ var idcLeafletTools;
       });
       select.val(savedGridSquareSizeValue ? savedGridSquareSizeValue : 'autoGridSquareSize');
       // Apply initial settings.
-      select.change();
+      select.trigger('change');
       let row = $('<div>')
         .append($(`<label for="${ctrlId}">${label}:</label>`))
         .append(select)
@@ -169,7 +169,8 @@ var idcLeafletTools;
       return row;
     },
 
-    getCtrl_impreciseMapRefHandling: function(ctrlId, label, options) {
+    getCtrl_impreciseMapRefHandling: function(ctrlId, label) {
+      var ctrlOptions = this.options;
       const savedMapRefLimitCookieValue = indiciaFns.cookie('impreciseMapRefHandlingLimitTo1kmOrBetter') === 'true';
       const savedGridSquareSizeValue = indiciaFns.cookie('leafletMapGridSquareSize');
       const radioAll = $('<input>', {
@@ -201,24 +202,24 @@ var idcLeafletTools;
         const opacitySetting = indiciaFns.cookie('leafletMapDataLayerOpacity');
         // Update all the output layer features to either hide or show as
         // required.
-        $.each(options.mapEl.outputLayers, function(layerName, layer) {
+        $.each(ctrlOptions.mapEl.outputLayers, function(layerName, layer) {
           if (layer.getLayers) {
-            $.each(layer.getLayers(), function() {
-              if (this.options.origFillOpacity && (!limited || this.options.metric <= 1000)) {
-                // Only re-show if previuosly hidden.
-                if (this.options.hidden) {
-                  const calculatedOpacity = indiciaFns.calculateFeatureOpacity(opacitySetting ? opacitySetting : 0.5, this.options.origFillOpacity);
-                  $(this.getElement()).attr('fill-opacity', calculatedOpacity);
+            layer.getLayers().forEach(function(feature) {
+              if (feature.options.origFillOpacity && (!limited || feature.options.metric <= 1000)) {
+                // Only re-show if previously hidden.
+                if (feature.options.hidden) {
+                  const calculatedOpacity = indiciaFns.calculateFeatureOpacity(opacitySetting ? opacitySetting : 0.5, feature.options.origFillOpacity);
+                  $(feature.getElement()).attr('fill-opacity', calculatedOpacity);
                   // Stroke opacity also set, but on a scale of 0.3 to 1 so it
                   // never completely disappears and reaches 1 roughly half way
                   // along scale.
-                  $(this.getElement()).attr('stroke-opacity', Math.min(1, 0.3 + calculatedOpacity * 1.5));
-                  this.options.hidden = false;
+                  $(feature.getElement()).attr('stroke-opacity', Math.min(1, 0.3 + calculatedOpacity * 1.5));
+                  feature.options.hidden = false;
                 }
-              } else if (limited && this.options.metric > 1000) {
-                $(this.getElement()).attr('fill-opacity', 0);
-                $(this.getElement()).attr('stroke-opacity', 0);
-                this.options.hidden = true;
+              } else if (limited && feature.options.metric > 1000) {
+                $(feature.getElement()).attr('fill-opacity', 0);
+                $(feature.getElement()).attr('stroke-opacity', 0);
+                feature.options.hidden = true;
               }
             });
           }

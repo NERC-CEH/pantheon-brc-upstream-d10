@@ -196,14 +196,14 @@
             }
         });
 
-        $('.clear-filter').click(function (e) {
+        $('.clear-filter').on('click', function (e) {
             e.preventDefault();
             $('.filter-status').val('');
             $('table.demo').trigger('footable_clear_filter');
             $('.row-count').html('');
         });
 
-        $('.filter-status').change(function (e) {
+        $('.filter-status').on('change', function (e) {
             e.preventDefault();
             $('table.demo').data('footable-filter').filter( $('#filter').val() );
         });

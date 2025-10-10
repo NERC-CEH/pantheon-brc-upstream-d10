@@ -1,26 +1,46 @@
 jQuery(document).ready(function($) {
   "use strict";
 
-  var urlSep;
+  /**
+   * Track the file processing tasks.
+   *
+   * Tasks include sending a file to the warehouse and extracting if zipped.
+   * Can be multiple files listed.
+   *
+   * @var array
+   */
+  var fileProcessingTasks = [];
+
+  /**
+   * List of files that have been uploaded to the warehouse.
+   *
+   * @var array
+   */
+  var uploadedFiles = [];
+
+  /**
+   * Unique ID used to identify the import config file on the server.
+   *
+   * @var string
+   */
+  var configId;
 
   /**
    * Select file page code.
    */
 
-  function clearExistingUploadedFileInfo() {
-    $('#uploaded-files').html('');
-    $('#uploaded-file').val('');
-    $('#file-upload-form input[type="submit"]').attr('disabled', true);
-  }
-
   indiciaFns.on('click', '#uploaded-files .remove-file', {}, function(e) {
-    clearExistingUploadedFileInfo();
+    $(e.currentTarget).closest('.file-cntr').remove();
+
   });
 
+  /**
+   * Initialise the file upload control UI.
+   */
   function initFileUploadControl() {
     $(indiciaData.importerDropArea).dmUploader({
       url: indiciaData.uploadFileUrl,
-      multiple: false,
+      multiple: true,
       extFilter: ['csv','xls','xlsx','zip'],
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
       onDragEnter: function() {
@@ -33,9 +53,6 @@ jQuery(document).ready(function($) {
       },
       onInit: function() {
         this.find('input[type="text"]').val('');
-      },
-      onBeforeUpload: function() {
-        clearExistingUploadedFileInfo();
       },
       onUploadProgress: function(id, percent) {
         // Don't show the progress bar if it goes to 100% in 1 chunk.
@@ -65,11 +82,13 @@ jQuery(document).ready(function($) {
         if (typeof data === 'string') {
           data = JSON.parse(data);
         }
-        $('#interim-file').val(data.interimFile);
         $('#file-upload-form input[type="submit"]').attr('disabled', false);
-        $('#uploaded-files').append($('<i class="far fa-file-alt fa-7x"></i>'));
-        $('#uploaded-files').append($('<i class="far fa-trash-alt remove-file" title="' + indiciaData.lang.import_helper_2.removeUploadedFileHint + '"></i>'));
-        $('#uploaded-files').append($('<p>' + data.originalName + '</p>'));
+        $('<div class="file-cntr" />')
+          .append($('<i class="far fa-file-alt fa-7x"></i>'))
+          .append($(`<i class="far fa-trash-alt remove-file" title="${indiciaData.lang.import_helper_2.removeUploadedFileHint}"></i>`))
+          .append($(`<p>${data.originalName}</p>`))
+          .append($(`<input type="hidden" name="interim-file[]" value="${data.interimFile}" />`))
+          .appendTo($('#uploaded-files'));
       }
     });
   }
@@ -97,19 +116,28 @@ jQuery(document).ready(function($) {
      * @param string fileName
      *   Import file name.
      */
-    function initServerConfig(fileName) {
-      var url;
-      urlSep = indiciaData.initServerConfigUrl.indexOf('?') === -1 ? '?' : '&';
-      url = indiciaData.initServerConfigUrl + urlSep + 'data-file=' + encodeURIComponent(fileName);
+    function initServerConfig() {
+      let data = {
+        'data-files': uploadedFiles
+      };
       if (indiciaData.import_template_id) {
-        url += '&import_template_id=' + indiciaData.import_template_id;
+        data.import_template_id = indiciaData.import_template_id;
       }
       $.ajax({
-        url: url,
+        url: indiciaData.initServerConfigUrl,
         dataType: 'json',
+        data: data,
         headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
-      }).done(function() {
-        transferDataToTempTable(fileName);
+      })
+      .done(function(response) {
+        configId = response.configId;
+        // For post to the next page.
+        $('#config-id').val(configId);
+        transferDataToTempTable(0);
+      })
+      .fail(function(response) {
+        const message = response.responseJSON && response.responseJSON.msg ? response.responseJSON.msg : 'Server error - import failed.';
+        alert(message);
       });
     }
 
@@ -154,10 +182,130 @@ jQuery(document).ready(function($) {
       });
     }
 
-    function transferDataToTempTable(fileName) {
-      urlSep = indiciaData.loadChunkToTempTableUrl.indexOf('?') === -1 ? '?' : '&';
+    /**
+     * Send a single import file to the warehouse.
+     *
+     * @param int idx
+     *   Index of the next file to send in the list.
+     */
+    function sendFileToWarehouse(idx) {
+      logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.uploadingFile.replace('{1}', indiciaData.processUploadedInterimFiles[idx]));
       $.ajax({
-        url: indiciaData.loadChunkToTempTableUrl + urlSep + 'data-file=' + encodeURIComponent(fileName),
+        url: indiciaData.sendFileToWarehouseUrl,
+        dataType: 'json',
+        data: {
+          'interim-file': indiciaData.processUploadedInterimFiles[idx],
+        },
+        headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
+        success: function(sendFileResult) {
+          if (sendFileResult.status === 'ok') {
+            logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.uploadedFile.replace('{1}', indiciaData.processUploadedInterimFiles[idx]));
+            if (!isZipFile(indiciaData.processUploadedInterimFiles[idx])) {
+              uploadedFiles.push(sendFileResult.uploadedFile);
+            }
+            nextFileProcessingTask(sendFileResult.uploadedFile);
+          }
+          else {
+            if (sendFileResult.msg) {
+              $.fancyDialog({
+                title: indiciaData.lang.import_helper_2.uploadError,
+                message: sendFileResult.msg,
+                cancelButton: null
+              });
+            }
+          }
+        }
+      })
+      .fail(
+        function(jqXHR, textStatus, errorThrown) {
+          handleAjaxError(jqXHR, textStatus, errorThrown, 'errorUploadingFile');
+        }
+      );
+    }
+
+    /**
+     * Extract a single compressed import file to the warehouse.
+     *
+     * @param int idx
+     *   Index of the next file to send in the list.
+     * @param string lastFileName
+     *   Name of the last uploaded file, i.e. the one to extract.
+     */
+    function extractFileOnWarehouse(idx, lastFileName) {
+      $.ajax({
+        url: indiciaData.extractFileOnWarehouseUrl,
+        data: {
+          'uploaded-file': lastFileName
+        },
+        dataType: 'json',
+        headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
+        success: function(extractResult) {
+          if (extractResult.status === 'ok') {
+            logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.extractedFile.replace('{1}', indiciaData.processUploadedInterimFiles[idx]));
+            uploadedFiles.push(extractResult.dataFile);
+            nextFileProcessingTask();
+          }
+          else {
+            if (extractResult.msg) {
+              $.fancyDialog({
+                title: indiciaData.lang.import_helper_2.uploadError,
+                message: extractResult.msg,
+                cancelButton: null
+              });
+            }
+          }
+        }
+      })
+      .fail(
+        function(jqXHR, textStatus, errorThrown) {
+          handleAjaxError(jqXHR, textStatus, errorThrown, 'errorExtractingZip');
+        }
+      );
+    }
+
+    /**
+     * Start the next upload or extraction task.
+     *
+     * @param string lastFileName
+     *   Name of the last handled file, important if the next task is to
+     *   extract it.
+     */
+    function nextFileProcessingTask(lastFileName) {
+      if (fileProcessingTasks.length > 0) {
+        var task = fileProcessingTasks.shift();
+        task[0](task[1], lastFileName);
+      } else {
+        initServerConfig();
+        console.log('All done');
+      }
+    }
+
+    /**
+     * Check if a file name refers to a zip file.
+     *
+     * @param string fileName
+     *   File name to check.
+     *
+     * @returns
+     *   True if a zip file.
+     */
+    function isZipFile(fileName) {
+      return fileName.split('.').pop().toLowerCase() === 'zip';
+    }
+
+    /**
+     * Transfer a chunk of data from the uploaded file(s) into the temp table.
+     *
+     * @param int fileIndex
+     *   Index of the file being processed.
+     */
+    function transferDataToTempTable(fileIndex) {
+      $.ajax({
+        url: indiciaData.loadChunkToTempTableUrl,
+        data: {
+          'data-file': uploadedFiles[fileIndex],
+          'config-id': configId,
+        },
         dataType: 'json',
         headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
       }).done(function(transferResult) {
@@ -173,7 +321,10 @@ jQuery(document).ready(function($) {
         if (transferResult.status === 'ok') {
           logBackgroundProcessingInfo(msg);
           if (transferResult.msgKey === 'loadingRecords') {
-            transferDataToTempTable(fileName);
+            transferDataToTempTable(fileIndex);
+          }
+          else if (fileIndex < uploadedFiles.length - 1 && transferResult.msgKey === 'nextFile') {
+            transferDataToTempTable(fileIndex + 1);
           }
           else {
             setImportSettingsNextStepState();
@@ -196,74 +347,25 @@ jQuery(document).ready(function($) {
       });
     }
 
-    if (indiciaData.processUploadedInterimFile) {
-      logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.uploadingFile);
-      urlSep = indiciaData.sendFileToWarehouseUrl.indexOf('?') === -1 ? '?' : '&';
-      $.ajax({
-        url: indiciaData.sendFileToWarehouseUrl + urlSep + 'interim-file=' + encodeURIComponent(indiciaData.processUploadedInterimFile),
-        dataType: 'json',
-        headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
-        success: function(sendFileResult) {
-          if (sendFileResult.status === 'ok') {
-            var isZip = indiciaData.processUploadedInterimFile.split('.').pop().toLowerCase() === 'zip';
-            logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.fileUploaded);
-            if (isZip) {
-              logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.extractingFile);
-              $.ajax({
-                url: indiciaData.extractFileOnWarehouseUrl + urlSep + 'uploaded-file=' + sendFileResult.uploadedFile,
-                dataType: 'json',
-                headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce},
-                success: function(extractResult) {
-                  if (extractResult.status === 'ok') {
-                    logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.fileExtracted);
-                    logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preparingToLoadRecords);
-                    $('#data-file').val(extractResult.dataFile);
-                    initServerConfig(extractResult.dataFile);
-                  }
-                  else {
-                    if (extractResult.msg) {
-                      $.fancyDialog({
-                        title: indiciaData.lang.import_helper_2.uploadError,
-                        message: extractResult.msg,
-                        cancelButton: null
-                      });
-                    }
-                  }
-                }
-              })
-              .fail(
-                function(jqXHR, textStatus, errorThrown) {
-                  handleAjaxError(jqXHR, textStatus, errorThrown, 'errorExtractingZip');
-                }
-              );
-            }
-            else {
-              logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.preparingToLoadRecords);
-              $('#data-file').val(sendFileResult.uploadedFile);
-              initServerConfig(sendFileResult.uploadedFile);
-            }
-          }
-          else {
-            if (sendFileResult.msg) {
-              $.fancyDialog({
-                title: indiciaData.lang.import_helper_2.uploadError,
-                message: sendFileResult.msg,
-                cancelButton: null
-              });
-            }
-          }
+    if (indiciaData.processUploadedInterimFiles) {
+      const ext = indiciaData.processUploadedInterimFiles[0].split('.').pop().toLowerCase();
+      fileProcessingTasks = [];
+      indiciaData.processUploadedInterimFiles.forEach(function(file, idx) {
+        if (ext !== file.split('.').pop().toLowerCase()) {
+          alert(indiciaData.lang.import_helper_2.mixedFileTypesError);
+          return;
         }
-      })
-      .fail(
-        function(jqXHR, textStatus, errorThrown) {
-          handleAjaxError(jqXHR, textStatus, errorThrown, 'errorUploadingFile');
+        fileProcessingTasks.push([sendFileToWarehouse, idx]);
+        if (isZipFile(indiciaData.processUploadedInterimFiles[idx])) {
+          fileProcessingTasks.push([extractFileOnWarehouse, idx]);
         }
-      );
+      });
+      nextFileProcessingTask();
     }
 
     // Required fields state change handler - disables next step button if not
     // filled in.
-    $('#settings-form').find(':input.\\{required\\:true\\}').change(setImportSettingsNextStepState);
+    $('#settings-form').find(':input.\\{required\\:true\\}').on('change', setImportSettingsNextStepState);
     setImportSettingsNextStepState();
 
     /**
@@ -272,7 +374,7 @@ jQuery(document).ready(function($) {
      * Appears if the settings list several options, plus a special option *
      * which triggers the extra unrestricted control.
      */
-    $('.show-unrestricted').click(function() {
+    $('.show-unrestricted').on('click', function() {
       const cntrRestricted = $(this).closest('.ctrl-cntr');
       const inputRestricted = $(cntrRestricted).find('select');
       const inputUnrestricted = $('.unrestricted [name="' + $(inputRestricted).attr('name') + '"]');
@@ -286,7 +388,7 @@ jQuery(document).ready(function($) {
     /**
      * Button handler to return to the restricted version of a global values control.
      */
-    $('.show-restricted').click(function() {
+    $('.show-restricted').on('click', function() {
       const cntrUnrestricted = $(this).closest('.ctrl-cntr');
       const inputUnrestricted = $(cntrUnrestricted).find('select');
       const inputRestricted = $('.restricted [name="' + $(inputUnrestricted).attr('name') + '"]');
@@ -755,7 +857,7 @@ jQuery(document).ready(function($) {
       .appendTo($('<div class="panel-body">').appendTo(matchingPanelBody));
     // Enable species search autocomplete for the matching inputs.
     $('.taxon-search').autocomplete(indiciaData.warehouseUrl+'index.php/services/data/taxa_search', getTaxonAutocompleteSettings(result.unmatchedInfo.taxonFilters));
-    $('.taxon-search').change(function() {
+    $('.taxon-search').on('change', function() {
       // Clear when changed, unless value is correct for the current search string.
       if ($('[name="match-taxon-' + $(this).data('index') + '"]').data('set-for') !== $(this).val()) {
         $('[name="match-taxon-' + $(this).data('index') + '"]').val('');
@@ -766,7 +868,7 @@ jQuery(document).ready(function($) {
       // Remember the string it was set for to prevent it being cleared.
       $('input[name="match-taxon-' + $(e.currentTarget).data('index')).data('set-for', $(e.currentTarget).val());
     });
-    $(matchingPanelBody).find('.taxon-card').click(function(e) {
+    $(matchingPanelBody).find('.taxon-card').on('click', function(e) {
       var id = $(e.currentTarget).data('id');
       var taxon = $(e.currentTarget).data('taxon');
       var tr = $(e.currentTarget).closest('tr');
@@ -821,7 +923,7 @@ jQuery(document).ready(function($) {
 
     // Enable location search autocomplete for the matching inputs.
     $(matchingPanelBody).find('.location-search').autocomplete(indiciaData.warehouseUrl+'index.php/services/report/requestReport', getLocationAutocompleteSettings(result.unmatchedInfo.locationFilters));
-    $(matchingPanelBody).find('.location-search').change(function() {
+    $(matchingPanelBody).find('.location-search').on('change', function() {
       // Clear when changed, unless value is correct for the current search string.
       if ($('[name="match-location-' + $(this).data('index') + '"]').data('set-for') !== $(this).val()) {
         $('[name="match-location-' + $(this).data('index') + '"]').val('');
@@ -832,7 +934,7 @@ jQuery(document).ready(function($) {
       // Remember the string it was set for to prevent it being cleared.
       $('input[name="match-location-' + $(e.currentTarget).data('index')).data('set-for', $(e.currentTarget).val());
     });
-    $(matchingPanelBody).find('.location-card').click(function(e) {
+    $(matchingPanelBody).find('.location-card').on('click', function(e) {
       var id = $(e.currentTarget).data('id');
       var name = $(e.currentTarget).data('name');
       var tr = $(e.currentTarget).closest('tr');
@@ -848,9 +950,12 @@ jQuery(document).ready(function($) {
    * Requests scanning through the import cols to find the next that needs matching.
    */
   function nextLookupProcessingStep() {
-    urlSep = indiciaData.processLookupMatchingUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.processLookupMatchingUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '&index=' + indiciaData.processLookupIndex,
+      url: indiciaData.processLookupMatchingUrl,
+      data: {
+        'config-id': indiciaData.configId,
+        'index': indiciaData.processLookupIndex
+      },
       dataType: 'json',
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
     })
@@ -958,9 +1063,9 @@ jQuery(document).ready(function($) {
       return;
     }
     logBackgroundProcessingInfo(indiciaData.lang.import_helper_2.savingMatchesFor.replace('{1}', $(button).data('source-field')));
-    urlSep = indiciaData.saveLookupMatchesGroupUrl.indexOf('?') === -1 ? '?' : '&';
+    const urlSep = indiciaData.saveLookupMatchesGroupUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.saveLookupMatchesGroupUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile),
+      url: indiciaData.saveLookupMatchesGroupUrl + urlSep + 'config-id=' + encodeURIComponent(indiciaData.configId),
       dataType: 'json',
       method: 'POST',
       data: matches,
@@ -1009,9 +1114,12 @@ jQuery(document).ready(function($) {
    */
 
   function nextPreprocessingStep() {
-    urlSep = indiciaData.preprocessUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.preprocessUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '&index=' + indiciaData.preprocessIndex,
+      url: indiciaData.preprocessUrl,
+      data: {
+        'config-id': indiciaData.configId,
+        'index': indiciaData.preprocessIndex
+      },
       dataType: 'json',
       headers: {'Authorization': 'IndiciaTokens ' + indiciaData.write.auth_token + '|' + indiciaData.write.nonce}
     })
@@ -1035,7 +1143,8 @@ jQuery(document).ready(function($) {
         if (result.errorCount) {
           // If the result informs us there are errors in the row details,
           // show a download button to access the errors file.
-          $('.fancybox-content').append(' <a class="btn btn-info fancy-dialog-button" download href="' + indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + '">' +
+          const urlSep = indiciaData.getErrorFileUrl.indexOf('?') === -1 ? '?' : '&';
+          $('.fancybox-content').append(' <a class="btn btn-info fancy-dialog-button" download href="' + indiciaData.getErrorFileUrl + urlSep + 'config-id=' + encodeURIComponent(indiciaData.configId) + '">' +
             indiciaData.lang.import_helper_2.downloadPreprocessingErrorsExplanationsFile +
             '</a>');
         }
@@ -1046,13 +1155,13 @@ jQuery(document).ready(function($) {
         nextPreprocessingStep();
       }
       else {
-        $('#next-step').click();
+        $('#next-step').trigger('click');
       }
     })
     .fail(function(jqXHR, textStatus, errorThrown) {
       $.fancyDialog({
-        title: indiciaData.lang.import_helper_2.lang.preprocessingError,
-        message: indiciaData.lang.import_helper_2.lang.preprocessingErrorInfo + '<br/>' + errorThrown,
+        title: indiciaData.lang.import_helper_2.preprocessingError,
+        message: indiciaData.lang.import_helper_2.preprocessingErrorInfo + '<br/>' + errorThrown,
         cancelButton: null
       });
     });
@@ -1074,7 +1183,7 @@ jQuery(document).ready(function($) {
   function showFailureMessage(msg, includeNotImported) {
     const urlSep = indiciaData.getErrorFileUrl.indexOf('?') === -1 ? '?' : '&';
     const includeNotImportedParam = includeNotImported ? '&include-not-imported=true' : '';
-    const fileLink = indiciaData.getErrorFileUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile) + includeNotImportedParam;
+    const fileLink = indiciaData.getErrorFileUrl + urlSep + 'config-id=' + encodeURIComponent(indiciaData.configId) + includeNotImportedParam;
     $('#error-info').append(msg);
     $('#error-info').append('<div><a class="btn btn-info" download href="' + fileLink + '">' + indiciaData.lang.import_helper_2.downloadErrors + '</a></div>');
     $('#error-info').fadeIn();
@@ -1123,9 +1232,9 @@ jQuery(document).ready(function($) {
       postData.restart = true;
       state = 'doimport';
     }
-    urlSep = indiciaData.importChunkUrl.indexOf('?') === -1 ? '?' : '&';
+    const urlSep = indiciaData.importChunkUrl.indexOf('?') === -1 ? '?' : '&';
     $.ajax({
-      url: indiciaData.importChunkUrl + urlSep + 'data-file=' + encodeURIComponent(indiciaData.dataFile),
+      url: indiciaData.importChunkUrl + urlSep + 'config-id=' + encodeURIComponent(indiciaData.configId),
       dataType: 'json',
       method: 'POST',
       data: postData,
@@ -1171,7 +1280,9 @@ jQuery(document).ready(function($) {
               });
             }
           });
-        } else {
+        } else if (result.status === 'queued') {
+          $('#import-queued-info').show();
+        }else {
           if (result.progress) {
             $('.progress').val(result.progress);
           }
@@ -1324,7 +1435,7 @@ jQuery(document).ready(function($) {
     indiciaFns.on('change', '.mapped-field', {}, checkSelectedFields);
     indiciaFns.on('click', '.apply-suggestion', {}, applySuggestion);
     checkSelectedFields();
-    $('[name="field-type-toggle"]').change(showOrHideAdvancedFields);
+    $('[name="field-type-toggle"]').on('change', showOrHideAdvancedFields);
     // Capture the full field option HTML so selects can be reset as required.
     indiciaData.fullImportFieldOptionsHtml = $('select.mapped-field:first').html();
     showOrHideAdvancedFields();

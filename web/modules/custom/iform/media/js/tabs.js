@@ -11,10 +11,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/gpl.html.
  */
- 
-var wizardProgressIndicator, initTabAddressing, scrollTopIntoView, setupButtons, 
+
+var wizardProgressIndicator, initTabAddressing, scrollTopIntoView, setupButtons,
     setupTabsBeforeActivate, setupTabsNextPreviousButtons;
- 
+
 (function ($) {
   "use strict";
 
@@ -22,12 +22,12 @@ setupButtons = function (tabs, index) {
   var wizList = $("#" + tabs.attr('id') + "-wiz-prog");
   var wizLis = $("li", wizList);
   var prevLi = $(".wiz-selected", wizList);
-  
+
   prevLi.removeClass('wiz-selected');
-  
+
     // declare local scope, so accessible in nested functions
   var tabsvar = tabs;
-      
+
   // update classes on the arrow bodyy
   $(wizLis[index*2]).addClass('wiz-selected');
   $(wizLis[index*2]).removeClass('wiz-enabled');
@@ -41,7 +41,7 @@ setupButtons = function (tabs, index) {
   $.merge(nextLi, nextLi.next());
   var enabledLis = $($.merge( $.merge([],prevLi), nextLi));
 
-  enabledLis.click(function(e){
+  enabledLis.on('click', function(e){
     var wizList = $(this).parent();
     var tabs = wizList.parent();
     // first, validate
@@ -52,10 +52,10 @@ setupButtons = function (tabs, index) {
     }
     var wizLis = wizList.children("li");
     var index = wizLis.index($(this));
-    
+
     //transfer the click to the tab anchor
     var tabAnchor = $("ul.ui-tabs-nav a", tabs)[index/2]; // /2 because there is an arrow header li after every li
-    $(tabAnchor).click();
+    $(tabAnchor).trigger('click');
   });
   enabledLis.addClass('wiz-enabled');
   enabledLis.hover(
@@ -77,8 +77,8 @@ setupButtons = function (tabs, index) {
   );
   if (nextLi.length===0) {
     // got to the end of thw wizard, so (re)bind an event for clicking the submit in the progress
-    $('.wiz-complete').unbind('click');
-    $('.wiz-complete').click(function() {
+    $('.wiz-complete').off('click');
+    $('.wiz-complete').on('click', function() {
       var wizList = $(this).parent();
       var tabs = wizList.parent();
       // first, validate
@@ -106,17 +106,17 @@ wizardProgressIndicator=function(options) {
   };
 
   var o = $.extend({}, defaults, options);
-  
+
   // find the outer wizard div
   var div = $("#" + o.divId);
-  
+
   // put a ul element before to hold the progress info
   div.before('<ul id="' + o.divId + '-wiz-prog" class="' + o.listClass + '"></ul>');
   var progressUl = $($("#" + o.divId + "-wiz-prog")[0]);
-  
+
   // find the list of tab headings
   var headingUl = $('> ul', div);
-  var li=[];  
+  var li=[];
   $.each(headingUl.children(), function(i, item) {
     li.push($(item).text());
     var wizClass = (i===o.start ? 'wiz-selected' : 'wiz-disabled');
@@ -127,25 +127,25 @@ wizardProgressIndicator=function(options) {
     progressUl.append('<li class="arrow-block wiz-complete">'+ (headingUl.children().length+1) + '. ' + o.completionStep + '</li>');
     progressUl.append('<li class="arrow-head wiz-complete"></li>');
   }
-  
+
   //size the <li> equally
   if (o.equalWidth) {
     var arrowBlockLis = $("li.arrow-block", progressUl);
     var arrowHeadLis = $("li.arrow-head", progressUl);
     var totalWidth = progressUl.width();
-    // Get difference in width of li between width including margin, and width of part inside padding. 
+    // Get difference in width of li between width including margin, and width of part inside padding.
     var spacing = arrowBlockLis.outerWidth(true) - arrowBlockLis.width();
     var width = ((totalWidth / (arrowBlockLis.length)) | 0) - spacing - 3 - arrowHeadLis.outerWidth(true);
     arrowBlockLis.css('width', width + 'px');
   }
-  
+
   progressUl.addClass('wiz-disabled');
   $(progressUl[o.start]).addClass('wiz-selected');
   $(progressUl[o.start]).removeClass('wiz-disabled');
-  progressUl.children("a").bind('click.wiz-nav', function(e){
+  progressUl.children("a").on('click.wiz-nav', function(e){
     e.preventDefault();
   });
-  
+
   //now set up handlers for tab events
   //the selected tab is given class wiz-selected and has wiz-disabled/enabled removed.
   //once a tab has been visited it is given class wiz-enabled and it gets hover and click events.
@@ -190,7 +190,7 @@ var validateInputsOnCurrentTab=function(current) {
         // find all the inputs that require validation. Note that .inactive excludes all inputs in species grid rows
         // that are not yet filled in
         tabinputs = $('input,select,textarea', $currentTab).not(':disabled,[name=""],.inactive'),
-        clonableRowDisplay, $clonableRow;    
+        clonableRowDisplay, $clonableRow;
     if (tabinputs.length>0 && !tabinputs.valid()) {
       alert(indiciaData.langErrorsOnTab);
       result = false;
@@ -204,23 +204,23 @@ var validateInputsOnCurrentTab=function(current) {
  */
 setupTabsNextPreviousButtons=function(divId, topSelector) {
   var $div=$('#'+divId);
-  
+
   function selectTab(relativeIdx) {
     var current=indiciaFns.activeTab($div),
         a = $('ul.ui-tabs-nav a', $div)[current+relativeIdx];
-    $(a).click();
+    $(a).trigger('click');
     // scroll top of selected tab into view
     scrollTopIntoView(topSelector);
   }
-  
-  $('.tab-prev', $div).click(function() {
-    selectTab(-1);  
-  });  
-  
-  $('.tab-next', $div).click(function() {
+
+  $('.tab-prev', $div).on('click', function() {
+    selectTab(-1);
+  });
+
+  $('.tab-next', $div).on('click', function() {
      selectTab(1);
   });
-  
+
   $('.tab-submit', $div).parents('form:first').submit(function(e) {
     var current=indiciaFns.activeTab($div);
     if (!validateInputsOnCurrentTab(current)) {
@@ -232,7 +232,7 @@ setupTabsNextPreviousButtons=function(divId, topSelector) {
 /**
  * Method to hook a beforeActivate to tabs to prevent navigation when controls are not valid
  */
-setupTabsBeforeActivate=function(divId) {  
+setupTabsBeforeActivate=function(divId) {
   // jQuery UI version safe beforeActivate handler
   var version=$.ui.version.split('.'),
       beforeActivateEvent=(version[0]==='1' && version[1]<9) ? 'select' : 'beforeActivate',

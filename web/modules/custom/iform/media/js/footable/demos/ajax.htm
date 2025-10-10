@@ -83,7 +83,7 @@
 			<div class="tab-pane" id="docs">
                 <h4>Refresh After Populating By Ajax</h4>
                 <p>You can easily tell Footable to redraw by triggering the <code>footable_redraw</code> event on the table:
-                    <pre>$(&#39;.get_data&#39;).click(function() {
+                    <pre>$(&#39;.get_data&#39;).on('click', function() {
 	$.ajax({
 		url : &#39;/some/api&#39;,
 		success : function(data) {
@@ -108,20 +108,20 @@
 
 			$('table').footable();
 
-            $('.clear-filter').click(function (e) {
+            $('.clear-filter').on('click', function (e) {
                 e.preventDefault();
                 $('table.demo').trigger('footable_clear_filter');
 				$('.filter-status').val('');
             });
 
-            $('.filter-status').change(function (e) {
+            $('.filter-status').on('change', function (e) {
                 e.preventDefault();
 				var filter = $(this).val();
                 $('#filter').val('');
                 $('table.demo').trigger('footable_filter', {filter: filter});
             });
 
-            $('.get_data').click(function() {
+            $('.get_data').on('click', function() {
                 $.ajax({
                     url : '/some/api',
                     success : function(data) {

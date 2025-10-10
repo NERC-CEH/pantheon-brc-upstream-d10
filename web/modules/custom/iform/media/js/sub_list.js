@@ -83,7 +83,7 @@
    */
   indiciaFns.initSubList = function (escapedId, escapedCaptionField, fieldname, itemTemplate) {
     var searchInput = $('#' + escapedId + '\\:search\\:' + escapedCaptionField);
-    searchInput.keypress(
+    searchInput.on('keypress',
       function (e) {
         searchInput.closest('.ctrl-wrap').removeClass(indiciaData.controlWrapErrorClass);
         searchInput.removeClass('ui-state-error');
@@ -93,12 +93,12 @@
       }
     );
 
-    $('#' + escapedId + '\\:add').click(function () {
+    $('#' + escapedId + '\\:add').on('click', function () {
       indiciaFns.addSublistItem(escapedId, escapedCaptionField, fieldname, itemTemplate);
       searchInput.focus();
     });
 
-    searchInput.blur(function () {
+    searchInput.on('blur', function () {
       if ($(this).val().trim() !== '') {
         if ($('[name="' + escapedId + '\\:allowTermCreationLang"]').length > 0) {
           // Term entered has not been linked to a term in db, but we are

@@ -56,6 +56,7 @@ jQuery(document).ready(function($) {
       }
       $.ajax({
         dataType: 'json',
+        crossDomain: true,
         url: request,
         data: null,
       }).done(function(data) {

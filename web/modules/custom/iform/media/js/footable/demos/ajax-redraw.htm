@@ -50,7 +50,7 @@
 			<div class="tab-pane" id="docs">
                 <h4>Refresh After Populating By Ajax</h4>
                 <p>You can easily tell Footable to redraw by triggering the <code>footable_redraw</code> event on the table:
-                    <pre>$(&#39;.get_data&#39;).click(function() {
+                    <pre>$(&#39;.get_data&#39;).on('click', function() {
 	$.ajax({
 		url : &#39;/some/api&#39;,
 		success : function(data) {
@@ -66,9 +66,9 @@
         $.mockjax({
           url: '/some/api',
           dataType: 'json',
-          responseText: [ 
-            {"id" : 30, "name" : "Corrida"}, 
-            {"id" : 31, "name" : "Mountain Bike"} 
+          responseText: [
+            {"id" : 30, "name" : "Corrida"},
+            {"id" : 31, "name" : "Mountain Bike"}
           ]
         });
 
@@ -76,7 +76,7 @@
 
           var footable = $('#modality').footable().data('footable');
 
-          $('.get_data').click(function() {
+          $('.get_data').on('click', function() {
             $.ajax({
                 url : '/some/api',
                 dataType : 'json',
@@ -96,7 +96,7 @@
                     footable.redraw();
                 }
             });
-          }).click();
+          }).trigger('click');
         });
     </script>
 </body>

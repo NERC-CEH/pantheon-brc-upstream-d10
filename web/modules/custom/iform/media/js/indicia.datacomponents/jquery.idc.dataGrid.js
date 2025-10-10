@@ -419,7 +419,7 @@
             var fbLink = oldSelected.find('[data-fancybox]');
             if (fbLink.length) {
               // Open first image in set.
-              $(fbLink[0]).click();
+              $(fbLink[0]).trigger('click');
             }
           }
         }
@@ -429,21 +429,21 @@
     /**
      * Next page click.
      */
-    $(el).find('.footer .next').click(function clickNext() {
+    $(el).find('.footer .next').on('click', function clickNext() {
       indiciaFns.movePage(el, true, 'tbody tr.data-row');
     });
 
     /**
      * Previous page click.
      */
-    $(el).find('.footer .prev').click(function clickPrev() {
+    $(el).find('.footer .prev').on('click', function clickPrev() {
       indiciaFns.movePage(el, false, 'tbody tr.data-row');
     });
 
     /**
      * Rows per page change.
      */
-    $(el).find('.rows-per-page select').change(function changeRowsPerPage() {
+    $(el).find('.rows-per-page select').on('change', function changeRowsPerPage() {
       indiciaFns.rowsPerPageChange(el);
     });
 
@@ -482,7 +482,7 @@
     /**
      * Multi-select switch toggle handler.
      */
-    $(el).find('.multiselect-switch').click(function clickMultiselectSwitch() {
+    $(el).find('.multiselect-switch').on('click', function clickMultiselectSwitch() {
       var table = $(el).find('table');
       if ($(el).hasClass('multiselect-mode')) {
         $(el).removeClass('multiselect-mode');
@@ -504,21 +504,21 @@
     /**
      * Click handler for the settings icon. Displays the config overlay pane.
      */
-    $(el).find('.data-grid-show-settings').click(function settingsIconClick() {
+    $(el).find('.data-grid-show-settings').on('click', function settingsIconClick() {
       const panel = findSettingsPanel(el);
       appendColumnsToConfigList(el, el.settings.columns);
       Sortable.create($(panel).find('ol')[0]);
       $.fancybox.open(panel);
     });
 
-    $(el).find('.fullscreen-tool').click(function fullscreenIconClick() {
+    $(el).find('.fullscreen-tool').on('click', function fullscreenIconClick() {
       indiciaFns.goFullscreen(el);
     });
 
     /**
      * Config save button handler.
      */
-    $('#' + el.id + ' .data-grid-settings .save').click(function() {
+    $('#' + el.id + ' .data-grid-settings .save').on('click', function() {
       var header = $(el).find('thead');
       var colsList = [];
       const panel = findSettingsPanel(el);
@@ -546,14 +546,14 @@
     /**
      * Config cancel button handler.
      */
-    $('#' + el.id + ' .data-grid-settings .cancel').click(function() {
+    $('#' + el.id + ' .data-grid-settings .cancel').on('click', function() {
       $.fancybox.close();
     });
 
     /**
      * Config restore button handler.
      */
-    $('#' + el.id + ' .data-grid-settings .restore').click(function(e) {
+    $('#' + el.id + ' .data-grid-settings .restore').on('click', function(e) {
       // Discard current columns and replace with defaults.
       $(findSettingsPanel(el)).find('ol li').remove();
       appendColumnsToConfigList(el, el.settings.defaultColumns);
@@ -562,7 +562,7 @@
     /**
      * Config toggle button handler.
      */
-    $('#' + el.id + ' .data-grid-settings .toggle').click(function() {
+    $('#' + el.id + ' .data-grid-settings .toggle').on('click', function() {
       const panel = findSettingsPanel(el);
       var anyUnchecked = $([panel]).find('ol li :checkbox:not(:checked)').length > 0;
       $(panel).find('ol li :checkbox').prop('checked', anyUnchecked);
@@ -571,7 +571,7 @@
     /**
      * On text entry into the search box, filter the visible columns.
      */
-    $('#' + el.id + ' .grid-settings-search').keyup(function(e) {
+    $('#' + el.id + ' .grid-settings-search').on('keyup', function(e) {
       // Retrieve the search text from the input element and convert it to lowercase
       const searchText = $(e.currentTarget).val().toLowerCase();
 
@@ -962,7 +962,7 @@
         // Auto-expand the extra details row if cols hidden because below a
         // breakpoint.
         $(table).trigger('footable_expand_all');
-        $(table).bind('footable_breakpoint', function onBreak() {
+        $(table).on('footable_breakpoint', function onBreak() {
           $(table).trigger('footable_expand_all');
         });
       }

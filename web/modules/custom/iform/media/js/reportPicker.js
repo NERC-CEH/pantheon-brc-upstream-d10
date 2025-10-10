@@ -40,47 +40,52 @@ jQuery(document).ready(function($) {
   function showMoreInfo() {
     var rpt = $('ul.treeview input:checked').val();
     $.ajax({
-      dataType: "jsonp",
-      url: indiciaData.read.url+'index.php/services/report/requestMetadata',
-      data: {"report":rpt+'.xml', "auth_token":indiciaData.read.auth_token, "nonce":indiciaData.read.nonce},
-      success: function(data) {
-        var columnRows='', paramRows='', display, description, datatype, ns='<em>Not set</em>';
-        if (typeof data.columns!=="undefined") {
-          $.each(data.columns, function(field, def) {
-            display = typeof def.display==="undefined" || def.display===null ? ns : def.display;
-            columnRows += '<tr><th scope="row">' + field + '</th><td>' + display + '</td></tr>';
-          });
-          $.each(data.parameters, function(parameter, def) {
-            display = def.display===null ? ns : def.display;
-            description = def.description===null ? ns : def.description;
-            if (typeof def.description_extra !== 'undefined') {
-              description += '<br/>' + def.description_extra;
-            }
-            datatype = def.datatype===null ? ns : def.datatype;
-            paramRows += '<tr><th scope="row">' + parameter + '</th><td>' + display +
-              '</td><td>' + description + '</td><td>' + datatype + '</td></tr>';
-          });
-          $.fancybox.open('<div class="report-metadata-popup">' +
-              '<table class="ui-widget"><caption class="ui-widget-header">Report summary</caption>' +
-              '<thead class="ui-widget-header"><tr><th>Attribute</th><th>Value</th></tr></thead>' +
-              '<tbody><tr><th scope="row">Report path</th><td>' + rpt + '</td>' +
-              '</tbody></table>' +
-              '<table class="ui-widget"><caption class="ui-widget-header">Report columns</caption>' +
-              '<thead class="ui-widget-header"><tr><th>Field</th><th>Title</th></tr></thead>' +
-              '<tbody>' + columnRows + '</tbody></table>' +
-              '<table class="ui-widget"><caption class="ui-widget-header">Report parameters</caption>' +
-              '<thead class="ui-widget-header"><tr><th>Field</th><th>Title</th><th>Description</th><th>Data type</th></tr></thead>' +
-              '<tbody>' + paramRows + '</tbody></table>' +
-            '</div>');
-        }
+      url: indiciaData.read.url + 'index.php/services/report/requestMetadata',
+      data: {
+        report: rpt + '.xml',
+        auth_token: indiciaData.read.auth_token,
+        nonce: indiciaData.read.nonce
       },
-      error: function() {
-        alert('Report information could not be obtained');
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function(data) {
+      var columnRows='', paramRows='', display, description, datatype, ns='<em>Not set</em>';
+      if (typeof data.columns!=="undefined") {
+        $.each(data.columns, function(field, def) {
+          display = typeof def.display==="undefined" || def.display===null ? ns : def.display;
+          columnRows += '<tr><th scope="row">' + field + '</th><td>' + display + '</td></tr>';
+        });
+        $.each(data.parameters, function(parameter, def) {
+          display = def.display===null ? ns : def.display;
+          description = def.description===null ? ns : def.description;
+          if (typeof def.description_extra !== 'undefined') {
+            description += '<br/>' + def.description_extra;
+          }
+          datatype = def.datatype===null ? ns : def.datatype;
+          paramRows += '<tr><th scope="row">' + parameter + '</th><td>' + display +
+            '</td><td>' + description + '</td><td>' + datatype + '</td></tr>';
+        });
+        $.fancybox.open('<div class="report-metadata-popup">' +
+            '<table class="ui-widget"><caption class="ui-widget-header">Report summary</caption>' +
+            '<thead class="ui-widget-header"><tr><th>Attribute</th><th>Value</th></tr></thead>' +
+            '<tbody><tr><th scope="row">Report path</th><td>' + rpt + '</td>' +
+            '</tbody></table>' +
+            '<table class="ui-widget"><caption class="ui-widget-header">Report columns</caption>' +
+            '<thead class="ui-widget-header"><tr><th>Field</th><th>Title</th></tr></thead>' +
+            '<tbody>' + columnRows + '</tbody></table>' +
+            '<table class="ui-widget"><caption class="ui-widget-header">Report parameters</caption>' +
+            '<thead class="ui-widget-header"><tr><th>Field</th><th>Title</th><th>Description</th><th>Data type</th></tr></thead>' +
+            '<tbody>' + paramRows + '</tbody></table>' +
+          '</div>');
       }
+    })
+    .fail(function() {
+      alert('Report information could not be obtained');
     });
   }
 
-  $('#picker-more').click(showMoreInfo);
+  $('#picker-more').on('click', showMoreInfo);
 
   $('#picker-more').hide();
 

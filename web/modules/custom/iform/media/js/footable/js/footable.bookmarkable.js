@@ -26,9 +26,9 @@
         var sort_col = $(ft.table).find("th")[sort_colnum];
         var descending = $(sort_col).hasClass("footable-sorted-desc");
         $(ft.table).data("status_descending", descending);
-            
+
         if (ft.pageInfo) {
-            var pagenum = ft.pageInfo.currentPage; 
+            var pagenum = ft.pageInfo.currentPage;
             $(ft.table).data("status_pagenum", pagenum);
         }
 
@@ -79,8 +79,8 @@
      p.name = 'Footable LucidBookmarkable';
      p.init = function(ft) {
          if (ft.options.bookmarkable.enabled) {
-             
-             $(ft.table).bind({
+
+             $(ft.table).on({
                  'footable_initialized': function(){
                      var tbl_id     = ft.table.id;
                      var q_filter   = $_HASH(tbl_id + '_f');
@@ -91,13 +91,13 @@
 
                      if (q_filter) {
                          var filter_field_id = $(ft.table).data('filter');
-                         $(filter_field_id).val(q_filter); 
+                         $(filter_field_id).val(q_filter);
                          $(ft.table).trigger('footable_filter', {filter: q_filter});
                      }
                      if (q_page_num) {
                          $(ft.table).data('currentPage',  q_page_num);
 			 // we'll check for sort before triggering pagination, since
-			 // sorting triggers pagination. 
+			 // sorting triggers pagination.
                      }
                      if (typeof q_sorted !== 'undefined') {
                          var footableSort = $(ft.table).data('footable-sort');
@@ -132,7 +132,7 @@
                          var sorted     = tbl_id + '_s';
                          var descending = tbl_id + '_d';
                          var expanded   = tbl_id + '_e';
-                         
+
                          var hash = location.hash.replace(/^\#/, '&');
                          var hashkeys = [filter, page_num, sorted, descending, expanded];
                          // trim existing elements out of the hash.
@@ -164,7 +164,7 @@
          }
      };
  }
- 
+
  w.footable.plugins.register(Bookmarkable, defaults);
-  
+
 })(jQuery, window);

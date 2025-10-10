@@ -43,7 +43,7 @@
   function initHandlers(el) {
 
     // Handler for the button that shows the custom rule popup.
-    $(el).find('.custom-rule-popup-btn').click(function() {
+    $(el).find('.custom-rule-popup-btn').on('click', function() {
       const dlg = $('#' + el.settings.id + '-dlg-cntr');
       dlg.find('.progress-cntr').hide();
       // Only do anything if source population has completed.
@@ -54,7 +54,7 @@
     });
 
     // Handler for the button on the popup that runs the selected ruleset.
-    $('.run-custom-verification-ruleset').click(() => {
+    $('.run-custom-verification-ruleset').on('click', () => {
       const source = indiciaData.esSourceObjects[Object.keys(el.settings.source)[0]];
       const request = indiciaFns.getFormQueryData(source);
       const dlg = $('#' + el.settings.id + '-dlg-cntr');
@@ -93,7 +93,7 @@
     });
 
     // Handler for the clear results button on the popup.
-    $('.clear-results').click(() => {
+    $('.clear-results').on('click', () => {
       $.fancyDialog({
         title: indiciaData.lang.runCustomVerificationRulesets.clearResults,
         message: indiciaData.lang.runCustomVerificationRulesets.areYouSureClear,
@@ -129,7 +129,7 @@
       });
     });
 
-    $(el).find('[name="ruleset-list"]').change(function() {
+    $(el).find('[name="ruleset-list"]').on('change', function() {
       $('#' + el.settings.id + '-dlg-cntr .run-custom-verification-ruleset').removeAttr('disabled');
     });
 

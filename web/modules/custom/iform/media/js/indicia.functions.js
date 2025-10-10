@@ -48,19 +48,19 @@ window.indiciaFns = {};
   /**
    * Keep track of modifier keys such as shift anc ctrl as generally useful.
    */
-  $(document).keydown(function keyDown(evt) {
+  $(document).on('keydown', function keyDown(evt) {
     if (evt.keyCode === 17) { // ctrl
       indiciaData.ctrlPressed = true;
     } else if (evt.keyCode === 16) {
       indiciaData.shiftPressed = true;
     }
-  }).keyup(function keyUp(evt) {
+  }).on('keyup', function keyUp(evt) {
     if (evt.keyCode === 17) { // ctrl
       indiciaData.ctrlPressed = false;
     } else if (evt.keyCode === 16) {
       indiciaData.shiftPressed = false;
     }
-  }).blur(function blur() {
+  }).on('blur', function blur() {
     indiciaData.ctrlPressed = false;
   });
 
@@ -96,7 +96,7 @@ window.indiciaFns = {};
     else {
       $('input.findme').after('<span id="findme-icon" title="' + hint + '">&nbsp;</span>');
     }
-    $('#findme-icon').click(indiciaFns.findMe);
+    $('#findme-icon').on('click', indiciaFns.findMe);
   };
 
   indiciaFns.findMe = function () {
@@ -134,7 +134,6 @@ window.indiciaFns = {};
       // lot for this rule, to save multiple service hits. So check if we've loaded this rule already
       if (typeof indiciaData.idDiffRuleMessages['rule' + $elem.attr('data-rule')] === 'undefined') {
         $.ajax({
-          dataType: 'jsonp',
           url: indiciaData.read.url + 'index.php/services/data/verification_rule_datum',
           data: {
             verification_rule_id: $elem.attr('data-rule'),
@@ -142,6 +141,8 @@ window.indiciaFns = {};
             auth_token: indiciaData.read.auth_token,
             nonce: indiciaData.read.nonce
           },
+          dataType: 'jsonp',
+          crossDomain: true,
           success: function (data) {
             // JSONP can't handle http status code errors. So error check in success response.
             if (typeof data.error !== 'undefined') {
@@ -221,7 +222,7 @@ window.indiciaFns = {};
   indiciaFns.bindTabsActivate = function (tabs, fn) {
     var version = $.ui.version.split('.');
     var evtname = (version[0] === '1' && version[1] < 10) ? 'tabsshow' : 'tabsactivate';
-    return tabs.bind(evtname, fn);
+    return tabs.on(evtname, fn);
   };
 
   /**
@@ -231,7 +232,7 @@ window.indiciaFns = {};
   indiciaFns.unbindTabsActivate = function (tabs, fn) {
     var version = $.ui.version.split('.');
     var evtname = (version[0] === '1' && version[1] < 10) ? 'tabsshow' : 'tabsactivate';
-    return tabs.unbind(evtname, fn);
+    return tabs.off(evtname, fn);
   };
 
   /**
@@ -352,48 +353,52 @@ window.indiciaFns = {};
    * same location is picked by that user, the same habitat is auto-filled in.
    */
   indiciaFns.locationControl.fetchLocationAttributesIntoSample = function (locCntrlId, warehouseUserId) {
-    var locCntrlIdEscaped = locCntrlId.replace(':', '\\:');
-    var reportingURL = indiciaData.read.url + 'index.php/services/report/requestReport' +
-      '?report=library/sample_attribute_values/get_latest_values_for_site_and_user.xml&callback=?';
-    var reportOptions = {
-      mode: 'json',
-      nonce: indiciaData.read.nonce,
-      auth_token: indiciaData.read.auth_token,
-      reportSource: 'local',
-      location_id: $('#' + locCntrlIdEscaped).attr('value'),
-      created_by_id: warehouseUserId
-    };
+    const locCntrlIdEscaped = locCntrlId.replace(':', '\\:');
     if ($('#' + locCntrlIdEscaped).attr('value') !== '') {
+      const reportingURL = indiciaData.read.url + 'index.php/services/report/requestReport';
+      const reportOptions = {
+        report: 'library/sample_attribute_values/get_latest_values_for_site_and_user.xml',
+        mode: 'json',
+        nonce: indiciaData.read.nonce,
+        auth_token: indiciaData.read.auth_token,
+        reportSource: 'local',
+        location_id: $('#' + locCntrlIdEscaped).attr('value'),
+        created_by_id: warehouseUserId
+      };
       // Fill in the sample attributes based on what is returned by the report
-      $.getJSON(reportingURL, reportOptions,
-        function (data) {
-          jQuery.each(data, function (i, item) {
-            var selector = 'smpAttr\\:' + item.id;
-            var input = $('[id=' + selector + '],[name=' + selector + ']');
-            if (item.value !== null && item.data_type !== 'Boolean') {
+      $.ajax({
+        url: reportingURL,
+        data: reportOptions,
+        dataType: 'jsonp',
+        crossDomain: true
+      })
+      .done(function (data) {
+        jQuery.each(data, function (i, item) {
+          var selector = 'smpAttr\\:' + item.id;
+          var input = $('[id=' + selector + '],[name=' + selector + ']');
+          if (item.value !== null && item.data_type !== 'Boolean') {
+            input.val(item.value);
+            if (input.is('select') && input.val() === '') {
+              // not in select list, so have to add it
+              input.append('<option value="' + item.value + '">' + item.term + '</option>');
               input.val(item.value);
-              if (input.is('select') && input.val() === '') {
-                // not in select list, so have to add it
-                input.append('<option value="' + item.value + '">' + item.term + '</option>');
-                input.val(item.value);
-              }
             }
-            // If there is a date value then we use the date field instead.
-            // This is because the vague date engine returns to this special field
-            if (typeof item.value_date !== 'undefined' && item.value_date !== null) {
-              input.val(item.value_date);
-            }
-            // booleans need special treatment because checkboxes rely on using the'checked' attribute instead of using
-            // the value.
-            if (item.value_int === '1' && item.data_type === 'Boolean') {
-              input.attr('checked', 'checked');
-            }
-            if (item.value_int === '0' && item.data_type === 'Boolean') {
-              input.removeAttr('checked');
-            }
-          });
-        }
-      );
+          }
+          // If there is a date value then we use the date field instead.
+          // This is because the vague date engine returns to this special field
+          if (typeof item.value_date !== 'undefined' && item.value_date !== null) {
+            input.val(item.value_date);
+          }
+          // booleans need special treatment because checkboxes rely on using the'checked' attribute instead of using
+          // the value.
+          if (item.value_int === '1' && item.data_type === 'Boolean') {
+            input.attr('checked', 'checked');
+          }
+          if (item.value_int === '0' && item.data_type === 'Boolean') {
+            input.removeAttr('checked');
+          }
+        });
+      });
     }
   };
 
@@ -410,10 +415,10 @@ window.indiciaFns = {};
   }
 
   indiciaFns.locationControl.autoFillLocationFromLocationTypeId = function (locCntrlId, locationTypeId) {
-    var locCntrlIdEscaped = locCntrlId.replace(':', '\\:');
-    var reportingURL = indiciaData.read.url + 'index.php/services/report/requestReport' +
-      '?report=library/locations/locations_list_mapping.xml&callback=?';
-    var reportOptions = {
+    const locCntrlIdEscaped = locCntrlId.replace(':', '\\:');
+    const reportingURL = indiciaData.read.url + 'index.php/services/report/requestReport';
+    const reportOptions = {
+      report: 'library/locations/locations_list_mapping.xml',
       mode: 'json',
       nonce: indiciaData.read.nonce,
       auth_token: indiciaData.read.auth_token,
@@ -422,61 +427,64 @@ window.indiciaFns = {};
       location_type_id: locationTypeId,
       exclude_composites: 1
     };
-
-    $.getJSON(reportingURL, reportOptions,
-      function (data) {
-        var popupHtml;
-        var checkedRadio;
-        var alreadySet = false;
-        indiciaData.allPossibleLocationIds = [];
-        if (typeof data.error === 'undefined') {
-          $.each(data, function storeId() {
-            indiciaData.allPossibleLocationIds.push(this.id);
-          });
-          if (data.length === 1) {
-            // single unique matching location found
-            $('#' + locCntrlIdEscaped).val(data[0].id);
-            $('#' + locCntrlIdEscaped + '\\:name').val(data[0].name);
-            addLinkedLocationBoundary(data[0].geom);
-          } else if (data.length > 1) {
-            // if populated already with something on the list, just use that one.
-            popupHtml = '<p>' + indiciaData.langMoreThanOneLocationMatch + '</p>';
-            popupHtml += '<ul>';
-            $.each(data, function (idx) {
-              if (this.id == $('#' + locCntrlIdEscaped).val()) {
-                alreadySet = true;
-                return false;
-              }
-              popupHtml += '<li><label>' +
-                '<input type="radio" value="' + this.id + '" name="resolveLocation" + data-idx="' + idx + '"/> ' +
-                this.name + '</label></li>';
-              return true;
-            });
-            if (alreadySet) {
-              // user already has a selected boundary which matches one of the options, so keep it.
-              return;
+    $.ajax({
+      url: reportingURL,
+      data: reportOptions,
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function (data) {
+      var popupHtml;
+      var checkedRadio;
+      var alreadySet = false;
+      indiciaData.allPossibleLocationIds = [];
+      if (typeof data.error === 'undefined') {
+        $.each(data, function storeId() {
+          indiciaData.allPossibleLocationIds.push(this.id);
+        });
+        if (data.length === 1) {
+          // single unique matching location found
+          $('#' + locCntrlIdEscaped).val(data[0].id);
+          $('#' + locCntrlIdEscaped + '\\:name').val(data[0].name);
+          addLinkedLocationBoundary(data[0].geom);
+        } else if (data.length > 1) {
+          // if populated already with something on the list, just use that one.
+          popupHtml = '<p>' + indiciaData.langMoreThanOneLocationMatch + '</p>';
+          popupHtml += '<ul>';
+          $.each(data, function (idx) {
+            if (this.id == $('#' + locCntrlIdEscaped).val()) {
+              alreadySet = true;
+              return false;
             }
-            popupHtml += '</ul>';
-            popupHtml += '<button id="resolveLocationOk" disabled="disabled">Ok</button>';
-            popupHtml += '<button id="resolveLocationCancel">Cancel</button>';
-            $.fancybox.open('<div id="resolveLocationPopup">' + popupHtml + '</div>');
-            $('#resolveLocationPopup input[type="radio"]').change(function () {
-              $('#resolveLocationOk').removeAttr('disabled');
-            });
-            $('#resolveLocationOk').click(function () {
-              checkedRadio = $('#resolveLocationPopup input[type="radio"]:checked');
-              $('#' + locCntrlIdEscaped).val(checkedRadio.val());
-              $('#' + locCntrlIdEscaped + '\\:name').val(checkedRadio.closest('label').text());
-              $.fancybox.close();
-              addLinkedLocationBoundary(data[$(checkedRadio).attr('data-idx')].geom);
-            });
-            $('#resolveLocationCancel').click(function () {
-              $.fancybox.close();
-            });
+            popupHtml += '<li><label>' +
+              '<input type="radio" value="' + this.id + '" name="resolveLocation" + data-idx="' + idx + '"/> ' +
+              this.name + '</label></li>';
+            return true;
+          });
+          if (alreadySet) {
+            // user already has a selected boundary which matches one of the options, so keep it.
+            return;
           }
+          popupHtml += '</ul>';
+          popupHtml += '<button id="resolveLocationOk" disabled="disabled">Ok</button>';
+          popupHtml += '<button id="resolveLocationCancel">Cancel</button>';
+          $.fancybox.open('<div id="resolveLocationPopup">' + popupHtml + '</div>');
+          $('#resolveLocationPopup input[type="radio"]').on('change', function () {
+            $('#resolveLocationOk').removeAttr('disabled');
+          });
+          $('#resolveLocationOk').on('click', function () {
+            checkedRadio = $('#resolveLocationPopup input[type="radio"]:checked');
+            $('#' + locCntrlIdEscaped).val(checkedRadio.val());
+            $('#' + locCntrlIdEscaped + '\\:name').val(checkedRadio.closest('label').text());
+            $.fancybox.close();
+            addLinkedLocationBoundary(data[$(checkedRadio).attr('data-idx')].geom);
+          });
+          $('#resolveLocationCancel').on('click', function () {
+            $.fancybox.close();
+          });
         }
       }
-    );
+    });
   };
 
   indiciaFns.locationControl.linkedLocationAttrValChange = function () {
@@ -485,9 +493,18 @@ window.indiciaFns = {};
     indiciaData.mapdiv.removeAllFeatures(indiciaData.mapdiv.map.editLayer, 'linkedboundary');
     if ($(this).val()) {
       // Display the location.
-      $.getJSON(indiciaData.read.url + 'index.php/services/data/location/' + $(this).val() +
-          '?mode=json&view=detail&auth_token=' + indiciaData.read.auth_token +
-          '&nonce=' + indiciaData.read.nonce + '&callback=?', function (data) {
+      $.ajax({
+        url: indiciaData.read.url + 'index.php/services/data/location/' + $(this).val(),
+        data: {
+          mode: 'json',
+          view: 'detail',
+          auth_token: indiciaData.read.auth_token,
+          nonce: indiciaData.read.nonce
+        },
+        dataType: 'jsonp',
+        crossDomain: true
+      })
+      .done(function (data) {
         addLinkedLocationBoundary(data[0].geom);
       });
     }
@@ -590,21 +607,22 @@ window.indiciaFns = {};
           query.auth_token = indiciaData.read.auth_token;
           query.nonce = indiciaData.read.nonce;
           $.ajax({
-            dataType: 'jsonp',
             url: indiciaData.read.url + 'index.php/services/data/' + mediaEntity,
             data: query,
-            success: function (data) {
-              if (data.length > 0) {
-                mediaInfo.loaded = {
-                  caption: data[0].caption,
-                  licence_code: data[0].licence_code,
-                  licence_title: data[0].licence_title,
-                  type: data[0].media_type
-                };
-              }
-              attachInfoToPopup(mediaInfo);
-              // No need to update data attribute - changes are remembered.
+            dataType: 'jsonp',
+            crossDomain: true
+          })
+          .done(function (data) {
+            if (data.length > 0) {
+              mediaInfo.loaded = {
+                caption: data[0].caption,
+                licence_code: data[0].licence_code,
+                licence_title: data[0].licence_title,
+                type: data[0].media_type
+              };
             }
+            attachInfoToPopup(mediaInfo);
+            // No need to update data attribute - changes are remembered.
           });
         }
       }
@@ -683,14 +701,14 @@ window.indiciaFns = {};
           }
           childSelect.addClass('ui-state-disabled').html('<option disabled>' + options.instruct + '</option>');
         }
-        childSelect.change();
+        childSelect.trigger('change');
       });
     } else {
       if (options.hideChildrenUntilLoaded) {
         childSelect.hide();
       }
       childSelect.addClass('ui-state-disabled').html('<option disabled>' + options.instruct + '</option>');
-      childSelect.change();
+      childSelect.trigger('change');
     }
   };
 
@@ -782,7 +800,7 @@ window.indiciaFns = {};
    */
   indiciaFns.enableScratchpadBlurList = function enableScratchpadBlurList() {
     if (indiciaData.scratchpadBlurList && $('#occurrence\\:taxa_taxon_list_id').length > 0) {
-      $('#occurrence\\:taxa_taxon_list_id').change(checkIfSingleTaxonSensitive);
+      $('#occurrence\\:taxa_taxon_list_id').on('change', checkIfSingleTaxonSensitive);
     }
     if (indiciaData.scratchpadBlurList && typeof hook_species_checklist_new_row !== 'undefined') {
       hook_species_checklist_new_row.push(checkAddedSpeciesSensitive);
@@ -922,11 +940,11 @@ jQuery(document).ready(function ($) {
     detectInput = function () {
       if (indiciaData.documentReady === 'done') {
         window.onbeforeunload = confirmOnPageExit;
-        $(iform).find(':input').unbind('change', detectInput);
+        $(iform).find(':input').off('change', detectInput);
       }
     };
     // any data input, need to confirm if navigating away
-    $(iform).find(':input').bind('change', detectInput);
+    $(iform).find(':input').on('change', detectInput);
     $(iform).submit(function () {
       // allowed to leave page on form submit
       window.onbeforeunload = null;
@@ -955,7 +973,7 @@ jQuery(document).ready(function ($) {
     $.each(indiciaData.enableControlIf, function(ctrlId, otherControls) {
       $('#' + ctrlId.replace(':', '\\:')).attr('disabled', true);
       $.each(otherControls, function(otherCtrlId, otherControlValues) {
-        $('#' + otherCtrlId.replace(':', '\\:')).change(function(e) {
+        $('#' + otherCtrlId.replace(':', '\\:')).on('change', function(e) {
           var ctrl = $(e.currentTarget);
           var val = !$(ctrl).is(':checkbox') || $(ctrl).is(':checked') ? $(ctrl).val() : '';
           if (otherControlValues.indexOf(val) === -1) {

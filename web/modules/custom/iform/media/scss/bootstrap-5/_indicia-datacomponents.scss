@@ -1,0 +1,15 @@
+/* Verification buttons control */
+.verification-popup {
+  #ctrl-wrap-template-name {
+    // Pad the button rather than the container, so it has a wider click area.
+    .input-group-text.ctrl-addons {
+      padding: 0;
+      button {
+        padding: 5px;
+        &:hover {
+          background: white;
+        }
+      }
+    }
+  }
+}

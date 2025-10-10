@@ -20,11 +20,11 @@
     var p = this;
     p.name = 'Footable MyPlugin';
     p.init = function(ft) {
-      $(ft.table).bind({
+      $(ft.table).on({
         /*
            Bind to relevant events here to modify/add functionality to Footable, example:
 
-            $(ft.table).bind({
+            $(ft.table).on({
               'footable_initialized': function(e){
                 if (e.ft.options.myPlugin.enabled === true){
                   alert('Hello World');
@@ -38,7 +38,7 @@
       });
     };
   }
-  
+
   w.footable.plugins.register(MyPlugin, defaults);
-  
+
 })(jQuery, window);

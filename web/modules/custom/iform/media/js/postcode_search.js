@@ -76,7 +76,7 @@
                 $('#imp-sref-system').val(),
                 function (data) {
                   $srefCtrl.val(data.sref); // SRID for WGS84 lat long
-                  $srefCtrl.change();
+                  $srefCtrl.trigger('change');
                 },
                 '4326',
                 8
@@ -85,7 +85,7 @@
               // map not available for conversions, so have to use LatLong as returned projection.
               $srefCtrl.val(place.lat + ', ' + place.lng);
               $srefSystemCtrl.val('4326'); // SRID for WGS84 lat long
-              $srefCtrl.change();
+              $srefCtrl.trigger('change');
             }
           }
       );

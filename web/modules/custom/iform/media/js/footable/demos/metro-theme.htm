@@ -185,7 +185,7 @@
     $(function () {
         $('table').footable();
 
-        $('.colour-switch a').click(function(e) {
+        $('.colour-switch a').on('click', function(e) {
             e.preventDefault();
             $('.colour-switch a').each(function() {
                 $('table').removeClass($(this).data('class'));

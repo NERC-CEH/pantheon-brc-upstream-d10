@@ -170,7 +170,7 @@
 
       <p>You can also programmatically filter your table:</p>
                 <pre>
-$(&#39;.filter-api&#39;).click(function (e) {
+$(&#39;.filter-api&#39;).on('click', function (e) {
     e.preventDefault();
 
     //get the footable filter object
@@ -198,18 +198,18 @@ $(&#39;.filter-api&#39;).click(function (e) {
       }
     });
 
-    $('.clear-filter').click(function (e) {
+    $('.clear-filter').on('click', function (e) {
       e.preventDefault();
       $('.filter-status').val('');
       $('table.demo').trigger('footable_clear_filter');
     });
 
-    $('.filter-status').change(function (e) {
+    $('.filter-status').on('change', function (e) {
       e.preventDefault();
       $('table.demo').trigger('footable_filter', {filter: $('#filter').val()});
     });
 
-    $('.filter-api').click(function (e) {
+    $('.filter-api').on('click', function (e) {
       e.preventDefault();
 
       //get the footable filter object

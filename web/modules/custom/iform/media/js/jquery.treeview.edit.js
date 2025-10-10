@@ -9,7 +9,7 @@
 		if (settings.remove) {
 			return this.trigger("remove", [settings.remove]);
 		}
-		return proxied.apply(this, arguments).bind("add", function(event, branches) {
+		return proxied.apply(this, arguments).on("add", function(event, branches) {
 			$(branches).prev()
 				.removeClass(CLASSES.last)
 				.removeClass(CLASSES.lastCollapsable)
@@ -18,7 +18,7 @@
 				.removeClass(CLASSES.lastCollapsableHitarea)
 				.removeClass(CLASSES.lastExpandableHitarea);
 			$(branches).find("li").andSelf().prepareBranches(settings).applyClasses(settings, $(this).data("toggler"));
-		}).bind("remove", function(event, branches) {
+		}).on("remove", function(event, branches) {
 			var prev = $(branches).prev();
 			var parent = $(branches).parent();
 			$(branches).remove();
@@ -33,5 +33,5 @@
 			}
 		});
 	};
-	
+
 })(jQuery);

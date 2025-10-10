@@ -39,7 +39,7 @@
       }
 
       if ($(this).attr('title') !== '' && typeof $(this).attr('title') !== 'undefined') {
-        $(this).removeAttr('title').mouseover(function () {
+        $(this).removeAttr('title').on('mouseover', function () {
           var inputRect = this.getBoundingClientRect();
           var tooltipRect = myTooltip[0].getBoundingClientRect();
           var leftPos = Math.min(inputRect.left, $(window).width() - tooltipRect.width);
@@ -54,7 +54,7 @@
             $(this).closest('tr').removeAttr('title');
           }
         })
-        .mouseout(function () {
+        .on('mouseout', function () {
           myTooltip.css({ left: '-9999px' });
         });
       }
@@ -303,7 +303,7 @@
         * div.settings.itemsPerPage);
       // Define pagination clicks.
       if (div.settings.itemsPerPage !== null) {
-        $(div).find('.pager .pag-next').click(function (e) {
+        $(div).find('.pager .pag-next').on('click', function (e) {
           e.preventDefault();
           if (div.loading) { return; }
           div.loading = true;
@@ -315,7 +315,7 @@
           load(div, false);
         });
 
-        $(div).find('.pager .pag-prev').click(function (e) {
+        $(div).find('.pager .pag-prev').on('click', function (e) {
           e.preventDefault();
           if (div.loading) { return; }
           div.loading = true;
@@ -328,7 +328,7 @@
           load(div, false);
         });
 
-        $(div).find('.pager .pag-first').click(function (e) {
+        $(div).find('.pager .pag-first').on('click', function (e) {
           e.preventDefault();
           if (div.loading) { return; }
           div.loading = true;
@@ -337,7 +337,7 @@
           load(div, false);
         });
 
-        $(div).find('.pager .pag-last').click(function (e) {
+        $(div).find('.pager .pag-last').on('click', function (e) {
           e.preventDefault();
           if (div.loading) { return; }
           div.loading = true;
@@ -346,7 +346,7 @@
           load(div, false);
         });
 
-        $(div).find('.pager .pag-page').click(function (e) {
+        $(div).find('.pager .pag-page').on('click', function (e) {
           e.preventDefault();
           if (div.loading) { return; }
           div.loading = true;
@@ -510,9 +510,10 @@
       $(div).css('max-height', $(window).height() - $(div).offset().top + $(window).scrollTop() - 20);
       div.settings.populated = true;
       $.ajax({
-        dataType: 'json',
+        dataType: 'jsonp',
         url: request,
         data: null,
+        crossDomain: true,
         success: function(response) {
           var tbody = $(div).find('tbody');
           var rows;
@@ -775,7 +776,8 @@
             request = getFullRequestPathWithoutPaging(div, true, true);
             request += '&wantCount=1&wantRecords=0';
             $.ajax({
-              dataType: 'json',
+              dataType: 'jsonp',
+              crossDomain: true,
               url: request,
               data: null,
               success: function countSuccess(countResponse) {
@@ -795,7 +797,7 @@
     function setupReloadLinks(div) {
       if (div.settings.mode === 'direct' && div.settings.autoParamsForm) {
         // define a filter form click
-        $(div).find('.run-filter').click(function(e) {
+        $(div).find('.run-filter').on('click', function(e) {
           e.preventDefault();
           div.settings.offset = 0;
           if (div.loading) { return; }
@@ -809,11 +811,11 @@
             $(div).find('.clear-filter').show();
           }
         });
-        $(div).find('.clear-filter').click(function (e) {
+        $(div).find('.clear-filter').on('click', function (e) {
           e.preventDefault();
           $(div).find('.filterSelect').val('');
           $(div).find('.filterInput').val('');
-          $(div).find('.run-filter').click();
+          $(div).find('.run-filter').trigger('click');
         });
       }
     }
@@ -860,7 +862,7 @@
       // Adds a reset button if any settings loaded from a cookie.
       if (resetButtonNeeded) {
         $('#' + opts.id).before('<button type="button" class="' + indiciaData.templates.buttonHighlightedClass + '" id="reset-' + opts.id + '">Reset report</button>');
-        $('#reset-' + opts.id).click(function() {
+        $('#reset-' + opts.id).on('click', function() {
           resetSettingsFromCookies($('#' + opts.id)[0]);
         });
       }
@@ -930,7 +932,7 @@
           var panel = typeof ui.newPanel === 'undefined' ? ui.panel : ui.newPanel[0];
           if (panel.id === $(report).parents('.ui-tabs-panel')[0].id) {
             report.reload(doRecount);
-            $(this).unbind(evt);
+            $(this).off(evt);
           }
         });
       } else {
@@ -972,10 +974,11 @@
 
     function _internalMapRecords(div, request, offset, callback, recordCount) {
       $('#map-loading').show();
-      var matchString, feature, url;
+      var matchString, feature;
       // first call- get the record count
       $.ajax({
-        dataType: "json",
+        dataType: "jsonp",
+        crossDomain: true,
         url: request + '&offset=' + offset + (typeof recordCount === 'undefined' ? '&wantCount=1' : ''),
         success: function(response) {
           if (typeof response.error !== 'undefined') {
@@ -1191,7 +1194,7 @@
       var div = this;
 
       // Define clicks on column headers to apply sort
-      $(div).find('th.sortable').click(function(e) {
+      $(div).find('th.sortable').on('click', function(e) {
         e.preventDefault();
         if (div.loading) {return;}
         div.loading = true;
@@ -1216,7 +1219,7 @@
         load(div, false);
       });
 
-      $(div).find('.report-download-link').click(function(e) {
+      $(div).find('.report-download-link').on('click', function(e) {
         e.preventDefault();
         var url=$(e.target).attr('href'), field;
         $.each($(div).find('tr.filter-row input'), function(idx, input) {
@@ -1269,7 +1272,7 @@
         }
       };
       // In column header is optional popup allowing user to filter out data from the grid.
-      $('.col-popup-filter').click(function () {
+      $('.col-popup-filter').on('click', function () {
         var dataInColumnCell;
         var dataCellsForFilter = [];
         var dataRowsForFilter = [];
@@ -1364,7 +1367,7 @@
       }
 
       // Show a picker for the visible columns
-      $(div).find('.col-picker').click(function () {
+      $(div).find('.col-picker').on('click', function () {
         var pickableCols = $(div).find('thead tr:first-child').find("th[class^='col-'],th[class*=' col-']");
         var visibleCols = $(pickableCols).filter(':visible').length;
         var hiddenCols = $(pickableCols).filter(':hidden').length;
@@ -1420,11 +1423,11 @@
       $(this).find('th .col-filter').focus(function(e) {
         e.target.hasChanged = false;
       });
-      $(this).find('th .col-filter').change(function(e) {
+      $(this).find('th .col-filter').on('change', function(e) {
         e.target.hasChanged = true;
       });
-      $(this).find('th .col-filter').blur(doFilter);
-      $(this).find('th .col-filter').keypress(function(e) {
+      $(this).find('th .col-filter').on('blur', doFilter);
+      $(this).find('th .col-filter').on('keypress', function(e) {
         e.target.hasChanged = true;
         if (e.keyCode === 13) {
           doFilter(e);
@@ -1508,7 +1511,7 @@
 
       if (div.settings.rowId) {
         // Setup highlighting of features on an associated map when rows are clicked
-        $(div).find('tbody').click(function(e) {
+        $(div).find('tbody').on('click', function(e) {
           if ($(e.target).hasClass('no-select')) {
             // clicked object might request no auto row selection
             return;
@@ -1524,7 +1527,7 @@
             $(tr).addClass('selected');
           }
         });
-        $(div).find('tbody').dblclick(function (e) {
+        $(div).find('tbody').on('dblclick', function (e) {
           var tr = $(e.target).parents('tr')[0];
           var featureId = tr.id.substr(3);
           highlightFeatureById(featureId, true, div);

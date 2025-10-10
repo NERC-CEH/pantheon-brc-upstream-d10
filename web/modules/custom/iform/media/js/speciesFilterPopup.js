@@ -123,10 +123,19 @@
     popupFormHtml = buildPopupFormHtml(userFilter);
     $.fancybox.open(popupFormHtml);
     // Fill in the list of available taxon groups to choose from.
-    $.getJSON(indiciaData.warehouseUrl +
-        'index.php/services/report/requestReport?report=library/taxon_groups/taxon_groups_used_in_checklist.xml&reportSource=local&mode=json' +
-        '&taxon_list_id=' + indiciaData.speciesChecklistFilterOpts.taxon_list_id +
-        '&auth_token=' + indiciaData.read.auth_token + '&nonce=' + indiciaData.read.nonce + '&callback=?', function(data) {
+    $.ajax({
+      url: indiciaData.warehouseUrl + 'index.php/services/report/requestReport?report=library/taxon_groups/taxon_groups_used_in_checklist.xml',
+      data: {
+        reportSource: 'local',
+        mode: 'json',
+        taxon_list_id: indiciaData.speciesChecklistFilterOpts.taxon_list_id,
+        auth_token: indiciaData.read.auth_token,
+        nonce: indiciaData.read.nonce
+      },
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function(data) {
       $.each(data, function(idx, item) {
         var selected = userFilter!==null && (item.id===userFilter.group_id) ? ' selected="selected"' : '';
         $('#filter-group').append('<option value="'+item.id+'"' + selected + '>'+item.title+'</option>');
@@ -155,8 +164,8 @@
       $('#filter-mode-selected').attr('checked','checked');
     });
     // Button handlers
-    $('#filter-popup-apply').click(function() { applyButtonClicked(gridId); });
-    $('#filter-popup-cancel').click(function() {
+    $('#filter-popup-apply').on('click', function() { applyButtonClicked(gridId); });
+    $('#filter-popup-cancel').on('click', function() {
       $.fancybox.close();
     });
   }
@@ -182,7 +191,7 @@
    * @param string gridId Element ID of the grid
    */
   indiciaFns.setupSpeciesFilterPopup = function(gridId) {
-    $('#' + gridId + ' .species-filter').click(speciesFilterButtonClicked);
+    $('#' + gridId + ' .species-filter').on('click', speciesFilterButtonClicked);
   };
 
 }(jQuery));

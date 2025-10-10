@@ -185,7 +185,7 @@ var control_speciesmap_addcontrols;
       $('#' + indiciaData.control_speciesmap_opts.id + '-cluster').empty();
       // Cancel button for the cluster sub-sample selecte
       var $cancel = $('<input type="button" value="' + indiciaData.lang.speciesMap.CancelLabel + '" /><br/>');
-      $cancel.click(function(){
+      $cancel.on('click', function(){
         setClusteringOn(true);
         switchToOverviewMap();
       });
@@ -195,7 +195,7 @@ var control_speciesmap_addcontrols;
       a1.feature.cluster.forEach(function(f) {
         const input = $('<input type="button" class="' + indiciaData.templates.buttonDefaultClass + '" value="Select sample ' + sampleIndex + '"/><br/>');
         const infoPanel = $('<div>').append(getSubSampleLabel(f, "<br/>", true));
-        input.click(function(){
+        input.on('click', function(){
           $('#' + indiciaData.control_speciesmap_opts.messageId).empty().append(currentMsg);
           if (indiciaData.control_speciesmap_mode === 'Modify') {
             switchToSubSampleForm();
@@ -554,7 +554,7 @@ var control_speciesmap_addcontrols;
           break;
       }
       // don't fire map events on the sref hidden control, otherwise the map zooms in
-      $('#imp-sref').unbind('change');
+      $('#imp-sref').off('change');
       // Reset when selecting new mode.
       $('#imp-sref,#imp-geom').val('');
       indiciaData.control_speciesmap_mode = mode;
@@ -723,17 +723,17 @@ var control_speciesmap_addcontrols;
     indiciaData.control_speciesmap_opts = opts;
     container = $('<div id="' + opts.buttonsId + '" class="' + opts.panelClasses + '">').insertBefore(opts.mapDiv);
     $('<button id="' + opts.addButtonId + '" class="' + indiciaData.templates.buttonDefaultClass + '" type="button">' + indiciaData.lang.speciesMap.AddLabel +
-        '</button>').click(controlSpeciesmapAddbutton).appendTo(container);
+        '</button>').on('click', controlSpeciesmapAddbutton).appendTo(container);
     $('<button id="' + opts.modButtonId + '" class="' + indiciaData.templates.buttonDefaultClass + '" type="button">' + indiciaData.lang.speciesMap.ModifyLabel +
-        '</button>').click(controlSpeciesmapModifybutton).appendTo(container);
+        '</button>').on('click', controlSpeciesmapModifybutton).appendTo(container);
     $('<button id="' + opts.moveButtonId + '" class="' + indiciaData.templates.buttonDefaultClass + '" type="button">' + indiciaData.lang.speciesMap.MoveLabel +
-        '</button>').click(controlSpeciesmapMovebutton).appendTo(container);
+        '</button>').on('click', controlSpeciesmapMovebutton).appendTo(container);
     $('<button id="' + opts.delButtonId + '" class="' + indiciaData.templates.buttonDefaultClass + '" type="button">' + indiciaData.lang.speciesMap.DeleteLabel +
-        '</button>').click(controlSpeciesmapDeletebutton).appendTo(container);
+        '</button>').on('click', controlSpeciesmapDeletebutton).appendTo(container);
     $('<button id="' + opts.cancelButtonId + '" class="' + indiciaData.templates.buttonDefaultClass + '" type="button">' + indiciaData.lang.speciesMap.CancelLabel +
-        '</button>').click(controlSpeciesmapCancelbutton).appendTo(container).hide();
+        '</button>').on('click', controlSpeciesmapCancelbutton).appendTo(container).hide();
     $('<button id="' + opts.finishButtonId + '" class="' + indiciaData.templates.buttonDefaultClass + '" type="button">' + indiciaData.lang.speciesMap.FinishLabel +
-        '</button>').click(controlSpeciesmapFinishbutton).appendTo(container).hide();
+        '</button>').on('click', controlSpeciesmapFinishbutton).appendTo(container).hide();
     $('<div id="' + opts.messageId + '" class="' + opts.messageClasses + '"></div>').appendTo(container);
     indiciaData.control_speciesmap_mode = 'Off';
 
@@ -831,7 +831,7 @@ var control_speciesmap_addcontrols;
           setupSummaryRows(feature.attributes.subSampleIndex);
         });
         // set the initial mode to add grid refs
-        $('#' + opts.addButtonId).click();
+        $('#' + opts.addButtonId).trigger('click');
       }
     });
   };

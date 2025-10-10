@@ -54,7 +54,6 @@
       return false;
     }
     $.ajax({
-      dataType: 'jsonp',
       url: indiciaData.read.url + 'index.php/services/data/taxa_taxon_list',
       data: {
         taxon_list_id: indiciaData.allowTaxonAdditionToList,
@@ -63,16 +62,18 @@
         auth_token: indiciaData.read.auth_token,
         nonce: indiciaData.read.nonce
       },
-      success: function (data) {
-        if (data.length) {
-          // Existing match already saved, so use that.
-          saveAddedTaxonIdInForm(data[0]['id']);
-        } else {
-          saveAddedTaxon();
-        }
-        $.fancybox.close();
-        $('#new-taxon-form').prop('disabled', true);
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function (data) {
+      if (data.length) {
+        // Existing match already saved, so use that.
+        saveAddedTaxonIdInForm(data[0]['id']);
+      } else {
+        saveAddedTaxon();
       }
+      $.fancybox.close();
+      $('#new-taxon-form').prop('disabled', true);
     });
   }
 

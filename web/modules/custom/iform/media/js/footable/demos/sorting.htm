@@ -184,7 +184,7 @@
                 <h4>Sorting API</h4>
                 <p>You can also programmatically sort your table:</p>
                 <pre>
-$(&#39;.sort-column&#39;).click(function (e) {
+$(&#39;.sort-column&#39;).on('click', function (e) {
     e.preventDefault();
 
     //get the footable sort object
@@ -206,7 +206,7 @@ $(&#39;.sort-column&#39;).click(function (e) {
         $(function () {
 			$('table').footable();
 
-            $('.sort-column').click(function (e) {
+            $('.sort-column').on('click', function (e) {
                 e.preventDefault();
 
                 //get the footable sort object

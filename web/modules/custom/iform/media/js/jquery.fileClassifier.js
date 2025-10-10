@@ -18,7 +18,7 @@ The file classifier has two modes of operation:
 
  - single mode: all the files added to the classifier are sent to the
    classifier to obtain one result.
- - multi mode: the files added to the classifier are sent one at a time to 
+ - multi mode: the files added to the classifier are sent one at a time to
    obtain multiple results.
 
 The classifier can be
@@ -27,11 +27,11 @@ The classifier can be
    since the classifier is per-occurrence.
  - linked to a species_checklist, in which case it can be in single or multi
    mode since the classifier is per-checklist
- - linked to a single species input (not yet implemented), in which case it 
+ - linked to a single species input (not yet implemented), in which case it
    would have to be in single mode.
 
 When linked to a species_checklist, if the same classification result is
-obtained several times, then that can either 
+obtained several times, then that can either
  - add several ocuurences, one for each classification result or,
  - append all the classification results to one occurrence.
 
@@ -71,7 +71,7 @@ file and the file is added to the occurrence. Where a file is not
 identified, a record of the unknown taxon is created.
 
 To avoid database inconsistencies, we'll have to delete classification results
-as files are deleted or prevent file deletion. 
+as files are deleted or prevent file deletion.
 
 More work may be needed here to customise the interface to the capabilities of
 the classifier being used, e.g. PlantNet allows an image of a flower and a leaf
@@ -80,7 +80,7 @@ but you need to tag the image to indicate what it is.
 
 
 
-/** 
+/**
  * Scripts may add functions to this array and they will be executed after
  * the classifier has added a new occurrence to a species grid.
  * The function should accept two arguments:
@@ -98,25 +98,25 @@ let hook_image_classifier_new_occurrence = [];
   $(function(){
     // Add a click handler for the classify button in all classifier controls.
     indiciaFns.on('click', '.classify-btn', classify);
-    
-    // Add a click handler for the add-classifier button in a species grid. 
+
+    // Add a click handler for the add-classifier button in a species grid.
     // This adds a row containing a classifier when in single mode.
     indiciaFns.on('click', '.add-classifer-link', indiciaData.classifySettings, function(evt){
       // Call the handler is in addRowToGrid.js to add the classifier.
       // The classifySettings are passed through in evt.data.
       addMediaRowOnClick(evt);
-      // Locate the new classifier which has been added in a row following the 
+      // Locate the new classifier which has been added in a row following the
       // one with the button.
       let $div = $(evt.target).closest('tr').next().find('div')
       // Configure the classifier.
       $div.classifier();
-    });    
+    });
 
-    // Hook in to the addRowToGrid.handleSelectedTaxon function to update 
+    // Hook in to the addRowToGrid.handleSelectedTaxon function to update
     // classifier suggestions when the recorder edits a taxon.
     hook_species_checklist_new_row.push(handleSelectedTaxon);
 
-    // Hook in to the jquery.uploader delete-file click handler to update 
+    // Hook in to the jquery.uploader delete-file click handler to update
     // classifier results when the recorder deletes media.
     mediaDeleteAddedHooks.push(handleDeletedMedia);
 
@@ -143,13 +143,13 @@ let hook_image_classifier_new_occurrence = [];
       // Restore Bootstrap behaviour if it was replaced.
       $.fn.button = bootstrapButton;
     }
-  
+
   });
 
 
   // Add a method to the jQuery namespace to configure new classifiers.
   $.fn.classifier = function() {
-    // Iterate over all objects that the function is called on. 
+    // Iterate over all objects that the function is called on.
     return this.each(function() {
       if (!$(this).hasClass('file-box')) {
         // Only file boxes can be turned in to classifiers.
@@ -160,7 +160,7 @@ let hook_image_classifier_new_occurrence = [];
       $(this).addClass('file-classifier');
 
       // Add a classify button.
-      // Obtain index of upload button which we will also give to the classify 
+      // Obtain index of upload button which we will also give to the classify
       // button so it is unique on page.
       let $upload = $(this).find('button');
       let id = $upload.attr('id');
@@ -242,10 +242,10 @@ let hook_image_classifier_new_occurrence = [];
 
   /**
    * Send files to a classifier
-   * 
+   *
    * @param {object} div - Contains all the details of the control.
    * @param {array} files - Array of file objects to be classified.
-   * @returns {promise} 
+   * @returns {promise}
    */
   function doPost(div, files) {
     return new Promise((resolve, reject) => {
@@ -276,7 +276,7 @@ let hook_image_classifier_new_occurrence = [];
   function handleResponse(div, files, response){
     let unknown = div.settings.unknownTaxon;
     let $row;
- 
+
     if (response === null) {
       // Classifier encountered an error.
       // Add a row with unknown species
@@ -314,7 +314,7 @@ let hook_image_classifier_new_occurrence = [];
       let $count = $row.find('input.system-function-sex_stage_count');
       let value = Number($count.val());
       if (isNaN(value)) {
-        // Maybe we need a dialogue with the recorder about this but, for now, 
+        // Maybe we need a dialogue with the recorder about this but, for now,
         // we'll just set it to something matching expectations.
         value = 1;
       }
@@ -322,7 +322,7 @@ let hook_image_classifier_new_occurrence = [];
         value++;;
       }
       // Update the value and trigger any change handlers which may be attached.
-      $count.val(value).change();
+      $count.val(value).trigger('change');
 
       // Prepare suggestions for saving.
       // The taxon_name_given cannot be null but the Drupal classification
@@ -358,7 +358,7 @@ let hook_image_classifier_new_occurrence = [];
       // Save classifer response to html input for posting to our website.
       // Inputs should be named like
       //   sc:<species_checklist id>-<rowIdx>::classification_result:<index>
-      // We need a classification result index as an occurrence can have 
+      // We need a classification result index as an occurrence can have
       // multiple classification results. This may go wrong if we allow results
       // to be deleted but image indexing is done similarly.
       let table =  getInputNameRoot($row) + 'classification_result';
@@ -374,7 +374,7 @@ let hook_image_classifier_new_occurrence = [];
     $.each(hook_image_classifier_new_occurrence, function (idx, fn) {
       fn(prediction, $row);
     });
-    
+
   }
 
 
@@ -385,7 +385,7 @@ let hook_image_classifier_new_occurrence = [];
    * text template.
    * @param {boolean} closable - Specifies whether the dialog can be closed by
    * the user.
-   * @param {...string} [replacements] - Values to use as replacements in the 
+   * @param {...string} [replacements] - Values to use as replacements in the
    * text template for placeholders like {1}
    */
   function showDialog(div, key, closable = true, ...replacements) {
@@ -395,8 +395,8 @@ let hook_image_classifier_new_occurrence = [];
     for (let i = 0; i < replacements.length; i++) {
       template = template.replace(`{${i + 1}}`, replacements[i]);
     }
-    
-    // Output dialog text 
+
+    // Output dialog text
     $('#image-classifier-dialog p').html(template)
 
     if (closable) {
@@ -425,7 +425,7 @@ let hook_image_classifier_new_occurrence = [];
 
   /**
    * Adds the classification result to the species input.
-   * 
+   *
    * Currently only supports a species checklist for input.
    * @param {object} div - Contains all the details of the control.
    * @param {array} files - Array of file objects that were classified.
@@ -452,9 +452,9 @@ let hook_image_classifier_new_occurrence = [];
 
     let $speciesRow = null;
     if (div.settings.mode.includes('checklist:append')) {
-      // Search for an existing occurrence of the same species if we can 
+      // Search for an existing occurrence of the same species if we can
       // append to a linked checklist
-      if (prediction.taxa_taxon_list_id !== 
+      if (prediction.taxa_taxon_list_id !==
           div.settings.unknownTaxon.taxa_taxon_list_id) {
         // This is not a record of unknown. (Unknown is never appended.)
         $grid.find('.added-row').each(function() {
@@ -470,7 +470,7 @@ let hook_image_classifier_new_occurrence = [];
     }
     else if (div.settings.mode.includes('embedded')) {
       // Search for an associated occurrence which we may amend.
-      let containerId = $.escapeSelector(div.settings.container); 
+      let containerId = $.escapeSelector(div.settings.container);
       let $imageRow = $('#' + containerId).closest('tr')
       if ($imageRow.prev().hasClass('added-row')) {
         $speciesRow = $imageRow.prev();
@@ -494,12 +494,12 @@ let hook_image_classifier_new_occurrence = [];
       // Amend the current taxon with the new result.
       // Not yet implemented.
     }
-    
+
     // If we are linked to a checklist, move the files to the speciesRow.
     if (div.settings.mode.includes('checklist')) {
       moveImagesToGrid(div, $speciesRow, files)
     }
- 
+
     // Prevent the insertion of another image row.
     $speciesRow.find('.add-media-link').hide();
 
@@ -514,7 +514,7 @@ let hook_image_classifier_new_occurrence = [];
 
   /**
    * Move the file from the classifier to the correct row of the species grid.
-   * 
+   *
    * This is called by a linked classifier. It adds a filebox to the row if
    * there is not one already present.
    * @param {object} div - Contains all the details of the control.
@@ -526,7 +526,7 @@ let hook_image_classifier_new_occurrence = [];
     // Test to see if there is already an image for this row.
     if (!$row.next().hasClass('image-row')) {
       // If not, trigger the event to add an image row.
-      $row.find('.add-media-link').click();
+      $row.find('.add-media-link').trigger('click');
     }
     // Locate the file list in the image row where we move the files.
     let $dest = $row.next().find('div.filelist');
@@ -558,7 +558,7 @@ let hook_image_classifier_new_occurrence = [];
 
   /**
    * Returns the name root for all inputs in a checklist row.
-   * 
+   *
    * This can be extracted from the id of the presence checkbox which has the
    * form sc:<gridId>-<rowIdx>:<occurrenceId?>:present
    * @param {object} $row - The jquery object of a checklist added-row.
@@ -603,7 +603,7 @@ let hook_image_classifier_new_occurrence = [];
       let table, property;
 
       if (idParts[0] === 'sc') {
-        // Ids we look for in a species checklist are like 
+        // Ids we look for in a species checklist are like
         // sc:<gridId>-<rowIdx>:<occurrenceId?>:occurrence_medium:<property>:<fiileIdx>
         table = idParts[3];
         property = idParts[4];
@@ -625,12 +625,12 @@ let hook_image_classifier_new_occurrence = [];
 
   /**
    * Update suggestions.human_chosen when taxon altered.
-   * 
-   * This functions is triggered when 
+   *
+   * This functions is triggered when
    * - species are added manually
    * - species are added by the classifier
    * - species are edited namually.
-   * In the latter case, we need to alter the human_chosen property of  
+   * In the latter case, we need to alter the human_chosen property of
    * suggestions in all the classification results for the row.
    * @param {object} data - The output from the species autocomplete 'result'
    * @param {object} row - The DOM object of the row that has changed.
@@ -661,7 +661,7 @@ let hook_image_classifier_new_occurrence = [];
 
   /**
    * Remove results based on media that has been deleted.
-   * 
+   *
    * Note that a linked classifier puts results in a regular filebox while an
    * embedded classifier has additional behaviour.
    * @param {object} $container - jQuery object of the div.mediafile to be

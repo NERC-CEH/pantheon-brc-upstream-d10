@@ -111,7 +111,7 @@ jQuery(document).ready(function docReady($) {
     }
     $('.in-lookup').hide();
     $('.lookupSelects').each(function (idx, select) {
-      $(select).find('option[value!=""]').each(function () {   
+      $(select).find('option[value!=""]').each(function () {
         var option = this;
         var allFound = true;
         fields = JSON.parse($(option).val());
@@ -126,15 +126,15 @@ jQuery(document).ready(function docReady($) {
               }
             } else {
               field = fields[i].fieldName;
-            }            
+            }
             // Keep a note of whether all the fields required by the lookup option to work have been filled in
             // e.g. for Sample External Key to work as the existing data lookup then the Sample External Key
             // must of been mapped and data such as the survey and sample method selected.
             // What fields are required is held as json in the value of the lookup option
             requiredFieldSelectedInMapping=false;
             //Cycle through each of the mappings where the user has selected a column
-            $('.import-mappings-table select option:selected').each(function () { 
-              // Is the select mapping one of the ones that is required by one of the options 
+            $('.import-mappings-table select option:selected').each(function () {
+              // Is the select mapping one of the ones that is required by one of the options
               // in the existing lookup drop-downs, if it is then note this
               if ($(this).filter(
                 '[value="' + field.replace(':', '\\:') + '"],' +
@@ -142,18 +142,18 @@ jQuery(document).ready(function docReady($) {
                 '[value="' + fields[i].fieldName.replace(':', '\\:') + '"]'
               ).length) {
                 requiredFieldSelectedInMapping=true;
-              }     
+              }
             });
             // Only keep allFound as true if it is already true and the mapping has been selected or
             // it is part of the options that are already selected.
-            allFound = 
-              allFound & 
+            allFound =
+              allFound &
                   (indiciaData.presetFields.indexOf(fields[i].fieldName) >= 0
                   || indiciaData.presetFields.indexOf(field) >= 0
                   || requiredFieldSelectedInMapping);
           }
         }
-        // Remove disabled from an of the existing lookup drop-downs where all the data required for that option 
+        // Remove disabled from an of the existing lookup drop-downs where all the data required for that option
         // has been filled in
         if (allFound) {
           if ($(option).attr('disabled') === 'disabled' || $(option).attr('disabled')==true) {
@@ -191,12 +191,12 @@ jQuery(document).ready(function docReady($) {
     });
   };
 
-  $('.lookupSelects').change(function lookupSelectChange() {
+  $('.lookupSelects').on('change', function lookupSelectChange() {
     indiciaFns.updateRequiredFields();
     indiciaFns.checkLookupOptions();
   });
 
-  $('.import-mappings-table select').change(function mappingSelectChange() {
+  $('.import-mappings-table select').on('change', function mappingSelectChange() {
     indiciaFns.detectDuplicateFields();
     indiciaFns.updateRequiredFields();
     indiciaFns.checkLookupOptions();

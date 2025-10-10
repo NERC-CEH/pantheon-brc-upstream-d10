@@ -140,7 +140,7 @@
               $this.closest('div').removeClass('switch-animate');
 
               if ($this.closest('.switch').is('.deactivate'))
-                $this.unbind('click');
+                $this.off('click');
               else {
                 $this.on('mousemove touchmove', function (e) {
                   var $element = $(this).closest('.switch')
@@ -167,7 +167,7 @@
                   e.stopImmediatePropagation();
                   e.preventDefault();
 
-                  $this.unbind('mouseleave');
+                  $this.off('mouseleave');
 
                   if (moving)
                     $myCheckBox.prop('checked', !(parseInt($this.parent().css('left')) < -25));
@@ -184,7 +184,7 @@
                   e.preventDefault();
                   e.stopImmediatePropagation();
 
-                  $this.unbind('mouseleave');
+                  $this.off('mouseleave');
                   $this.trigger('mouseup');
 
                   $myCheckBox.prop('checked', !(parseInt($this.parent().css('left')) < -25)).trigger('change');
@@ -194,7 +194,7 @@
                   e.stopImmediatePropagation();
                   e.preventDefault();
 
-                  $(this).unbind('mousemove');
+                  $(this).off('mousemove');
                 });
               }
             });
@@ -231,7 +231,7 @@
         $checkbox = $div.children();
         $checkbox.unwrap().unwrap();
 
-        $checkbox.unbind('change');
+        $checkbox.off('change');
 
         return $checkbox;
       }

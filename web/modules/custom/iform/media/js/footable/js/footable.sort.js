@@ -39,8 +39,8 @@
             p.footable = ft;
             if (ft.options.sort === true) {
                 $(ft.table)
-                    .unbind('.sorting')
-                    .bind({
+                    .off('.sorting')
+                    .on({
                         'footable_initialized.sorting': function (e) {
                             var $table = $(ft.table),
                                 $tbody = $table.find('> tbody'),
@@ -57,7 +57,7 @@
                                 }
                             });
 
-                            $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).unbind('click.footable').bind('click.footable', function (ec) {
+                            $table.find('> thead > tr:last-child > th.' + cls.sortable + ', > thead > tr:last-child > td.' + cls.sortable).off('click.footable').on('click.footable', function (ec) {
                                 ec.preventDefault();
                                 $th = $(this);
                                 var ascending = !$th.hasClass(cls.sorted);

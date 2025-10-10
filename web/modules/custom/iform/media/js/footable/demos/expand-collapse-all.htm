@@ -152,7 +152,7 @@
         $(function () {
             $('table').footable();
 
-            $('.toggle').click(function() {
+            $('.toggle').on('click', function() {
                 $('.toggle').toggle();
                 $('table').trigger($(this).data('trigger')).trigger('footable_redraw');
             });

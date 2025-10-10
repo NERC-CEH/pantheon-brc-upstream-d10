@@ -129,10 +129,15 @@
               functionCalls.push({
                 function: $.ajax,
                 arg: {
-                  dataType: 'json',
                   url: indiciaData.read.url + 'index.php/services/data/filter/' + filterId,
-                  data: 'mode=json&view=list&auth_token=' + indiciaData.read.auth_token +
-                  '&nonce=' + indiciaData.read.nonce + '&callback=?',
+                  data: {
+                    mode: 'json',
+                    view: 'list',
+                    auth_token: indiciaData.read.auth_token,
+                    nonce: indiciaData.read.nonce
+                  },
+                  dataType: 'jsonp',
+                  crossDomain: true,
                   success: indiciaFns.setFilterSummary
                 }
               })
@@ -162,10 +167,15 @@
             functionCalls.push({
               function: $.ajax,
               arg: {
-                dataType: 'json',
                 url: indiciaData.read.url + 'index.php/services/data/filter/' + filterId,
-                data: 'mode=json&view=list&auth_token=' + indiciaData.read.auth_token +
-                '&nonce=' + indiciaData.read.nonce + '&callback=?',
+                data: {
+                  mode: 'json',
+                  view: 'list',
+                  auth_token: indiciaData.read.auth_token,
+                  nonce: indiciaData.read.nonce
+                },
+                dataType: 'jsonp',
+                crossDomain: true,
                 success: indiciaFns.setFilterSummary
               }
             })

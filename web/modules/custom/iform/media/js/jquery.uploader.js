@@ -144,12 +144,12 @@ var checkSubmitInProgress = function () {
   }
 
   $(document).ready(function() {
-    $("#add-link-form").keypress(function(e) {
+    $("#add-link-form").on('keypress', function(e) {
       if (e.keyCode == $.ui.keyCode.ENTER) {
         $(this).parent().find("button:eq(0)").trigger("click");
       }
     });
-    $("#add-link-form input").change(function(e) {
+    $("#add-link-form input").on('change', function(e) {
       $("#add-link-form ." + indiciaData.inlineErrorClass).remove();
     });
   });
@@ -222,7 +222,7 @@ var checkSubmitInProgress = function () {
           .replace('{helpTextClass}', this.settings.helpTextClass)
       );
       if (hasLinks) {
-        $('#link-select-btn-' + id).click(function(el) {
+        $('#link-select-btn-' + id).on('click', function(el) {
           // store things that will be needed on OK click
           currentDiv = div;
           $('#link_url').val('');
@@ -371,7 +371,7 @@ var checkSubmitInProgress = function () {
 
       // Add a box to indicate a file that is added to the list to upload, but not yet uploaded.
       this.uploader.bind('FilesAdded', function(up, files) {
-        $(div).parents('form').bind('submit', checkSubmitInProgress);
+        $(div).parents('form').on('submit', checkSubmitInProgress);
         // Hide the drop here hint once we have something, so it doesn't occupy space.
         $(div).find('.drop-instruct').remove();
         // Find any files over the upload limit
@@ -512,7 +512,7 @@ var checkSubmitInProgress = function () {
         }
         // reset the form handler if this is the last upload in progress
         if ($('.file-box .progress').length===0) {
-          $("form").unbind('submit', checkSubmitInProgress);
+          $("form").off('submit', checkSubmitInProgress);
         }
       });
 
@@ -524,7 +524,7 @@ var checkSubmitInProgress = function () {
         indiciaFns.on('click', '.filelist a.fancybox', null, function() {
           jQuery("body").after('<a id="link_fancybox" style="display: hidden;" href="'+jQuery(this).attr('href')+'"></a>');
           jQuery('#link_fancybox').fancybox();
-          jQuery('#link_fancybox').click();
+          jQuery('#link_fancybox').trigger('click');
           jQuery('#link_fancybox').remove();
           return false;
         });
@@ -592,17 +592,17 @@ jQuery.fn.uploader.defaults = {
   resizeHeight: 0,
   resizeQuality: 90,
   upload : true,
-  maxFileCount : 4,
+  maxFileCount : 8,
   existingFiles : [],
   buttonTemplate : '<button id="{id}" type="button"{class} title="{title}">{caption}</button>',
   file_boxTemplate : '<fieldset class="ui-corner-all">\n<legend class={captionClass}>{caption}</legend>\n{uploadSelectBtn}\n{linkSelectBtn}\n' +
     '<div class="filelist"></div>' +
     '</fieldset>\n<p class="{helpTextClass}">{helpText}</p>',
   file_box_initial_link_infoTemplate : '<div id="link-{linkRequestId}" class="ui-widget-content ui-corner-all link"><div class="ui-widget-header ui-corner-all ui-helper-clearfix"><span id="link-title-{linkRequestId}">Loading...</span> ' +
-          '<span class="delete-file ind-delete-icon" id="del-{id}"></span></div>'+
+          '<span class="delete-file fas fa-trash-alt" id="del-{id}"></span></div>'+
           '<div id="link-embed-{linkRequestId}"></div></div>',
   file_box_initial_file_infoTemplate : '<div id="{id}" class="ui-widget-content ui-corner-all mediafile"><div class="ui-widget-header ui-corner-all ui-helper-clearfix"><span>{filename}</span> ' +
-          '<span class="delete-file ind-delete-icon" id="del-{id}"></span></div><div class="progress-wrapper"><progress class="progress" value="0" max="100">0 %</progress>'+
+          '<span class="delete-file fas fa-trash-alt" id="del-{id}"></span></div><div class="progress-wrapper"><progress class="progress" value="0" max="100">0 %</progress>'+
           '<div class="progress-percent"></div><div class="progress-gif"></div></div><div class="media-wrapper"></div></div>',
   file_box_uploaded_extra_fieldsTemplate : '<input type="hidden" name="{idField}" id="{idField}" value="{idValue}" />' +
       '<input type="hidden" name="{pathField}" id="{pathField}" value="{pathValue}" />' +

@@ -339,13 +339,13 @@
    * Register the various user interface event handlers.
    */
   function initHandlers(el) {
-    $(el).find('.move-records-btn').click(moveRecordsBtnClickHandler);
+    $(el).find('.move-records-btn').on('click', moveRecordsBtnClickHandler);
 
-    $(el).find('.proceed-move').click(() => {
+    $(el).find('.proceed-move').on('click', () => {
       proceedClickHandler(el);
     });
 
-    $(el).find('.close-move-dlg').click(() => {
+    $(el).find('.close-move-dlg').on('click', () => {
       $.fancybox.close();
     });
   }

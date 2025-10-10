@@ -1,22 +1,22 @@
 /**
  * TODO:
- * If the centroid is already available from the list of available sites, then ask if they really want to 
+ * If the centroid is already available from the list of available sites, then ask if they really want to
  * create a new site.
- * 
+ *
  */
- 
+
 var allowCreateSites;
 
 (function ($) {
   "use strict";
-  
+
 allowCreateSites=function() {
   // create a button for saving the location
   $('#imp-location\\:name').after('<button id="save-site" type="button" title="'+indiciaData.msgRememberSiteHint+
       '" id="save-site" style="display: none;" class="ui-corner-all ui-widget-content ui-state-default indicia-button inline-control">'+
       indiciaData.msgRememberSite+'</button>'+
       '<input name="save-site-flag" id="save-site-flag" type="hidden" value="0"/>');
-  
+
   indiciaFns.showHideRememberSiteButton = function() {
     if ($('#imp-location\\:name').val().length>0 && $('#imp-sref').val().length>0 &&
         $('#imp-location').val().length===0) {
@@ -25,9 +25,9 @@ allowCreateSites=function() {
       $('#save-site').hide();
     }
   };
-  
-  $('#imp-location\\:name,#imp-location,#imp-sref').change(indiciaFns.showHideRememberSiteButton);
-  $('#save-site').click(function() {
+
+  $('#imp-location\\:name,#imp-location,#imp-sref').on('change', indiciaFns.showHideRememberSiteButton);
+  $('#save-site').on('click', function() {
     if ($('#save-site').hasClass('ui-state-highlight')) {
       $('#save-site').removeClass('ui-state-highlight');
       $('#save-site-flag').val('0');

@@ -50,13 +50,13 @@ jQuery(document).ready(function ($) {
     layer.removeFeatures(toRemove, {});
   }
 
-  $('#location_list\\:sublist').bind('append', function () {
+  $('#location_list\\:sublist').on('append', function () {
     if (!loadingSites) {
       loadSites($(this).find('li input[name="location_list[]"]').last().val(), false);
       // remove all non-site boundaries, i.e. grid squares
       indiciaData.mapdiv.removeAllFeatures(indiciaData.mapdiv.map.editLayer, 'boundary', true);
     }
-    $('#location_list\\:sublist li:last-child').bind('remove', removeSite);
+    $('#location_list\\:sublist li:last-child').on('remove', removeSite);
   });
 
   /**
@@ -984,7 +984,7 @@ jQuery(document).ready(function ($) {
           $('#coordinate_precision_op input[value="<="]').prop('checked', true);
         }
         // Trigger change to update hidden controls in UI.
-        $('#autochecks').change();
+        $('#autochecks').trigger('change');
       },
       applyFormToDefinition: function() {
         if (indiciaData.filterEntity === 'occurrence') {
@@ -1065,7 +1065,7 @@ jQuery(document).ready(function ($) {
   }
 
   // Ensure that pane controls that are exclusive of others are only filled in one at a time.
-  $('.filter-controls fieldset :input').change(function (e) {
+  $('.filter-controls fieldset :input').on('change', function (e) {
     var formDiv = $(e.currentTarget).parents('.filter-popup');
     var thisFieldset = $(e.currentTarget).parents('fieldset')[0];
     if ($(this).val() !== '') {
@@ -1093,18 +1093,18 @@ jQuery(document).ready(function ($) {
   };
   $.each(taxonSelectionMethods, function (idx, method) {
     fieldname = this === 'taxon_group_list' ? 'q' : 'searchterm';
-    $('#' + this + '\\:search\\:' + fieldname).keypress(function (e) {
+    $('#' + this + '\\:search\\:' + fieldname).on('keypress', function (e) {
       if (e.which === 13) {
         keep(method);
       }
     });
-    $('#' + this + '\\:add').click(function () {
+    $('#' + this + '\\:add').on('click', function () {
       keep(method);
     });
   });
 
   // Show all taxon groups link.
-  $('#show-species-groups').click(function() {
+  $('#show-species-groups').on('click', function() {
     $('.filter-controls').hide();
     let cntr = $('<div>').insertAfter($('.filter-controls'));
     let ul = $('<ul style="columns: 4">').appendTo(cntr);
@@ -1112,7 +1112,7 @@ jQuery(document).ready(function ($) {
       ul.append('<li>' + this.title + '</li>');
     });
     let btn = $('<button class="btn btn-primary">' + indiciaData.lang.reportFilters.back + '</button>').appendTo(cntr);
-    btn.click(function() {
+    btn.on('click', function() {
       cntr.remove();
       $('.filter-controls').show();
     });
@@ -1153,39 +1153,46 @@ jQuery(document).ready(function ($) {
     idQuery = '{"in":{"id":[' + idsToSelect + ']}}';
     loadingSites = true;
     $.ajax({
-      dataType: 'json',
       url: indiciaData.read.url + 'index.php/services/data/location',
-      data: 'mode=json&view=list&orderby=name&auth_token=' + indiciaData.read.auth_token +
-      '&nonce=' + indiciaData.read.nonce + '&query=' + idQuery + '&view=detail&callback=?',
-      success: function (data) {
-        // @todo Update this code to also work with the ES Leaflet map.
-        var features = [];
-        var feature;
-        var geomwkt;
-        var parser;
-        if (data.length) {
-          $.each(data, function (idx, loc) {
-            if ($('input[name="location_list[]"][value="' + loc.id + '"]').length === 0) {
-              $('#location_list\\:sublist').append('<li class="ui-widget-content ui-corner-all"><span class="ind-delete-icon">' +
-                '&nbsp;</span>' + loc.name + '<input type="hidden" name="location_list[]" value="' + loc.id + '"/></li>');
+      data: {
+        mode: 'json',
+        view: 'detail',
+        orderby: 'name',
+        auth_token: indiciaData.read.auth_token,
+        nonce: indiciaData.read.nonce,
+        query: idQuery,
+      },
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function (data) {
+      // @todo Update this code to also work with the ES Leaflet map.
+      var features = [];
+      var feature;
+      var geomwkt;
+      var parser;
+      if (data.length) {
+        $.each(data, function (idx, loc) {
+          if ($('input[name="location_list[]"][value="' + loc.id + '"]').length === 0) {
+            $('#location_list\\:sublist').append('<li class="ui-widget-content ui-corner-all"><span class="ind-delete-icon">' +
+              '&nbsp;</span>' + loc.name + '<input type="hidden" name="location_list[]" value="' + loc.id + '"/></li>');
+          }
+          if (loc.boundary_geom || loc.centroid_geom) {
+            geomwkt = loc.boundary_geom || loc.centroid_geom;
+            parser = new OpenLayers.Format.WKT();
+            if (indiciaData.mapdiv.map.projection.getCode() !== indiciaData.mapdiv.indiciaProjection.getCode()) {
+              geomwkt = parser.read(geomwkt).geometry.transform(indiciaData.mapdiv.indiciaProjection, indiciaData.mapdiv.map.projection).toString();
             }
-            if (loc.boundary_geom || loc.centroid_geom) {
-              geomwkt = loc.boundary_geom || loc.centroid_geom;
-              parser = new OpenLayers.Format.WKT();
-              if (indiciaData.mapdiv.map.projection.getCode() !== indiciaData.mapdiv.indiciaProjection.getCode()) {
-                geomwkt = parser.read(geomwkt).geometry.transform(indiciaData.mapdiv.indiciaProjection, indiciaData.mapdiv.map.projection).toString();
-              }
-              feature = parser.read(geomwkt);
-              feature.attributes.type = 'boundary';
-              feature.attributes.id = loc.id;
-              features.push(feature);
-            }
-          });
-          indiciaData.mapdiv.map.editLayer.addFeatures(features);
-          indiciaData.mapdiv.map.zoomToExtent(indiciaData.mapdiv.map.editLayer.getDataExtent());
-        }
-        loadingSites = false;
+            feature = parser.read(geomwkt);
+            feature.attributes.type = 'boundary';
+            feature.attributes.id = loc.id;
+            features.push(feature);
+          }
+        });
+        indiciaData.mapdiv.map.editLayer.addFeatures(features);
+        indiciaData.mapdiv.map.zoomToExtent(indiciaData.mapdiv.map.editLayer.getDataExtent());
       }
+      loadingSites = false;
     });
   }
 
@@ -1219,11 +1226,11 @@ jQuery(document).ready(function ($) {
     indiciaData.mapdiv.map.updateSize();
   }
 
-  $('#site-type').change(function () {
+  $('#site-type').on('change', function () {
     changeSiteType();
   });
 
-  $('#my_groups').click(function () {
+  $('#my_groups').on('click', function () {
     $.each(indiciaData.myGroups, function(idx, group) {
       if ($('#taxon_group_list\\:sublist input[value=' + group['id'] + ']').length === 0) {
         $('#taxon_group_list\\:sublist').append('<li><span class="ind-delete-icon"> </span>' + group['title'] +
@@ -1242,7 +1249,7 @@ jQuery(document).ready(function ($) {
   };
 
   // Hook the above event handler to the select filter dropdown.
-  $('#select-filter').change(filterChange);
+  $('#select-filter').on('change', filterChange);
 
   /**
    * If a context is loaded, need to limit the filter to the records in the context
@@ -1339,6 +1346,9 @@ jQuery(document).ready(function ($) {
     }
     // Integrate with Elasticsearch reports as well.
     if (indiciaData.esSourceObjects) {
+      // Track duplicate errors so only show one alert even if multiple ES
+      // reports have problems.
+      indiciaData.sourceErrorsShown = [];
       $.each(indiciaData.esSourceObjects, function eachSource() {
         // Reset to first page.
         this.settings.from = 0;
@@ -1505,12 +1515,16 @@ jQuery(document).ready(function ($) {
         }]);
       } else {
         $.ajax({
-          dataType: 'json',
           url: indiciaData.read.url + 'index.php/services/data/filter/' + id,
-          data: 'mode=json&view=list&auth_token=' + indiciaData.read.auth_token +
-          '&nonce=' + indiciaData.read.nonce + '&callback=?',
-          success: filterLoaded
-        });
+          data: {
+            mode: 'json',
+            view: 'list',
+            auth_token: indiciaData.read.auth_token,
+            nonce: indiciaData.read.nonce
+          },
+          dataType: 'jsonp',
+          crossDomain: true
+        }).done(filterLoaded);
       }
     }
   };
@@ -1648,7 +1662,7 @@ jQuery(document).ready(function ($) {
           }
           indiciaData.mapdiv.map.updateSize();
           // Ensure that if FancyBox container scrolls, mouse position remains accurate.
-          $(indiciaData.mapdiv).parents().scroll(function() {
+          $(indiciaData.mapdiv).parents().on('scroll', function() {
             indiciaData.mapdiv.map.events.clearMouseCache();
           });
         }
@@ -1689,19 +1703,19 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  $('form.filter-controls :input').change(function () {
+  $('form.filter-controls :input').on('change', function () {
     filterParamsChanged();
   });
 
-  $('#filter-apply').click(function () {
+  $('#filter-apply').on('click', function () {
     loadFilter($('#select-filter').val(), {});
   });
 
-  $('#filter-reset').click(function () {
+  $('#filter-reset').on('click', function () {
     resetFilter();
   });
 
-  $('#filter-build').click(function () {
+  $('#filter-build').on('click', function () {
     var desc;
     $.each(indiciaData.filterParser, function (name, obj) {
       desc = obj.getDescription(indiciaData.filter.def, '<br/>');
@@ -1721,7 +1735,7 @@ jQuery(document).ready(function ($) {
     $('#filter-build').addClass('disabled');
   });
 
-  $('#filter-delete').click(function (e) {
+  $('#filter-delete').on('click', function (e) {
     var filter;
     if ($(e.currentTarget).hasClass('disabled')) {
       return;
@@ -1749,7 +1763,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#filter-done').click(function () {
+  $('#filter-done').on('click', function () {
     $('#filter-details').slideUp(400, function() {
       if (indiciaFns.updateControlLayout) {
         indiciaFns.updateControlLayout();
@@ -1758,12 +1772,12 @@ jQuery(document).ready(function ($) {
     $('#filter-build').removeClass('disabled');
   });
 
-  $('.fb-close').click(function () {
+  $('.fb-close').on('click', function () {
     $.fancybox.close();
   });
 
   // Change the year date operation, fill in current year as default.
-  $('#date_year_op').change(function() {
+  $('#date_year_op').on('change', function() {
     if ($('#date_year_op option:selected').val() !== '' && $('#date_year').val() === '') {
       $('#date_year').val(new Date().getFullYear());
     } else if ($('#date_year_op option:selected').val() === '') {
@@ -1772,14 +1786,14 @@ jQuery(document).ready(function ($) {
     }
   });
   // Change the year date, fill in equals as operation default.
-  $('#date_year').change(function() {
+  $('#date_year').on('change', function() {
     if ($('#date_year_op option:selected').val() === '') {
       $('#date_year_op').val('=');
     }
   });
 
   // Select a named location - deactivate the drawFeature and hide modifyFeature controls.
-  $('#location_list\\:search\\:name').change(function () {
+  $('#location_list\\:search\\:name').on('change', function () {
     $.each(indiciaData.mapdiv.map.controls, function () {
       if (this.CLASS_NAME === 'OpenLayers.Control.DrawFeature') {
         this.deactivate();
@@ -1956,10 +1970,21 @@ jQuery(document).ready(function ($) {
               if (msg.indexOf('duplicate') > -1) {
                 if (confirm(indiciaData.lang.reportFilters.filterExistsOverwrite)) {
                   // need to load the existing filter to get it's ID, then resave
-                  $.getJSON(indiciaData.read.url + 'index.php/services/data/filter?created_by_id=' +
-                    indiciaData.user_id + '&title=' + encodeURIComponent($('#filter\\:title').val()) + '&sharing=' +
-                    indiciaData.filterSharing + '&mode=json&view=list&auth_token=' + indiciaData.read.auth_token +
-                    '&nonce=' + indiciaData.read.nonce + '&callback=?', function (response) {
+                  $.ajax({
+                    url: indiciaData.read.url + 'index.php/services/data/filter/' + indiciaData.filter.id,
+                    data: {
+                      created_by_id: indiciaData.user_id,
+                      title: $('#filter\\:title').val(),
+                      sharing: indiciaData.filterSharing,
+                      mode: 'json',
+                      view: 'list',
+                      auth_token: indiciaData.read.auth_token,
+                      nonce: indiciaData.read.nonce
+                    },
+                    dataType: 'jsonp',
+                    crossDomain: true
+                  })
+                  .done(function (response) {
                     indiciaData.filter.id = response[0].id;
                     indiciaData.filter.title = $('#filter\\:title').val();
                     saveFilter();
@@ -1994,29 +2019,29 @@ jQuery(document).ready(function ($) {
   }
 
   // Standalone quality media filters select change event.
-  $('.standalone-media-filter select').change(function() {
+  $('.standalone-media-filter select').on('change', function() {
     indiciaData.filter.def.has_photos = $(this).val();
     updateStandaloneFilter();
   });
 
   // Interactions betweem mutually exclusive filters.
-  $('#occ_id').change(function() {
+  $('#occ_id').on('change', function() {
     if ($('#occ_id').val().trim() !== '') {
       $('#occurrence_external_key').val('');
     }
   });
-  $('#occurrence_external_key').change(function() {
+  $('#occurrence_external_key').on('change', function() {
     if ($('#occurrence_external_key').val().trim() !== '') {
       $('#occ_id').val('');
     }
   });
 
   $('#location_list\\:box').hide();
-  $('#filter-save').click(saveFilter);
-  $('#context-filter').change(resetFilter);
+  $('#filter-save').on('click', saveFilter);
+  $('#context-filter').on('change', resetFilter);
 
   filterChange();
-  $('#imp-sref').change(function () {
+  $('#imp-sref').on('change', function () {
     window.setTimeout(function () { clearSites(); }, 500);
   });
 
@@ -2099,11 +2124,20 @@ jQuery(document).ready(function ($) {
     if (loadSurveysUsingWebsites.length) {
       // We have some selected websites to load surveys for.
       if (indiciaData.lastLoadedSurveysUsingWebsites.join(',') !== loadSurveysUsingWebsites.join(',')) {
-        $.getJSON(indiciaData.warehouseUrl + 'index.php/services/report/requestReport?' +
-          'report=library/surveys/surveys_list.xml' +
-          '&reportSource=local&orderby=fulltitle&website_ids=' + loadSurveysUsingWebsites.join(',') +
-          '&nonce=' + indiciaData.read.nonce + '&auth_token=' + indiciaData.read.auth_token +
-          '&mode=json&callback=?')
+        $.ajax({
+          url: indiciaData.warehouseUrl + 'index.php/services/report/requestReport',
+          data: {
+            report: 'library/surveys/surveys_list.xml',
+            reportSource: 'local',
+            orderby: 'fulltitle',
+            website_ids: loadSurveysUsingWebsites.join(','),
+            nonce: indiciaData.read.nonce,
+            auth_token: indiciaData.read.auth_token,
+            mode: 'json'
+          },
+          dataType: 'jsonp',
+          crossDomain: true
+        })
         .done(function(data) {
           $('#survey-list-checklist li').remove();
           // Load the list of surveys into the UI.
@@ -2219,11 +2253,20 @@ jQuery(document).ready(function ($) {
             updateInputFormList(forms, inputFormsToRetick);
           });
         } else {
-          $.getJSON(indiciaData.warehouseUrl + 'index.php/services/report/requestReport?' +
-            'report=library/input_forms/input_forms_list.xml' +
-            '&reportSource=local&orderby=input_form&survey_ids=' + loadInputFormsUsingSurveys.join(',') +
-            '&nonce=' + indiciaData.read.nonce + '&auth_token=' + indiciaData.read.auth_token +
-            '&mode=json&callback=?')
+          $.ajax({
+            url: indiciaData.warehouseUrl + 'index.php/services/report/requestReport',
+            data: {
+              report: 'library/input_forms/input_forms_list.xml',
+              reportSource: 'local',
+              orderby: 'input_form',
+              survey_ids: loadInputFormsUsingSurveys.join(','),
+              nonce: indiciaData.read.nonce,
+              auth_token: indiciaData.read.auth_token,
+              mode: 'json'
+            },
+            dataType: 'jsonp',
+            crossDomain: true
+          })
           .done(function(data) {
             let forms = [];
             $.each(data, function() {
@@ -2270,9 +2313,9 @@ jQuery(document).ready(function ($) {
   }
 
   // Link source filter boxes handler to keyup for inputs.
-  $('#websites-search').keyup(sourceListFilterKeyHandler);
-  $('#surveys-search').keyup(sourceListFilterKeyHandler);
-  $('#input_forms-search').keyup(sourceListFilterKeyHandler);
+  $('#websites-search').on('keyup', sourceListFilterKeyHandler);
+  $('#surveys-search').on('keyup', sourceListFilterKeyHandler);
+  $('#input_forms-search').on('keyup', sourceListFilterKeyHandler);
 
   /* Code for the custom quality filter select control. */
   function closeQualityPane(e) {
@@ -2320,7 +2363,7 @@ jQuery(document).ready(function ($) {
   }
 
   // Show the custom quality panel drop-down div.
-  $('.quality-filter').click(function(e) {
+  $('.quality-filter').on('click', function(e) {
     var wrap = $(e.currentTarget).closest('.quality-cntr');
     var pane = wrap.find('.quality-pane');
     var input = wrap.find('.quality-filter');
@@ -2355,7 +2398,7 @@ jQuery(document).ready(function ($) {
 
   // Indent level 2 verification items hierarchical behaviour.
   $('.quality-pane').find('input[value="V1"], input[value="V2"], input[value="R4"], input[value="R5"]').addClass('indent');
-  $('.quality-pane input.indent').change((e) => {
+  $('.quality-pane input.indent').on('change', (e) => {
     const pane = $(e.currentTarget).closest('.quality-pane');
     const status = $(e.currentTarget).val().substring(0, 1);
     const l1Checkbox = $(pane).find('input[value="' + status + '"]');
@@ -2367,7 +2410,7 @@ jQuery(document).ready(function ($) {
   /**
    * Cascade level-1 status checkboxes to level 2, e.g. V ticks V1 and V2.
    */
-  $('.quality-pane').find('input[value="V"], input[value="R"]').change((e) => {
+  $('.quality-pane').find('input[value="V"], input[value="R"]').on('change', (e) => {
     const pane = $(e.currentTarget).closest('.quality-pane');
     const status = $(e.currentTarget).val();
     const l1Checkbox = $(pane).find('input[value="' + status + '"]');
@@ -2378,7 +2421,7 @@ jQuery(document).ready(function ($) {
   /**
    * Cascade ticking all to the other checkboxes.
    */
-  $('.quality-pane').find('input[value="all"]').change((e) => {
+  $('.quality-pane').find('input[value="all"]').on('change', (e) => {
     const pane = $(e.currentTarget).closest('.quality-pane');
     const checkboxes = $(pane).find('input[type="checkbox"]').not('[value="all"]');
     checkboxes.prop('checked', $(e.currentTarget).is(':checked'));
@@ -2387,7 +2430,7 @@ jQuery(document).ready(function ($) {
   /**
    * Uncheck all if another checkbox is unchecked.
    */
-  $('.quality-pane').find('input[type="checkbox"]').not('[value="all"]').change((e) => {
+  $('.quality-pane').find('input[type="checkbox"]').not('[value="all"]').on('change', (e) => {
     if (!$(e.currentTarget).is(':checked')) {
       const pane = $(e.currentTarget).closest('.quality-pane');
       const allCheckbox = $(pane).find('input[type="checkbox"][value="all"]');
@@ -2395,14 +2438,14 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#identification_difficulty').change(function() {
+  $('#identification_difficulty').on('change', function() {
     if ($('#identification_difficulty').val() === '') {
       // Unsetting the ID diff filter, so set the op to = as makes more sense.
       $('#identification_difficulty_op').val('=');
     }
   });
 
-  $('#coordinate_precision_op').change(function() {
+  $('#coordinate_precision_op').on('change', function() {
     if ($('#coordinate_precision_op input:checked').length > 0 && $('#coordinate_precision input:checked').val() === '') {
       // Setting a coordinate precision op, so set the default precision to 1
       // km if not already set.
@@ -2410,7 +2453,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#coordinate_precision').change(function() {
+  $('#coordinate_precision').on('change', function() {
     if ($('#coordinate_precision input:checked').val() === '') {
       // Unsetting the coord precision filter, so remove the op.
       $('#coordinate_precision_op input').prop('checked', false);
@@ -2450,15 +2493,15 @@ jQuery(document).ready(function ($) {
       errorClass: indiciaData.templates.jQueryValidateErrorClass,
     });
 
-    $('.quality-pane button.cancel').click(closeQualityPane);
+    $('.quality-pane button.cancel').on('click', closeQualityPane);
 
-    $('.quality-pane button.ok').click(saveAndCloseQualityPane);
+    $('.quality-pane button.ok').on('click', saveAndCloseQualityPane);
   }
 
   /**
    * In vertical mode the panel descripts can be toggled on and off.
    */
-  $('.toggle-description').click(function(e) {
+  $('.toggle-description').on('click', function(e) {
     if ($(e.currentTarget).hasClass('fa-caret-down')) {
       $(e.currentTarget).removeClass('fa-caret-down');
       $(e.currentTarget).addClass('fa-caret-up');

@@ -177,7 +177,7 @@ $(&#39;table&#39;).footable().on(&#39;click&#39;, &#39;.row-delete&#39;, functio
                 <h3>Adding A Row</h3>
                 <p>For similar reasons as above, it is recommended to use the built-in <code>appendRow</code> function for adding rows to the FooTable:</p>
                 <pre>
-$(&#39;.add-row&#39;).click(function(e) {
+$(&#39;.add-row&#39;).on('click', function(e) {
     e.preventDefault();
 
     //get the footable object
@@ -206,7 +206,7 @@ $(&#39;.add-row&#39;).click(function(e) {
                 footable.removeRow(row);
 			});
 
-            $('.add-row').click(function(e) {
+            $('.add-row').on('click', function(e) {
                 e.preventDefault();
 
                 //get the footable object

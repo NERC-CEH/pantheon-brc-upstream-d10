@@ -91,7 +91,7 @@ jQuery(document).ready(function($) {
     }
     row += '</td></tr>';
     $(table).find('tbody').append(row);
-    $(table).find('tbody tr:last-child select').change(function() {updateUniqueSelects(table);});
+    $(table).find('tbody tr:last-child select').on('change', function() {updateUniqueSelects(table);});
   }
 
   changeComplexGridRowCount = function(countCtrlId, attrTypeTag, attrId) {
@@ -115,12 +115,12 @@ jQuery(document).ready(function($) {
     }
   };
 
-  $('table.complex-attr-grid .add-btn').click(function(e) {
+  $('table.complex-attr-grid .add-btn').on('click', function(e) {
     var table=$(e.currentTarget).closest('table')[0];
     addRowToTable(table);
   });
 
-  $('table.complex-attr-grid tbody').click(function(e) {
+  $('table.complex-attr-grid tbody').on('click', function(e) {
     var table=this.parentNode;
     var row;
     // e.target is the actual thing clicked on inside the tbody
@@ -143,7 +143,7 @@ jQuery(document).ready(function($) {
     }
   });
 
-  $('table.complex-attr-grid select').change(function(e) {
+  $('table.complex-attr-grid select').on('change', function(e) {
     updateUniqueSelects($(e.target).closest('table')[0]);
   });
 

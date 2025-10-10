@@ -25,7 +25,7 @@
 (function($) {
 
   /**
-   * Constructor. 
+   * Constructor.
    */
   $.fn.indiciaTreeBrowser = function(options) {
     this.settings = {};
@@ -33,12 +33,12 @@
     $.extend(this.settings, $.fn.indiciaTreeBrowser.defaults, options);
     load(this);
   };
-      
+
   /**
-   * Load a level into the control 
+   * Load a level into the control
    */
   function load(container, id) {
-    // Store the clicked on id in the hidden form field.        
+    // Store the clicked on id in the hidden form field.
     $("#"+container.settings.valueControl.replace(':','\\:')).val(id);
     // Ensure the Warehouse services understand an empty value
     if (id===undefined) {
@@ -50,44 +50,44 @@
     }
     container.find("li").removeClass('ui-state-highlight');
     $("li#"+id).addClass('ui-state-highlight');
-    $.getJSON(container.settings.url+"?callback=?&"+container.settings.parentField+"="+id+"&view="+container.settings.view+extras,      
+    $.getJSON(container.settings.url+"?callback=?&"+container.settings.parentField+"="+id+"&view="+container.settings.view+extras,
       null,
       function(response) {
       if (response.length) {
         var itemClass;
         // Build a new list at the bottom of the container, hidden for now
         var list = $("<ul/>").appendTo(container);
-        list.hide();            
+        list.hide();
         // Create entries in the list
-        $.each(response, function(idx, record) {          
+        $.each(response, function(idx, record) {
           var node = container.settings.nodeTmpl;
           record.caption = record[container.settings.captionField];
           for (var item in record) {
             node = node.replace(new RegExp('{'+item+'}','g'), record[item]);
-          }          
+          }
           itemClass=container.settings.listItemClass;
           if (record[container.settings.valueField]==container.settings.defaultValue) {
             itemClass += ' ui-state-highlight';
           }
           var current = $('<li class="'+itemClass+'"/>').attr("id", record[container.settings.valueField] || "").html(node).appendTo(list);
-          current.click(function() {
+          current.on('click', function() {
             load(container, this.id);
-          });            
+          });
         });
-        // If in single layer mode, hide the previous level lists. Add a go back button. 
+        // If in single layer mode, hide the previous level lists. Add a go back button.
         if (container.settings.singleLayer && id!='NULL') {
           container.children().slideUp('fast');
-          $('<li class="ui-state-default">'+container.settings.backCaption+"</li>").click(function() {
-            list.slideUp('fast', function() {list.remove();} );                
+          $('<li class="ui-state-default">'+container.settings.backCaption+"</li>").on('click', function() {
+            list.slideUp('fast', function() {list.remove();} );
             container.children().show('fast');
           }).appendTo(list);
         }
         if (id!='NULL') {
-          list.slideDown('fast');            
+          list.slideDown('fast');
         } else {
           list.fadeIn('slow');
         }
-      }                    
+      }
     });
   }
 

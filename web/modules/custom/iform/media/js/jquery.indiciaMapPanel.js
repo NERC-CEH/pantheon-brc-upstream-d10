@@ -185,8 +185,18 @@ var destroyAllFeatures;
       }
       if (!isNaN(intValue)) {
         // Change the location control requests the location's geometry to place on the map.
-        $.getJSON(div.settings.indiciaSvc + 'index.php/services/data/location/' + val +
-            '?mode=json&view=detail' + div.settings.readAuth + '&callback=?', function (data) {
+        $.ajax({
+          url: div.settings.indiciaSvc + 'index.php/services/data/location/' + intValue,
+          data: {
+            mode: 'json',
+            view: 'detail',
+            auth_token: indiciaData.read.auth_token,
+            nonce: indiciaData.read.nonce
+          },
+          dataType: 'jsonp',
+          crossDomain: true
+        })
+        .done(function (data) {
           // store value in saved field?
           if (data.length > 0) {
             // TODO not sure best way of doing this using the services, we don't really want
@@ -459,9 +469,9 @@ var destroyAllFeatures;
 
       // If the spatial ref input control exists, bind it to the map, so
       // entering a ref updates the map.
-      $('#' + opts.srefId).change(userChangedSref);
+      $('#' + opts.srefId).on('change', userChangedSref);
       // If the spatial ref latitude or longitude input control exists, bind it to the map, so entering a ref updates the map
-      $('#' + opts.srefLatId).change(function () {
+      $('#' + opts.srefLatId).on('change', function () {
         // Only do something if both the lat and long are populated
         if ($(this).val().trim() !== '' && $('#' + opts.srefLongId).val().trim() !== '') {
           // copy the complete sref into the sref field
@@ -469,7 +479,7 @@ var destroyAllFeatures;
           _handleEnteredSref($('#' + opts.srefId).val(), div);
         }
       });
-      $('#' + opts.srefLongId).change(function () {
+      $('#' + opts.srefLongId).on('change', function () {
         // Only do something if both the lat and long are populated
         if ($('#'+opts.srefLatId).val().trim() !== '' && $(this).val().trim() !== '') {
           // copy the complete sref into the sref field
@@ -477,7 +487,7 @@ var destroyAllFeatures;
           _handleEnteredSref($('#' + opts.srefId).val(), div);
         }
       });
-      $('#' + opts.srefSystemId).change(function () {
+      $('#' + opts.srefSystemId).on('change', function () {
         // When Spatial reference system is changed then do the following....
         // -If the spatial referece has already been changed by the user since the page was loaded
         // then use that last position to provide the position to switch the spatial reference system for
@@ -519,7 +529,7 @@ var destroyAllFeatures;
       });
 
       // If a place search (georeference) control exists, bind it to the map.
-      $('#' + div.georefOpts.georefSearchId).keypress(function (e) {
+      $('#' + div.georefOpts.georefSearchId).on('keypress', function (e) {
         if (e.which === 13) {
           _georeference(div);
           return false;
@@ -527,11 +537,11 @@ var destroyAllFeatures;
         return true;
       });
 
-      $('#' + div.georefOpts.georefSearchBtnId).click(function () {
+      $('#' + div.georefOpts.georefSearchBtnId).on('click', function () {
         _georeference(div);
       });
 
-      $('#' + div.georefOpts.georefCloseBtnId).click(function (e) {
+      $('#' + div.georefOpts.georefCloseBtnId).on('click', function (e) {
         $('#' + div.georefOpts.georefDivId).hide('fast', function () { div.map.updateSize(); });
         e.preventDefault();
       });
@@ -539,7 +549,7 @@ var destroyAllFeatures;
         var locChange = function () {
           locationSelectedInInput(div, $('#imp-location').val());
         };
-        $('#imp-location').change(locChange);
+        $('#imp-location').on('change', locChange);
         // trigger change event, incase imp-location was already populated when the map loaded
         locationSelectedInInput(div, $('#imp-location').val(), true);
       }
@@ -681,7 +691,7 @@ var destroyAllFeatures;
                   }
                 }
               }
-              $('#' + opts.geomId).val(data.wkt).change();
+              $('#' + opts.geomId).val(data.wkt).trigger('change');
             }
           }
         });
@@ -776,7 +786,7 @@ var destroyAllFeatures;
       var gridId;
       // Fetching grid ref for a grid row is active.
       $('.scSpatialRefFromMap.active').parent().find('.scSpatialRef').val(data.sref);
-      $('.scSpatialRefFromMap.active').parent().find('.scSpatialRef').change();
+      $('.scSpatialRefFromMap.active').parent().find('.scSpatialRef').trigger('change');
       gridId = $('.scSpatialRefFromMap.active').closest('table').attr('id');
       if (indiciaData['spatialRefPerRowUseFullscreenMap-' + gridId] &&
           ((document.fullscreenElement && document.fullscreenElement !== null) ||    // alternative standard methods
@@ -811,7 +821,7 @@ var destroyAllFeatures;
       }
       // Update the spatial reference control
       $('#' + opts.srefId).val(data.sref);
-      $('#' + opts.geomId).val(data.wkt).change();
+      $('#' + opts.geomId).val(data.wkt).trigger('change');
       // If the sref is in two parts, then we might need to split it across 2 input fields for lat and long
       if (data.sref.indexOf(' ') !== -1) {
         var parts = data.sref.trim().split(' ');
@@ -924,10 +934,10 @@ var destroyAllFeatures;
 
             ol.append($('<li>').append(
               $("<a href='#'>" + placename + '</a>')
-                .click(function (e) {
+                .on('click', function (e) {
                   e.preventDefault();
                 })
-                .click((
+                .on('click', (
                   // use closures to persist the values of ref, corner1, etc, admin1, admin2
                   function (ref, corner1, corner2, epsg, placename, obj) {
                     return function () {
@@ -1224,11 +1234,8 @@ var destroyAllFeatures;
         osm: function osm() {
         // OpenStreetMap standard tile layer
           return new OpenLayers.Layer.OSM('OpenStreetMap',
-            [
-              'https://a.tile.openstreetmap.org/${z}/${x}/${y}.png',
-              'https://b.tile.openstreetmap.org/${z}/${x}/${y}.png',
-              'https://c.tile.openstreetmap.org/${z}/${x}/${y}.png'
-            ], {
+            'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
+            {
               layerId: 'osm.0'
             }
           );
@@ -1236,11 +1243,7 @@ var destroyAllFeatures;
         otm: function otm() {
           // OpenTopoMap standard tile layer
           return new OpenLayers.Layer.OSM('OpenTopoMap',
-            [
-              'https://a.tile.opentopomap.org/${z}/${x}/${y}.png',
-              'https://b.tile.opentopomap.org/${z}/${x}/${y}.png',
-              'https://c.tile.opentopomap.org/${z}/${x}/${y}.png'
-            ],
+            'https://tile.opentopomap.org/${z}/${x}/${y}.png',
             {
               tileOptions: { crossOriginKeyword: null },
               layerId: 'otm.0'
@@ -1340,11 +1343,8 @@ var destroyAllFeatures;
           function dynamicOSGoogleSat0() {
             // OpenStreetMap standard tile layer
             return new OpenLayers.Layer.OSM('Dynamic (*OpenStreetMap* > Ordnance Survey Leisure > Google Satellite)',
-              [
-                'https://a.tile.openstreetmap.org/${z}/${x}/${y}.png',
-                'https://b.tile.openstreetmap.org/${z}/${x}/${y}.png',
-                'https://c.tile.openstreetmap.org/${z}/${x}/${y}.png'
-              ], {
+              'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
+              {
                 layerId: 'dynamicOSGoogleSat.0',
                 maxZoom: 5,
                 dynamicLayerIndex: 0
@@ -1398,11 +1398,8 @@ var destroyAllFeatures;
           function dynamicOSMGoogleSat0() {
             // OpenStreetMap standard tile layer
             return new OpenLayers.Layer.OSM('Dynamic (*OpenStreetMap* > Google Satellite)',
-              [
-                'https://a.tile.openstreetmap.org/${z}/${x}/${y}.png',
-                'https://b.tile.openstreetmap.org/${z}/${x}/${y}.png',
-                'https://c.tile.openstreetmap.org/${z}/${x}/${y}.png'
-              ], {
+              'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
+              {
                 layerId: 'dynamicOSMGoogleSat.0',
                 maxZoom: 18,
                 dynamicLayerIndex: 0
@@ -1600,33 +1597,9 @@ var destroyAllFeatures;
       // now filter the report, highlight rows, or display output in a popup or div depending on settings.
       if (div.settings.clickableLayersOutputMode === 'report' && div.settings.reportGroup !== null &&
           typeof indiciaData.reports !== 'undefined') {
-        // grab the feature ids
-        $.each(features, function eachFeature() {
-          if (len > 1500) { // approaching 2K IE limit
-            alert('Too many records have been selected to show them all in the grid. Trying zooming in and selecting fewer records.');
-            return false;
-          }
-          if (typeof this.attributes[div.settings.featureIdField] !== 'undefined') {
-            ids.push(this.attributes[div.settings.featureIdField]);
-            len += this.attributes[div.settings.featureIdField].length;
-          } else if (typeof this.attributes[div.settings.featureIdField + 's'] !== 'undefined') {
-            // allow for plural, list fields
-            ids.push(this.attributes[div.settings.featureIdField + 's']);
-            len += this.attributes[div.settings.featureIdField + 's'].length;
-          }
-          return true;
-        });
-        $('.' + div.settings.reportGroup + '-idlist-param').val(ids.join(','));
-        // find the associated reports, charts etc and reload them to show the selected data. No need to if we started with no selection
-        // and still have no selection.
-        if (origfeatures.length !== 0 || features.length !== 0) {
-          $.each(indiciaData.reports[div.settings.reportGroup], function () {
-            this[0].settings.offset = 0;
-            // force the param in, in case there is no params form.
-            this[0].settings.extraParams.idlist = ids.join(',');
-            this.reload(true);
-          });
-        }
+        prepareIdsToFilterAssociatedReportBy(origfeatures, features, ids, len, div);
+      // Note that for reportHighlight we don't ever call prepareIdsToFilterAssociatedReportBy
+      // as we don't want to filter the grid rows as that defeats the purpose of the highlight
       } else if (div.settings.clickableLayersOutputMode === 'reportHighlight' && typeof indiciaData.reports !== 'undefined') {
         // deselect existing selection in grid as well as on feature layer
         $('table.report-grid tr').removeClass('selected');
@@ -1635,9 +1608,21 @@ var destroyAllFeatures;
           $('table.report-grid tr#row' + this.id).addClass('selected');
         });
       } else if (div.settings.clickableLayersOutputMode === 'div') {
+        // If the rowId is supplied as an option to the grid, then we know
+        // the user intends the grid to filter to map clicks, so run the
+        // prepareIdsToFilterAssociatedReportBy function.
+        if (indiciaData.dataGridRowIdOption) {
+          prepareIdsToFilterAssociatedReportBy(origfeatures, features, ids, len, div);
+        }
         $('#'+div.settings.clickableLayersOutputDiv).html(div.settings.clickableLayersOutputFn(features, div));
         //allows a custom function to be run when a user clicks on a map
       } else if (div.settings.clickableLayersOutputMode === 'customFunction') {
+        // If the rowId is supplied as an option to the grid, then we know
+        // the user intends the grid to filter to map clicks, so run the
+        // prepareIdsToFilterAssociatedReportBy function.
+        if (indiciaData.dataGridRowIdOption) {
+          prepareIdsToFilterAssociatedReportBy(origfeatures, features, ids, len, div);
+        }
         // features is already the list of clicked on objects, div.setting's.customClickFn must be a function passed to the map as a param.
         div.settings.customClickFn(features, geom);
       } else {
@@ -1660,6 +1645,50 @@ var destroyAllFeatures;
               true
           ));
         }
+      }
+    }
+    
+    /**
+     * Get the IDs from selected map features to filter another report by.
+     *
+     * @param object origfeatures
+     * @param object features
+     *   Map features.
+     * @param object ids
+     *   IDs to filter down to.
+     * @param number len
+     *   Number of items selected on map.
+     * @param object div
+     *   Map and settings div.
+     */
+    function prepareIdsToFilterAssociatedReportBy(origfeatures, features, ids, len, div) {
+      // Grab the feature ids.
+      $.each(features, function eachFeature() {
+        if (len > 1500) { // approaching 2K IE limit
+          alert('Too many records have been selected to show them all in the grid. Trying zooming in and selecting fewer records.');
+          return false;
+        }
+        if (typeof this.attributes[div.settings.featureIdField] !== 'undefined') {
+          ids.push(this.attributes[div.settings.featureIdField]);
+          len += this.attributes[div.settings.featureIdField].length;
+        } else if (typeof this.attributes[div.settings.featureIdField + 's'] !== 'undefined') {
+          // allow for plural, list fields
+          ids.push(this.attributes[div.settings.featureIdField + 's']);
+          len += this.attributes[div.settings.featureIdField + 's'].length;
+        }
+        return true;
+      });
+      $('.' + div.settings.reportGroup + '-idlist-param').val(ids.join(','));
+      // Find the associated reports, charts etc and
+      // reload them to show the selected data. 
+      // No need to if we started with no selection and still have no selection.
+      if (origfeatures.length !== 0 || features.length !== 0) {
+        $.each(indiciaData.reports[div.settings.reportGroup], function () {
+          this[0].settings.offset = 0;
+          // force the param in, in case there is no params form.
+          this[0].settings.extraParams.idlist = ids.join(',');
+          this.reload(true);
+        });
       }
     }
 
@@ -1693,13 +1722,13 @@ var destroyAllFeatures;
       $(div).append(
         '<label id="click-buffer" class="olButton" style="display: none">Tolerance:<input type="text" value="1000"/>m</label>');
       $('#click-buffer').css('right', $('.olControlEditingToolbar').outerWidth() + 10);
-      $('#click-buffer input').keypress(function (evt) {
+      $('#click-buffer input').on('keypress', function (evt) {
         // Only accept numeric input.
         if (evt.which < 48 || evt.which > 57) {
           evt.preventDefault();
         }
       });
-      $('#click-buffer input').change(function () {
+      $('#click-buffer input').on('change', function () {
         bufferRoundSelectedRecord(div, $('#click-buffer input').val());
       });
     }
@@ -2548,7 +2577,7 @@ var destroyAllFeatures;
             indiciaData.fetchingGoogleApiScript = true;
             indiciaData.layersToReplaceAfterGoogleApiLoaded = [layerToReplace];
             $.getScript('https://maps.google.com/maps/api/js?v=3' + key, function() {
-              $.unique(indiciaData.layersToReplaceAfterGoogleApiLoaded);
+              $.uniqueSort(indiciaData.layersToReplaceAfterGoogleApiLoaded);
               indiciaData.layersToReplaceAfterGoogleApiLoaded.forEach(function(layer) {
                 replaceGoogleBaseLayer(layer);
               });
@@ -3005,7 +3034,7 @@ var destroyAllFeatures;
       // if the validator exists, stop map clicks bubbling up to its event handler as IE can't
       // get the attributes of some map items and errors arise.
       if (typeof $.validator !== 'undefined') {
-        $(this).parent().click(function () {
+        $(this).parent().on('click', function () {
           return false;
         });
       }
@@ -3072,7 +3101,7 @@ var destroyAllFeatures;
       div.map = new OpenLayers.Map($(this)[0], olOptions);
 
       // track plus and minus key presses, which influence selected grid square size
-      $(document).keydown(function (evt) {
+      $(document).on('keydown', function (evt) {
         var change = false;
         if (!overMap) {
           return;
@@ -3104,7 +3133,7 @@ var destroyAllFeatures;
         }
       });
 
-      $(document).keyup(function(evt) {
+      $(document).on('keyup', function(evt) {
         var change = false;
         switch (evt.which) {
           case 61: case 107: case 187:
@@ -3354,7 +3383,7 @@ var destroyAllFeatures;
               }
             }
           });
-          $('#map').mouseleave(function () {
+          $('#map').on('mouseleave', function () {
             // clear ghost hover markers when mouse leaves the map
             removeAllFeatures(div.map.editLayer, 'ghost');
           });
@@ -3449,7 +3478,7 @@ var destroyAllFeatures;
 
           onResponse: function(response) {
             if (response.features.length>0) {
-              $('#imp-location').val(response.features[0].data.id).change();
+              $('#imp-location').val(response.features[0].data.id).trigger('change');
               $('#imp-location\\:name').val(response.features[0].data.name);
             }
           }
@@ -3681,7 +3710,7 @@ var destroyAllFeatures;
       });
       var click=false;
       if (div.settings.editLayer && (div.settings.clickForSpatialRef || div.settings.clickForPlot)) {
-        click=new OpenLayers.Control.Click({'displayClass':align + 'olControlClickSref'});
+        click = new OpenLayers.Control.Click({'displayClass':align + 'olControlClickSref'});
         div.map.editLayer.clickControl = click;
       }
       if (clickInfoCtrl !== null) {

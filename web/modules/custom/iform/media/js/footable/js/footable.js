@@ -318,9 +318,9 @@
             });
 
             $table
-                .unbind(trg.initialize)
+                .off(trg.initialize)
                 //bind to FooTable initialize trigger
-                .bind(trg.initialize, function () {
+                .on(trg.initialize, function () {
                     //remove previous "state" (to "force" a resize)
                     $table.removeData('footable_info');
                     $table.data('breakpoint', '');
@@ -337,29 +337,29 @@
                     //raise the initialized event
                     ft.raise(evt.initialized);
                 })
-                .unbind(trg.redraw)
+                .off(trg.redraw)
                 //bind to FooTable redraw trigger
-                .bind(trg.redraw, function () {
+                .on(trg.redraw, function () {
                     ft.redraw();
                 })
-                .unbind(trg.resize)
+                .off(trg.resize)
                 //bind to FooTable resize trigger
-                .bind(trg.resize, function () {
+                .on(trg.resize, function () {
                     ft.resize();
                 })
-                .unbind(trg.expandFirstRow)
+                .off(trg.expandFirstRow)
                 //bind to FooTable expandFirstRow trigger
-                .bind(trg.expandFirstRow, function () {
+                .on(trg.expandFirstRow, function () {
                     $table.find(opt.toggleSelector).first().not('.' + cls.detailShow).trigger(trg.toggleRow);
                 })
-                .unbind(trg.expandAll)
+                .off(trg.expandAll)
                 //bind to FooTable expandFirstRow trigger
-                .bind(trg.expandAll, function () {
+                .on(trg.expandAll, function () {
                     $table.find(opt.toggleSelector).not('.' + cls.detailShow).trigger(trg.toggleRow);
                 })
-                .unbind(trg.collapseAll)
+                .off(trg.collapseAll)
                 //bind to FooTable expandFirstRow trigger
-                .bind(trg.collapseAll, function () {
+                .on(trg.collapseAll, function () {
                     $table.find('.' + cls.detailShow).trigger(trg.toggleRow);
                 });
 
@@ -368,7 +368,7 @@
 
             //bind to window resize
             $window
-                .bind('resize.footable', function () {
+                .on('resize.footable', function () {
                     ft.timers.resize.stop();
                     ft.timers.resize.start(function () {
                         ft.raise(trg.resize);
@@ -428,12 +428,12 @@
 
             if (!ft.hasAnyBreakpointColumn()) return;
 
-            $table.find(opt.toggleSelector).unbind(trg.toggleRow).bind(trg.toggleRow, function (e) {
+            $table.find(opt.toggleSelector).off(trg.toggleRow).on(trg.toggleRow, function (e) {
                 var $row = $(this).is('tr') ? $(this) : $(this).parents('tr:first');
                 ft.toggleDetail($row);
             });
 
-            $table.find(opt.toggleSelector).unbind('click.footable').bind('click.footable', function (e) {
+            $table.find(opt.toggleSelector).off('click.footable').on('click.footable', function (e) {
                 if ($table.is('.breakpoint') && $(e.target).is('td,th,.'+ cls.toggle)) {
                     $(this).trigger(trg.toggleRow);
                 }
@@ -804,7 +804,7 @@
                 .removeClass(cls.loading)
                 .removeClass(cls.loaded);
 
-            $table.find(opt.toggleSelector).unbind(trg.toggleRow).unbind('click.footable');
+            $table.find(opt.toggleSelector).off(trg.toggleRow).off('click.footable');
 
             $table.find('> tbody > tr').removeClass(cls.detailShow);
 

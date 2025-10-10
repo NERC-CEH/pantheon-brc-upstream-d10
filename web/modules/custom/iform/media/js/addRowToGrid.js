@@ -287,8 +287,8 @@ var addMediaRowOnClick;
       autocompleteSettings.width = 200;
     }
     ctrl = $(selector).autocomplete(indiciaData.read.url + '/index.php/services/data/taxa_search', autocompleteSettings);
-    ctrl.bind('result', handleSelectedTaxon);
-    ctrl.bind('return', returnPressedInAutocomplete);
+    ctrl.on('result', handleSelectedTaxon);
+    ctrl.on('return', returnPressedInAutocomplete);
     return ctrl;
   }
 
@@ -370,8 +370,8 @@ var addMediaRowOnClick;
       mainSpeciesValue = value;
       // on picking a result in the autocomplete, ensure we have a spare row
       // clear the event handlers
-      $(e.target).unbind('result', handleSelectedTaxon);
-      $(e.target).unbind('return', returnPressedInAutocomplete);
+      $(e.target).off('result', handleSelectedTaxon);
+      $(e.target).off('return', returnPressedInAutocomplete);
       taxonCell = e.target.parentNode;
       /* Create edit icons for taxon cells. Only add the edit icon if the user has this functionality available on the
       edit tab. Also create Notes and Delete icons when required */
@@ -539,7 +539,7 @@ var addMediaRowOnClick;
     // add the row to the bottom of the grid
     newRow.appendTo('table#' + gridId + ' > tbody').removeAttr('id');
     ctrl = enableAutocomplete('#' + selectorId, lookupListId);
-    $(newRow).find('input,select').keydown(keyHandler);
+    $(newRow).find('input,select').on('keydown', keyHandler);
     // Check that the new entry control for taxa will remain in view with enough space for the autocomplete drop down
     if (scroll && ctrl.offset().top > $(window).scrollTop() + $(window).height() - 180) {
       var newTop = ctrl.offset().top - $(window).height() + 180;
@@ -605,8 +605,8 @@ var addMediaRowOnClick;
       $('#' + selectorId).val($('#' + selectorId).val().slice(0, -1));
       // Bind function so that when user loses focus on the taxon cell immediately after clicking edit, we can reset
       // the cell back to read-only label
-      //ctrl.bind('blur', resetSpeciesText);
-      ctrl.bind('keydown', resetSpeciesTextOnEscape);
+      //ctrl.on('blur', resetSpeciesText);
+      ctrl.on('keydown', resetSpeciesTextOnEscape);
     });
   };
 
@@ -838,7 +838,7 @@ var addMediaRowOnClick;
         } else {
           $('#' + div.settings.srefId).val(data.sref);
           indiciaData.lastAutosetSref = data.sref;
-          $('#' + div.settings.geomId).val(data.wkt).change();
+          $('#' + div.settings.geomId).val(data.wkt).trigger('change');
           div.addWkt(data.wkt, div.map.editLayer, 'clickPoint');
         }
       });
@@ -866,69 +866,72 @@ var addMediaRowOnClick;
     }
     setupSrefPrecisionControl(this, system);
     $.ajax({
-      dataType: 'jsonp',
       url: indiciaData.warehouseUrl + 'index.php/services/spatial/sref_to_wkt',
-      data: 'sref=' + $(e.currentTarget).val() +
-        '&system=' + system +
-        '&mapsystem=' + indiciaFns.projectionToSystem(indiciaData.mapdiv.map.projection, false),
-      success: function (data) {
-        var taxonNameEl = $(e.currentTarget).closest('tr').find('.taxon-name');
-        if (typeof data.error !== 'undefined') {
-          if (data.code === 4001) {
-            alert(indiciaData.mapdiv.settings.msgSrefNotRecognised);
-          } else {
-            alert(data.error);
-          }
-          $(e.currentTarget).addClass('ui-state-error');
+      data: {
+        sref: $(e.currentTarget).val(),
+        system: system,
+        mapsystem: indiciaFns.projectionToSystem(indiciaData.mapdiv.map.projection, false)
+      },
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function (data) {
+      var taxonNameEl = $(e.currentTarget).closest('tr').find('.taxon-name');
+      if (typeof data.error !== 'undefined') {
+        if (data.code === 4001) {
+          alert(indiciaData.mapdiv.settings.msgSrefNotRecognised);
         } else {
-          $(e.currentTarget).removeClass('ui-state-error');
-          $(e.currentTarget).removeClass('warning');
-          parser = new OpenLayers.Format.WKT();
-          feature = parser.read(data.mapwkt);
-          feature.id = 'subsample-' + rowUniqueIdx;
-          feature.attributes.type = 'subsample';
-          feature.style = {
-            fontSize: '10px',
-            fontFamily: 'Tahoma',
-            fontColor: '#555',
-            strokeColor: 'red',
-            strokeWidth: 2,
-            strokeDashstyle: 'dash',
-            fillOpacity: 0.3,
-            labelAlign: 'lb',
-            labelXOffset: 12,
-            labelOutlineColor: "white",
-            labelOutlineWidth: 2,
-            pointRadius: 10
-          };
-          if (taxonNameEl.length) {
-            feature.style.label = taxonNameEl.text();
-            // Italicise if scientific name.
-            if (taxonNameEl[0].nodeName === 'EM') {
-              feature.style.fontStyle = 'italic';
-            }
-          }
-
-          $(e.currentTarget).attr('title', '');
-          if ($('#review-input').length > 0) {
-            $.each(indiciaData.mapdiv.map.editLayer.features, function () {
-              var reviewControl;
-              if (this.attributes.type === 'clickPoint' && !this.geometry.intersects(feature.geometry)) {
-                $(e.currentTarget).addClass('warning');
-                $(e.currentTarget).attr('title', 'Outside the boundary of the main grid square');
-                // Show warning icon on the review_input control if present.
-                reviewControl = $('#review-' + e.currentTarget.id.replace(/:/g, '\\:'));
-                if (reviewControl.length) {
-                  $(reviewControl).addClass('warning');
-                  $(reviewControl).attr('title', 'Outside the boundary of the main grid square');
-                }
-              }
-            });
-          }
-          indiciaData.mapdiv.map.editLayer.addFeatures([feature]);
-          // Update the overview sample spatial ref to centre of all points, only if never manually set.
-          recentreMainSampleSref(data);
+          alert(data.error);
         }
+        $(e.currentTarget).addClass('ui-state-error');
+      } else {
+        $(e.currentTarget).removeClass('ui-state-error');
+        $(e.currentTarget).removeClass('warning');
+        parser = new OpenLayers.Format.WKT();
+        feature = parser.read(data.mapwkt);
+        feature.id = 'subsample-' + rowUniqueIdx;
+        feature.attributes.type = 'subsample';
+        feature.style = {
+          fontSize: '10px',
+          fontFamily: 'Tahoma',
+          fontColor: '#555',
+          strokeColor: 'red',
+          strokeWidth: 2,
+          strokeDashstyle: 'dash',
+          fillOpacity: 0.3,
+          labelAlign: 'lb',
+          labelXOffset: 12,
+          labelOutlineColor: "white",
+          labelOutlineWidth: 2,
+          pointRadius: 10
+        };
+        if (taxonNameEl.length) {
+          feature.style.label = taxonNameEl.text();
+          // Italicise if scientific name.
+          if (taxonNameEl[0].nodeName === 'EM') {
+            feature.style.fontStyle = 'italic';
+          }
+        }
+
+        $(e.currentTarget).attr('title', '');
+        if ($('#review-input').length > 0) {
+          $.each(indiciaData.mapdiv.map.editLayer.features, function () {
+            var reviewControl;
+            if (this.attributes.type === 'clickPoint' && !this.geometry.intersects(feature.geometry)) {
+              $(e.currentTarget).addClass('warning');
+              $(e.currentTarget).attr('title', 'Outside the boundary of the main grid square');
+              // Show warning icon on the review_input control if present.
+              reviewControl = $('#review-' + e.currentTarget.id.replace(/:/g, '\\:'));
+              if (reviewControl.length) {
+                $(reviewControl).addClass('warning');
+                $(reviewControl).attr('title', 'Outside the boundary of the main grid square');
+              }
+            }
+          });
+        }
+        indiciaData.mapdiv.map.editLayer.addFeatures([feature]);
+        // Update the overview sample spatial ref to centre of all points, only if never manually set.
+        recentreMainSampleSref(data);
       }
     });
   });
@@ -1068,7 +1071,7 @@ var addMediaRowOnClick;
         // First ensure sample date in vague date mode to accept a range.
         if (!vagueDateSetting.is(':checked')) {
           vagueDateSetting.prop('checked', true);
-          vagueDateSetting.change();
+          vagueDateSetting.trigger('change');
         }
         if ($('#sample\\:date').val() === '') {
           $('#sample\\:date').val(formatDate(inputDate) + ' - ' + formatDate(inputDate));
@@ -1263,45 +1266,49 @@ function createSubSpeciesList(selectedItemPrefId, selectedItemPrefName, lookupLi
   };
   var ctrl = jQuery('[id^=' + subSpeciesCtrlIdBeginsWith.replace(/:/g, '\\:') + '][id$=\\:occurrence\\:subspecies]');
   if (ctrl.length > 0) {
-    jQuery.getJSON(indiciaData.read.url + 'index.php/services/data/cache_taxon_searchterm?callback=?', subSpeciesData,
-      function (data) {
-        var sspRegexString;
-        var epithet;
-        var nameRegex;
-        // Clear the sub-species cell ready for new data
-        ctrl.empty();
-        // Build a regex that can remove the species binomial (plus optionally the subsp rank) from the name, so
-        // Adelia decempunctata forma bimaculata can be shown as just bimaculata.
-        sspRegexString = RegExp.escape(selectedItemPrefName);
-        if (typeof indiciaData.subspeciesRanksToStrip !== 'undefined') {
-          sspRegexString += '[ ]+' + indiciaData.subspeciesRanksToStrip;
-        }
-        nameRegex = new RegExp('^' + sspRegexString);
-        // Work our way through the sub-species data returned from data services
-        jQuery.each(data, function (i, item) {
-          epithet = item.preferred_taxon.replace(nameRegex, '');
-          if (selectedChild === item.taxa_taxon_list_id) {
-            // If we find the sub-species we want to be selected by default then we set the 'selected' attribute on html the option tag
-            ctrl.append(jQuery('<option selected="selected"></option>').val(item.taxa_taxon_list_id).html(epithet));
-          } else {
-            // If we don't want this sub-species to be selected by default then we don't set the 'selected' attribute on html the option tag
-            ctrl.append(jQuery('<option></option>').val(item.taxa_taxon_list_id).html(epithet));
-          }
-        });
-        // If we don't find any sub-species then hide the control
-        if (data.length === 0) {
-          ctrl.hide();
-        } else {
-          // The selected sub-species might be the first (blank) option if there are sub-species present but
-          // we don't know yet which one the user wants.
-          // This would occur if the user manually fills in the species and the parent has sub-species
-          if (selectedChild === 0) {
-            ctrl.prepend("<option value='' selected='selected'></option>");
-          }
-          ctrl.show();
-        }
+    jQuery.getJSON({
+      url: indiciaData.read.url + 'index.php/services/data/cache_taxon_searchterm?callback=?',
+      data: subSpeciesData,
+      dataType: 'jsonp',
+      crossDomain: true
+    })
+    .done(function (data) {
+      var sspRegexString;
+      var epithet;
+      var nameRegex;
+      // Clear the sub-species cell ready for new data
+      ctrl.empty();
+      // Build a regex that can remove the species binomial (plus optionally the subsp rank) from the name, so
+      // Adelia decempunctata forma bimaculata can be shown as just bimaculata.
+      sspRegexString = RegExp.escape(selectedItemPrefName);
+      if (typeof indiciaData.subspeciesRanksToStrip !== 'undefined') {
+        sspRegexString += '[ ]+' + indiciaData.subspeciesRanksToStrip;
       }
-    );
+      nameRegex = new RegExp('^' + sspRegexString);
+      // Work our way through the sub-species data returned from data services
+      jQuery.each(data, function (i, item) {
+        epithet = item.preferred_taxon.replace(nameRegex, '');
+        if (selectedChild === item.taxa_taxon_list_id) {
+          // If we find the sub-species we want to be selected by default then we set the 'selected' attribute on html the option tag
+          ctrl.append(jQuery('<option selected="selected"></option>').val(item.taxa_taxon_list_id).html(epithet));
+        } else {
+          // If we don't want this sub-species to be selected by default then we don't set the 'selected' attribute on html the option tag
+          ctrl.append(jQuery('<option></option>').val(item.taxa_taxon_list_id).html(epithet));
+        }
+      });
+      // If we don't find any sub-species then hide the control
+      if (data.length === 0) {
+        ctrl.hide();
+      } else {
+        // The selected sub-species might be the first (blank) option if there are sub-species present but
+        // we don't know yet which one the user wants.
+        // This would occur if the user manually fills in the species and the parent has sub-species
+        if (selectedChild === 0) {
+          ctrl.prepend("<option value='' selected='selected'></option>");
+        }
+        ctrl.show();
+      }
+    });
   }
 }
 
@@ -1399,14 +1406,14 @@ function species_checklist_add_another_row(gridId) {
     //Only continue if the column is part of the user's options.
     if (classToUse  && (jQuery.inArray(classToUse.toLowerCase(), columnsToCopyFromPrevRow)>-1)) {
       //Bind the cell in the previous cell so that when it is changed the new row will update
-      $previousRow.find('.' + classToUse).bind('change', changeIn2ndToLastRowProxy);
+      $previousRow.find('.' + classToUse).on('change', changeIn2ndToLastRowProxy);
       //We set the value for the new row from the previous row if there is a value set on the previous row cell
       //and the user has included that column in their options. (inArray reurns -1 for items not found)
       if ($previousRow.find('.' + classToUse).val() && (jQuery.inArray(classToUse.toLowerCase(), columnsToCopyFromPrevRow)>-1)) {
         jQuery(this).val($previousRow.find('.' + classToUse).filter(':visible').val());
       }
       //We need to unbind the 3rd last row as we no longer what changes for that cell to affect the last row.
-      $previousRow.prevAll(".added-row:first").find('.' + classToUse).unbind('change', changeIn2ndToLastRowProxy);
+      $previousRow.prevAll(".added-row:first").find('.' + classToUse).off('change', changeIn2ndToLastRowProxy);
     }
 
   });

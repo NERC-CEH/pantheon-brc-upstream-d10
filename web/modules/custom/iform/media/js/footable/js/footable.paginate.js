@@ -41,8 +41,8 @@
 				if ($(ft.table).data('page') === false) return;
 				p.footable = ft;
 				$(ft.table)
-					.unbind('.paging')
-					.bind({
+					.off('.paging')
+					.on({
 						'footable_initialized.paging footable_row_removed.paging footable_redrawn.paging footable_sorted.paging footable_filtered.paging': function () {
 							p.setupPaging();
 						}

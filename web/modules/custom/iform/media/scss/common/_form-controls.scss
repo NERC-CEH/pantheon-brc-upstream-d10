@@ -1,7 +1,7 @@
 .form-inline {
   margin-bottom: 8px;
 }
-.input-group-addon {
+.input-group-text, .input-group-addon {
   > * {
     display: inline-block;
     vertical-align: middle;

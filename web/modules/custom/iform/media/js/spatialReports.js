@@ -132,14 +132,14 @@
         indiciaData.bufferLayer.removeFeatures(buffers);
       });
       // When exiting the buffer input, recreate all the buffer polygons.
-      $('#geom_buffer').blur(function blurBuffer() {
+      $('#geom_buffer').on('blur', function blurBuffer() {
         rebuildBuffer();
       });
     });
   };
 
   indiciaFns.storeGeomsInFormOnSubmit = function storeGeomsInFormOnSubmit() {
-    $('#run-report').click(function runClick(evt) {
+    $('#run-report').on('click', function runClick(evt) {
       // rebuild the buffer if the user is changing it.
       if (document.activeElement.id === 'geom_buffer') {
         rebuildBuffer();

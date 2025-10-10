@@ -11,15 +11,15 @@
   }
 }
 $icon-size: 16px;
-$icon-padding: 6px;
+$icon-padding: 4px;
+$icon-margin: -2px;
 $total-icon-size: $icon-size + $icon-padding * 2;
-#uploaded-files {
+.file-cntr {
   position: relative;
   .remove-file {
     position: absolute;
-    top: $icon-padding;
-    /* x 3 to allow for file icon which is also padded - we want to move inside the edge. */
-    left: $icon-padding * 3;
+    top: $icon-margin;
+    left: $icon-margin;
     height: $total-icon-size;
     width: $total-icon-size;
     border: solid darkgray 2px;

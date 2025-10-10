@@ -1,5 +1,5 @@
 /**
- * Footable Memory 
+ * Footable Memory
  *
  * Version 1.1.0
  *
@@ -327,7 +327,7 @@
         set.sorted = function(data){
             if( data.sorted >= 0 ) {
                 // vars.table.data('footable-sort').doSort(data.sorted, !data.descending);
-                
+
                 // Trying to execute the line above, but only sort icon on the
                 // <th> element gets set. The rows themselves do not get sorted.
                 //
@@ -410,7 +410,7 @@
         p.name = 'Footable Memory';
         p.init = function(ft) {
             if (is_enabled(ft)) {
-                $(ft.table).bind({
+                $(ft.table).on({
                     'footable_initialized': function(){
                         load(ft);
                     },

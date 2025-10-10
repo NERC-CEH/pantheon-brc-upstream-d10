@@ -40,13 +40,13 @@ $.extend($.fn, {
 			var inputsAndButtons = this.find("input, button");
 
 			// allow suppresing validation by adding a cancel class to the submit button
-			inputsAndButtons.filter(".cancel").click(function () {
+			inputsAndButtons.filter(".cancel").on('click', function () {
 				validator.cancelSubmit = true;
 			});
 
 			// when a submitHandler is used, capture the submitting button
 			if (validator.settings.submitHandler) {
-				inputsAndButtons.filter(":submit").click(function () {
+				inputsAndButtons.filter(":submit").on('click', function () {
 					validator.submitButton = this;
 				});
 			}
@@ -325,7 +325,7 @@ $.extend($.validator, {
 				.validateDelegate("[type='radio'], [type='checkbox'], select, option", "click", delegate);
 
 			if (this.settings.invalidHandler)
-				$(this.currentForm).bind("invalid-form.validate", this.settings.invalidHandler);
+				$(this.currentForm).on("invalid-form.validate", this.settings.invalidHandler);
 		},
 
 		// http://docs.jquery.com/Plugins/Validation/Validator/form
@@ -1108,7 +1108,7 @@ $.extend($.validator, {
 		equalTo: function(value, element, param) {
 			// bind to the blur event of the target in order to revalidate whenever the target field is updated
 			// TODO find a way to bind the event just once, avoiding the unbind-rebind overhead
-			var target = $(param).unbind(".validate-equalTo").bind("blur.validate-equalTo", function() {
+			var target = $(param).off(".validate-equalTo").on("blur.validate-equalTo", function() {
 				$(element).valid();
 			});
 			return value == target.val();
@@ -1177,21 +1177,20 @@ $.format = $.validator.format;
 					this.removeEventListener( original, handler, true );
 				},
 				handler: function(e) {
-					arguments[0] = $.event.fix(e);
-					arguments[0].type = fix;
-					return $.event.handle.apply(this, arguments);
+					// Re-dispatch the event with the corrected type, preserving extra args
+   				var args = Array.prototype.slice.call(arguments, 1);
+    			$(this).trigger(fix, [e].concat(args));
 				}
 			};
 			function handler(e) {
-				e = $.event.fix(e);
-				e.type = fix;
-				return $.event.handle.call(this, e);
+				// Re-dispatch the event using jQuery’s public API
+				$(this).trigger(fix, e);
 			}
 		});
 	};
 	$.extend($.fn, {
 		validateDelegate: function(delegate, type, handler) {
-			return this.bind(type, function(event) {
+			return this.on(type, function(event) {
 				var target = $(event.target);
 				if (target.is(delegate)) {
 					return handler.apply(target, arguments);

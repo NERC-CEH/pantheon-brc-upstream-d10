@@ -13,7 +13,7 @@ jQuery(document).ready(function docReady($) {
     '#edit-email-pending-groups-users-frequency'
   );
 
-  $('#edit-email-frequency').change(function changeOverallFrequency() {
+  $('#edit-email-frequency').on('change', function changeOverallFrequency() {
     if ($('#edit-email-frequency').val() === '-') {
       // Use advanced options, so show the details pane.
       $('#edit-advanced-email-settings').attr('open', 'open');
@@ -43,5 +43,5 @@ jQuery(document).ready(function docReady($) {
     // set the basic select to match the advanced options
     $('#edit-email-frequency').val(mixFound ? '-' : firstFound);
   }
-  $advancedSelects.change(updateOveralModeSelect);
+  $advancedSelects.on('change', updateOveralModeSelect);
 });

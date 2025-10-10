@@ -63,7 +63,7 @@
 			return this.filter(":has(>ul)");
 		},
 		applyClasses: function(settings, toggler) {
-			this.filter(":has(>ul):not(:has(>a))").find(">span").unbind("click.treeview").bind("click.treeview", function(event) {
+			this.filter(":has(>ul):not(:has(>a))").find(">span").off("click.treeview").on("click.treeview", function(event) {
 				// don't handle click events on children, eg. checkboxes
 				if ( this == event.target )
 					toggler.apply($(this).next());
@@ -94,7 +94,7 @@
 			}
 
 			// apply event to hitarea
-			this.find("div." + CLASSES.hitarea).click( toggler );
+			this.find("div." + CLASSES.hitarea).on('click',  toggler );
 		},
 		treeview: function(settings) {
 
@@ -124,11 +124,11 @@
 					};
 				}
 				// click on first element to collapse tree
-				$("a:eq(0)", control).click( handler(CLASSES.collapsable) );
+				$("a:eq(0)", control).on('click',  handler(CLASSES.collapsable) );
 				// click on second to expand tree
-				$("a:eq(1)", control).click( handler(CLASSES.expandable) );
+				$("a:eq(1)", control).on('click',  handler(CLASSES.expandable) );
 				// click on third to toggle tree
-				$("a:eq(2)", control).click( handler() );
+				$("a:eq(2)", control).on('click',  handler() );
 			}
 
 			// handle toggle event

@@ -288,7 +288,7 @@
       }
     });
 
-    $('.clear-filter').click(function (e) {
+    $('.clear-filter').on('click', function (e) {
       e.preventDefault();
       var $parent = $(this).closest('p');
       $parent.find('.filter-status').val('');
@@ -299,7 +299,7 @@
       }
     });
 
-    $('.filter-status').change(function (e) {
+    $('.filter-status').on('change', function (e) {
       e.preventDefault();
       var $parent = $(this).closest('p');
       if ($parent.find('#filter1').length > 0) {

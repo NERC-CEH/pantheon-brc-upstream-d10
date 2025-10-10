@@ -5,7 +5,7 @@
 $(function () {
 
     //setup tabs for the demo
-    $('.nav-tabs a').click(function (e) {
+    $('.nav-tabs a').on('click', function (e) {
 
         //show the tab!
         $(this).tab('show');

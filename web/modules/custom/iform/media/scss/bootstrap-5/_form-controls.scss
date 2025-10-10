@@ -1,0 +1,124 @@
+/* Shim for supporting Bootstrap 3 inline forms */
+.form-inline {
+  .form-control, * {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
+}
+.alert {
+  /* Fix AAA accessibility in Bootstrap alerts */
+  &.alert-info {
+    color: #235067;
+  }
+  &.alert-warning {
+    color: #614D29;
+  }
+  span.ui-icon {
+    float: left;
+  }
+  span.fas, span.far {
+    font-size: 150%;
+  }
+}
+/* Reintroduce spacing that is removed from the last control in a list */
+#controls > div {
+  padding-bottom: $form-group-margin-bottom;
+}
+#entry_form, #indicia-entry-form {
+  div.form-group {
+    p.inline-error {
+      margin-left: 0;
+    }
+    /* Removes last-child reset to zero in default theme overrides. */
+    &:last-child {
+      margin-bottom: $form-group-margin-bottom;
+    }
+    input[type="checkbox"] {
+      margin-left: 8px;
+      margin-right: 8px;
+      font-size: 150%;
+    }
+  }
+  .species-grid {
+    div.form-group:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .ctrl-wrap {
+    &.not-full-width-sm {
+      .input-group {
+        max-width: 200px;
+      }
+    }
+    &.not-full-width-md {
+      .input-group {
+        max-width: 400px;
+      }
+    }
+    &.not-full-width-lg {
+      .input-group {
+        max-width: 600px;
+      }
+    }
+  }
+}
+/*
+Although we don't want to allow control-width classes to override Bootstrap
+behaviour, the Edit tab of Indicia pages doesn't load using Bootstrap so we
+do need to do something.
+*/
+#form-params {
+  input[type="text"], textarea {
+    width: 100%;
+  }
+}
+
+.input-group-text.ctrl-addons {
+  // Buttons inside input group addon don't need own border.
+  button {
+    background: none;
+    border: none;
+    padding: 0;
+    outline: none;
+    &:hover,
+    &:focus,
+    &:active {
+      background: none;
+      border: none;
+      padding: 0;
+      outline: none;
+    }
+  }
+}
+
+/* Reset button size due to interaction with jQuery UI */
+.ui-widget .input-group-btn button {
+  font-size: 14px;
+}
+
+/* Complex attr grid */
+.complex-attr-grid {
+  td {
+    padding: 4px;
+  }
+}
+
+.input-group {
+  input.form-control:not(:first-child):not(:last-child) {
+    &.date-text, &.precise-date-picker {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+    }
+  }
+}
+
+/* Safari HTML5 date corrections for Bootstrap 3 */
+input.precise-date-picker {
+  padding: 0 12px;
+}
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  input[type=date].form-control.precise-date-picker {
+    line-height: 30px;
+  }
+}

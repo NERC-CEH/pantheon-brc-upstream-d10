@@ -24,7 +24,7 @@
             <li class="active">Bookmarkable URLs</li>
         </ul>
         <div class="alert">
-            Add state information to the URL hash. 
+            Add state information to the URL hash.
         </div>
 		<ul class="nav nav-tabs">
 			<li class="active"><a href="#demo">Demo</a></li>
@@ -161,7 +161,7 @@
 		  });
 &lt;/script&gt;</pre>
 			</div>
-			
+
 
 			<div class="tab-pane" id="docs">
                 <h4>Bookmarkable</h4>
@@ -175,7 +175,7 @@
         $(function () {
 			$('table').footable( { bookmarkable: { enabled: true} });
 
-            $('.sort-column').click(function (e) {
+            $('.sort-column').on('click', function (e) {
                 e.preventDefault();
 
                 //get the footable sort object
