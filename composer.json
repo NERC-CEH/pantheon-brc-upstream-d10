@@ -252,7 +252,7 @@
         "drupal/spammaster": "^2.51",
         "drupal/core": "10.5.4",
         "drupal/recaptcha_v3": "^2.0",
-        "drupal/phpmailer_smtp": "^2.2",
+        "drupal/phpmailer_smtp": "^2.3",
         "drupal/fancy_file_delete": "^2.0",
         "drupal/scheduler": "^2.1",
         "drupal/coder": "^8.3",
