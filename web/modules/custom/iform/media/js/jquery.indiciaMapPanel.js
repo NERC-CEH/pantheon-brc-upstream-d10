@@ -1647,7 +1647,7 @@ var destroyAllFeatures;
         }
       }
     }
-    
+
     /**
      * Get the IDs from selected map features to filter another report by.
      *
@@ -1680,7 +1680,7 @@ var destroyAllFeatures;
       });
       $('.' + div.settings.reportGroup + '-idlist-param').val(ids.join(','));
       // Find the associated reports, charts etc and
-      // reload them to show the selected data. 
+      // reload them to show the selected data.
       // No need to if we started with no selection and still have no selection.
       if (origfeatures.length !== 0 || features.length !== 0) {
         $.each(indiciaData.reports[div.settings.reportGroup], function () {
@@ -3507,9 +3507,13 @@ var destroyAllFeatures;
       if (div.settings.editLayer && div.settings.allowPolygonRecording) {
         div.map.editLayer.events.on({'featuremodified': function(evt) {
           if ($('#' + div.settings.boundaryGeomId).length>0) {
-            $('#' + div.settings.boundaryGeomId).val(evt.feature.geometry.toString());
-            if(div.settings.autoFillInCentroid) {
-              var centroid = evt.feature.geometry.getCentroid();
+            var geom = evt.feature.geometry.clone();
+            if (div.map.projection.getCode() !== div.indiciaProjection.getCode()) {
+              geom.transform(div.map.projection, div.indiciaProjection);
+            }
+            $('#' + div.settings.boundaryGeomId).val(geom.toString());
+            if (div.settings.autoFillInCentroid) {
+              var centroid = geom.getCentroid();
               pointToSref(div, centroid, _getSystem(), function(data) {
                 if (typeof data.sref !== 'undefined') {
                   $('#'+div.settings.srefId).val(data.sref);
