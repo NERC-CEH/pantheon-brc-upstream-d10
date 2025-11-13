@@ -1458,29 +1458,29 @@
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
-            "version": "v1.1.2",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "e9cf5e4bbf7eeaf9ef5db34938942602838fc2b1"
+                "reference": "845eb62303d2ca9b289ef216356568ccc075ffd1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/e9cf5e4bbf7eeaf9ef5db34938942602838fc2b1",
-                "reference": "e9cf5e4bbf7eeaf9ef5db34938942602838fc2b1",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/845eb62303d2ca9b289ef216356568ccc075ffd1",
+                "reference": "845eb62303d2ca9b289ef216356568ccc075ffd1",
                 "shasum": ""
             },
             "require": {
                 "composer-plugin-api": "^2.2",
                 "php": ">=5.4",
-                "squizlabs/php_codesniffer": "^2.0 || ^3.1.0 || ^4.0"
+                "squizlabs/php_codesniffer": "^3.1.0 || ^4.0"
             },
             "require-dev": {
                 "composer/composer": "^2.2",
                 "ext-json": "*",
                 "ext-zip": "*",
                 "php-parallel-lint/php-parallel-lint": "^1.4.0",
-                "phpcompatibility/php-compatibility": "^9.0",
+                "phpcompatibility/php-compatibility": "^9.0 || ^10.0.0@dev",
                 "yoast/phpunit-polyfills": "^1.0"
             },
             "type": "composer-plugin",
@@ -1550,7 +1550,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-07-17T20:45:56+00:00"
+            "time": "2025-11-11T04:32:07+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -27760,26 +27760,27 @@
         },
         {
             "name": "composer/composer",
-            "version": "2.8.12",
+            "version": "2.9.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/composer.git",
-                "reference": "3e38919bc9a2c3c026f2151b5e56d04084ce8f0b"
+                "reference": "35cb6d47d03b0cae52dc12d686f941365b20f08b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/composer/zipball/3e38919bc9a2c3c026f2151b5e56d04084ce8f0b",
-                "reference": "3e38919bc9a2c3c026f2151b5e56d04084ce8f0b",
+                "url": "https://api.github.com/repos/composer/composer/zipball/35cb6d47d03b0cae52dc12d686f941365b20f08b",
+                "reference": "35cb6d47d03b0cae52dc12d686f941365b20f08b",
                 "shasum": ""
             },
             "require": {
                 "composer/ca-bundle": "^1.5",
                 "composer/class-map-generator": "^1.4.0",
                 "composer/metadata-minifier": "^1.0",
-                "composer/pcre": "^2.2 || ^3.2",
+                "composer/pcre": "^2.3 || ^3.3",
                 "composer/semver": "^3.3",
                 "composer/spdx-licenses": "^1.5.7",
                 "composer/xdebug-handler": "^2.0.2 || ^3.0.3",
+                "ext-json": "*",
                 "justinrainbow/json-schema": "^6.5.1",
                 "php": "^7.2.5 || ^8.0",
                 "psr/log": "^1.0 || ^2.0 || ^3.0",
@@ -27787,13 +27788,13 @@
                 "seld/jsonlint": "^1.4",
                 "seld/phar-utils": "^1.2",
                 "seld/signal-handler": "^2.0",
-                "symfony/console": "^5.4.47 || ^6.4.25 || ^7.1.10",
-                "symfony/filesystem": "^5.4.45 || ^6.4.24 || ^7.1.10",
-                "symfony/finder": "^5.4.45 || ^6.4.24 || ^7.1.10",
+                "symfony/console": "^5.4.47 || ^6.4.25 || ^7.1.10 || ^8.0",
+                "symfony/filesystem": "^5.4.45 || ^6.4.24 || ^7.1.10 || ^8.0",
+                "symfony/finder": "^5.4.45 || ^6.4.24 || ^7.1.10 || ^8.0",
                 "symfony/polyfill-php73": "^1.24",
                 "symfony/polyfill-php80": "^1.24",
                 "symfony/polyfill-php81": "^1.24",
-                "symfony/process": "^5.4.47 || ^6.4.25 || ^7.1.10"
+                "symfony/process": "^5.4.47 || ^6.4.25 || ^7.1.10 || ^8.0"
             },
             "require-dev": {
                 "phpstan/phpstan": "^1.11.8",
@@ -27801,12 +27802,13 @@
                 "phpstan/phpstan-phpunit": "^1.4.0",
                 "phpstan/phpstan-strict-rules": "^1.6.0",
                 "phpstan/phpstan-symfony": "^1.4.0",
-                "symfony/phpunit-bridge": "^6.4.25 || ^7.3.3"
+                "symfony/phpunit-bridge": "^6.4.25 || ^7.3.3 || ^8.0"
             },
             "suggest": {
-                "ext-openssl": "Enabling the openssl extension allows you to access https URLs for repositories and packages",
-                "ext-zip": "Enabling the zip extension allows you to unzip archives",
-                "ext-zlib": "Allow gzip compression of HTTP requests"
+                "ext-curl": "Provides HTTP support (will fallback to PHP streams if missing)",
+                "ext-openssl": "Enables access to repositories and packages over HTTPS",
+                "ext-zip": "Allows direct extraction of ZIP archives (unzip/7z binaries will be used instead if available)",
+                "ext-zlib": "Enables gzip for HTTP requests"
             },
             "bin": [
                 "bin/composer"
@@ -27819,7 +27821,7 @@
                     ]
                 },
                 "branch-alias": {
-                    "dev-main": "2.8-dev"
+                    "dev-main": "2.9-dev"
                 }
             },
             "autoload": {
@@ -27854,7 +27856,7 @@
                 "irc": "ircs://irc.libera.chat:6697/composer",
                 "issues": "https://github.com/composer/composer/issues",
                 "security": "https://github.com/composer/composer/security/policy",
-                "source": "https://github.com/composer/composer/tree/2.8.12"
+                "source": "https://github.com/composer/composer/tree/2.9.1"
             },
             "funding": [
                 {
@@ -27866,7 +27868,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-09-19T11:41:59+00:00"
+            "time": "2025-11-13T15:10:38+00:00"
         },
         {
             "name": "composer/metadata-minifier",
@@ -28290,16 +28292,16 @@
         },
         {
             "name": "google/protobuf",
-            "version": "v4.33.0",
+            "version": "v4.33.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/protocolbuffers/protobuf-php.git",
-                "reference": "b50269e23204e5ae859a326ec3d90f09efe3047d"
+                "reference": "0cd73ccf0cd26c3e72299cce1ea6144091a57e12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/b50269e23204e5ae859a326ec3d90f09efe3047d",
-                "reference": "b50269e23204e5ae859a326ec3d90f09efe3047d",
+                "url": "https://api.github.com/repos/protocolbuffers/protobuf-php/zipball/0cd73ccf0cd26c3e72299cce1ea6144091a57e12",
+                "reference": "0cd73ccf0cd26c3e72299cce1ea6144091a57e12",
                 "shasum": ""
             },
             "require": {
@@ -28328,22 +28330,22 @@
                 "proto"
             ],
             "support": {
-                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.33.0"
+                "source": "https://github.com/protocolbuffers/protobuf-php/tree/v4.33.1"
             },
-            "time": "2025-10-15T20:10:28+00:00"
+            "time": "2025-11-12T21:58:05+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "6.6.0",
+            "version": "6.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jsonrainbow/json-schema.git",
-                "reference": "68ba7677532803cc0c5900dd5a4d730537f2b2f3"
+                "reference": "fd8e5c6b1badb998844ad34ce0abcd71a0aeb396"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/68ba7677532803cc0c5900dd5a4d730537f2b2f3",
-                "reference": "68ba7677532803cc0c5900dd5a4d730537f2b2f3",
+                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/fd8e5c6b1badb998844ad34ce0abcd71a0aeb396",
+                "reference": "fd8e5c6b1badb998844ad34ce0abcd71a0aeb396",
                 "shasum": ""
             },
             "require": {
@@ -28403,9 +28405,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jsonrainbow/json-schema/issues",
-                "source": "https://github.com/jsonrainbow/json-schema/tree/6.6.0"
+                "source": "https://github.com/jsonrainbow/json-schema/tree/6.6.1"
             },
-            "time": "2025-10-10T11:34:09+00:00"
+            "time": "2025-11-07T18:30:29+00:00"
         },
         {
             "name": "kint-php/kint",
@@ -31973,16 +31975,16 @@
         },
         {
             "name": "symfony/browser-kit",
-            "version": "v6.4.24",
+            "version": "v6.4.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/browser-kit.git",
-                "reference": "3537d17782f8c20795b194acb6859071b60c6fac"
+                "reference": "067e301786bbb58048077fc10507aceb18226e23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/3537d17782f8c20795b194acb6859071b60c6fac",
-                "reference": "3537d17782f8c20795b194acb6859071b60c6fac",
+                "url": "https://api.github.com/repos/symfony/browser-kit/zipball/067e301786bbb58048077fc10507aceb18226e23",
+                "reference": "067e301786bbb58048077fc10507aceb18226e23",
                 "shasum": ""
             },
             "require": {
@@ -32021,7 +32023,7 @@
             "description": "Simulates the behavior of a web browser, allowing you to make requests, click on links and submit forms programmatically",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/browser-kit/tree/v6.4.24"
+                "source": "https://github.com/symfony/browser-kit/tree/v6.4.28"
             },
             "funding": [
                 {
@@ -32041,7 +32043,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2025-07-10T08:14:14+00:00"
+            "time": "2025-10-16T22:35:35+00:00"
         },
         {
             "name": "symfony/dom-crawler",
