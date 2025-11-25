@@ -3220,27 +3220,27 @@
         },
         {
             "name": "drupal/better_exposed_filters",
-            "version": "7.0.5",
+            "version": "7.1.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/better_exposed_filters.git",
-                "reference": "7.0.5"
+                "reference": "7.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/better_exposed_filters-7.0.5.zip",
-                "reference": "7.0.5",
-                "shasum": "a215444c39a6ae384710a6c707caf593f6dd1e2d"
+                "url": "https://ftp.drupal.org/files/projects/better_exposed_filters-7.1.1.zip",
+                "reference": "7.1.1",
+                "shasum": "e22a4afccf011a583e2ae6297d34f7d344552469"
             },
             "require": {
-                "drupal/core": "^10 || ^11",
-                "drupal/nouislider_js": "^15.8"
+                "drupal/core": "^10.3 || ^11",
+                "drupal/nouislider_js": "^15.8.1"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "7.0.5",
-                    "datestamp": "1738353781",
+                    "version": "7.1.1",
+                    "datestamp": "1763681621",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7215,17 +7215,17 @@
         },
         {
             "name": "drupal/editor_advanced_link",
-            "version": "2.3.2",
+            "version": "2.3.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/editor_advanced_link.git",
-                "reference": "2.3.2"
+                "reference": "2.3.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/editor_advanced_link-2.3.2.zip",
-                "reference": "2.3.2",
-                "shasum": "db204002d6807d985c91c93d5e74e26784f371a0"
+                "url": "https://ftp.drupal.org/files/projects/editor_advanced_link-2.3.3.zip",
+                "reference": "2.3.3",
+                "shasum": "e3c836ca67786b6e1535d605f15f9c2e2ec7559c"
             },
             "require": {
                 "drupal/core": "^10.5 || ^11.2"
@@ -7237,8 +7237,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.3.2",
-                    "datestamp": "1759945991",
+                    "version": "2.3.3",
+                    "datestamp": "1763287133",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -8360,6 +8360,10 @@
                 {
                     "name": "mkadin",
                     "homepage": "https://www.drupal.org/user/1093166"
+                },
+                {
+                    "name": "vitaliyb98",
+                    "homepage": "https://www.drupal.org/user/3514011"
                 }
             ],
             "description": "Attach a view to an entity",
@@ -8628,20 +8632,20 @@
         },
         {
             "name": "drupal/feeds",
-            "version": "3.0.0",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/feeds.git",
-                "reference": "8.x-3.0"
+                "reference": "8.x-3.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/feeds-8.x-3.0.zip",
-                "reference": "8.x-3.0",
-                "shasum": "d6cbfdcc6ece690fe3b20dd62285eea91113089a"
+                "url": "https://ftp.drupal.org/files/projects/feeds-8.x-3.2.zip",
+                "reference": "8.x-3.2",
+                "shasum": "0cf6a160151e411c585ae7ce281212e10393f71c"
             },
             "require": {
-                "drupal/core": "^10.1 || ^11",
+                "drupal/core": "^10.2 || ^11",
                 "laminas/laminas-feed": "^2.22"
             },
             "require-dev": {
@@ -8651,8 +8655,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.0",
-                    "datestamp": "1736951425",
+                    "version": "8.x-3.2",
+                    "datestamp": "1763648440",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13974,17 +13978,17 @@
         },
         {
             "name": "drupal/profile",
-            "version": "1.12.0",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/profile.git",
-                "reference": "8.x-1.12"
+                "reference": "8.x-1.13"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/profile-8.x-1.12.zip",
-                "reference": "8.x-1.12",
-                "shasum": "9fd145bb88da900edc34727dd30ec0a230ceb875"
+                "url": "https://ftp.drupal.org/files/projects/profile-8.x-1.13.zip",
+                "reference": "8.x-1.13",
+                "shasum": "20cfdd86df67f0b2854d280472c95b2f5f44d0ef"
             },
             "require": {
                 "drupal/core": "^9 || ^10 || ^11",
@@ -13998,8 +14002,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.12",
-                    "datestamp": "1742292282",
+                    "version": "8.x-1.13",
+                    "datestamp": "1763384670",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -15516,17 +15520,17 @@
         },
         {
             "name": "drupal/shs",
-            "version": "2.0.4",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/shs.git",
-                "reference": "2.0.4"
+                "reference": "2.0.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/shs-2.0.4.zip",
-                "reference": "2.0.4",
-                "shasum": "136a2cddfa780bfe8c58b2f55bacd16c164b3415"
+                "url": "https://ftp.drupal.org/files/projects/shs-2.0.5.zip",
+                "reference": "2.0.5",
+                "shasum": "c43de730816ca9fa153fb3040496470122222ae6"
             },
             "require": {
                 "drupal/core": "^10.2 || ^11"
@@ -15537,8 +15541,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.4",
-                    "datestamp": "1760572520",
+                    "version": "2.0.5",
+                    "datestamp": "1763083749",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -15818,17 +15822,17 @@
         },
         {
             "name": "drupal/sitemap",
-            "version": "2.4.0",
+            "version": "2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/sitemap.git",
-                "reference": "8.x-2.4"
+                "reference": "8.x-2.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/sitemap-8.x-2.4.zip",
-                "reference": "8.x-2.4",
-                "shasum": "9178b8c94465ec2087ea417f97689b0c3e93f528"
+                "url": "https://ftp.drupal.org/files/projects/sitemap-8.x-2.5.zip",
+                "reference": "8.x-2.5",
+                "shasum": "0f99a562ce49cbcabf67dbd9249670385495a3f4"
             },
             "require": {
                 "drupal/core": "^10.2 || ^11",
@@ -15842,8 +15846,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-2.4",
-                    "datestamp": "1759339104",
+                    "version": "8.x-2.5",
+                    "datestamp": "1763258886",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -19022,26 +19026,26 @@
         },
         {
             "name": "drupal/views_year_filter",
-            "version": "2.1.6",
+            "version": "2.1.7",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_year_filter.git",
-                "reference": "2.1.6"
+                "reference": "2.1.7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_year_filter-2.1.6.zip",
-                "reference": "2.1.6",
-                "shasum": "641ab95b58ecff6c07cabcae5d108277aa336a30"
+                "url": "https://ftp.drupal.org/files/projects/views_year_filter-2.1.7.zip",
+                "reference": "2.1.7",
+                "shasum": "02a5329d01003b9539069ef812e8837976d3db21"
             },
             "require": {
-                "drupal/core": "^10 || ^11"
+                "drupal/core": "^10.2 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.1.6",
-                    "datestamp": "1740230890",
+                    "version": "2.1.7",
+                    "datestamp": "1763936843",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -19053,10 +19057,6 @@
                 "GPL-2.0-or-later"
             ],
             "authors": [
-                {
-                    "name": "abjih",
-                    "homepage": "https://www.drupal.org/user/3519087"
-                },
                 {
                     "name": "berramou",
                     "homepage": "https://www.drupal.org/user/3535998"

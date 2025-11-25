@@ -77,6 +77,8 @@ class IndiciaEsRecordsBySpeciesPieBlock extends IndiciaBlockBase {
       ],
       // Rely on Indicia caching, otherwise our JS not injected onto page.
       '#cache' => ['max-age' => 0],
+      // Disable BigPipe so that the element exists before the datasource loads.
+      '#create_placeholder' => FALSE,
     ];
   }
 
