@@ -300,7 +300,8 @@
         "drupal/simple_oauth": "5.2.5",
         "drupal/entity_notify": "^1.1",
         "drupal/etracker": "^3.1",
-        "drupal/linkit": "^7.0"
+        "drupal/linkit": "^7.0",
+        "drupal/klaro": "^3.0"
     },
     "conflict": {
         "drupal/drupal": "*"
