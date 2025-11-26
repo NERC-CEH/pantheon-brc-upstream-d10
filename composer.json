@@ -275,7 +275,7 @@
         "drupal/bootstrap": "^3.32",
         "drupal/ckeditor_details": "^2.1@beta",
         "drupal/pantheon_advanced_page_cache": "^2.3",
-        "phpoffice/phpspreadsheet": "2.2",
+        "phpoffice/phpspreadsheet": "^3.10",
         "drupal/dropzonejs_eb_widget": "^2.11",
         "drupal/bootstrap5": "^4.0",
         "drupal/youtube_cookies": "^2.1",
