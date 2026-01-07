@@ -1023,7 +1023,12 @@
             indiciaData.mapdiv.reapplyQuery();
             if (indiciaData.mapdiv.settings.zoomMapToOutput && features.length > 0) {
               indiciaData.disableMapDataLoading = true;
-              indiciaData.mapdiv.map.zoomToExtent(indiciaData.reportlayer.getDataExtent());
+              if (indiciaData['zoomToAfterFetchingGoogleApiScript-' + indiciaData.mapdiv.map.id]) {
+                indiciaData['zoomToAfterFetchingGoogleApiScript-' + indiciaData.mapdiv.map.id] = indiciaData.reportlayer.getDataExtent();
+              }
+              else {
+                indiciaData.mapdiv.map.zoomToExtent(indiciaData.reportlayer.getDataExtent());
+              }
               // zoomMapToOutput is one off.
               indiciaData.mapdiv.settings.zoomMapToOutput = false;
               indiciaData.disableMapDataLoading = false;
