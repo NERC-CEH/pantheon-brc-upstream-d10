@@ -631,6 +631,27 @@ window.indiciaFns = {};
   };
 
   /**
+   * Add a popup message that appears briefly without blocking the UI.
+   *
+   * @param string message
+   *   Message to display.
+   * @param int displayFor
+   *   Optional time to display for in milliseconds, default 3000.
+   */
+  indiciaFns.nonBlockingMessagePopup = function nonBlockingMessagePopup(message, displayFor) {
+    displayFor = typeof displayFor === 'undefined' ? 3000 : displayFor;
+    // non-blocking toast-style notice so animations continue
+    const $msg = $(`<div>${message}</div>`);
+    $msg.attr({ role: 'status', 'aria-live': 'polite' })
+      .addClass('non-blocking-msg')
+      .appendTo('body')
+      .fadeIn(200)
+      .delay(displayFor).fadeOut(400, function() {
+        //$(this).remove();
+      });
+  };
+
+  /**
    * Convert an ISO date to website display format.
    *
    * @param string dateString

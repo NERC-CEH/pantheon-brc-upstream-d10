@@ -90,6 +90,8 @@ but you need to tag the image to indicate what it is.
  */
 let hook_image_classifier_new_occurrence = [];
 
+indiciaData.queuedClassificationResponses = [];
+
 (function ($) {
 
   /**
@@ -114,35 +116,19 @@ let hook_image_classifier_new_occurrence = [];
 
     // Hook in to the addRowToGrid.handleSelectedTaxon function to update
     // classifier suggestions when the recorder edits a taxon.
-    hook_species_checklist_new_row.push(handleSelectedTaxon);
+    if (typeof hook_species_checklist_new_row !== 'undefined') {
+      hook_species_checklist_new_row.push(handleSelectedTaxon);
+    }
 
     // Hook in to the jquery.uploader delete-file click handler to update
     // classifier results when the recorder deletes media.
     mediaDeleteAddedHooks.push(handleDeletedMedia);
 
-    // Add a hidden dialog to use with all classifier controls.
-    let bootstrapButton;
-    if (typeof $.fn.button.noConflict != 'undefined'){
-      // If Bootstap is also present it can cause conflicts with jQuery UI.
-      // This should relieve that, hopefully.
-      // See https://stackoverflow.com/a/23428433
-      // In particular it affects the X button for closing the dialog.
-      bootstrapButton = $.fn.button.noConflict();
-    }
-
-    let dialogHtml = '<div id="image-classifier-dialog"><p></p></div>';
-    $('body').append(dialogHtml);
-    // Initialise but immediately hide the dialog.
-    $('#image-classifier-dialog')
-      .dialog({
-        modal: true,
-      })
-      .dialog('close');
-
-    if (bootstrapButton) {
-      // Restore Bootstrap behaviour if it was replaced.
-      $.fn.button = bootstrapButton;
-    }
+    // Click the button which expands the classifier if initially collapsed.
+    $('.show-classifier').on('click', (e) => {
+      $(e.currentTarget).next('.classifier-container').slideDown();
+      $(e.currentTarget).hide();
+    });
 
   });
 
@@ -167,13 +153,15 @@ let hook_image_classifier_new_occurrence = [];
       // The id is like upload-select-btn-<index>
       let index = id.split('-')[3];
       // Set up the classify button.
-      let classifyBtn = this.settings.buttonTemplate
-        .replace('{caption}', this.settings.classifyBtnCaption)
-        .replace('{id}', 'classify-btn-' + index)
-        .replace('{class}', 'classify-btn')
-        .replace('{title}', this.settings.classifyBtnTitle);
+      let $classifyBtn = $('<button>')
+        .text(indiciaData.lang.fileClassifier.classifyBtnCaption)
+        .attr('id', 'classify-btn-' + index)
+        .attr('type', 'button')
+        .addClass('classify-btn')
+        .addClass(indiciaData.templates.defaultBtnClass)
+        .attr('title', indiciaData.lang.fileClassifier.classifyBtnTitle);
       // Adding it after the upload button.
-      $(classifyBtn).insertAfter($upload);
+      $classifyBtn.insertAfter($upload);
     });
   }
 
@@ -208,7 +196,9 @@ let hook_image_classifier_new_occurrence = [];
         nrPosts--;
         nrFail++;
       }
-      else {
+      else if (response.suggestions.length <= 1) {
+        // If more than one suggestion, don't treat as handled as will be
+        // waiting for user input.
         nrPosts--;
         nrSuccess++;
       }
@@ -219,13 +209,19 @@ let hook_image_classifier_new_occurrence = [];
         showDialog(div, 'dialogEnd');
       }
     };
+    let failedPost = function(error) {
+      console.log(error);
+      showDialog(div, 'classifierRequestFailed')
+      nrPosts--;
+      nrFail++;
+    }
 
     // Post the files to the classifier.
     if (div.settings.mode.includes('single')) {
       // All the files are classified to give one result.
       nrPosts = 1;
       doPost(div, files)
-      .then(donePost)
+      .then(donePost, failedPost)
       .catch(donePost);
     }
     else {
@@ -233,7 +229,7 @@ let hook_image_classifier_new_occurrence = [];
       nrPosts = files.length;
       files.forEach((file) => {
         doPost(div, [file])
-        .then(donePost)
+        .then(donePost, failedPost)
         .catch(donePost);
        });
     }
@@ -258,123 +254,223 @@ let hook_image_classifier_new_occurrence = [];
         handleResponse(div, files, response);
         resolve(response);
       })
-      .fail(function(){
+      .fail(function(jqXHR) {
+        console.log(jqXHR.responseText);
         handleResponse(div, files, null)
-        reject(false);
+        reject('Error posting to classifier');
       });
 
     })
   }
 
+  /**
+   * Process remaining classification responses.
+   *
+   * If user input required due to multiple suggestions, the remaining
+   * responses are queued and handle after the classification event is handled.
+   */
+  function processQueue() {
+    // Note that we must not do any that get re-queued due to user input being required again.
+    let last = indiciaData.queuedClassificationResponses.length;
+    for (let i = 0; i < last; i++) {
+      const thisResponse = indiciaData.queuedClassificationResponses.shift();
+      handleResponse(thisResponse[0], thisResponse[1], thisResponse[2])
+    }
+  }
+
+  /**
+   * Show dialog for selecting user choice if multiple suggestions.
+   *
+   * @param {object} div
+   *   Contains all the details of the control.
+   * @param {array} files
+   *   Array of file objects that were classified.
+   * @param {object} response.
+   *   Response from the classifier
+   */
+  function askUserToChooseSuggestion(div, files, response) {
+    // Multiple suggestions made so need user input.
+    let images = [];
+    files.forEach((f) => {
+      images.push(`<img src="/${div.settings.interimImagePath}${f.path}" />`);
+    });
+    const imageListHtml = images.join('');
+    let possibilityOptions = [];
+    response.suggestions.forEach((suggestion) => {
+      let optionText = `<em>${suggestion.taxon}</em>`;
+      if (suggestion.default_common_name) {
+        optionText += '<br/>' + suggestion.default_common_name;
+      }
+      optionText += '<br/><strong>' + suggestion.taxon_group + '</strong>';
+      suggestionJson = JSON.stringify(suggestion).replace(/"/g, '&quot;');
+      let probabilityPercent = Math.round(suggestion.probability * 100);
+      let probabilityClass = getProbabilityClass(suggestion.probability);
+      let probabilityTitle = indiciaData.lang.fileClassifier.percentProbability.replace('{1}', probabilityPercent);
+      possibilityOptions.push(`
+        <li class="classifier-suggestion" data-suggestion="${suggestionJson}">
+          <span class="probability ${probabilityClass}-probability" title="${probabilityTitle}"></span>
+          <div>${optionText}</div>
+        </li>`);
+    });
+    const possibilityListHtml = possibilityOptions.join('');
+    $.fancybox.close();
+    let message = `
+      <p>${indiciaData.lang.fileClassifier.multipleSuggestionInstructions}</p>
+      <div class="classified-images">
+        ${imageListHtml}
+      </div>
+      <div class="classifier-suggestions">
+        <ul class="suggestion-list">
+          ${possibilityListHtml}
+        </ul>
+      </div>
+    `;
+    $.fancyDialog({
+      title: 'Multiple possibilities found',
+      message: message,
+      okButton: null,
+      callbackCancel: function() {
+        processQueue();
+      }
+    });
+    $('.classifier-suggestion').on('click', function(e) {
+      const suggestion = $(e.currentTarget).data('suggestion');
+      handleResponse(div, files, response, suggestion);
+      // Also now can handle any classification responses that came in
+      // after the one the user had to choose for.
+      processQueue();
+    });
+  }
 
   /**
    * Deals with the outcome of classification.
-   * @param {object} div - Contains all the details of the control.
-   * @param {array} files - Array of file objects that were classified.
-   * @param {object} response - Response from the classifier
+   *
+   * @param {object} div
+   *   Contains all the details of the control.
+   * @param {array} files
+   *   Array of file objects that were classified.
+   * @param {object} response
+   *   Response from the classifier.
+   * @param {object} forceSuggestion
+   *   Optional suggestion object, only set if the user has chosen from a list
+   *   of several suggestions.
    */
-  function handleResponse(div, files, response){
+  function handleResponse(div, files, response, forceSuggestion) {
     let unknown = div.settings.unknownTaxon;
-    let $row;
-
+    let $container;
+    if ($('.suggestion-list').length > 0 && typeof forceSuggestion === 'undefined') {
+      // Dialog for handling multiple suggestions visible, so we'll queue this one.
+      indiciaData.queuedClassificationResponses.push([div, files, response]);
+      return;
+    }
+    $.fancybox.close();
     if (response === null) {
       // Classifier encountered an error.
       // Add a row with unknown species
-      $row = addSpecies(div, files, unknown);
+      $container = addSpecies(div, files, unknown);
     }
     else {
-      if(response.suggestions.length > 0) {
-        // Automatically add the first suggestion initially.
-        // We may add in some user interaction here later.
-        let prediction = Object.assign({}, response.suggestions[0])
-        // Copy the suggestion to prediction so we can modify it without
-        // changing response.
-        if(typeof prediction.taxa_taxon_list_id === 'undefined'){
-          // Classifier found a match but it was not in the Indicia species list.
-          // Add a row with unknown species
-          $row = addSpecies(div,files, unknown);
+      let suggestions = forceSuggestion ? [forceSuggestion] : response.suggestions;
+      if (suggestions.length > 1) {
+        askUserToChooseSuggestion(div, files, response);
+      } else {
+        if (suggestions.length === 1) {
+          // A single suggestion was made so can select it immediately.
+          let prediction = Object.assign({}, suggestions[0]);
+          // Copy the suggestion to prediction so we can modify it without
+          // changing response.
+          if(typeof prediction.taxa_taxon_list_id === 'undefined'){
+            // Classifier found a match but it was not in the Indicia species list.
+            // Add a row with unknown species
+            $container = addSpecies(div,files, unknown);
+          }
+          else {
+            // Classifier matched a species.
+            // Assuming that all classifiers will be using scientific names. If
+            // not, will need to add language in to classifier response.
+            prediction.language_iso = 'lat'
+            $container = addSpecies(div, files, prediction);
+          }
+        } else {
+          // Classifier made no suggestions.
+          $container = addSpecies(div, files, unknown);
+        }
+
+        // Increment count attribute (which must have system function of
+        // sex-stage-count). I'm assuming it is a text box in which numerals are
+        // entered but realise there are other possibilities.
+        let $count = $container.find('input.system-function-sex_stage_count');
+        let value = Number($count.val());
+        if (isNaN(value)) {
+          // Maybe we need a dialogue with the recorder about this but, for now,
+          // we'll just set it to something matching expectations.
+          value = 1;
         }
         else {
-          // Classifier matched a species.
-          // Assuming that all classifiers will be using scientific names. If
-          // not, will need to add language in to classifier response.
-          prediction.language_iso = 'lat'
-          $row = addSpecies(div, files, prediction);
-          let probability = Math.floor(prediction.probability * 100);
+          value++;
         }
-      }
-      else {
-        // Classifier made no suggestions.
-        $row = addSpecies(div, files, unknown);
-      }
+        // Update the value and trigger any change handlers which may be attached.
+        $count.val(value).trigger('change');
 
-      // Increment count attribute (which must have system function of
-      // sex-stage-count). I'm assuming it is a text box in which numerals are
-      // entered but realise there are other possibilities.
-      let $count = $row.find('input.system-function-sex_stage_count');
-      let value = Number($count.val());
-      if (isNaN(value)) {
-        // Maybe we need a dialogue with the recorder about this but, for now,
-        // we'll just set it to something matching expectations.
-        value = 1;
-      }
-      else {
-        value++;;
-      }
-      // Update the value and trigger any change handlers which may be attached.
-      $count.val(value).trigger('change');
+        // Prepare suggestions for saving.
+        // The taxon_name_given cannot be null but the Drupal classification
+        // module currently returns nothing if there is no match to a taxon in the
+        // warehouse.
+        // Initially assume the human agrees with the classifier, but if the user
+        // has forced that then we can compare the taxon ids.
+        let suggestionsToSave = [];
+        for (let i = 0; i < response.suggestions.length; i++) {
+          let suggestion = response.suggestions[i];
+          suggestionsToSave.push({
+            'taxon_name_given': suggestion.taxon ?? '',
+            'taxa_taxon_list_id': suggestion.taxa_taxon_list_id,
+            'probability_given': suggestion.probability,
+            'classifier_chosen': i == 0 ? 't' : 'f',
+            'human_chosen': (typeof forceSuggestion === 'undefined' ? i == 0 : forceSuggestion.taxa_taxon_list_id === suggestion.taxa_taxon_list_id)
+              ? 't' : 'f'
+          });
+        }
 
-      // Prepare suggestions for saving.
-      // The taxon_name_given cannot be null but the Drupal classification
-      // module currently returns nothing if there is no match to a taxon in the
-      // warehouse.
-      // Initially assume the human agrees with the classifier.
-      let suggestions = [], i;
-      for (let i = 0; i < response.suggestions.length; i++) {
-        let suggestion = response.suggestions[i];
-        suggestions.push({
-          'taxon_name_given': suggestion.taxon ?? '',
-          'taxa_taxon_list_id': suggestion.taxa_taxon_list_id,
-          'probability_given': suggestion.probability,
-          'classifier_chosen': i == 0 ? 't' : 'f',
-          'human_chosen': i == 0 ? 't' : 'f'
+        // Prepare media as an array of file names that were used.
+        let media = files.map(file => file.path);
+
+        // Prepare result, containing suggestions, for saving.
+        let result = JSON.stringify({
+          'fields': {
+            'classifier_id': response.classifier_id,
+            'classifier_version': response.classifier_version,
+            'results_raw': JSON.stringify(response)
+          },
+          'media': media,
+          'suggestions': suggestionsToSave
+        });
+
+        // Save classifer response to html input for posting to our website.
+        // Inputs should be named like
+        //   sc:<species_checklist id>-<rowIdx>::classification_result:<index>
+        // We need a classification result index as an occurrence can have
+        // multiple classification results. This may go wrong if we allow results
+        // to be deleted but image indexing is done similarly.
+        let inputName = 'classification_result:0';
+        let $insertAfter;
+        if (div.settings.mode.includes('embedded') || div.settings.mode.includes('checklist')) {
+          let table =  getInputNameRoot($container) + 'classification_result';
+          let index = $container.next().find('.classification-result').length;
+          inputName = `${table}:${index}`;
+          $insertAfter = $container.next().find('.filelist');
+        } else {
+          $insertAfter = $('#' + div.settings.taxonControlId);
+        }
+
+        $(`<textarea id="${inputName}" name="${inputName}" class="classification-result" style="display: hidden"></textarea>`)
+          .insertAfter($insertAfter)
+          .text(result);
+        // Allow forms to hook into the event of a new occurrence being added.
+        $.each(hook_image_classifier_new_occurrence, function (idx, fn) {
+          fn(prediction, $container);
         });
       }
-
-      // Prepare media as an array of file names that were used.
-      let media = files.map(file => file.path);
-
-      // Prepare result, containing suggestions, for saving.
-      let result = JSON.stringify({
-        'fields': {
-          'classifier_id': response.classifier_id,
-          'classifier_version': response.classifier_version,
-          'results_raw': JSON.stringify(response)
-        },
-        'media': media,
-        'suggestions': suggestions
-      });
-
-      // Save classifer response to html input for posting to our website.
-      // Inputs should be named like
-      //   sc:<species_checklist id>-<rowIdx>::classification_result:<index>
-      // We need a classification result index as an occurrence can have
-      // multiple classification results. This may go wrong if we allow results
-      // to be deleted but image indexing is done similarly.
-      let table =  getInputNameRoot($row) + 'classification_result';
-      let index = $row.next().find('.classification-result').length;
-      let inputName = `${table}:${index}`;
-      let $filelist = $row.next().find('.filelist');
-      $(`<textarea id="${inputName}" name="${inputName}" class="classification-result" style="display:none"></textarea>`)
-        .insertAfter($filelist)
-        .text(result);
     }
-
-    // Allow forms to hook into the event of a new occurrence being added.
-    $.each(hook_image_classifier_new_occurrence, function (idx, fn) {
-      fn(prediction, $row);
-    });
-
   }
 
 
@@ -389,56 +485,56 @@ let hook_image_classifier_new_occurrence = [];
    * text template for placeholders like {1}
    */
   function showDialog(div, key, closable = true, ...replacements) {
-    let template = div.settings[key];
+    let template = indiciaData.lang.fileClassifier[key];
 
     // Replace any placeholders like {1} in the template.
     for (let i = 0; i < replacements.length; i++) {
       template = template.replace(`{${i + 1}}`, replacements[i]);
     }
+    $.fancybox.close();
+    $.fancyDialog({
+      title: indiciaData.lang.fileClassifier.dialogTitle,
+      message: template,
+      okButton: closable ? indiciaData.lang.fileClassifier.dialogBtnOk : null,
+      cancelButton: null
+    });
+  }
 
-    // Output dialog text
-    $('#image-classifier-dialog p').html(template)
-
-    if (closable) {
-      $('#image-classifier-dialog').dialog('option', {
-        title: div.settings.dialogTitle,
-        closeOnEscape: true,
-        buttons: [{
-          text: div.settings.dialogBtnOk,
-          click: function() {
-            $(this).dialog('close');
-          }
-        }]
-      });
-    }
-    else {
-      $('#image-classifier-dialog').dialog('option', {
-        title: div.settings.dialogTitle,
-        closeOnEscape: false,
-        buttons: []
-      });
-    }
-
-    $('#image-classifier-dialog').dialog('open');
+  /**
+   * Reformats the information in a prediction.
+   *
+   * So that it can be used by a species search autocomplete as a result.
+   *
+   * @param {object} prediction
+   */
+  function reformatPredictionForAutocomplete(prediction) {
+    prediction.preferred = 't';
+    prediction.preferred_taxon = prediction.taxon;
   }
 
 
   /**
    * Adds the classification result to the species input.
    *
-   * Currently only supports a species checklist for input.
-   * @param {object} div - Contains all the details of the control.
-   * @param {array} files - Array of file objects that were classified.
-   * @param {object} prediction - The response from the classifier
-   * @returns The jquery object of the added row in the species grid.
+   * @param {object} div
+   *   Contains all the details of the control.
+   * @param {array} files
+   *   Array of file objects that were classified.
+   * @param {object} prediction
+   *   The response from the classifier
+   * @returns {object}
+   *   The jquery object of the added row in the species grid or the entire
+   *   form if using a single species search input.
    */
   function addSpecies(div, files, prediction) {
-    if (!div.settings.mode.includes('embedded') &&
-        !div.settings.mode.includes('checklist')) {
-      // Alternative inputs not yet supported.
-      return;
+    if (div.settings.mode.includes('embedded') || div.settings.mode.includes('checklist')) {
+      return addSpeciesToChecklist(div, files, prediction);
+    } else {
+      return addSpeciesToSingleInput(div, files, prediction);
     }
+  }
 
+  function addSpeciesToChecklist(div, files, prediction) {
     let $grid;
     // Locate the species_checklist.
     if (div.settings.mode.includes('embedded')) {
@@ -484,6 +580,8 @@ let hook_image_classifier_new_occurrence = [];
       let $clonableRow = $grid.find('.scClonableRow');
       let $autocomplete = $clonableRow.find('.scTaxonCell input');
 
+      reformatPredictionForAutocomplete(prediction);
+
       // Trigger the event in addRowToGrid.js to add the species.
       $autocomplete.trigger('result', [prediction, prediction.taxa_taxon_list_id]);
 
@@ -496,9 +594,7 @@ let hook_image_classifier_new_occurrence = [];
     }
 
     // If we are linked to a checklist, move the files to the speciesRow.
-    if (div.settings.mode.includes('checklist')) {
-      moveImagesToGrid(div, $speciesRow, files)
-    }
+    moveImagesIntoRecord(div, $speciesRow, files, prediction.probability)
 
     // Prevent the insertion of another image row.
     $speciesRow.find('.add-media-link').hide();
@@ -511,9 +607,19 @@ let hook_image_classifier_new_occurrence = [];
     return $speciesRow;
   }
 
+  function addSpeciesToSingleInput(div, files, prediction) {
+    const controlId = div.settings.taxonControlId;
+    const $hiddenInput = $('#' + $.escapeSelector(controlId));
+    const $searchInput = $('#' + $.escapeSelector(controlId + ':taxon'));
+    $hiddenInput.val(prediction.taxa_taxon_list_id);
+    $searchInput.val(prediction.taxon);
+    moveImagesIntoRecord(div, null, files, prediction.probability);
+    return $hiddenInput.closest('form');
+  }
+
 
   /**
-   * Move the file from the classifier to the correct row of the species grid.
+   * Move the file from the classifier to the image upload control for the record.
    *
    * This is called by a linked classifier. It adds a filebox to the row if
    * there is not one already present.
@@ -521,17 +627,29 @@ let hook_image_classifier_new_occurrence = [];
    * @param {object} $row - The jquery object of the added row in the species
    * grid.
    * @param {array} files - Array of file objects that were classified.
+   * @param {number} probability - The probability of the classification.
    */
-  function moveImagesToGrid(div, $row, files) {
-    // Test to see if there is already an image for this row.
-    if (!$row.next().hasClass('image-row')) {
-      // If not, trigger the event to add an image row.
-      $row.find('.add-media-link').trigger('click');
+  function moveImagesIntoRecord(div, $row, files, probability) {
+    var $dest;
+    var nameRoot;
+    if (div.settings.mode.includes('checklist')) {
+      // List of records form.
+      // Test to see if there is already an image for this row.
+      if (!$row.next().hasClass('image-row')) {
+        // If not, trigger the event to add an image row.
+        $row.find('.add-media-link').trigger('click');
+      }
+      // Locate the file list in the image row where we move the files.
+      $dest = $row.next().find('div.filelist');
+      // Determine the prefix we will need to add to input names.
+      nameRoot = getInputNameRoot($row);
     }
-    // Locate the file list in the image row where we move the files.
-    let $dest = $row.next().find('div.filelist');
-    // Determine the prefix we will need to add to input names.
-    let nameRoot = getInputNameRoot($row);
+    else {
+      // Single record form.
+      // Assume there is a normal file upload control on the form.
+      $dest = $('#container-occurrence_medium-default div.filelist');
+      nameRoot = '';
+    }
 
     let $classifer = $('#container-' + div.settings.id);
     files.forEach((file) => {
@@ -546,6 +664,8 @@ let hook_image_classifier_new_occurrence = [];
           $this.attr('name', newName);
         }
       });
+      let probabilityClass = getProbabilityClass(probability);
+      $src.find('.header').prepend('<span class="probability ' + probabilityClass + '-probability"></span>');
 
       // Move the file to the image row.
       $dest.append($src);
@@ -555,6 +675,25 @@ let hook_image_classifier_new_occurrence = [];
     $dest.find('span.drop-instruct').remove();
   }
 
+  /**
+   * Convert a probability to the css class fragment used for styling.
+   *
+   * Should match the behaviour of the iRecord app.
+   *
+   * @param float probability
+   *   Probability to convert.
+   *
+   * @returns
+   *   A fragment of a CSS classname, e.g. high, med or low.
+   */
+  function getProbabilityClass(probability) {
+    if (probability >= 0.7) {
+      return 'high';
+    } else if (probability >= 0.2) {
+      return 'med';
+    }
+    return 'low';
+  }
 
   /**
    * Returns the name root for all inputs in a checklist row.

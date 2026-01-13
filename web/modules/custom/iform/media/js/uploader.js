@@ -58,8 +58,8 @@ jQuery(document).ready(function($) {
         if (percent !== 100) {
           // Updating file progress
           $('#file-progress').show();
-          $('#file-progress').val(percent);
         }
+        $('#file-progress').val(percent);
       },
       onFileExtError() {
         $.fancyDialog({
@@ -81,13 +81,15 @@ jQuery(document).ready(function($) {
         if (typeof data === 'string') {
           data = JSON.parse(data);
         }
-        $('#file-upload-form input[type="submit"]').attr('disabled', false);
         $('<div class="file-cntr" />')
           .append($('<i class="far fa-file-alt fa-7x"></i>'))
           .append($(`<i class="far fa-trash-alt remove-file" title="${indiciaData.lang.import_helper_2.removeUploadedFileHint}"></i>`))
           .append($(`<p>${data.originalName}</p>`))
           .append($(`<input type="hidden" name="interim-file[]" value="${data.interimFile}" />`))
           .appendTo($('#uploaded-files'));
+      },
+      onComplete: function() {
+        $('#file-upload-form input[type="submit"]').attr('disabled', $('#uploaded-files .file-cntr').length === 0);
       }
     });
   }

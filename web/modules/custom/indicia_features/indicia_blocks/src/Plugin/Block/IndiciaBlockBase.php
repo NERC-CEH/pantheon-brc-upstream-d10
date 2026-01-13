@@ -118,6 +118,14 @@ abstract class IndiciaBlockBase extends BlockBase {
       '#default_value' => $config['limit_to_website'] ?? 0,
     ];
 
+    // Option to limit to data in the current year.
+    $form['limit_to_current_year'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t("Limit to current year's records"),
+      '#description' => $this->t('If ticked, only records for the current year are shown.'),
+      '#default_value' => $config['limit_to_current_year'] ?? 0,
+    ];
+
     // Option to limit to current user.
     $form['limit_by_user_profile_preferences'] = [
       '#type' => 'checkbox',
@@ -140,6 +148,7 @@ abstract class IndiciaBlockBase extends BlockBase {
     $this->setConfigurationValue('unverified_records', $form_state->getValue('unverified_records'));
     $this->setConfigurationValue('limit_to_user', $form_state->getValue('limit_to_user'));
     $this->setConfigurationValue('limit_to_website', $form_state->getValue('limit_to_website'));
+    $this->setConfigurationValue('limit_to_current_year', $form_state->getValue('limit_to_current_year'));
     $this->setConfigurationValue('limit_by_user_profile_preferences', $form_state->getValue('limit_by_user_profile_preferences'));
     $this->setConfigurationValue('cache_timeout', $form_state->getValue('cache_timeout'));
   }
@@ -186,6 +195,13 @@ abstract class IndiciaBlockBase extends BlockBase {
         'query_type' => 'term',
         'field' => 'metadata.website.id',
         'value' => $connection['website_id'],
+      ];
+    }
+    if (!empty($config['limit_to_current_year'])) {
+      $must[] = [
+        'query_type' => 'term',
+        'field' => 'event.year',
+        'value' => date('Y'),
       ];
     }
     if (!empty($config['limit_by_user_profile_preferences'])) {

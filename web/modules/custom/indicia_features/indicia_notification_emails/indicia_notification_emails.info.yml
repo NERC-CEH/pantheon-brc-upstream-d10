@@ -1,7 +1,7 @@
 name: 'Indicia notification emails'
 description: 'Allows a user to managed their email notification settings on the Indicia warehouse.'
 core_version_requirement: ^10 || ^11
-version: "9.11.0"
+version: "9.16.0"
 package: "Indicia"
 type: module
 dependencies:

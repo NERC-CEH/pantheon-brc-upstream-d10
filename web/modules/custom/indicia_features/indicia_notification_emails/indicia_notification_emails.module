@@ -10,6 +10,15 @@ use Drupal\Core\Form\FormStateInterface;
  */
 function indicia_notification_emails_form_user_form_alter(&$form, FormStateInterface $form_state, $form_id) {
   iform_load_helpers(['data_entry_helper']);
+  $config = \Drupal::config('iform.settings');
+  try {
+    $auth = data_entry_helper::get_read_write_auth($config->get('website_id'), $config->get('password'));
+  }
+  catch (Exception $e) {
+    \Drupal::messenger()->addWarning(t('Error connecting to Indicia warehouse to load notification settings.'));
+    \Drupal::logger('indicia_notification_emails')->error('Error getting read/write auth tokens: @message', ['@message' => $e->getMessage()]);
+    return;
+  }
   // Get the warehouse user id for the user whose profile is being viewed.
   $account = $form_state->getFormObject()->getEntity();
   if (!$account->id()) {
@@ -48,8 +57,6 @@ function indicia_notification_emails_form_user_form_alter(&$form, FormStateInter
   ];
 
   // Get existing data from the warehouse for the user.
-  $config = \Drupal::config('iform.settings');
-  $auth = data_entry_helper::get_read_write_auth($config->get('website_id'), $config->get('password'));
   $notificationEmailsExistingData = indicia_notification_emails_existing_data($auth['read'], $userId);
   // Set up the advanced option selects.
   $selects = indicia_notification_emails_get_options($account);

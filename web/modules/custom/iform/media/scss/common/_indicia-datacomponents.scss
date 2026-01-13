@@ -12,12 +12,6 @@ $dark-background-font-colour: #fff;
   word-wrap: break-word;
 }
 
-@mixin drop-shadow($size:4px) {
-  -webkit-box-shadow: $size $size calc($size*2) $shadow-colour;
-  -moz-box-shadow: $size $size calc($size*2) $shadow-colour;
-  box-shadow: $size $size calc($size*2) $shadow-colour;
-}
-
 @mixin verification-button {
   border: solid #f0f0f0 1px;
   border-radius: 4px;
@@ -268,11 +262,6 @@ body {
           background-color: $light-background-colour;
           color: $light-background-font-colour;
         }
-        .classifier-agreement {
-          background-color: $dark-background-colour;
-          color: $dark-background-font-colour;
-          padding: 8px;
-        }
         .classifier-suggestions {
           background-color: $dark-background-colour;
           color: $dark-background-font-colour;
@@ -490,7 +479,6 @@ body {
 
 /* idcLeafletMap plugin */
 .idc-leafletMap {
-  height: 500px;
   /* Map tooltips */
   .leaflet-tooltip {
     h3 {
@@ -783,56 +771,13 @@ body {
   }
 }
 
-/* Image classifier info panels. */
-.classifier-suggestions {
-  .classifier-suggestion {
-    margin: 8px;
-    padding: 8px;
-    position: relative;
-    display: inline-block;
-    max-width: 150px;
-    border: solid #777 1px;
-    span {
-      display: block;
-      &.taxon {
-        font-style: italic;
-        font-weight: bold;
-        margin-top: 4px;
+// Card gallery version hides classifier name/version as takes too much space.
+.idc-cardGallery {
+  .classifier-suggestions {
+    .classifier-suggestion {
+      span.classifier-name {
+        display: none;
       }
-      &.classifier-name {
-        font-size: 12px;
-        font-style: italic;
-      }
-      &.classifier-selection {
-        font-size: 12px;
-      }
-      &.probability {
-        position: absolute;
-        right: 8px;
-        top: -14px;
-        padding: 4px;
-        background: white;
-        border-radius: 1em;
-        border-style: solid;
-        border-width: 2px;
-        &.high-probability {
-          border-color: olivedrab;
-        }
-        &.med-probability {
-          border-color: orange;
-        }
-        &.low-probability {
-          border-color: brown;
-        }
-        &.vlow-probability {
-          border-color: red;
-        }
-      }
-    }
-    &:hover {
-      @include drop-shadow(3px);
-      border-color: blue;
-      cursor: pointer;
     }
   }
 }

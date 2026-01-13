@@ -455,6 +455,11 @@ jQuery(document).ready(function ($) {
         } else if (filterDef.has_photos && filterDef.has_photos === '0') {
           r.push(indiciaData.lang.reportFilterParser.HasNoPhotos);
         }
+        if (filterDef.dna_derived && filterDef.dna_derived === '1') {
+          r.push(indiciaData.lang.reportFilterParser.DnaDerived);
+        } else if (filterDef.dna_derived && filterDef.dna_derived === '0') {
+          r.push(indiciaData.lang.reportFilterParser.NotDnaDerived);
+        }
         if ($('#licences :checked').length > 0 && $('#licences :checked').length < 3) {
           let licences = [];
           $.each($('#licences :checked'), function() {
@@ -950,6 +955,11 @@ jQuery(document).ready(function ($) {
             $('#has_photos').prop('disabled', true);
           } else {
             $('#has_photos').prop('disabled', false);
+          }
+          if (context.dna_derived) {
+            $('#dna_derived').prop('disabled', true);
+          } else {
+            $('#dna_derived').prop('disabled', false);
           }
           if (context.coordinate_precision) {
             $('#coordinate_precision_op').prop('disabled', true);

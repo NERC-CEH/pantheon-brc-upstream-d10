@@ -534,10 +534,12 @@ var destroyAllFeatures;
           _georeference(div);
           return false;
         }
+        $('#' + div.georefOpts.georefSearchBtnId).prop('disabled', false);
         return true;
       });
 
       $('#' + div.georefOpts.georefSearchBtnId).on('click', function () {
+        $('#' + div.georefOpts.georefSearchBtnId).prop('disabled', true);
         _georeference(div);
       });
 

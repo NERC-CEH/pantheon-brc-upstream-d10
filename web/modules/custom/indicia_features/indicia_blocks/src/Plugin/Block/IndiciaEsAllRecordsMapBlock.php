@@ -53,6 +53,18 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
       ],
       '#default_value' => $config['map_layer_type'] ?? 'circle',
     ];
+    $form['default_zoom_level'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Default zoom level'),
+      '#description' => $this->t('Specify the default zoom level for the map (0 = whole world, 18 = street level). Leave blank to use the system default.'),
+      '#default_value' => $config['default_zoom_level'] ?? NULL,
+    ];
+    $form['map_height'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Map height (pixels)'),
+      '#description' => $this->t('Specify the height of the map in pixels. Leave blank to use the system default.'),
+      '#default_value' => $config['map_height'] ?? NULL,
+    ];
     $form['boundary_location_id'] = [
       '#type' => 'number',
       '#title' => $this->t('Boundary Location ID'),
@@ -70,6 +82,8 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
     parent::blockSubmit($form, $form_state);
     $this->setConfigurationValue('base_layer', $form_state->getValue('base_layer'));
     $this->setConfigurationValue('map_layer_type', $form_state->getValue('map_layer_type'));
+    $this->setConfigurationValue('default_zoom_level', $form_state->getValue('default_zoom_level'));
+    $this->setConfigurationValue('map_height', $form_state->getValue('map_height'));
     $this->setConfigurationValue('boundary_location_id', $form_state->getValue('boundary_location_id'));
     $this->saveDefaultEsFilterFormCtrls($form_state);
   }
@@ -116,6 +130,8 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
       'baseLayerConfig' => [
         $config['base_layer'] => $this->getBaseLayerConfig($config['base_layer']),
       ],
+      'initialZoom' => $config['default_zoom_level'] ?? hostsite_get_config_value('iform', 'map_zoom', 5),
+      'height' => $config['map_height'] ?? 500,
       'layerConfig' => [
         'recordsMap' => [
           'title' => 'All records in current filter (grid map)',

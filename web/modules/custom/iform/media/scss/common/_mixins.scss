@@ -25,3 +25,26 @@
     text-decoration: line-through;
   }
 }
+
+@mixin drop-shadow($size:4px) {
+  -webkit-box-shadow: $size $size calc($size*2) $shadow-colour;
+  -moz-box-shadow: $size $size calc($size*2) $shadow-colour;
+  box-shadow: $size $size calc($size*2) $shadow-colour;
+}
+
+@mixin probability-badge {
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  &.high-probability {
+    background: var(--colour-success);
+  }
+  &.med-probability {
+    background: var(--colour-warning);
+  }
+  &.low-probability {
+    background: var(--colour-danger);
+  }
+}

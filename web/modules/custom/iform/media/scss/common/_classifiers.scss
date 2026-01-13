@@ -1,0 +1,50 @@
+
+/* Image classifier info panels. */
+.classifier-suggestions {
+  .suggestions-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .classifier-suggestion {
+    margin: 8px;
+    padding: 8px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.5rem;
+    align-items: center;
+    border: solid #777 1px;
+    border-radius: 4px;
+    background-color: #f7f7f7;
+    .probability {
+      @include probability-badge;
+    }
+    .details span {
+      display: block;
+      &.taxon {
+        font-style: italic;
+        font-weight: bold;
+      }
+      &.classifier-name {
+        font-size: 12px;
+        font-style: italic;
+      }
+      &.classifier-selection {
+        font-size: 12px;
+      }
+    }
+    &:hover {
+      @include drop-shadow(3px);
+      border-color: blue;
+      cursor: pointer;
+    }
+  }
+}
+
+.classified-images {
+  img {
+    max-width: 200px;
+    max-height: 200px;
+    margin: 4px;
+  }
+}

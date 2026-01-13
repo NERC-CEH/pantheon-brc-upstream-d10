@@ -129,28 +129,28 @@ $not-reviewed-row: -$icon-size*8;
   margin: 3px;
   padding: 1px;
   &.fa-check-circle, &.fa-thumbs-up {
-    color: green;
+    color: var(--colour-success);
   }
   &.fa-check-double {
-    @include fa-box(green, white, green);
+    @include fa-box(var(--colour-success), white, var(--colour-success));
   }
   &.fa-check {
-    @include fa-box(green, white, green);
+    @include fa-box(var(--colour-success), white, var(--colour-success));
   }
   &.fa-check-square {
-    color: orange;
+    color: var(--colour-warning);
   }
   &.fa-times-circle {
-    color: red;
+    color: var(--colour-danger);
   }
   &.fa-times {
-    @include fa-box(red, white, red);
+    @include fa-box(var(--colour-danger), white, var(--colour-danger));
     &.status-R5 {
-      @include fa-box(red, red, white);
+      @include fa-box(var(--colour-danger), var(--colour-danger), white);
     }
   }
   &.fa-thumbs-down, &.fa-exclamation, &.fa-exclamation-circle, &.fa-exclamation-triangle {
-    color: red;
+    color: var(--colour-danger);
   }
   &.fa-eye-slash, &.fa-cog, &.fa-clock {
     color: silver;

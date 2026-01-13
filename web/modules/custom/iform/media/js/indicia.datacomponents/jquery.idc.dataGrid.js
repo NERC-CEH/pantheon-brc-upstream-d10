@@ -740,9 +740,6 @@
         .css('display', 'block');
     }
     var pixelsAvailable = tbody[0].clientWidth;
-    var scrollbarWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
-    var scrollBarInnerWidth;
-    var outerSpacing = $(el).find('.col-0').outerWidth() - $(el).find('.col-0').width();
     if (hiddenContainer) {
       hiddenContainer.attr('style', hiddenContainerOrigStyle)
     }
@@ -760,13 +757,20 @@
       } else {
         $(el).find('.col-actions').css('width', 0);
       }
+      // Some browsers have a fixed element overflow scrollbar which is always
+      // visible.
+      const fixedScrollbarWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
+      // Some browser's scrollbars only appear when needed, so check for that.
+      const overlayScrollbarWidth = tbody[0].scrollHeight > tbody[0].clientHeight && fixedScrollbarWidth === 0 ? 17 : 0;
       // Space header if a scroll bar visible.
-      if (tbody.find('tr').length > 0 && scrollbarWidth > 0) {
-        scrollBarInnerWidth = scrollbarWidth - outerSpacing;
-        $(el).find('.scroll-spacer').css('width', scrollBarInnerWidth + 'px');
-        pixelsAvailable -= $(el).find('.scroll-spacer').outerWidth();
-      } else {
-        $(el).find('.scroll-spacer').css('width', 0);
+      if (tbody.find('tr').length > 0) {
+        if (fixedScrollbarWidth > 0) {
+          $(el).find('.scroll-spacer').css('width', fixedScrollbarWidth + 'px');
+          pixelsAvailable -= fixedScrollbarWidth;
+        } else {
+          $(el).find('.scroll-spacer').css('width', overlayScrollbarWidth + 'px');
+          pixelsAvailable -= overlayScrollbarWidth;
+        }
       }
       $.each(el.settings.columns, function eachColumn(idx) {
         // Allow extra char per col for padding.
@@ -774,8 +778,18 @@
         maxCharsPerRow += maxCharsPerCol['col-' + idx];
       });
       $.each(el.settings.columns, function eachColumn(idx) {
-        $(el).find('.col-' + idx).css('width', (pixelsAvailable * (maxCharsPerCol['col-' + idx] / maxCharsPerRow) - outerSpacing) + 'px');
+        let widthPx = pixelsAvailable * (maxCharsPerCol['col-' + idx] / maxCharsPerRow);
+        $(el).find('.col-' + idx).css('width', widthPx + 'px');
       });
+      // If an overlay scrollbar is present, need to expand last column to
+      // avoid it clipping the content.
+      if (overlayScrollbarWidth > 0) {
+        $(el).find('tbody tr').each(function() {
+          var lastTd = $(this).find('td:last-child');
+          const currentWidth = lastTd.width();
+          lastTd.css('width', (currentWidth + overlayScrollbarWidth) + 'px');
+        });
+      }
     }
   }
 

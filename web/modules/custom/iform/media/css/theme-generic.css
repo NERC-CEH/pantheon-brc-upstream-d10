@@ -137,6 +137,25 @@ table.species-grid .footable-row-detail-name {
   background: none;
 }
 
+/* Uploaded photos */
+.mediafile .probability {
+  margin-right: 6px;
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.mediafile .probability.high-probability {
+  background: var(--colour-success);
+}
+.mediafile .probability.med-probability {
+  background: var(--colour-warning);
+}
+.mediafile .probability.low-probability {
+  background: var(--colour-danger);
+}
+
 /* Toggle/slider switches */
 .switch {
   position: relative;
@@ -631,7 +650,7 @@ table.report-grid .multi img {
 }
 .filelist .delete-file {
   float: right;
-  color: #444;
+  color: #ffffff;
 }
 .filelist .delete-file:hover {
   color: #000;
@@ -811,40 +830,40 @@ table.report-grid .multi img {
   padding: 1px;
 }
 .fas.fa-check-circle, .fas.fa-thumbs-up, .far.fa-check-circle, .far.fa-thumbs-up {
-  color: green;
+  color: var(--colour-success);
 }
 .fas.fa-check-double, .far.fa-check-double {
-  border: solid green 1px;
+  border: solid var(--colour-success) 1px;
   border-radius: 2px;
   background-color: white;
-  color: green;
+  color: var(--colour-success);
 }
 .fas.fa-check, .far.fa-check {
-  border: solid green 1px;
+  border: solid var(--colour-success) 1px;
   border-radius: 2px;
   background-color: white;
-  color: green;
+  color: var(--colour-success);
 }
 .fas.fa-check-square, .far.fa-check-square {
-  color: orange;
+  color: var(--colour-warning);
 }
 .fas.fa-times-circle, .far.fa-times-circle {
-  color: red;
+  color: var(--colour-danger);
 }
 .fas.fa-times, .far.fa-times {
-  border: solid red 1px;
+  border: solid var(--colour-danger) 1px;
   border-radius: 2px;
   background-color: white;
-  color: red;
+  color: var(--colour-danger);
 }
 .fas.fa-times.status-R5, .far.fa-times.status-R5 {
-  border: solid red 1px;
+  border: solid var(--colour-danger) 1px;
   border-radius: 2px;
-  background-color: red;
+  background-color: var(--colour-danger);
   color: white;
 }
 .fas.fa-thumbs-down, .fas.fa-exclamation, .fas.fa-exclamation-circle, .fas.fa-exclamation-triangle, .far.fa-thumbs-down, .far.fa-exclamation, .far.fa-exclamation-circle, .far.fa-exclamation-triangle {
-  color: red;
+  color: var(--colour-danger);
 }
 .fas.fa-eye-slash, .fas.fa-cog, .fas.fa-clock, .far.fa-eye-slash, .far.fa-cog, .far.fa-clock {
   color: silver;
@@ -1122,11 +1141,6 @@ body > .loading-spinner {
   background-color: #eee;
   color: #333;
 }
-.idc-cardGallery .es-card-gallery .card .card-footer .classifier-agreement {
-  background-color: #333;
-  color: #fff;
-  padding: 8px;
-}
 .idc-cardGallery .es-card-gallery .card .card-footer .classifier-suggestions {
   background-color: #333;
   color: #fff;
@@ -1372,7 +1386,6 @@ body > .loading-spinner {
 
 /* idcLeafletMap plugin */
 .idc-leafletMap {
-  height: 500px;
   /* Map tooltips */
 }
 .idc-leafletMap .leaflet-tooltip h3 {
@@ -1677,58 +1690,8 @@ body > .loading-spinner {
   text-align: right;
 }
 
-/* Image classifier info panels. */
-.classifier-suggestions .classifier-suggestion {
-  margin: 8px;
-  padding: 8px;
-  position: relative;
-  display: inline-block;
-  max-width: 150px;
-  border: solid #777 1px;
-}
-.classifier-suggestions .classifier-suggestion span {
-  display: block;
-}
-.classifier-suggestions .classifier-suggestion span.taxon {
-  font-style: italic;
-  font-weight: bold;
-  margin-top: 4px;
-}
-.classifier-suggestions .classifier-suggestion span.classifier-name {
-  font-size: 12px;
-  font-style: italic;
-}
-.classifier-suggestions .classifier-suggestion span.classifier-selection {
-  font-size: 12px;
-}
-.classifier-suggestions .classifier-suggestion span.probability {
-  position: absolute;
-  right: 8px;
-  top: -14px;
-  padding: 4px;
-  background: white;
-  border-radius: 1em;
-  border-style: solid;
-  border-width: 2px;
-}
-.classifier-suggestions .classifier-suggestion span.probability.high-probability {
-  border-color: olivedrab;
-}
-.classifier-suggestions .classifier-suggestion span.probability.med-probability {
-  border-color: orange;
-}
-.classifier-suggestions .classifier-suggestion span.probability.low-probability {
-  border-color: brown;
-}
-.classifier-suggestions .classifier-suggestion span.probability.vlow-probability {
-  border-color: red;
-}
-.classifier-suggestions .classifier-suggestion:hover {
-  -webkit-box-shadow: 3px 3px 6px #a7a7a7;
-  -moz-box-shadow: 3px 3px 6px #a7a7a7;
-  box-shadow: 3px 3px 6px #a7a7a7;
-  border-color: blue;
-  cursor: pointer;
+.idc-cardGallery .classifier-suggestions .classifier-suggestion span.classifier-name {
+  display: none;
 }
 
 @keyframes fadeIn {
@@ -2540,6 +2503,86 @@ progress.progress::-moz-progress-bar {
 }
 #redet-form input[type=checkbox] {
   margin: 10px 8px;
+}
+
+.non-blocking-msg {
+  -webkit-box-shadow: 4px 4px 8px #a7a7a7;
+  -moz-box-shadow: 4px 4px 8px #a7a7a7;
+  box-shadow: 4px 4px 8px #a7a7a7;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #333333;
+  color: #ffffff;
+  padding: 10px 16px;
+  border-radius: 4px;
+  z-index: 10000;
+  display: none;
+  max-width: 90%;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Image classifier info panels. */
+.classifier-suggestions .suggestions-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.classifier-suggestions .classifier-suggestion {
+  margin: 8px;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 0.5rem;
+  align-items: center;
+  border: solid #777 1px;
+  border-radius: 4px;
+  background-color: #f7f7f7;
+}
+.classifier-suggestions .classifier-suggestion .probability {
+  border-radius: 8px;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+}
+.classifier-suggestions .classifier-suggestion .probability.high-probability {
+  background: var(--colour-success);
+}
+.classifier-suggestions .classifier-suggestion .probability.med-probability {
+  background: var(--colour-warning);
+}
+.classifier-suggestions .classifier-suggestion .probability.low-probability {
+  background: var(--colour-danger);
+}
+.classifier-suggestions .classifier-suggestion .details span {
+  display: block;
+}
+.classifier-suggestions .classifier-suggestion .details span.taxon {
+  font-style: italic;
+  font-weight: bold;
+}
+.classifier-suggestions .classifier-suggestion .details span.classifier-name {
+  font-size: 12px;
+  font-style: italic;
+}
+.classifier-suggestions .classifier-suggestion .details span.classifier-selection {
+  font-size: 12px;
+}
+.classifier-suggestions .classifier-suggestion:hover {
+  -webkit-box-shadow: 3px 3px 6px #a7a7a7;
+  -moz-box-shadow: 3px 3px 6px #a7a7a7;
+  box-shadow: 3px 3px 6px #a7a7a7;
+  border-color: blue;
+  cursor: pointer;
+}
+
+.classified-images img {
+  max-width: 200px;
+  max-height: 200px;
+  margin: 4px;
 }
 
 /*# sourceMappingURL=theme-generic.css.map */

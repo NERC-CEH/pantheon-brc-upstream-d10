@@ -619,7 +619,9 @@ var addMediaRowOnClick;
     // Find numeric index of row from control ID.
     var idxRegex = '^sc:' + gridId + '-(\\d+)';
     var rowUniqueIdx = $(row).find('.scPresence').attr('name').match(new RegExp(idxRegex))[1];
-    var existingFeature = indiciaData.mapdiv.map.editLayer.getFeatureById('subsample-' + rowUniqueIdx);
+    var existingFeature = indiciaData.mapdiv && indiciaData.mapdiv.map.editLayer
+      ? indiciaData.mapdiv.map.editLayer.getFeatureById('subsample-' + rowUniqueIdx)
+      : null;
     e.preventDefault();
     // Clear if this row has a marker on the map.
     if (existingFeature) {

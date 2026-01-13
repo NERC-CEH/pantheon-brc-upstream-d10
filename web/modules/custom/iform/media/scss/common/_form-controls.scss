@@ -136,3 +136,11 @@ table.species-grid {
     background: none;
   }
 }
+
+/* Uploaded photos */
+.mediafile {
+  .probability {
+    margin-right: 6px;
+    @include probability-badge;
+  }
+}

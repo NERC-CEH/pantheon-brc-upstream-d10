@@ -739,7 +739,7 @@
           mode: 'json',
           nonce: indiciaData.read.nonce,
           auth_token: indiciaData.read.auth_token,
-          taxon_list_id: 1,
+          taxon_list_id: indiciaData.mainTaxonListId,
           taxa_taxon_list_id: $(e.currentTarget).data('taxa_taxon_list_id')
         },
         dataType: 'jsonp',

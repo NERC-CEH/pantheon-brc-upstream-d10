@@ -419,9 +419,7 @@
    * Load info onto the image classifier info tab.
    */
   function loadImageClassifierInfo(el, doc) {
-    let html = indiciaFns.getImageClassifierAgreementHtml(doc);
-    html += indiciaFns.getImageClassifierSuggestionsHtml(doc);
-    $(el).find('.classifier-info').html(html);
+    $(el).find('.classifier-info').html(indiciaFns.getImageClassifierSuggestionsHtml(doc));
   }
 
   function loadCurrentTabAjax(el) {

@@ -116,13 +116,19 @@ function easy_login_allowed_taxon_groups() {
   if ($checklistId) {
     iform_load_helpers(['data_entry_helper']);
     $conn = iform_get_connection_details();
-    $readAuth = data_entry_helper::get_read_auth($conn['website_id'], $conn['password']);
+    try {
+      $readAuth = data_entry_helper::get_read_auth($conn['website_id'], $conn['password']);
+    }
+    catch (Exception $e) {
+      \Drupal::logger('easy_login')->error('Error getting read auth tokens: @message', ['@message' => $e->getMessage()]);
+      return [t('Error loading groups - server unavailable')];
+    }
     // Load the list of taxon groups. If we have a master list setting for the
     // site, use this to ensure we only pick up groups that are in use on the
     // site.
     $response = data_entry_helper::get_population_data([
       'report' => 'library/taxon_groups/taxon_groups_used_in_checklist',
-      'extraParams' => $readAuth + array('taxon_list_id' => $checklistId),
+      'extraParams' => $readAuth + ['taxon_list_id' => $checklistId],
     ]);
     $groups = [];
     foreach ($response as $group) {
@@ -176,9 +182,17 @@ function easy_login_allowed_locations() {
 function easy_login_check_user_id($account) {
   iform_load_helpers(['data_entry_helper']);
   $config = \Drupal::config('iform.settings');
-  $auth = data_entry_helper::get_read_auth(
-    $config->get('website_id'), $config->get('password')
-  );
+  try {
+    $auth = data_entry_helper::get_read_auth(
+      $config->get('website_id'), $config->get('password')
+    );
+  }
+  catch (Exception $e) {
+    // Unable to get auth tokens.
+    hostsite_show_message(t('You have logged in successfully, but the central records database seems to be unavailable so you may not be able to view data or add records.'), 'error');
+    \Drupal::logger('easy_login')->error('Error getting read auth tokens: @message', ['@message' => $e->getMessage()]);
+    return TRUE;
+  }
   $extraParams['nonce'] = $auth['nonce'];
   $extraParams['auth_token'] = $auth['auth_token'];
   $extraParams['id'] = $account->field_indicia_user_id->value;
@@ -374,8 +388,14 @@ function easy_login_synchronise_account_to_warehouse($account) {
       ));
     }
   }
-  $response = easy_login_call_get_user_id($account, NULL, NULL, $fieldsToSyncByCaption);
-  easy_login_handle_get_user_id_response($account, $response, FALSE);
+  try {
+    $response = easy_login_call_get_user_id($account, NULL, NULL, $fieldsToSyncByCaption);
+    easy_login_handle_get_user_id_response($account, $response, FALSE);
+  }
+  catch (Exception $e) {
+    \Drupal::messenger()->addWarning(t('There was an error synchronising your user details to the central records database. Please try again later.'));
+    \Drupal::logger('easy_login')->error('Error synchronising user to warehouse: @message', ['@message' => $e->getMessage()]);
+  }
 }
 
 function build_fields_to_sync_by_caption_array(

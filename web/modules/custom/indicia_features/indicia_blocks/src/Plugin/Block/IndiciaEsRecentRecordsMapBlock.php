@@ -2,6 +2,7 @@
 
 namespace Drupal\indicia_blocks\Plugin\Block;
 
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Markup;
 
 /**
@@ -19,6 +20,29 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
   /**
    * {@inheritdoc}
    */
+  public function blockForm($form, FormStateInterface $form_state) {
+    $form = parent::blockForm($form, $form_state);
+    $config = $this->getConfiguration();
+    $form['map_height'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Map height (pixels)'),
+      '#description' => $this->t('Specify the height of the map in pixels. Leave blank to use the system default.'),
+      '#default_value' => $config['map_height'] ?? NULL,
+    ];
+    return $form;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function blockSubmit($form, FormStateInterface $form_state) {
+    parent::blockSubmit($form, $form_state);
+    $this->setConfigurationValue('map_height', $form_state->getValue('map_height'));
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function build() {
     self::$blockCount++;
     iform_load_helpers(['ElasticsearchReportHelper']);
@@ -29,6 +53,7 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
         '#markup' => str_replace('{message}', $this->t('Service unavailable.'), $indicia_templates['warningBox']),
       ];
     }
+    $config = $this->getConfiguration();
     // We aren't sure if this comes before or after a recent records block on
     // the page, so a slight fiddle to get them to use the same source.
     if (isset(\helper_base::$indiciaData['recentRecordsSourceId'])) {
@@ -41,6 +66,7 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
     }
     $r = \ElasticsearchReportHelper::leafletMap([
       'id' => 'recentRecordsMap-' . self::$blockCount,
+      'height' => $config['map_height'] ?? 500,
       'layerConfig' => [
         'recent-records' => [
           'title' => $this->t('Recent records'),

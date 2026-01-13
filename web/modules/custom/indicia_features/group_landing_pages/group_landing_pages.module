@@ -314,7 +314,15 @@ function group_landing_pages_node_grants($account, $op) {
   if (hostsite_get_user_field('indicia_user_id')) {
     iform_load_helpers(['helper_base']);
     $conn = iform_get_connection_details();
-    $readAuth = helper_base::get_read_auth($conn['website_id'], $conn['password']);
+    try {
+      $readAuth = helper_base::get_read_auth($conn['website_id'], $conn['password']);
+    }
+    catch (Exception $e) {
+      \Drupal::logger('indicia_features')->error('Error getting read auth for node grants: @message', ['@message' => $e->getMessage()]);
+      hostsite_show_message('Error communicating with the Indicia server.', 'error');
+      return $grants;
+    }
+
     // Load the groups the user is admin of.
     $groups = helper_base::get_population_data([
       'table' => 'groups_user',

@@ -639,7 +639,6 @@
           }
         }
         if (el.settings.includeImageClassifierInfo && doc.identification.classifier) {
-          $(indiciaFns.getImageClassifierAgreementHtml(doc)).appendTo(cardFooter);
           $(indiciaFns.getImageClassifierSuggestionsHtml(doc)).appendTo(cardFooter);
         }
         $('<button type="button" title="' + indiciaData.lang.cardGallery.expandCard + '" class="expand-card ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">' +

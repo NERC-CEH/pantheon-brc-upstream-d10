@@ -1,0 +1,16 @@
+.non-blocking-msg {
+  @include drop-shadow;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: $colour-dark-bg;
+  color: $colour-dark-text;
+  padding: 10px 16px;
+  border-radius: 4px;
+  z-index: 10000;
+  display: none;
+  max-width: 90%;
+  text-align: center;
+  pointer-events: none;
+}

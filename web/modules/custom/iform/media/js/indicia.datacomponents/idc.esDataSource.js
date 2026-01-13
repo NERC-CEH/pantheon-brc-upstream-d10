@@ -306,7 +306,7 @@ var IdcEsDataSource;
             message = indiciaData.lang.esDataSource.searchPhraseInvalid.replace('%query%', failedQuery);
           }
         }
-        if (indiciaData.sourceErrorsShown.indexOf(message) === -1) {
+        if (typeof indiciaData.sourceErrorsShown === 'undefined' || indiciaData.sourceErrorsShown.indexOf(message) === -1) {
           $.fancyDialog({
             title: indiciaData.lang.esDataSource.searchFailedTitle,
             message: message,
