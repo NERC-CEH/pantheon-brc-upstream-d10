@@ -301,7 +301,8 @@
         "drupal/entity_notify": "^1.1",
         "drupal/etracker": "^3.1",
         "drupal/linkit": "^7.0",
-        "drupal/klaro": "^3.0"
+        "drupal/klaro": "^3.0",
+        "drupal/key": "1.22"
     },
     "conflict": {
         "drupal/drupal": "*"
