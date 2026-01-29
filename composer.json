@@ -202,7 +202,6 @@
         "drupal/token": "^1.15",
         "drupal/token_filter": "^2.2",
         "drupal/user_csv_import": "*",
-        "drupal/user_registrationpassword": "^2.0",
         "drupal/variationcache": "^1.5",
         "drupal/view_password": "^6.0",
         "drupal/view_unpublished": "^1.3",

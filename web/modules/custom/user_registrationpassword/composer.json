@@ -1,0 +1,16 @@
+{
+  "name": "drupal/user_registrationpassword",
+  "type": "drupal-module",
+  "description": "Customize the destination that a user is redirected to after logging in or logged out.",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://www.drupal.org/project/user_registrationpassword",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "http://drupal.org/project/issues/user_registrationpassword",
+    "source": "http://cgit.drupalcode.org/user_registrationpassword"
+  },
+  "require-dev": {
+    "drupal/hal": "^1.0 || ^2.0"
+  }
+}
