@@ -308,7 +308,7 @@
       if (origSort === null) {
         delete srcSettings.sort;
       }
-      else {
+      else if (el.settings.sort) {
         srcSettings.sort = origSort;
       }
       columnSettings = getColumnSettings(el);
