@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0250b545d860b16a76e0b84553aa9f23",
+    "content-hash": "948c19efdc3db1f45b021273f101da33",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -2417,17 +2417,17 @@
         },
         {
             "name": "drupal/acl",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/acl.git",
-                "reference": "2.0.1"
+                "reference": "2.0.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/acl-2.0.1.zip",
-                "reference": "2.0.1",
-                "shasum": "c99be1fb978f109d23cee1dc16e82fe540f2b009"
+                "url": "https://ftp.drupal.org/files/projects/acl-2.0.2.zip",
+                "reference": "2.0.2",
+                "shasum": "aed80ca61cebc36cafbbe8bffb940b5a699091ba"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11 || ^12",
@@ -2436,8 +2436,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.1",
-                    "datestamp": "1741096596",
+                    "version": "2.0.2",
+                    "datestamp": "1770061742",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -4196,17 +4196,17 @@
         },
         {
             "name": "drupal/calendar",
-            "version": "1.0.0-beta4",
+            "version": "1.0.0-beta5",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/calendar.git",
-                "reference": "8.x-1.0-beta4"
+                "reference": "8.x-1.0-beta5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/calendar-8.x-1.0-beta4.zip",
-                "reference": "8.x-1.0-beta4",
-                "shasum": "14780f2995beccd5327d527af5a077ffd42505e3"
+                "url": "https://ftp.drupal.org/files/projects/calendar-8.x-1.0-beta5.zip",
+                "reference": "8.x-1.0-beta5",
+                "shasum": "a81157a12a0cda95bd2cce97e82f3035901b208c"
             },
             "require": {
                 "drupal/calendar_datetime": "*",
@@ -4224,8 +4224,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-beta4",
-                    "datestamp": "1762324326",
+                    "version": "8.x-1.0-beta5",
+                    "datestamp": "1770138153",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -4267,7 +4267,7 @@
         },
         {
             "name": "drupal/calendar_datetime",
-            "version": "1.0.0-beta4",
+            "version": "1.0.0-beta5",
             "require": {
                 "drupal/calendar": "^1",
                 "drupal/core": "^10 || ^11"
@@ -4275,8 +4275,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-beta4",
-                    "datestamp": "1762324326",
+                    "version": "8.x-1.0-beta5",
+                    "datestamp": "1770138153",
                     "security-coverage": {
                         "status": "not-covered",
                         "message": "Beta releases are not covered by Drupal security advisories."
@@ -8359,7 +8359,7 @@
             "extra": {
                 "drupal": {
                     "version": "3.1.1",
-                    "datestamp": "1732295600",
+                    "datestamp": "1769857067",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -9499,17 +9499,17 @@
         },
         {
             "name": "drupal/forum",
-            "version": "1.0.4",
+            "version": "1.0.5",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/forum.git",
-                "reference": "1.0.4"
+                "reference": "1.0.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/forum-1.0.4.zip",
-                "reference": "1.0.4",
-                "shasum": "b5dfeb6a6b649ad87782614218a0af37453d25ec"
+                "url": "https://ftp.drupal.org/files/projects/forum-1.0.5.zip",
+                "reference": "1.0.5",
+                "shasum": "1e0853aac5493902f61bd3ecebc27699782985d1"
             },
             "require": {
                 "drupal/core": "^10 || ^11"
@@ -9517,8 +9517,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.0.4",
-                    "datestamp": "1766360733",
+                    "version": "1.0.5",
+                    "datestamp": "1769982768",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -9547,6 +9547,71 @@
             "homepage": "https://www.drupal.org/project/forum",
             "support": {
                 "source": "https://git.drupalcode.org/project/forum"
+            }
+        },
+        {
+            "name": "drupal/forum_access",
+            "version": "2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/forum_access.git",
+                "reference": "2.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/forum_access-2.0.2.zip",
+                "reference": "2.0.2",
+                "shasum": "0b4c8fe46a58e17ca1909ecb79e70847d6c06835"
+            },
+            "require": {
+                "drupal/acl": "^2.0",
+                "drupal/core": "^10.3 || ^11 || ^12",
+                "drupal/forum": "*",
+                "php": ">=8.1"
+            },
+            "require-dev": {
+                "drupal/migrate_plus": "^6.0"
+            },
+            "suggest": {
+                "drupal/forum": "Required in Drupal 11+. Included in Drupal 10 core."
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.2",
+                    "datestamp": "1768320222",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Hans Salvisberg (salvis)",
+                    "homepage": "https://www.drupal.org/u/salvis",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "Mikhail Khasaya (dillix)",
+                    "homepage": "https://www.drupal.org/u/dillix",
+                    "role": "Co-maintainer"
+                },
+                {
+                    "name": "István Kurucz (nevergone)",
+                    "homepage": "https://www.drupal.org/u/nevergone",
+                    "role": "Co-maintainer, D8 port"
+                }
+            ],
+            "description": "Forum Access leverages Core's node access mechanism to protect forums by role and user.",
+            "homepage": "https://drupal.org/project/forum_access",
+            "support": {
+                "source": "https://git.drupalcode.org/project/forum_access",
+                "issues": "https://drupal.org/project/issues/forum_access"
             }
         },
         {
@@ -15170,17 +15235,17 @@
         },
         {
             "name": "drupal/rules",
-            "version": "4.0.0",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/rules.git",
-                "reference": "4.0.0"
+                "reference": "4.0.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/rules-4.0.0.zip",
-                "reference": "4.0.0",
-                "shasum": "685c8cbcf7950e07459957f4536df77d9bf53531"
+                "url": "https://ftp.drupal.org/files/projects/rules-4.0.1.zip",
+                "reference": "4.0.1",
+                "shasum": "0d2e5c379c5bf57ccbf48568f8e79692106c12fb"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11",
@@ -15189,16 +15254,11 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.0.0",
-                    "datestamp": "1721935272",
+                    "version": "4.0.1",
+                    "datestamp": "1770140968",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
-                    }
-                },
-                "drush": {
-                    "services": {
-                        "drush.services.yml": ">=9"
                     }
                 }
             },
@@ -27672,16 +27732,16 @@
         },
         {
             "name": "brick/math",
-            "version": "0.14.1",
+            "version": "0.14.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "f05858549e5f9d7bb45875a75583240a38a281d0"
+                "reference": "618a8077b3c326045e10d5788ed713b341fcfe40"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/f05858549e5f9d7bb45875a75583240a38a281d0",
-                "reference": "f05858549e5f9d7bb45875a75583240a38a281d0",
+                "url": "https://api.github.com/repos/brick/math/zipball/618a8077b3c326045e10d5788ed713b341fcfe40",
+                "reference": "618a8077b3c326045e10d5788ed713b341fcfe40",
                 "shasum": ""
             },
             "require": {
@@ -27720,7 +27780,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.14.1"
+                "source": "https://github.com/brick/math/tree/0.14.5"
             },
             "funding": [
                 {
@@ -27728,7 +27788,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-11-24T14:40:29+00:00"
+            "time": "2026-02-03T18:06:51+00:00"
         },
         {
             "name": "colinodell/psr-testlogger",

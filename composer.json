@@ -37,10 +37,10 @@
         "seboettg/citeproc-php": "*",
         "academicpuma/locales": "*",
         "drupal/bibcite": "^3.0",
-        "drupal/acl": "2.0.1",
+        "drupal/acl": "2.0.2",
         "drupal/advancedqueue": "^1.2",
-        "drupal/calendar": "1.0-beta4",
-        "drupal/calendar_datetime": "1.0-beta4",
+        "drupal/calendar": "1.0-beta5",
+        "drupal/calendar_datetime": "1.0-beta5",
         "drupal/custom_formatters": "4.1-beta1",
         "drupal/entity_clone": "2.1-beta1",
         "drupal/entity_legal": "4.1-alpha1",
@@ -301,7 +301,8 @@
         "drupal/etracker": "^3.1",
         "drupal/linkit": "^7.0",
         "drupal/klaro": "^3.0",
-        "drupal/key": "1.22"
+        "drupal/key": "1.22",
+        "drupal/forum_access": "^2.0"
     },
     "conflict": {
         "drupal/drupal": "*"
