@@ -267,7 +267,7 @@
         "drupal/flexible_permissions": "2.*",
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/paragraphs": "^1.18",
-        "drupal/entity_usage": "2.0-beta25",
+        "drupal/entity_usage": "2.0-beta26",
         "drupal/twig_tweak": "^3.4",
         "drupal/forum": "^1.0",
         "drupal/book": "2.x",

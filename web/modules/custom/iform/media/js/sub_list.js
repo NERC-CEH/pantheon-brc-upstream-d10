@@ -83,12 +83,18 @@
    */
   indiciaFns.initSubList = function (escapedId, escapedCaptionField, fieldname, itemTemplate) {
     var searchInput = $('#' + escapedId + '\\:search\\:' + escapedCaptionField);
-    searchInput.on('keypress',
+    searchInput.on('keydown',
       function (e) {
         searchInput.closest('.ctrl-wrap').removeClass(indiciaData.controlWrapErrorClass);
         searchInput.removeClass('ui-state-error');
         if (e.which === 13) {
-          indiciaFns.addSublistItem(escapedId, escapedCaptionField, fieldname, itemTemplate);
+          // Enter should add the selected item, not submit the form.
+          if (searchInput.val().trim() !== '') {
+            e.preventDefault();
+            e.stopPropagation();
+            indiciaFns.addSublistItem(escapedId, escapedCaptionField, fieldname, itemTemplate);
+            return false;
+          }
         }
       }
     );
