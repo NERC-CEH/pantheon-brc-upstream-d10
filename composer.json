@@ -89,11 +89,11 @@
         "drupal/commerce_number_pattern": "^3.1",
         "drupal/commerce_order": "^3.1",
         "drupal/commerce_payment": "^3.1",
-        "drupal/commerce_paypal": "2.x",
+        "drupal/commerce_paypal": "^2.1",
         "drupal/commerce_price": "^3.1",
         "drupal/commerce_product": "^3.1",
         "drupal/commerce_product_tax": "^1.2",
-        "drupal/commerce_shipping": "^2.14",
+        "drupal/commerce_shipping": "^3.0.2",
         "drupal/commerce_store": "^3.1",
         "drupal/commerce_tax": "^3.1",
         "drupal/config_delete": "*",
@@ -267,7 +267,7 @@
         "drupal/flexible_permissions": "2.*",
         "drupal/jquery_ui_touch_punch": "^1.1",
         "drupal/paragraphs": "^1.18",
-        "drupal/entity_usage": "2.0-beta26",
+        "drupal/entity_usage": "^2.0-beta28",
         "drupal/twig_tweak": "^3.4",
         "drupal/forum": "^1.0",
         "drupal/book": "2.x",
@@ -302,7 +302,10 @@
         "drupal/linkit": "^7.0",
         "drupal/klaro": "^3.0",
         "drupal/key": "1.22",
-        "drupal/forum_access": "^2.0"
+        "drupal/forum_access": "^2.0",
+        "sainsburys/guzzle-oauth2-plugin": "^3.0",
+        "firebase/php-jwt": "^6.11.1",
+        "guzzlehttp/guzzle": "^7.0"
     },
     "conflict": {
         "drupal/drupal": "*"
