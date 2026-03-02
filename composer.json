@@ -27,7 +27,7 @@
 	],
     "require": {
         "pantheon-upstreams/upstream-configuration": "dev-main",
-        "composer/installers": "^1.9",
+        "composer/installers": "^2.3",
         "pantheon-systems/drupal-integrations": "^10",
         "cweagans/composer-patches": "^1.7",
         "drush/drush": "^13.3",
