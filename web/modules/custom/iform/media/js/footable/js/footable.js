@@ -757,7 +757,7 @@
                 var display;
                 if (column.isEditable !== false && (column.isEditable || $(this).find(":input").length > 0)) {
                     if(bindName == null) {
-                        bindName = "bind-" + $.now() + "-" + index;
+                        bindName = "bind-" + Date.now() + "-" + index;
                         $(this).attr("data-bind-name", bindName);
                     }
                     display = $(this).contents().detach();

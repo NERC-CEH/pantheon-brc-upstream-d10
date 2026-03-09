@@ -398,6 +398,15 @@ body {
         overflow-y: auto;
         overflow-x: hidden;
       }
+      // Applied only while JS calculates fixed-header column widths.
+      // Prevents temporary header wrapping before explicit widths are set.
+      &.sizing-columns {
+        thead {
+          th, td {
+            white-space: nowrap;
+          }
+        }
+      }
       thead, tbody tr {
         display:table;
         width:100%;

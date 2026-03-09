@@ -1119,137 +1119,144 @@ var addMediaRowOnClick;
   }
 
   function loadDynamicAttrs(gridId, taxaTaxonListIds, rows) {
-    var urlSep = indiciaData.dynamicAttrProxyUrl.indexOf('?') === -1 ? '?' : '&';
     // Find available dynamic attributes for the selected species.
-    $.get(indiciaData.dynamicAttrProxyUrl + '/getSpeciesChecklistAttrs' + urlSep +
-        'survey_id=' + $('#survey_id').val() +
-        '&taxa_taxon_list_ids=' + taxaTaxonListIds +
-        '&type=occurrence' +
-        '&language=' + indiciaData.currentLanguage3 +
-        '&attributeTermlistLanguageFilter=' + indiciaData.attributeTermlistLanguageFilter +
+    $.ajax({
+      url: indiciaData.dynamicAttrProxyUrl + '/getSpeciesChecklistAttrs',
+      data: {
+        survey_id: $('#survey_id').val(),
+        taxa_taxon_list_ids: taxaTaxonListIds.join(','),
+        type: 'occurrence',
+        language: indiciaData.currentLanguage3,
+        attributeTermlistLanguageFilter: indiciaData.attributeTermlistLanguageFilter,
         // @todo: Options may need to be passed through for individual attr controls.
-        '&options={}', null,
-      function getAttrsReportCallback(data) {
-        var existingData = prepareExistingOccAttrData();
-        var replacedNonMappableSysFuncCols = [];
-        var msg;
-        var columnsToCopyFromPrevRow = [];
-        if (typeof indiciaData['previousRowColumnsToInclude-' + gridId] !== 'undefined') {
-          columnsToCopyFromPrevRow = indiciaData['previousRowColumnsToInclude-' + gridId].split(",");
-          columnsToCopyFromPrevRow.forEach(function(value, index) {
-            columnsToCopyFromPrevRow[index] = 'sc' + value.replace(/[^a-zA-Z0-9]/g,'').toLowerCase();
+        options: '{}'
+      },
+      dataType: 'json'
+    })
+    .done(function getAttrsReportCallback(data) {
+      var existingData = prepareExistingOccAttrData();
+      var replacedNonMappableSysFuncCols = [];
+      var msg;
+      var columnsToCopyFromPrevRow = [];
+      if (typeof indiciaData['previousRowColumnsToInclude-' + gridId] !== 'undefined') {
+        columnsToCopyFromPrevRow = indiciaData['previousRowColumnsToInclude-' + gridId].split(",");
+        columnsToCopyFromPrevRow.forEach(function(value, index) {
+          columnsToCopyFromPrevRow[index] = 'sc' + value.replace(/[^a-zA-Z0-9]/g,'').toLowerCase();
+        });
+      }
+      $.each(rows, function() {
+        var row = this;
+        // If dynamic attrs previously loaded for the row, replace the original
+        // inputs before applying the new set (since the new set may not have
+        // attrs for the same columns as the old set).
+        $(row).find('.hidden-by-dynamic-attr')
+          .removeClass('hidden-by-dynamic-attr')
+          .prop('disabled', false);
+        $(row).find('.dynamic-attr').remove();
+      });
+      $.each(data, function() {
+        var dataRow = this;
+        var attrId = dataRow.attr.attribute_id;
+        var systemFunction = dataRow.attr.system_function;
+        if (systemFunction && typeof indiciaData['dynamicAttrInfo-' + gridId][systemFunction] !== 'undefined') {
+          // Might be multiple rows for same taxon.
+          $.each($(rows).find('.scTaxaTaxonListId[value="' + dataRow.attr.taxa_taxon_list_id + '"]'), function() {
+            var row = $(this).closest('tr');
+            // Use prevAll with :first so it skips image rows.
+            var prevRow = row.prevAll('tr.added-row:first');
+            var rowIdMatch = $(row).find('.scPresence').last().attr('id').match(/(sc:[a-z0-9\-]+):(\d+)?/);
+            var rowPrefix = rowIdMatch[1];
+            var occurrenceId = rowIdMatch.length >= 3 ? rowIdMatch[2] : null;
+            $.each(indiciaData['dynamicAttrInfo-' + gridId][systemFunction], function(idx) {
+              var cell = $(row).find('td.' + this + 'Cell');
+              var ctrl;
+              var container;
+              var classToUse;
+              var existingVal;
+              // If a row already verified, don't handle as dynamic unless
+              // there is already a dynamic value in the database. Otherwise
+              // attempts to map old non-dynamic values to new dynamic
+              // termlists will cause re-verification.
+              if (!existingData[occurrenceId + ':' + dataRow.attr['attribute_id']] && $(row).find('.record-status-set').length > 0) {
+                return true;
+              }
+              // If multiple columns for same sysfuncton, only use the first
+              // and empty the rest.
+              if (idx === 0) {
+                container = $(dataRow.control);
+                ctrl = container.is(':input') ? container : container.find(':input');
+                ctrl
+                  .prop('name', rowPrefix + '::occAttr:' + attrId)
+                  .prop('id', rowPrefix + '::occAttr:' + attrId)
+                  .addClass('system-function-' + systemFunction)
+                  .addClass('dynamic-attr');
+                // Remove old dynamic attributes in the cell as well as errors.
+                cell.find('dynamic-attr, .inline-error').remove();
+                // Tag the control against the column.
+                ctrl.addClass(this);
+                // Set any existing value into the control.
+                if (occurrenceId && typeof existingData[occurrenceId + ':' + dataRow.attr['attribute_id']] !== 'undefined') {
+                  ctrl.val(existingData[occurrenceId + ':' + dataRow.attr['attribute_id']]);
+                } else if (prevRow.length > 0) {
+                  // If this column copied from previous, apply value.
+                  classToUse = getScClassForColumnCellInput(ctrl);
+                  if (classToUse && (jQuery.inArray(classToUse.toLowerCase(), columnsToCopyFromPrevRow)>-1)) {
+                    ctrl.val(prevRow.find('.' + classToUse).filter(':visible').val());
+                  }
+                }
+                // Hide the non-dynamic attr for this cell, so we don't lose it
+                // if the row is edited to a species without dynamic attrs.
+                cell.find('*')
+                  .addClass('hidden-by-dynamic-attr')
+                  .removeClass('ui-state-error');
+                if (occurrenceId) {
+                  // Attach existing attrs to the correct occurrence ID.
+                  ctrl.prop('name', ctrl.prop('name').replace('::', ':' + occurrenceId + ':'));
+                  // For existing records, we don't want to lose the existing
+                  // value which could happen if they were added before
+                  // dynamic attributes added to the form.
+                  existingVal = cell.find(':input').is('select') ? cell.find(':input option:selected').text() : cell.find(':input').val();
+                }
+                // Clear the value so it get's replaced when saved.
+                cell.find(':input').val('');
+                // Add the new dynamic attr control container to the grid cell.
+                cell.append(container);
+                // Reset existing data.
+                if (occurrenceId && existingVal) {
+                  if (ctrl.is('select')) {
+                    // Replacing a generic select with a dynamic select. Try and select a matching term.
+                    $.each(ctrl.find('option'), function() {
+                      if ($(this).text().toLowerCase() === existingVal.toLowerCase()) {
+                        $(this).attr('selected', true);
+                      }
+                    });
+                  }
+                  else {
+                    // A text control, so copy the old value over.
+                    ctrl.val(existingVal);
+                  }
+                }
+              } else {
+                // 2nd or later column for same sysfunction, so hide the control.
+                cell.html('');
+              }
+            });
           });
         }
-        $.each(rows, function() {
-          var row = this;
-          // If dynamic attrs previously loaded for the row, replace the original
-          // inputs before applying the new set (since the new set may not have
-          // attrs for the same columns as the old set).
-          $(row).find('.hidden-by-dynamic-attr')
-            .removeClass('hidden-by-dynamic-attr')
-            .prop('disabled', false);
-          $(row).find('.dynamic-attr').remove();
-        });
-        $.each(data, function() {
-          var dataRow = this;
-          var attrId = dataRow.attr.attribute_id;
-          var systemFunction = dataRow.attr.system_function;
-          if (systemFunction && typeof indiciaData['dynamicAttrInfo-' + gridId][systemFunction] !== 'undefined') {
-            // Might be multiple rows for same taxon.
-            $.each($(rows).find('.scTaxaTaxonListId[value="' + dataRow.attr.taxa_taxon_list_id + '"]'), function() {
-              var row = $(this).closest('tr');
-              // Use prevAll with :first so it skips image rows.
-              var prevRow = row.prevAll('tr.added-row:first');
-              var rowIdMatch = $(row).find('.scPresence').last().attr('id').match(/(sc:[a-z0-9\-]+):(\d+)?/);
-              var rowPrefix = rowIdMatch[1];
-              var occurrenceId = rowIdMatch.length >= 3 ? rowIdMatch[2] : null;
-              $.each(indiciaData['dynamicAttrInfo-' + gridId][systemFunction], function(idx) {
-                var cell = $(row).find('td.' + this + 'Cell');
-                var ctrl;
-                var container;
-                var classToUse;
-                var existingVal;
-                // If a row already verified, don't handle as dynamic unless
-                // there is already a dynamic value in the database. Otherwise
-                // attempts to map old non-dynamic values to new dynamic
-                // termlists will cause re-verification.
-                if (!existingData[occurrenceId + ':' + dataRow.attr['attribute_id']] && $(row).find('.record-status-set').length > 0) {
-                  return true;
-                }
-                // If multiple columns for same sysfuncton, only use the first
-                // and empty the rest.
-                if (idx === 0) {
-                  container = $(dataRow.control);
-                  ctrl = container.is(':input') ? container : container.find(':input');
-                  ctrl
-                    .prop('name', rowPrefix + '::occAttr:' + attrId)
-                    .prop('id', rowPrefix + '::occAttr:' + attrId)
-                    .addClass('system-function-' + systemFunction)
-                    .addClass('dynamic-attr');
-                  // Remove old dynamic attributes in the cell as well as errors.
-                  cell.find('dynamic-attr, .inline-error').remove();
-                  // Tag the control against the column.
-                  ctrl.addClass(this);
-                  // Set any existing value into the control.
-                  if (occurrenceId && typeof existingData[occurrenceId + ':' + dataRow.attr['attribute_id']] !== 'undefined') {
-                    ctrl.val(existingData[occurrenceId + ':' + dataRow.attr['attribute_id']]);
-                  } else if (prevRow.length > 0) {
-                    // If this column copied from previous, apply value.
-                    classToUse = getScClassForColumnCellInput(ctrl);
-                    if (classToUse && (jQuery.inArray(classToUse.toLowerCase(), columnsToCopyFromPrevRow)>-1)) {
-                      ctrl.val(prevRow.find('.' + classToUse).filter(':visible').val());
-                    }
-                  }
-                  // Hide the non-dynamic attr for this cell, so we don't lose it
-                  // if the row is edited to a species without dynamic attrs.
-                  cell.find('*')
-                    .addClass('hidden-by-dynamic-attr')
-                    .removeClass('ui-state-error');
-                  if (occurrenceId) {
-                    // Attach existing attrs to the correct occurrence ID.
-                    ctrl.prop('name', ctrl.prop('name').replace('::', ':' + occurrenceId + ':'));
-                    // For existing records, we don't want to lose the existing
-                    // value which could happen if they were added before
-                    // dynamic attributes added to the form.
-                    existingVal = cell.find(':input').is('select') ? cell.find(':input option:selected').text() : cell.find(':input').val();
-                  }
-                  // Clear the value so it get's replaced when saved.
-                  cell.find(':input').val('');
-                  // Add the new dynamic attr control container to the grid cell.
-                  cell.append(container);
-                  // Reset existing data.
-                  if (occurrenceId && existingVal) {
-                    if (ctrl.is('select')) {
-                      // Replacing a generic select with a dynamic select. Try and select a matching term.
-                      $.each(ctrl.find('option'), function() {
-                        if ($(this).text().toLowerCase() === existingVal.toLowerCase()) {
-                          $(this).attr('selected', true);
-                        }
-                      });
-                    }
-                    else {
-                      // A text control, so copy the old value over.
-                      ctrl.val(existingVal);
-                    }
-                  }
-                } else {
-                  // 2nd or later column for same sysfunction, so hide the control.
-                  cell.html('');
-                }
-              });
-            });
-          }
-        });
-        if (replacedNonMappableSysFuncCols.length > 0) {
-          msg = indiciaData.lang.dynamicattrs.manualMappingMessage.replace('{cols}', replacedNonMappableSysFuncCols.join(', '));
-          if ($(rows).closest('table').find('.record-status-set').closest('tr').find('.old-attr-input:visible').length > 0) {
-            msg += '<br/><strong>' + indiciaData.lang.dynamicattrs.manualMappingVerificationWarning + '</strong>';
-          }
-          $(rows).closest('table').before('<div class="alert alert-warning old-attr-val-alert">' + msg + '</div>');
+      });
+      if (replacedNonMappableSysFuncCols.length > 0) {
+        msg = indiciaData.lang.dynamicattrs.manualMappingMessage.replace('{cols}', replacedNonMappableSysFuncCols.join(', '));
+        if ($(rows).closest('table').find('.record-status-set').closest('tr').find('.old-attr-input:visible').length > 0) {
+          msg += '<br/><strong>' + indiciaData.lang.dynamicattrs.manualMappingVerificationWarning + '</strong>';
         }
-      },
-      'json'
-    );
+        $(rows).closest('table').before('<div class="alert alert-warning old-attr-val-alert">' + msg + '</div>');
+      }
+    })
+    .fail(function (jqXHR, textStatus, errorThrown) {
+      if (window.console && console.warn) {
+        console.warn('Failed to load dynamic attributes', textStatus, errorThrown, jqXHR.responseText);
+      }
+    });
   }
 
 })(jQuery);

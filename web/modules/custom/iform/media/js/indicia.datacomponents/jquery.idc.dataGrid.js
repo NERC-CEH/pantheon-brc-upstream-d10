@@ -727,6 +727,7 @@
   function setColWidths(el, maxCharsPerCol) {
     var maxCharsPerRow = 0;
     var tbody = $(el).find('tbody');
+    var table = $(el).find('table.es-data-grid');
     var hiddenContainer;
     var hiddenContainerOrigStyle;
     if ($(el).is(':hidden')) {
@@ -790,6 +791,17 @@
           lastTd.css('width', (currentWidth + overlayScrollbarWidth) + 'px');
         });
       }
+      // Widths are now explicit, so remove temporary anti-wrap mode used
+      // during first-paint sizing to avoid a tall wrapped header.
+      table.removeClass('sizing-columns');
+      // Wait until next paint so browser has applied all width/class changes
+      // before measuring heights for scrollbox and control layout.
+      window.requestAnimationFrame(function() {
+        setTableHeight(el);
+        if (typeof indiciaFns.updateControlLayout === 'function') {
+          indiciaFns.updateControlLayout();
+        }
+      });
     }
   }
 
@@ -941,6 +953,9 @@
         ? 'true' : 'false';
       if (el.settings.tbodyHasScrollBar) {
         tableClasses.push('fixed-header');
+        // Temporary class: keep header labels on one line until JS sets
+        // explicit column widths, preventing a transient oversized header row.
+        tableClasses.push('sizing-columns');
       }
       // Build the elements required for the table.
       table = $('<table class="' + tableClasses.join(' ') + '" data-sort="' + footableSort + '" />').appendTo(el);

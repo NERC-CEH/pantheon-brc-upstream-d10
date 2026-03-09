@@ -1303,6 +1303,9 @@ body > .loading-spinner {
   overflow-y: auto;
   overflow-x: hidden;
 }
+.idc-dataGrid table.es-data-grid.fixed-header.sizing-columns thead th, .idc-dataGrid table.es-data-grid.fixed-header.sizing-columns thead td {
+  white-space: nowrap;
+}
 .idc-dataGrid table.es-data-grid.fixed-header thead, .idc-dataGrid table.es-data-grid.fixed-header tbody tr {
   display: table;
   width: 100%;
