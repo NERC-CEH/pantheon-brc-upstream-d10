@@ -462,7 +462,7 @@ indiciaData.queuedClassificationResponses = [];
           $insertAfter = $('#' + div.settings.taxonControlId);
         }
 
-        $(`<textarea id="${inputName}" name="${inputName}" class="classification-result" style="display: hidden"></textarea>`)
+        $(`<textarea id="${inputName}" name="${inputName}" class="classification-result" style="display: none"></textarea>`)
           .insertAfter($insertAfter)
           .text(result);
         // Allow forms to hook into the event of a new occurrence being added.
