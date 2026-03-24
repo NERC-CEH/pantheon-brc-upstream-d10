@@ -16,31 +16,15 @@ use Drupal\Core\Render\Markup;
  *   admin_label = @Translation("All Elasticsearch records map block"),
  * )
  */
-class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
+class IndiciaEsAllRecordsMapBlock extends IndiciaEsMapBlockBase {
 
   /**
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
-    $baseMapOptions = [
-      'OpenStreetMap' => $this->t('Open Street Map'),
-      'OpenTopoMap' => $this->t('Open Topo Map'),
-    ];
-    if (\Drupal::config('iform.settings')->get('google_api_key')) {
-      $baseMapOptions['GoogleSatellite'] = $this->t('Google Satellite');
-      $baseMapOptions['GoogleRoadMap'] = $this->t('Google Streets');
-      $baseMapOptions['GoogleTerrain'] = $this->t('Google Terrain');
-      $baseMapOptions['GoogleHybrid'] = $this->t('Google Hybrid');
-    }
     $config = $this->getConfiguration();
-    $form['base_layer'] = [
-      '#type' => 'select',
-      '#title' => $this->t('Base layer'),
-      '#description' => $this->t('Select the base layer to use.'),
-      '#options' => $baseMapOptions,
-      '#default_value' => $config['base_layer'] ?? 'OpenStreetMap',
-    ];
+    $this->addBaseLayerFormCtrl($form, $config);
     $form['map_layer_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Map layer type'),
@@ -80,7 +64,7 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
-    $this->setConfigurationValue('base_layer', $form_state->getValue('base_layer'));
+    $this->saveBaseLayerFormCtrl($form_state);
     $this->setConfigurationValue('map_layer_type', $form_state->getValue('map_layer_type'));
     $this->setConfigurationValue('default_zoom_level', $form_state->getValue('default_zoom_level'));
     $this->setConfigurationValue('map_height', $form_state->getValue('map_height'));
@@ -161,50 +145,6 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaBlockBase {
       // Disable BigPipe so that the element exists before the datasource loads.
       '#create_placeholder' => FALSE,
     ];
-  }
-
-  private function getBaseLayerConfig($layerName) {
-    switch ($layerName) {
-      case 'OpenStreetMap':
-        return [
-          'title' => $this->t('Open Street Map'),
-          'type' => 'OpenStreetMap',
-        ];
-
-      case 'OpenTopoMap':
-        return [
-          'title' => $this->t('Open Street Map'),
-          'type' => 'OpenTopoMap',
-        ];
-
-      case 'GoogleSatellite':
-        return [
-          'title' => $this->t('Google Satellite'),
-          'type' => 'Google',
-          'subType' => 'satellite',
-        ];
-
-      case 'GoogleRoadMap':
-        return [
-          'title' => $this->t('Google Streets'),
-          'type' => 'Google',
-          'subType' => 'roadmap',
-        ];
-
-      case 'GoogleTerrain':
-        return [
-          'title' => $this->t('Google Terrain'),
-          'type' => 'Google',
-          'subType' => 'terrain',
-        ];
-
-      case 'GoogleHybrid':
-        return [
-          'title' => $this->t('Google Hybrid'),
-          'type' => 'Google',
-          'subType' => 'hybrid',
-        ];
-    }
   }
 
 }

@@ -37,7 +37,7 @@ function indicia_auto_exports_cron() {
         'outputTypeVariant' => 'gbif',
         'query' => [
           'bool' => [
-            'must' => [
+            'filter' => [
               [
                 'term' => [
                   'metadata.group.id' => $nextExport->getElementData('group'),

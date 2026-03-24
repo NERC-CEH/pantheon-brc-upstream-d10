@@ -60,7 +60,7 @@ class IndiciaEsRecentPhotosBlock extends IndiciaBlockBase {
       'limit' => 6,
     ], $this->getConfiguration());
     $filterBoolClauses = $this->getFilterBoolClauses($config);
-    $filterBoolClauses['must'][] = [
+    $filterBoolClauses['filter'][] = [
       'nested' => 'occurrence.media',
       'query_type' => 'exists',
       'field' => 'occurrence.media',

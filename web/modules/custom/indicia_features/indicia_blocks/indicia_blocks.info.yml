@@ -1,8 +1,8 @@
 name: 'Indicia blocks'
 description: 'A collection of handy blocks for interacting with Indicia data.'
 core_version_requirement: ^10 || ^11
-version: "9.16.0"
+version: "9.19.0"
 package: "Indicia"
 type: module
 dependencies:
-  - iform
+  - iform:iform

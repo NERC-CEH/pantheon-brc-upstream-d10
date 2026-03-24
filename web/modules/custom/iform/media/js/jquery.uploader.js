@@ -522,7 +522,7 @@ var checkSubmitInProgress = function () {
         // Hack to get fancybox working as a jQuery live, because some of our images load from AJAX calls.
         // So we temporarily create a dummy link to our image and click it.
         indiciaFns.on('click', '.filelist a.fancybox', null, function() {
-          jQuery("body").after('<a id="link_fancybox" style="display: hidden;" href="'+jQuery(this).attr('href')+'"></a>');
+          jQuery("body").after('<a id="link_fancybox" style="display: none;" href="'+jQuery(this).attr('href')+'"></a>');
           jQuery('#link_fancybox').fancybox();
           jQuery('#link_fancybox').trigger('click');
           jQuery('#link_fancybox').remove();

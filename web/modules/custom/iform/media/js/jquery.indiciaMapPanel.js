@@ -1052,6 +1052,71 @@ var destroyAllFeatures;
     }
 
     /**
+     * Loads ArcGIS service metadata and updates an OpenLayers layer attribution.
+     *
+     * Uses ?f=pjson endpoint and falls back to JSONP if required by browser/server.
+     */
+    function loadArcGisAttribution(layer, serviceUrl) {
+      var requestUrl;
+
+      function refreshAttributionControls(map) {
+        if (!map || !map.controls) {
+          return;
+        }
+        $.each(map.controls, function () {
+          if (this.CLASS_NAME === 'OpenLayers.Control.Attribution') {
+            if (typeof this.updateAttribution === 'function') {
+              this.updateAttribution();
+            }
+            if (typeof this.redraw === 'function') {
+              this.redraw();
+            }
+          }
+        });
+      }
+
+      function applyServiceAttribution(data) {
+        var parts = [];
+        var deduped = [];
+        if (data && data.copyrightText) {
+          parts.push($.trim(data.copyrightText));
+        }
+        if (data && data.documentInfo && data.documentInfo.Credits) {
+          parts.push($.trim(data.documentInfo.Credits));
+        }
+        $.each(parts, function () {
+          if (this && $.inArray(this, deduped) === -1) {
+            deduped.push(this);
+          }
+        });
+        if (deduped.length > 0) {
+          layer.attribution = deduped.join(' | ');
+          refreshAttributionControls(layer.map);
+        }
+      }
+
+      if (!layer || !serviceUrl) {
+        return;
+      }
+      requestUrl = serviceUrl.replace(/\/$/, '') + '?f=pjson';
+      $.ajax({
+        url: requestUrl,
+        dataType: 'json'
+      })
+        .done(function (data) {
+          applyServiceAttribution(data);
+        })
+        .fail(function () {
+          $.ajax({
+            url: requestUrl + '&callback=?',
+            dataType: 'jsonp'
+          }).done(function (data) {
+            applyServiceAttribution(data);
+          });
+        });
+    }
+
+    /**
     * Some pre-configured layers that can be added to the map.
     */
     function _getPresetLayers(settings) {
@@ -1275,6 +1340,23 @@ var destroyAllFeatures;
         },
         os_leisure: function osLeisure() {
           return new OpenLayers.Layer.WMTS(osLeisureOptions);
+        },
+        esri_world_imagery: function esriWorldImagery() {
+          var serviceUrl = 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer';
+          var layer = new OpenLayers.Layer.XYZ(
+            'Esri World Imagery',
+            serviceUrl + '/tile/${z}/${y}/${x}',
+            {
+              sphericalMercator: true,
+              numZoomLevels: 20,
+              layerId: 'esri_world_imagery.0',
+              attribution: 'Tiles © Esri'
+            }
+          );
+          layer.events.register('added', layer, function () {
+            loadArcGisAttribution(layer, serviceUrl);
+          });
+          return layer;
         }
       };
       // Only enable Google layers if the API key are available.

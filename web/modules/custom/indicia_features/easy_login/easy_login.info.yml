@@ -1,8 +1,8 @@
 name: 'Easy login'
 description: 'Configures Drupal login to integrate with Indicia.'
 core_version_requirement: ^10 || ^11
-version: "9.16.0"
+version: "9.19.0"
 package: "Indicia"
 type: module
 dependencies:
-  - iform
+  - iform:iform

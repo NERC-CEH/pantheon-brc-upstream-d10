@@ -482,21 +482,23 @@ jQuery(document).ready(function($) {
    */
   function checkGroupsOfRelatedFields() {
     // Regexes for fields where if one mapping is present, others are required.
-    const groupedFields = [
-      '^occurrence:fk_taxa_taxon_list:(genus|specific)$',
-      ':date_(type|start|end)$'
-    ];
+    const groupedFields = {
+      '^occurrence:fk_taxa_taxon_list:(genus|specific)$': '^occurrence:fk_taxa_taxon_list:(genus|specific)$',
+      ':date_(type|start|end)$': ':date_(type|start|end)$',
+      '^dna_occurrence:': '^dna_occurrence:(dna_sequence|target_gene|pcr_primer_reference|dna_extraction_method|dna_occurrence:fk_occurrence)$',
+    };
     let messages = [];
     // First, check if any required checkbox is for a field in a field
     // group where checking 1 means the others are also required.
-    $.each(groupedFields, function() {
-      let matchExpr = new RegExp(this);
+    $.each(groupedFields, function(matchRegexp, requiredRegexp) {
+      let matchExpr = new RegExp(matchRegexp);
+      let requiredFieldsExpr = new RegExp(requiredRegexp);
       const ticked = $('.mapped-field option:selected').filter(function() {
         return this.value.match(matchExpr);
       });
       if (ticked.length > 0) {
         const shouldTick = $('.mapped-field:first option').filter(function() {
-          return this.value.match(matchExpr);
+          return this.value.match(requiredFieldsExpr);
         });
         if (shouldTick.length > ticked.length) {
           const tickedArr = $.map(ticked, el => [el.text]);
@@ -653,11 +655,20 @@ jQuery(document).ready(function($) {
       options += '<option value="' + id + '">' + term + '</option>';
     });
     $.each(result.unmatchedInfo.values, function(idx) {
-      var controlName;
-      controlName = 'match-' + result.unmatchedInfo.attrType + '-' + result.unmatchedInfo.attrId + '-' + idx;
-      $('<tr><th scope="row" data-value="' + this + '">' + this + '</th>' +
-        '<td><select class="form-control" required data-value="' + this.replace('"', '&quot;') + '" name="' + controlName + '">' + options + '</select></td></tr>')
-        .appendTo(tbody);
+      var token = this;
+      var controlName = 'match-' + result.unmatchedInfo.attrType + '-' + result.unmatchedInfo.attrId + '-' + idx;
+      var tr = $('<tr />').appendTo(tbody);
+      $('<th scope="row" />')
+        .text(token)
+        .attr('data-value', token)
+        .appendTo(tr);
+      var td = $('<td />').appendTo(tr);
+      var select = $('<select class="form-control" required />')
+        .attr('name', controlName)
+        .html(options)
+        .appendTo(td);
+      // Store the exact token value for saving/highlighting.
+      $(select).data('value', token);
     });
     $('<p>Once you have specified the terms that you wish to use when matching values from the "' + result.columnLabel + '" column, click the button below to apply the matched taxa to the current import.</p>' +
       '<button type="button" class="btn btn-primary save-matches" ' +

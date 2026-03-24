@@ -65,7 +65,7 @@ class ResolveMultipleUsersForm extends FormBase {
       }
     }
     foreach ($userList as $user) {
-      if ($user->website_id === $config->get('website_id', 0) || in_array($user->website_id, $tickedWebsites)) {
+      if ($user->website_id === $config->get('website_id') || in_array($user->website_id, $tickedWebsites)) {
         $listToMerge[] = $user->user_id;
       }
     }

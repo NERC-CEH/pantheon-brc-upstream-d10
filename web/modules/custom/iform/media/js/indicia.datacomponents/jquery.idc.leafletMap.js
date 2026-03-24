@@ -39,12 +39,10 @@
   var defaults = {
     baseLayer: 'OpenStreetMap',
     baseLayerConfig: {
-      OpenStreetMap: {
-        title: 'Open Street Map',
+      'Open Street Map': {
         type: 'OpenStreetMap'
       },
-      OpenTopoMap: {
-        title: 'Open Topo Map',
+      'Open Topo Map': {
         type: 'OpenTopoMap'
       }
     },
@@ -660,6 +658,70 @@
   }
 
   /**
+   * Build attribution text from ArcGIS service metadata response.
+   */
+  function getArcGisAttributionFromMetadata(data, fallbackAttribution) {
+    var parts = [];
+    var deduped = [];
+    if (data && data.copyrightText) {
+      parts.push($.trim(data.copyrightText));
+    }
+    if (data && data.documentInfo && data.documentInfo.Credits) {
+      parts.push($.trim(data.documentInfo.Credits));
+    }
+    $.each(parts, function eachPart() {
+      if (this && $.inArray(this, deduped) === -1) {
+        deduped.push(this);
+      }
+    });
+    return deduped.length > 0 ? deduped.join(' | ') : fallbackAttribution;
+  }
+
+  /**
+   * Updates a Leaflet tile layer attribution from ArcGIS service metadata.
+   *
+   * Fetches {serviceUrl}?f=pjson, with JSONP fallback for older CORS cases.
+   * Runs when the layer is added to a map so attribution control can refresh.
+   */
+  function applyArcGisServiceAttribution(layer, serviceUrl, fallbackAttribution) {
+    var requestUrl;
+
+    function setAttribution(data) {
+      var attribution = getArcGisAttributionFromMetadata(data, fallbackAttribution);
+      if (!attribution || attribution === layer.options.attribution) {
+        return;
+      }
+      if (layer._map && layer._map.attributionControl && layer.options.attribution) {
+        layer._map.attributionControl.removeAttribution(layer.options.attribution);
+      }
+      layer.options.attribution = attribution;
+      if (layer._map && layer._map.attributionControl) {
+        layer._map.attributionControl.addAttribution(attribution);
+      }
+    }
+
+    if (!layer || !serviceUrl) {
+      return;
+    }
+    requestUrl = serviceUrl.replace(/\/$/, '') + '?f=pjson';
+    $.ajax({
+      url: requestUrl,
+      dataType: 'json'
+    })
+      .done(function onDone(data) {
+        setAttribution(data);
+      })
+      .fail(function onFail() {
+        $.ajax({
+          url: requestUrl + '&callback=?',
+          dataType: 'jsonp'
+        }).done(function onJsonpDone(data) {
+          setAttribution(data);
+        });
+      });
+  }
+
+  /**
    * Build the list of base map layers.
    */
   function getBaseMaps(el) {
@@ -677,6 +739,30 @@
           attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
             '<a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> ' +
             '(<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA</a>)'
+        });
+      } else if (this.type === 'EsriWorldImagery') {
+        // Esri World Imagery tiled map service.
+        // sourceUrl can be overridden in baseLayerConfig entry if required.
+        const sourceUrl = this.config && this.config.sourceUrl
+          ? this.config.sourceUrl
+          : 'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+        // serviceUrl points at the ArcGIS MapServer endpoint used for metadata
+        // lookups (e.g. ?f=pjson for up-to-date service credits).
+        const serviceUrl = this.config && this.config.serviceUrl
+          ? this.config.serviceUrl
+          : sourceUrl.replace(/\/tile\/\{z\}\/\{y\}\/\{x\}$/, '');
+        // Attribution text from Esri service credits, with optional override.
+        const attribution = this.config && this.config.attribution
+          ? this.config.attribution
+          : 'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community';
+        baseLayers[title] = L.tileLayer(sourceUrl, {
+          maxZoom: 20,
+          attribution: attribution
+        });
+        // Replace fallback attribution with service-provided attribution when
+        // metadata is available.
+        baseLayers[title].on('add', function onAddEsriLayer() {
+          applyArcGisServiceAttribution(this, serviceUrl, attribution);
         });
       } else if (this.type === 'Google') {
         subType = this.config && this.config.subType;

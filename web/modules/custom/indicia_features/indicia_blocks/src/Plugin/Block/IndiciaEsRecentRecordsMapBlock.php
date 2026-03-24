@@ -15,7 +15,7 @@ use Drupal\Core\Render\Markup;
  *   admin_label = @Translation("Recent Elasticsearch records map block"),
  * )
  */
-class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
+class IndiciaEsRecentRecordsMapBlock extends IndiciaEsMapBlockBase {
 
   /**
    * {@inheritdoc}
@@ -23,6 +23,7 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
   public function blockForm($form, FormStateInterface $form_state) {
     $form = parent::blockForm($form, $form_state);
     $config = $this->getConfiguration();
+    $this->addBaseLayerFormCtrl($form, $config);
     $form['map_height'] = [
       '#type' => 'number',
       '#title' => $this->t('Map height (pixels)'),
@@ -37,6 +38,7 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
    */
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
+    $this->saveBaseLayerFormCtrl($form_state);
     $this->setConfigurationValue('map_height', $form_state->getValue('map_height'));
   }
 
@@ -64,8 +66,12 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaBlockBase {
       $sourceId = 'src-IndiciaEsRecentRecordsBlock-' . self::$blockCount;
       \helper_base::$indiciaData['recentRecordsSourceId'] = $sourceId;
     }
+    $baseLayer = $config['base_layer'] ?? 'OpenStreetMap';
     $r = \ElasticsearchReportHelper::leafletMap([
       'id' => 'recentRecordsMap-' . self::$blockCount,
+      'baseLayerConfig' => [
+        $baseLayer => $this->getBaseLayerConfig($baseLayer),
+      ],
       'height' => $config['map_height'] ?? 500,
       'layerConfig' => [
         'recent-records' => [

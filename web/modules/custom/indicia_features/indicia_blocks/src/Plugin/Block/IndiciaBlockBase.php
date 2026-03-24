@@ -161,7 +161,7 @@ abstract class IndiciaBlockBase extends BlockBase {
         'value' => 'true',
       ],
     ];
-    $must = [];
+    $filter = [];
     // Other record filters.
     if (empty($config['sensitive_records'])) {
       $mustNot[] = [
@@ -171,7 +171,7 @@ abstract class IndiciaBlockBase extends BlockBase {
       ];
     }
     if (empty($config['unverified_records'])) {
-      $must[] = [
+      $filter[] = [
         'query_type' => 'term',
         'field' => 'identification.verification_status',
         'value' => 'V',
@@ -183,7 +183,7 @@ abstract class IndiciaBlockBase extends BlockBase {
         // Not linked to the warehouse so force report to be blank.
         $warehouseUserId = -9999;
       }
-      $must[] = [
+      $filter[] = [
         'query_type' => 'term',
         'field' => 'metadata.created_by_id',
         'value' => $warehouseUserId,
@@ -191,14 +191,14 @@ abstract class IndiciaBlockBase extends BlockBase {
     }
     if (!empty($config['limit_to_website'])) {
       $connection = iform_get_connection_details();
-      $must[] = [
+      $filter[] = [
         'query_type' => 'term',
         'field' => 'metadata.website.id',
         'value' => $connection['website_id'],
       ];
     }
     if (!empty($config['limit_to_current_year'])) {
-      $must[] = [
+      $filter[] = [
         'query_type' => 'term',
         'field' => 'event.year',
         'value' => date('Y'),
@@ -209,7 +209,7 @@ abstract class IndiciaBlockBase extends BlockBase {
       $groups = hostsite_get_user_field('taxon_groups', FALSE, TRUE);
       // Apply user profile preferences.
       if ($location) {
-        $must[] = [
+        $filter[] = [
           'query_type' => 'term',
           'nested' => 'location.higher_geography',
           'field' => 'location.higher_geography.id',
@@ -217,7 +217,7 @@ abstract class IndiciaBlockBase extends BlockBase {
         ];
       }
       if (!empty($groups)) {
-        $must[] = [
+        $filter[] = [
           'query_type' => 'terms',
           'field' => 'taxon.group_id',
           'value' => json_encode($groups),
@@ -225,7 +225,7 @@ abstract class IndiciaBlockBase extends BlockBase {
       }
     }
     return [
-      'must' => $must,
+      'filter' => $filter,
       'must_not' => $mustNot,
     ];
   }

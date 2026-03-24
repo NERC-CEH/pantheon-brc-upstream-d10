@@ -520,6 +520,15 @@
       addRow(rows, doc, 'Determiner', 'identification.identified_by');
       addRow(rows, doc, 'Dataset',
         ['metadata.website.title', 'metadata.survey.title', 'metadata.group.title'], ' :: ');
+      if (doc.occurrence.associations) {
+        $.each(doc.occurrence.associations, function eachAssociation() {
+          let value = `<em>${this.accepted_name}</em>`;
+          if (this.vernacular_name) {
+            value = `${this.vernacular_name} (${value})`;
+          }
+          rows.push(`<tr><th scope="row">Associated with</th><td>${value}</td></tr>`);
+        });
+      }
       addRow(rows, doc, 'Sample comment', 'event.event_remarks');
       addRow(rows, doc, 'Occurrence comment', 'occurrence.occurrence_remarks');
 
