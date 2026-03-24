@@ -1,0 +1,13 @@
+name: 'Forum test views'
+type: module
+description: 'Provides default views for views forum tests.'
+package: Testing
+# version: VERSION
+dependencies:
+  - drupal:forum
+  - drupal:views
+
+# Information added by Drupal.org packaging script on 2026-03-19
+version: '1.0.6'
+project: 'forum'
+datestamp: 1773954143

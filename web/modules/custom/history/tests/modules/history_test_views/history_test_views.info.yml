@@ -1,0 +1,14 @@
+name: 'History test views'
+type: module
+description: 'Provides default views for history comments tests.'
+package: Testing
+core_version_requirement: '>11.3'
+dependencies:
+  - drupal:comment
+  - drupal:history
+  - drupal:views
+
+# Information added by Drupal.org packaging script on 2026-01-23
+version: '1.0.0'
+project: 'history'
+datestamp: 1769182062

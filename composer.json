@@ -269,7 +269,6 @@
         "drupal/paragraphs": "^1.18",
         "drupal/entity_usage": "^2.0-beta28",
         "drupal/twig_tweak": "^3.4",
-        "drupal/forum": "^1.0",
         "drupal/book": "2.x",
         "drupal/bootstrap": "^3.32",
         "drupal/ckeditor_details": "^2.1@beta",
@@ -302,7 +301,6 @@
         "drupal/linkit": "^7.0",
         "drupal/klaro": "^3.0",
         "drupal/key": "1.22",
-        "drupal/forum_access": "^2.0",
         "sainsburys/guzzle-oauth2-plugin": "^3.0",
         "firebase/php-jwt": "^6.11.1",
         "guzzlehttp/guzzle": "^7.0"
