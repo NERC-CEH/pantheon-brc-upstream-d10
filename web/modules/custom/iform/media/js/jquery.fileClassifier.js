@@ -99,7 +99,10 @@ indiciaData.queuedClassificationResponses = [];
    */
   $(function(){
     // Add a click handler for the classify button in all classifier controls.
-    indiciaFns.on('click', '.classify-btn', classify);
+    //indiciaFns.on('click', '.classify-btn', classify);
+    mediaUploadAddedHooks.push(function(div) {
+      classify(div);
+    });
 
     // Add a click handler for the add-classifier button in a species grid.
     // This adds a row containing a classifier when in single mode.
@@ -152,16 +155,6 @@ indiciaData.queuedClassificationResponses = [];
       let id = $upload.attr('id');
       // The id is like upload-select-btn-<index>
       let index = id.split('-')[3];
-      // Set up the classify button.
-      let $classifyBtn = $('<button>')
-        .text(indiciaData.lang.fileClassifier.classifyBtnCaption)
-        .attr('id', 'classify-btn-' + index)
-        .attr('type', 'button')
-        .addClass('classify-btn')
-        .addClass(indiciaData.templates.defaultBtnClass)
-        .attr('title', indiciaData.lang.fileClassifier.classifyBtnTitle);
-      // Adding it after the upload button.
-      $classifyBtn.insertAfter($upload);
     });
   }
 
@@ -169,15 +162,14 @@ indiciaData.queuedClassificationResponses = [];
   /**
    * Event handler called when classification requested. Sends images to
    * a classifier and handles the responses.
-   * @param {object} evt - The triggering event object.
+   * @param {object} div - The triggering event object.
    */
-  function classify(evt){
+  function classify(div){
     // Obtain the classifier object containing the button.
-    let $classifier = $(evt.target).closest('div');
-    let div = $classifier[0];
+    let $classifier = $(div);
 
     // Get the list of files to be classified.
-    files = getFilesInFilebox(div, $classifier);
+    files = getFilesInFilebox($classifier);
 
     if (files.length === 0) {
       // Nothing to do as no files.
@@ -297,6 +289,11 @@ indiciaData.queuedClassificationResponses = [];
     const imageListHtml = images.join('');
     let possibilityOptions = [];
     response.suggestions.forEach((suggestion) => {
+      if (typeof suggestion.taxa_taxon_list_id === 'undefined') {
+        // Failed to match taxon to list on warehouse side, so skip this
+        // suggestion as it cannot be used.
+        return;
+      }
       let optionText = `<em>${suggestion.taxon}</em>`;
       if (suggestion.default_common_name) {
         optionText += '<br/>' + suggestion.default_common_name;
@@ -312,6 +309,11 @@ indiciaData.queuedClassificationResponses = [];
           <div>${optionText}</div>
         </li>`);
     });
+    if (possibilityOptions.length === 0) {
+      // No valid suggestions, so treat as unknown.
+      handleResponse(div, files, null);
+      return;
+    }
     const possibilityListHtml = possibilityOptions.join('');
     $.fancybox.close();
     let message = `
@@ -599,11 +601,6 @@ indiciaData.queuedClassificationResponses = [];
     // Prevent the insertion of another image row.
     $speciesRow.find('.add-media-link').hide();
 
-    // For now, prevent further images being classified to put off the work of
-    // resolving the results of multiple classifications.
-    $imageRow = $speciesRow.next();
-    $imageRow.find('button.classify-btn').hide();
-
     return $speciesRow;
   }
 
@@ -718,10 +715,10 @@ indiciaData.queuedClassificationResponses = [];
    * @param {object} $filebox - a jQuery object of the control.
    * @returns {array} An array of file objects in the filebox
    */
-  function getFilesInFilebox(div, $filebox) {
+  function getFilesInFilebox($filebox) {
     let files = [];
     $filebox.find('.mediafile').each(function() {
-      let file = getFileInContainer(div, $(this));
+      let file = getFileInContainer($(this));
       files.push(file);
     });
     return files;
@@ -730,11 +727,11 @@ indiciaData.queuedClassificationResponses = [];
 
   /**
    * Get the properties of a file in a div.mediafile container.
-   * @param {object} div - Contains all the details of the control.
+
    * @param {object} $container - jQuery object of the div.mediafile.
    * @returns {object} A file object holding the file properties.
    */
-  function getFileInContainer(div, $container) {
+  function getFileInContainer($container) {
     let file = {'mediafileId': $container.attr('id')};
     $container.find('input').each(function() {
       let id = $(this).attr('id');
@@ -832,13 +829,6 @@ indiciaData.queuedClassificationResponses = [];
           }
         }
       });
-
-      if ($filebox.hasClass('file-classifier') &&
-        $filebox.find('classification-result').length === 0) {
-        // Restore the classify button that we are hidiing for embedded
-        // classifiers if there are no results left.
-        $filebox.find('button.classify-btn').show();
-      }
     }
   }
 

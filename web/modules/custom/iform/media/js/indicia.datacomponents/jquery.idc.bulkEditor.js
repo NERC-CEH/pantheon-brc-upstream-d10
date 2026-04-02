@@ -195,14 +195,15 @@
    */
   function performBulkEdit(dlg, data, endpoint) {
     $.post(indiciaData.esProxyAjaxUrl + '/' + endpoint + '/' + indiciaData.nid, data, null, 'json')
-    .done(function(response) {
-      if (response.code === 200 && response.search_after) {
+    .done(function(response, textStatus, jqXHR) {
+      const status = typeof response !== 'undefined' ? response.code : jqXHR.status;
+      if (status === 200 && response.search_after) {
         // Paging through a set of records, send the same request again, but
         // with search_after set.
         showProgressInOutput(dlg, response.affected);
         data.search_after = response.search_after;
         performBulkEdit(dlg, data, endpoint);
-      } else if (response.code === 200 || response.code === 204) {
+      } else if (status === 200 || status === 204) {
         // Finished.
         const settings = $('#' + $(dlg).attr('id').replace(/-dlg$/, ''))[0].settings;
         settings.sourceObject.populate(true);
