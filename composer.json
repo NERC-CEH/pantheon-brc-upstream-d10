@@ -303,8 +303,7 @@
         "drupal/key": "1.22",
         "sainsburys/guzzle-oauth2-plugin": "^3.0",
         "firebase/php-jwt": "^6.11.1",
-        "guzzlehttp/guzzle": "^7.0",
-        "drupal/simple_oauth_revoke": "^2.0"
+        "guzzlehttp/guzzle": "^7.0"
     },
     "conflict": {
         "drupal/drupal": "*"
