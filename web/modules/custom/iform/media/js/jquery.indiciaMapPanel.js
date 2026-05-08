@@ -1431,8 +1431,6 @@ var destroyAllFeatures;
               {
                 layerId: 'dynamicOSGoogleSat.0',
                 maxZoom: 5,
-                // Very small scale (zoomed far out).
-                minMetresPerPixel: 500,
                 dynamicLayerIndex: 0
               }
             );
@@ -1443,9 +1441,6 @@ var destroyAllFeatures;
               maxWidth: 500000,
               minZoom: 1,
               maxZoom: 11,
-              // Mid-scale band between OSM and Google satellite.
-              maxMetresPerPixel: 500,
-              minMetresPerPixel: 1,
               layerId: 'dynamicOSGoogleSat.1',
               dynamicLayerIndex: 1,
               explicitlyDisallowed: [
@@ -1468,8 +1463,6 @@ var destroyAllFeatures;
             return new OpenLayers.Layer('Dynamic (OpenStreetMap > Ordnance Survey Leisure > *Google Satellite*)', {
               layerId: 'dynamicOSGoogleSat.2',
               isBaseLayer: true,
-              // Approx equivalent of the 2 most zoomed-in Google levels.
-              maxMetresPerPixel: 1,
               maxWidth: 500,
               lazyLoadGoogleApiLayerFn: function() {
                 return new OpenLayers.Layer.Google('Dynamic (OpenStreetMap > Ordnance Survey Leisure > *Google Satellite*)', {
@@ -1478,7 +1471,6 @@ var destroyAllFeatures;
                   sphericalMercator: true,
                   maxWidth: 500,
                   minZoom: 18,
-                  maxMetresPerPixel: 1,
                   layerId: 'dynamicOSGoogleSat.2',
                   dynamicLayerIndex: 2
                 });
@@ -1494,7 +1486,6 @@ var destroyAllFeatures;
               {
                 layerId: 'dynamicOSMGoogleSat.0',
                 maxZoom: 18,
-                minMetresPerPixel: 1,
                 dynamicLayerIndex: 0
               }
             );
@@ -1506,8 +1497,6 @@ var destroyAllFeatures;
               layerId: 'dynamicOSMGoogleSat.1',
               isBaseLayer: true,
               maxWidth: 500,
-              // Approx equivalent of the 2 most zoomed-in Google levels.
-              maxMetresPerPixel: 1,
               lazyLoadGoogleApiLayerFn: function() {
                 return new OpenLayers.Layer.Google('Dynamic (OpenStreetMap > *Google Satellite*)', {
                   type: google.maps.MapTypeId.SATELLITE,
@@ -1515,8 +1504,6 @@ var destroyAllFeatures;
                   sphericalMercator: true,
                   maxWidth: 500,
                   minZoom: 18,
-                  // Approx equivalent of the 2 most zoomed-in Google levels.
-                  maxMetresPerPixel: 1,
                   layerId: 'dynamicOSMGoogleSat.1',
                   dynamicLayerIndex: 1
                 });
@@ -2880,18 +2867,11 @@ var destroyAllFeatures;
       // If we need to switch dynamic layer because of the zoom, find the new
       // sub-layer's index.
       dynamicLayers = _getPresetLayers(div.settings)[baseLayerIdParts[0]];
-      // OpenLayers returns geodesic pixel size in kilometres.
-      metresPerPixel = div.map.getGeodesicPixelSize().w * 1000;
+      bb = div.map.getExtent().transform(div.map.projection, new OpenLayers.Projection('EPSG:27700'));
+      mapWidth = bb.right - bb.left;
       onLayerIdx = dynamicLayers.reduce(function findLayer(index, lyr, i) {
         var mapLayer = lyr();
-        var withinScaleWindow = true;
-        if (mapLayer.maxMetresPerPixel) {
-          withinScaleWindow = metresPerPixel <= mapLayer.maxMetresPerPixel;
-        }
-        if (withinScaleWindow && mapLayer.minMetresPerPixel) {
-          withinScaleWindow = metresPerPixel >= mapLayer.minMetresPerPixel;
-        }
-        if (withinScaleWindow) {
+        if (!mapLayer.maxWidth || mapWidth < mapLayer.maxWidth) {
           return i;
         }
         return index;
@@ -3610,13 +3590,12 @@ var destroyAllFeatures;
       }
       if (div.settings.editLayer && div.settings.allowPolygonRecording) {
         div.map.editLayer.events.on({'featuremodified': function(evt) {
-          const geomControl = $('#' + indiciaData.mapdiv.settings.boundaryGeomId + ',[name="sample:geom"]');
-          if (geomControl.length > 0) {
+          if ($('#' + div.settings.boundaryGeomId).length>0) {
             var geom = evt.feature.geometry.clone();
             if (div.map.projection.getCode() !== div.indiciaProjection.getCode()) {
               geom.transform(div.map.projection, div.indiciaProjection);
             }
-            geomControl.val(geom.toString());
+            $('#' + div.settings.boundaryGeomId).val(geom.toString());
             if (div.settings.autoFillInCentroid) {
               var centroid = geom.getCentroid();
               pointToSref(div, centroid, _getSystem(), function(data) {

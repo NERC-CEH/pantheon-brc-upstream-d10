@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e6f8525ae90331d91e9a52495e6213f",
+    "content-hash": "a751922847703333cca0f033b6b53dde",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -1487,16 +1487,16 @@
         },
         {
             "name": "dealerdirect/phpcodesniffer-composer-installer",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPCSStandards/composer-installer.git",
-                "reference": "845eb62303d2ca9b289ef216356568ccc075ffd1"
+                "reference": "963f0c67bffde0eac41b56be71ac0e8ba132f0bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/845eb62303d2ca9b289ef216356568ccc075ffd1",
-                "reference": "845eb62303d2ca9b289ef216356568ccc075ffd1",
+                "url": "https://api.github.com/repos/PHPCSStandards/composer-installer/zipball/963f0c67bffde0eac41b56be71ac0e8ba132f0bd",
+                "reference": "963f0c67bffde0eac41b56be71ac0e8ba132f0bd",
                 "shasum": ""
             },
             "require": {
@@ -1579,7 +1579,7 @@
                     "type": "thanks_dev"
                 }
             ],
-            "time": "2025-11-11T04:32:07+00:00"
+            "time": "2026-05-06T08:26:05+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -6086,16 +6086,16 @@
         },
         {
             "name": "drupal/core",
-            "version": "10.6.7",
+            "version": "10.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core.git",
-                "reference": "d6e217d684894e5a0e6fb28261184dd57450bedb"
+                "reference": "7140382ee8fcb79d795a8caae99a5aaa7f9ba886"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core/zipball/d6e217d684894e5a0e6fb28261184dd57450bedb",
-                "reference": "d6e217d684894e5a0e6fb28261184dd57450bedb",
+                "url": "https://api.github.com/repos/drupal/core/zipball/7140382ee8fcb79d795a8caae99a5aaa7f9ba886",
+                "reference": "7140382ee8fcb79d795a8caae99a5aaa7f9ba886",
                 "shasum": ""
             },
             "require": {
@@ -6245,13 +6245,13 @@
             ],
             "description": "Drupal is an open source content management platform powering millions of websites and applications.",
             "support": {
-                "source": "https://github.com/drupal/core/tree/10.6.7"
+                "source": "https://github.com/drupal/core/tree/10.6.8"
             },
-            "time": "2026-04-15T16:19:28+00:00"
+            "time": "2026-05-06T15:22:12+00:00"
         },
         {
             "name": "drupal/core-composer-scaffold",
-            "version": "10.6.7",
+            "version": "10.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-composer-scaffold.git",
@@ -6295,13 +6295,13 @@
                 "drupal"
             ],
             "support": {
-                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.6.7"
+                "source": "https://github.com/drupal/core-composer-scaffold/tree/10.6.8"
             },
             "time": "2024-08-22T14:31:30+00:00"
         },
         {
             "name": "drupal/core-project-message",
-            "version": "10.6.7",
+            "version": "10.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-project-message.git",
@@ -6342,16 +6342,16 @@
         },
         {
             "name": "drupal/core-recommended",
-            "version": "10.6.7",
+            "version": "10.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-recommended.git",
-                "reference": "617efa3bd4c20d48b2f0189489a42d06138f1086"
+                "reference": "011209e5b7f04b731fa99733b3e7801d10a52593"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/617efa3bd4c20d48b2f0189489a42d06138f1086",
-                "reference": "617efa3bd4c20d48b2f0189489a42d06138f1086",
+                "url": "https://api.github.com/repos/drupal/core-recommended/zipball/011209e5b7f04b731fa99733b3e7801d10a52593",
+                "reference": "011209e5b7f04b731fa99733b3e7801d10a52593",
                 "shasum": ""
             },
             "require": {
@@ -6359,7 +6359,7 @@
                 "composer/semver": "~3.4.4",
                 "doctrine/deprecations": "~1.1.5",
                 "doctrine/lexer": "~2.1.1",
-                "drupal/core": "10.6.7",
+                "drupal/core": "10.6.8",
                 "egulias/email-validator": "~4.0.4",
                 "guzzlehttp/guzzle": "~7.10.0",
                 "guzzlehttp/promises": "~2.3.0",
@@ -6419,9 +6419,9 @@
             ],
             "description": "Core and its dependencies with known-compatible minor versions. Require this project INSTEAD OF drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-recommended/tree/10.6.7"
+                "source": "https://github.com/drupal/core-recommended/tree/10.6.8"
             },
-            "time": "2026-04-15T16:19:28+00:00"
+            "time": "2026-05-06T15:22:12+00:00"
         },
         {
             "name": "drupal/cshs",
@@ -7057,7 +7057,7 @@
                     "role": "contributor"
                 },
                 {
-                    "name": "Primsi",
+                    "name": "primsi",
                     "homepage": "https://www.drupal.org/user/282629"
                 },
                 {
@@ -7130,7 +7130,7 @@
                     "homepage": "https://www.drupal.org/user/2919723"
                 },
                 {
-                    "name": "Primsi",
+                    "name": "primsi",
                     "homepage": "https://www.drupal.org/user/282629"
                 },
                 {
@@ -13606,7 +13606,7 @@
             "extra": {
                 "drupal": {
                     "version": "8.x-1.15",
-                    "datestamp": "1777931327",
+                    "datestamp": "1778049296",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16752,17 +16752,17 @@
         },
         {
             "name": "drupal/taxonomy_menu",
-            "version": "3.7.0",
+            "version": "3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/taxonomy_menu.git",
-                "reference": "8.x-3.7"
+                "reference": "8.x-3.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/taxonomy_menu-8.x-3.7.zip",
-                "reference": "8.x-3.7",
-                "shasum": "a9729f78e84b8b90dc7d23937c6f134ea56e7e5f"
+                "url": "https://ftp.drupal.org/files/projects/taxonomy_menu-8.x-3.8.zip",
+                "reference": "8.x-3.8",
+                "shasum": "b97e8361724ac5b6941005829795c9bda2e9e0be"
             },
             "require": {
                 "drupal/core": "^9.1 || ^10 || ^11"
@@ -16770,8 +16770,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.7",
-                    "datestamp": "1738865891",
+                    "version": "8.x-3.8",
+                    "datestamp": "1777993933",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16814,6 +16814,10 @@
                 {
                     "name": "rwanth",
                     "homepage": "https://www.drupal.org/user/3564319"
+                },
+                {
+                    "name": "vladimiraus",
+                    "homepage": "https://www.drupal.org/user/673120"
                 }
             ],
             "description": "Creates menu items based on associations to taxonomy vocabularies",
@@ -18710,17 +18714,17 @@
         },
         {
             "name": "drupal/views_field_view",
-            "version": "1.0.0-beta6",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_field_view.git",
-                "reference": "8.x-1.0-beta6"
+                "reference": "8.x-1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_field_view-8.x-1.0-beta6.zip",
-                "reference": "8.x-1.0-beta6",
-                "shasum": "a43a286dc185c2f6cebb2833c8d16ed28a1a1df6"
+                "url": "https://ftp.drupal.org/files/projects/views_field_view-8.x-1.0.zip",
+                "reference": "8.x-1.0",
+                "shasum": "a8662f4c6949551496106d6d79d9e9886051c6b4"
             },
             "require": {
                 "drupal/core": "^9 || ^10 || ^11"
@@ -18728,11 +18732,11 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.0-beta6",
-                    "datestamp": "1736794891",
+                    "version": "8.x-1.0",
+                    "datestamp": "1777993121",
                     "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Beta releases are not covered by Drupal security advisories."
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
                     }
                 }
             },
@@ -24488,16 +24492,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v6.4.37",
+            "version": "v6.4.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "4f66d607578c9d0546b1750262a6140e552e346d"
+                "reference": "f0990df92ee67721886a2a8b6e19a1bafbf3d7a4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/4f66d607578c9d0546b1750262a6140e552e346d",
-                "reference": "4f66d607578c9d0546b1750262a6140e552e346d",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/f0990df92ee67721886a2a8b6e19a1bafbf3d7a4",
+                "reference": "f0990df92ee67721886a2a8b6e19a1bafbf3d7a4",
                 "shasum": ""
             },
             "require": {
@@ -24549,7 +24553,7 @@
             "description": "Allows you to standardize and centralize the way objects are constructed in your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/dependency-injection/tree/v6.4.37"
+                "source": "https://github.com/symfony/dependency-injection/tree/v6.4.38"
             },
             "funding": [
                 {
@@ -24569,7 +24573,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-04-30T17:50:20+00:00"
+            "time": "2026-05-04T13:00:01+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -25098,16 +25102,16 @@
         },
         {
             "name": "symfony/http-kernel",
-            "version": "v6.4.36",
+            "version": "v6.4.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-kernel.git",
-                "reference": "4087ec02119de450e9ebb60806d69c6bb8c6e468"
+                "reference": "769c1ee766d6c327176f4e3bdaad58f521193abd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/4087ec02119de450e9ebb60806d69c6bb8c6e468",
-                "reference": "4087ec02119de450e9ebb60806d69c6bb8c6e468",
+                "url": "https://api.github.com/repos/symfony/http-kernel/zipball/769c1ee766d6c327176f4e3bdaad58f521193abd",
+                "reference": "769c1ee766d6c327176f4e3bdaad58f521193abd",
                 "shasum": ""
             },
             "require": {
@@ -25192,7 +25196,7 @@
             "description": "Provides a structured process for converting a Request into a Response",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-kernel/tree/v6.4.36"
+                "source": "https://github.com/symfony/http-kernel/tree/v6.4.38"
             },
             "funding": [
                 {
@@ -25212,7 +25216,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-03-31T20:38:11+00:00"
+            "time": "2026-05-06T13:04:40+00:00"
         },
         {
             "name": "symfony/mailer",
@@ -27072,16 +27076,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v6.4.34",
+            "version": "v6.4.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "7bca30dabed7900a08c5ad4f1d6483f881a64d0f"
+                "reference": "f8d2f4af29053842c01b4cae6bd4c2c3191fc63c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/7bca30dabed7900a08c5ad4f1d6483f881a64d0f",
-                "reference": "7bca30dabed7900a08c5ad4f1d6483f881a64d0f",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/f8d2f4af29053842c01b4cae6bd4c2c3191fc63c",
+                "reference": "f8d2f4af29053842c01b4cae6bd4c2c3191fc63c",
                 "shasum": ""
             },
             "require": {
@@ -27124,7 +27128,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v6.4.34"
+                "source": "https://github.com/symfony/yaml/tree/v6.4.38"
             },
             "funding": [
                 {
@@ -27144,7 +27148,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-02-06T18:32:11+00:00"
+            "time": "2026-05-05T06:55:40+00:00"
         },
         {
             "name": "thecodingmachine/safe",
@@ -28381,7 +28385,7 @@
         },
         {
             "name": "drupal/core-dev",
-            "version": "10.6.7",
+            "version": "10.6.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-dev.git",
@@ -28431,7 +28435,7 @@
             ],
             "description": "require-dev dependencies from drupal/drupal; use in addition to drupal/core-recommended to run tests from drupal/core.",
             "support": {
-                "source": "https://github.com/drupal/core-dev/tree/10.6.7"
+                "source": "https://github.com/drupal/core-dev/tree/10.6.8"
             },
             "time": "2026-02-04T09:04:26+00:00"
         },
