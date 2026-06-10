@@ -45,7 +45,7 @@
         "drupal/entity_clone": "^2.2-beta1",
         "drupal/entity_legal": "4.1-alpha1",
         "drupal/feeds": "^3.0",
-        "drupal/inline_entity_form": "3.0-rc21",
+        "drupal/inline_entity_form": "^3.0",
         "drupal/insert_view_adv": "^2.0@alpha",
         "drupal/login_destination": "2.0-beta10",
         "drupal/markup": "^2.0",

@@ -572,7 +572,10 @@ jQuery(document).ready(function($) {
         $(checkbox).addClass('fa-square');
       }
     });
-    $('input[type="submit"]').attr('disabled', $('.required-checkbox.fa-square:visible').length > 0);
+    const hasRequiredFieldGaps = $('.required-checkbox.fa-square:visible').length > 0;
+    const hasSelectedFieldMessages = $('#selected-field-messages:visible').text().trim() !== '';
+    const disableNextStep = hasRequiredFieldGaps || hasSelectedFieldMessages;
+    $('input[type="submit"], #next-step').attr('disabled', disableNextStep);
     // Also disable the standard/advanced selector.
     const onlyStandardFieldsSelected = $('option.advanced:selected').length === 0;
     if (onlyStandardFieldsSelected) {

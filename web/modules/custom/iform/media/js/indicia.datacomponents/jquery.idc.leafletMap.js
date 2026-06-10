@@ -55,6 +55,34 @@
       color: '#FF0000',
       fillColor: '#FF0000',
     },
+    userFilterLocationBoundaryStyle: {
+      color: '#0b5ea8',
+      weight: 2,
+      opacity: 0.9,
+      fillOpacity: 0,
+      dashArray: '6 4'
+    },
+    userFilterSearchAreaStyle: {
+      color: '#a83900',
+      weight: 2,
+      opacity: 0.9,
+      fillOpacity: 0,
+      dashArray: '3 6'
+    },
+    permissionFilterLocationBoundaryStyle: {
+      color: '#5a2ca0',
+      weight: 2,
+      opacity: 0.9,
+      fillOpacity: 0,
+      dashArray: '8 4'
+    },
+    permissionFilterSearchAreaStyle: {
+      color: '#7a3a00',
+      weight: 2,
+      opacity: 0.9,
+      fillOpacity: 0,
+      dashArray: '2 4'
+    },
     tools: [
       'baseLayers',
       'overlayLayers',
@@ -1248,7 +1276,7 @@
      * Clears the selected feature boundary (e.g. a selected location).
      */
     clearFeature: function clearFeature(featureName) {
-      featureName = typeof featureName === 'undefined' ? 'selection' : '';
+      featureName = typeof featureName === 'undefined' ? 'selection' : featureName;
       if (managedFeatures[featureName]) {
         managedFeatures[featureName].removeFrom(this.map);
         delete managedFeatures[featureName];
@@ -1274,7 +1302,7 @@
           fillOpacity: 0.05
         };
       }
-      featureName = typeof featureName === 'undefined' ? 'selection' : '';
+      featureName = typeof featureName === 'undefined' ? 'selection' : featureName;
       if (managedFeatures[featureName]) {
         managedFeatures[featureName].removeFrom(this.map);
         delete managedFeatures[featureName];

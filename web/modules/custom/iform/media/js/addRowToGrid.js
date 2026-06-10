@@ -66,6 +66,95 @@ var addMediaRowOnClick;
     }
   }
 
+  /**
+   * Expand FooTable detail rows if they contain invalid controls.
+   *
+   * When controls are hidden at responsive breakpoints, validation can fail
+   * on inputs the user cannot currently see.
+   */
+  function showFootableRowsWithValidationErrors(context) {
+    var selectors = [
+      ':input.error',
+      ':input.ui-state-error',
+      ':input[aria-invalid="true"]'
+    ];
+    var inlineErrorClass = indiciaData.inlineErrorClass || 'inline-error';
+    function showRowInlineErrors(row) {
+      var rowAndDetail = $(row).add($(row).next('.footable-row-detail'));
+      // Reveal all inline errors in this row and its detail row when responsive
+      // layout has hidden the fields that failed validation.
+      rowAndDetail.find('.' + inlineErrorClass).show();
+    }
+    var rows = [];
+    var selector = selectors.join(',');
+    $(context).find('table.species-grid').each(function () {
+      var table = this;
+      if (!$(table).hasClass('breakpoint')) {
+        return true;
+      }
+      $(table).find('tbody tr:not(.footable-row-detail)').has(selector).each(function () {
+        if ($(this).hasClass('scClonableRow')) {
+          return true;
+        }
+        rows.push(this);
+        return true;
+      });
+      return true;
+    });
+    $.each(rows, function () {
+      var row = this;
+      var table = $(row).closest('table.species-grid');
+      var footable = table.data('footable');
+      if ($(row).hasClass('footable-detail-show')) {
+        return true;
+      }
+      if (footable && typeof footable.toggleDetail === 'function') {
+        footable.toggleDetail(row);
+      } else {
+        // Fallback if no FooTable instance is attached.
+        $(row).addClass('footable-detail-show');
+        $(row).next('.footable-row-detail').show();
+      }
+      showRowInlineErrors(row);
+      return true;
+    });
+  }
+
+  /**
+   * Ensures footable rows with validation errors are visible.
+   */
+  function hookValidatorShowErrors(form) {
+    var validator = $.data(form, 'validator');
+    if (!validator || validator._showFootableValidationHooked) {
+      return;
+    }
+    var originalShowErrors = validator.showErrors;
+    validator.showErrors = function () {
+      var result = originalShowErrors.apply(this, arguments);
+      showFootableRowsWithValidationErrors(this.currentForm);
+      return result;
+    };
+    validator._showFootableValidationHooked = true;
+  }
+
+  /**
+   * Install a hook to show FooTable rows with validation errors.
+   */
+  function installValidateHook() {
+    if (!$.fn.validate || $.fn.validate._showFootableValidationHooked) {
+      return;
+    }
+    var originalValidate = $.fn.validate;
+    $.fn.validate = function () {
+      var result = originalValidate.apply(this, arguments);
+      this.each(function () {
+        hookValidatorShowErrors(this);
+      });
+      return result;
+    };
+    $.fn.validate._showFootableValidationHooked = true;
+  }
+
   $(document).ready(function () {
     // prevent validation of the clonable row
     $('.scClonableRow :input').addClass('inactive');
@@ -89,6 +178,11 @@ var addMediaRowOnClick;
         loadDynamicAttrs(gridId, taxaTaxonListIds, rows);
       });
     }
+
+    installValidateHook();
+    $('form').each(function () {
+      hookValidatorShowErrors(this);
+    });
   });
 
   /*

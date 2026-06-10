@@ -1068,7 +1068,7 @@ jQuery(document).ready(function ($) {
     indiciaData.mapdiv.removeAllFeatures(indiciaData.mapdiv.map.editLayer, 'queryPolygon', true);
     // If a selected site but switching to freehand, we need to clear the site boundary.
     if (siteOrGridRefSelected()) {
-      clearSites();
+      clearSites(false, true);
       $('#location_list\\:box').hide();
       indiciaData.mapdiv.map.updateSize();
     }
@@ -1128,14 +1128,19 @@ jQuery(document).ready(function ($) {
     });
   });
 
-  function clearSites(all) {
+  function clearSites(all, keepQueryPolygon) {
     var map = indiciaData.mapdiv.map;
     $('#location_list\\:sublist').children().remove();
     $('.ac_results').hide();
     $('input#location_list\\:search\\:name').val('');
+    if (typeof keepQueryPolygon === 'undefined') {
+      keepQueryPolygon = false;
+    }
     if (typeof all === 'undefined' || all === false) {
       indiciaData.mapdiv.removeAllFeatures(map.editLayer, 'boundary');
-      indiciaData.mapdiv.removeAllFeatures(map.editLayer, 'queryPolygon');
+      if (!keepQueryPolygon) {
+        indiciaData.mapdiv.removeAllFeatures(map.editLayer, 'queryPolygon');
+      }
     } else {
       map.editLayer.removeAllFeatures();
     }

@@ -82,6 +82,23 @@
   indiciaData.esUserFiltersLoaded = [];
 
   /**
+   * Keep track of user-filter overlay features plotted on each Leaflet map.
+   */
+  indiciaData.userFilterOverlayFeatureNames = {};
+
+  /**
+   * Cache overlay payloads keyed by user-filter IDs.
+   */
+  indiciaData.userFilterOverlayCache = {};
+
+  /**
+   * State of current user-filter map overlay request.
+   */
+  indiciaData.userFilterOverlayRequestId = 0;
+  indiciaData.userFilterOverlayStateKey = '';
+  indiciaData.permissionOverlayInitialViewportDone = false;
+
+  /**
    * Font Awesome icon and other classes for record statuses and flags.
    */
   indiciaData.statusClasses = {
@@ -347,16 +364,16 @@
         // panels.
         const clickHint = $('.verification-buttons-cntr').length > 0 ? ` title="${indiciaData.lang.classifier.clickToRedetermineAs}" ` : '';
         $.each(doc.identification.classifier.suggestions, function() {
-          if (this.human_chosen === 'true' || this.classifier_chosen === 'true') {
-            let choiceInfo = [];
-            if (this.human_chosen === 'true') {
-              choiceInfo.push(indiciaData.lang.classifier.suggestionHumanChosen);
-            }
-            if (this.classifier_chosen === 'true') {
-              choiceInfo.push(indiciaData.lang.classifier.suggestionClassifierChosen);
-            }
-            selection = choiceInfo.join(' | ');
-          } else {
+
+          let choiceInfo = [];
+          if (this.human_chosen === 'true') {
+            choiceInfo.push(indiciaData.lang.classifier.suggestionHumanChosen);
+          }
+          if (this.classifier_chosen === 'true') {
+            choiceInfo.push(indiciaData.lang.classifier.suggestionClassifierChosen);
+          } else if (this.human_chosen !== 'true') {
+            // Display classifier not chosen label but only if not human
+            // chosen.
             selection = indiciaData.lang.classifier.suggestionNotChosen;
           }
           if (this.probability_given > 0.7) {
@@ -411,6 +428,7 @@
     $.each(indiciaData.esSourceObjects, function eachSource() {
       this.hookup();
     });
+    indiciaFns.updateUserFilterMapOverlays(true);
   };
 
   /**
@@ -431,6 +449,284 @@
         this.settings.from = 0;
       }
       this.populate();
+    });
+  };
+
+  /**
+   * Get selected user and permissions filter selections for map overlays.
+   */
+  function getSelectedMapOverlayFilterIds() {
+    var filterSelections = [];
+    $.each($('.user-filter'), function eachFilter() {
+      var value = $(this).val();
+      var sourceType = $(this).hasClass('defines-permissions') ? 'permission' : 'user';
+      if (value) {
+        filterSelections.push(sourceType + '|' + value);
+      }
+    });
+    // Dedicated permissions filter controls can coexist with user-filter
+    // controls, so include them as independent boundary overlays.
+    $.each($('.permissions-filter'), function eachPermissionFilter() {
+      if ($(this).val()) {
+        filterSelections.push('permission|' + $(this).val());
+      }
+    });
+    if (getStandardParamsFilterOverlayData().hasOverlay) {
+      filterSelections.push('standard|active');
+    }
+    return Array.from(new Set(filterSelections)).sort();
+  }
+
+  /**
+   * Parse a comma-separated location list into unique numeric IDs.
+   */
+  function parseOverlayLocationIds(value) {
+    if (!value) {
+      return [];
+    }
+    return Array.from(new Set(
+      value.toString().split(',').map(function eachPart(id) {
+        return id.trim();
+      }).filter(function keepValid(id) {
+        return /^\d+$/.test(id);
+      })
+    ));
+  }
+
+  /**
+   * Convert a searchArea WKT from Web Mercator to WGS84 if possible.
+   */
+  function getSearchAreaWGS84(searchArea) {
+    var geom;
+    if (!searchArea || typeof OpenLayers === 'undefined') {
+      return searchArea;
+    }
+    try {
+      geom = OpenLayers.Geometry.fromWKT(searchArea);
+      return geom.transform('EPSG:3857', 'EPSG:4326').toString();
+    }
+    catch (e) {
+      return searchArea;
+    }
+  }
+
+  /**
+   * Collect standardParams filter overlay info from indiciaData.filter.def.
+   */
+  function getStandardParamsFilterOverlayData() {
+    var filterDef = (indiciaData.filter && indiciaData.filter.def) ? indiciaData.filter.def : {};
+    var locationIds = [];
+    var searchArea = '';
+    if (!filterDef) {
+      return {
+        hasOverlay: false,
+        searchArea: '',
+        locationIds: [],
+      };
+    }
+    searchArea = filterDef.searchArea ? getSearchAreaWGS84(filterDef.searchArea) : '';
+    locationIds = locationIds.concat(parseOverlayLocationIds(filterDef.location_list));
+    locationIds = locationIds.concat(parseOverlayLocationIds(filterDef.location_id));
+    locationIds = locationIds.concat(parseOverlayLocationIds(filterDef.indexed_location_list));
+    locationIds = locationIds.concat(parseOverlayLocationIds(filterDef.indexed_location_id));
+    locationIds = Array.from(new Set(locationIds)).sort();
+    return {
+      hasOverlay: !!searchArea || locationIds.length > 0,
+      searchArea: searchArea,
+      locationIds: locationIds,
+    };
+  }
+
+  /**
+   * Build list of Leaflet maps linked to Elasticsearch sources.
+   */
+  function getLinkedLeafletMapTargets() {
+    var targets = [];
+    var seen = {};
+    $.each(indiciaData.esSourceObjects, function eachSource(sourceId) {
+      if (this.outputs && this.outputs.idcLeafletMap) {
+        $.each(this.outputs.idcLeafletMap, function eachMap() {
+          var mapId = this.id;
+          var key = sourceId + '::' + mapId;
+          if (mapId && !seen[key]) {
+            seen[key] = true;
+            targets.push({
+              sourceId: sourceId,
+              mapId: mapId,
+              mapEl: this,
+            });
+          }
+        });
+      }
+    });
+    return targets;
+  }
+
+  /**
+   * Build a stable key for current user-filter overlay state.
+   */
+  function getUserFilterOverlayStateKey(filterIds, mapTargets, standardOverlay) {
+    var mapKeys = [];
+    $.each(mapTargets, function eachMap() {
+      mapKeys.push(this.sourceId + '::' + this.mapId);
+    });
+    mapKeys.sort();
+    return filterIds.join(',') + '|' + mapKeys.join(',') + '|' +
+      (standardOverlay.searchArea || '') + '|' + standardOverlay.locationIds.join(',');
+  }
+
+  /**
+   * Clear any user-filter overlay features tracked for a map.
+   */
+  function clearUserFilterOverlaysForMap(mapId) {
+    var mapEl = $('#' + mapId);
+    if (mapEl.length && indiciaData.userFilterOverlayFeatureNames[mapId]) {
+      $.each(indiciaData.userFilterOverlayFeatureNames[mapId], function eachFeature() {
+        mapEl.idcLeafletMap('clearFeature', this);
+      });
+    }
+    delete indiciaData.userFilterOverlayFeatureNames[mapId];
+  }
+
+  /**
+   * Clear all currently plotted user-filter overlays.
+   */
+  function clearAllUserFilterMapOverlays() {
+    $.each(Object.keys(indiciaData.userFilterOverlayFeatureNames), function eachMap() {
+      clearUserFilterOverlaysForMap(this);
+    });
+  }
+
+  /**
+   * Track a feature name so it can be removed when overlays are refreshed.
+   */
+  function registerUserFilterOverlayFeature(mapId, featureName) {
+    if (!indiciaData.userFilterOverlayFeatureNames[mapId]) {
+      indiciaData.userFilterOverlayFeatureNames[mapId] = [];
+    }
+    if ($.inArray(featureName, indiciaData.userFilterOverlayFeatureNames[mapId]) === -1) {
+      indiciaData.userFilterOverlayFeatureNames[mapId].push(featureName);
+    }
+  }
+
+  /**
+   * Draw user-filter search area and location boundaries on linked maps.
+   */
+  function drawUserFilterMapOverlays(overlays, mapTargets, zoomPermissionOnLoad) {
+    var seenFeatures = {};
+    var mapZoomed = {};
+    var zoomedToPermissionBoundary = false;
+    $.each(mapTargets, function eachTarget() {
+      var target = this;
+      var map = $('#' + target.mapId);
+      if (map.length === 0) {
+        return;
+      }
+      $.each(overlays, function eachOverlay() {
+        var overlay = this;
+        var searchAreaFeature;
+        var locationFeature;
+        var zoomFeature;
+        var mapSettings = target.mapEl.settings || {};
+        var locationStyle = mapSettings.userFilterLocationBoundaryStyle || {};
+        var searchAreaStyle = mapSettings.userFilterSearchAreaStyle || {};
+        if (overlay.search_area) {
+          searchAreaFeature = 'userFilterSearchArea-' + target.sourceId + '-' + overlay.source_type + '-' + overlay.selection_key;
+          if (!seenFeatures[target.mapId + '::' + searchAreaFeature]) {
+            seenFeatures[target.mapId + '::' + searchAreaFeature] = true;
+            if (overlay.source_type === 'permission') {
+              searchAreaStyle = mapSettings.permissionFilterSearchAreaStyle || searchAreaStyle;
+            }
+            zoomFeature = !!zoomPermissionOnLoad && overlay.source_type === 'permission' && !mapZoomed[target.mapId];
+            map.idcLeafletMap('showFeature', overlay.search_area, zoomFeature, searchAreaFeature, searchAreaStyle);
+            if (zoomFeature) {
+              mapZoomed[target.mapId] = true;
+              zoomedToPermissionBoundary = true;
+            }
+            registerUserFilterOverlayFeature(target.mapId, searchAreaFeature);
+          }
+        }
+        $.each(overlay.location_geoms || [], function eachGeom() {
+          if (this.geom) {
+            locationFeature = 'userFilterLocation-' + target.sourceId + '-' + overlay.source_type + '-' + overlay.selection_key + '-' + this.id;
+            if (!seenFeatures[target.mapId + '::' + locationFeature]) {
+              seenFeatures[target.mapId + '::' + locationFeature] = true;
+              if (overlay.source_type === 'permission') {
+                locationStyle = mapSettings.permissionFilterLocationBoundaryStyle || locationStyle;
+              }
+              zoomFeature = !!zoomPermissionOnLoad && overlay.source_type === 'permission' && !mapZoomed[target.mapId];
+              map.idcLeafletMap('showFeature', this.geom, zoomFeature, locationFeature, locationStyle);
+              if (zoomFeature) {
+                mapZoomed[target.mapId] = true;
+                zoomedToPermissionBoundary = true;
+              }
+              registerUserFilterOverlayFeature(target.mapId, locationFeature);
+            }
+          }
+        });
+      });
+    });
+    return zoomedToPermissionBoundary;
+  }
+
+  /**
+   * Refresh user-filter map overlays if selected filters or linked maps change.
+   */
+  indiciaFns.updateUserFilterMapOverlays = function updateUserFilterMapOverlays(force) {
+    var filterIds = getSelectedMapOverlayFilterIds();
+    var mapTargets = getLinkedLeafletMapTargets();
+    var standardOverlay = getStandardParamsFilterOverlayData();
+    var stateKey = getUserFilterOverlayStateKey(filterIds, mapTargets, standardOverlay);
+    var allowInitialPermissionZoom = force && !indiciaData.permissionOverlayInitialViewportDone &&
+      filterIds.some(function eachFilterId(filterId) {
+        return filterId.indexOf('permission|') === 0;
+      });
+    var requestId;
+    var cacheKey;
+    if (!force && indiciaData.userFilterOverlayStateKey === stateKey) {
+      return;
+    }
+    indiciaData.userFilterOverlayStateKey = stateKey;
+    clearAllUserFilterMapOverlays();
+    if (filterIds.length === 0 || mapTargets.length === 0 || !indiciaData.esProxyAjaxUrl) {
+      return;
+    }
+    cacheKey = filterIds.join(',') + '|' + (standardOverlay.searchArea || '') + '|' + standardOverlay.locationIds.join(',');
+    if (indiciaData.userFilterOverlayCache[cacheKey]) {
+      if (drawUserFilterMapOverlays(indiciaData.userFilterOverlayCache[cacheKey].overlays || [], mapTargets, allowInitialPermissionZoom)) {
+        indiciaData.permissionOverlayInitialViewportDone = true;
+      }
+      return;
+    }
+    requestId = ++indiciaData.userFilterOverlayRequestId;
+    var requestData = {
+      overlay_keys: filterIds,
+    };
+    if (standardOverlay.searchArea) {
+      requestData.standard_search_area = standardOverlay.searchArea;
+    }
+    if (standardOverlay.locationIds.length) {
+      requestData.standard_location_ids = standardOverlay.locationIds.join(',');
+    }
+    $.ajax({
+      url: indiciaData.esProxyAjaxUrl + '/getUserFilterMapOverlays/' + (indiciaData.nid ? indiciaData.nid : 0),
+      data: requestData,
+      dataType: 'json',
+    })
+    .done(function onLoadOverlays(response) {
+      if (requestId !== indiciaData.userFilterOverlayRequestId) {
+        return;
+      }
+      indiciaData.userFilterOverlayCache[cacheKey] = response;
+      if (drawUserFilterMapOverlays(response.overlays || [], mapTargets, allowInitialPermissionZoom)) {
+        indiciaData.permissionOverlayInitialViewportDone = true;
+      }
+    })
+    .fail(function onLoadOverlaysFailed() {
+      if (requestId !== indiciaData.userFilterOverlayRequestId) {
+        return;
+      }
+      clearAllUserFilterMapOverlays();
     });
   };
 
@@ -1813,10 +2109,8 @@
    * Search area needs to be in GPS Lat Long for ES, not Web Mercator.
    */
   function ensureFilterDefSearchAreaWGS84(data) {
-    var geom;
-    if (data.filter_def && data.filter_def.searchArea && OpenLayers) {
-      geom = OpenLayers.Geometry.fromWKT(data.filter_def.searchArea);
-      data.filter_def.searchArea = geom.transform('EPSG:3857', 'EPSG:4326').toString();
+    if (data.filter_def && data.filter_def.searchArea) {
+      data.filter_def.searchArea = getSearchAreaWGS84(data.filter_def.searchArea);
     }
   }
 
@@ -2120,12 +2414,7 @@
         delete data.aggs._idfield.terms.order;
       }
     }
-    if (data.filter_def && data.filter_def.searchArea && indiciaData.leafletSearchPolygon !== data.filter_def.searchArea) {
-      indiciaData.leafletSearchPolygon = data.filter_def.searchArea;
-      $.each($('.idc-leafletMap'), function eachMap() {
-        $(this).idcLeafletMap('showFeature', data.filter_def.searchArea, true);
-      });
-    }
+    indiciaFns.updateUserFilterMapOverlays();
     // Allow custom filter modifier hooks.
     $.each(indiciaFns.modifyEsFilterHooks, function() {
       this(data);
@@ -2252,10 +2541,14 @@ jQuery(document).ready(function docReady() {
    * Change event handlers on filter inputs.
    */
   $('.es-filter-param, .user-filter, .permissions-filter').on('change', function eachFilter() {
+    indiciaFns.updateUserFilterMapOverlays();
     // Force map to update viewport for new data.
     $.each($('.idc-leafletMap'), function eachMap() {
       this.settings.initialBoundsSet = false;
     });
     indiciaFns.populateDataSources(true);
   });
+
+  // Apply overlays for any preselected user filters once controls are ready.
+  indiciaFns.updateUserFilterMapOverlays(true);
 });
