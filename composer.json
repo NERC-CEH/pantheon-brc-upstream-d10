@@ -304,7 +304,8 @@
         "sainsburys/guzzle-oauth2-plugin": "^3.0",
         "firebase/php-jwt": "^6.11.1",
         "guzzlehttp/guzzle": "^7.0",
-        "drupal/klaro_js": "^3.1"
+        "drupal/klaro_js": "^3.1",
+        "drupal/user_registrationpassword": "^2.0"
     },
     "conflict": {
         "drupal/drupal": "*"

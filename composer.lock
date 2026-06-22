@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "27aa15cbf94de901b3dfad2191058515",
+    "content-hash": "d5ff2ba5340f970441889d336daae39f",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -2961,17 +2961,17 @@
         },
         {
             "name": "drupal/antibot",
-            "version": "2.0.4",
+            "version": "2.0.5",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/antibot.git",
-                "reference": "2.0.4"
+                "reference": "2.0.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/antibot-2.0.4.zip",
-                "reference": "2.0.4",
-                "shasum": "58b215291b250ea410194693cbac2da6f54a8530"
+                "url": "https://ftp.drupal.org/files/projects/antibot-2.0.5.zip",
+                "reference": "2.0.5",
+                "shasum": "d0110ac287ab10068b90d7128554747fceb088c9"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9 || ^10 || ^11"
@@ -2979,8 +2979,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.4",
-                    "datestamp": "1723819813",
+                    "version": "2.0.5",
+                    "datestamp": "1782077376",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -9259,27 +9259,27 @@
         },
         {
             "name": "drupal/flexistyle_bootstrap",
-            "version": "1.3.8",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/flexistyle_bootstrap.git",
-                "reference": "1.3.8"
+                "reference": "1.4.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/flexistyle_bootstrap-1.3.8.zip",
-                "reference": "1.3.8",
-                "shasum": "0e0cc1adc734a4d999c19fd665724dba7ad05b7b"
+                "url": "https://ftp.drupal.org/files/projects/flexistyle_bootstrap-1.4.0.zip",
+                "reference": "1.4.0",
+                "shasum": "62151dea484eaeaa2d9a69df84d2f01c7a14be64"
             },
             "require": {
                 "drupal/core": "^9 || ^10 || ^11",
-                "twbs/bootstrap": "^5.2.2"
+                "twbs/bootstrap": "^5.3.8"
             },
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "1.3.8",
-                    "datestamp": "1761992705",
+                    "version": "1.4.0",
+                    "datestamp": "1781871108",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -9296,7 +9296,7 @@
                     "homepage": "https://www.drupal.org/user/3497931"
                 }
             ],
-            "description": "FlexiStyle Bootstrap theme is a base theme for Drupal. This theme is fully compatible with Drupal 10.",
+            "description": "FlexiStyle Bootstrap theme is a base theme for Drupal. This theme is fully compatible with Drupal 10 and Drupal 11.",
             "homepage": "https://www.drupal.org/project/flexistyle_bootstrap",
             "support": {
                 "source": "https://git.drupalcode.org/project/flexistyle_bootstrap"
@@ -9304,17 +9304,17 @@
         },
         {
             "name": "drupal/flexistyle_bootstrap_scss",
-            "version": "1.0.9",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/flexistyle_bootstrap_scss.git",
-                "reference": "1.0.9"
+                "reference": "1.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/flexistyle_bootstrap_scss-1.0.9.zip",
-                "reference": "1.0.9",
-                "shasum": "db865d04eb0a32181c80e8bf4209fa532c559d38"
+                "url": "https://ftp.drupal.org/files/projects/flexistyle_bootstrap_scss-1.1.0.zip",
+                "reference": "1.1.0",
+                "shasum": "ec704bca796629ff39b16e24c17a2f648b99e1df"
             },
             "require": {
                 "drupal/core": "^9 || ^10 || ^11",
@@ -9323,8 +9323,8 @@
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "1.0.9",
-                    "datestamp": "1780924142",
+                    "version": "1.1.0",
+                    "datestamp": "1781871793",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -16433,17 +16433,17 @@
         },
         {
             "name": "drupal/svg_image",
-            "version": "3.2.2",
+            "version": "3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/svg_image.git",
-                "reference": "3.2.2"
+                "reference": "3.2.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/svg_image-3.2.2.zip",
-                "reference": "3.2.2",
-                "shasum": "ce7226257ce332d82dedc21269bc73d12c29d6b2"
+                "url": "https://ftp.drupal.org/files/projects/svg_image-3.2.3.zip",
+                "reference": "3.2.3",
+                "shasum": "d9fa02a1d78ad7905d8a1e4058acfab7256e2680"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11",
@@ -16452,8 +16452,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.2.2",
-                    "datestamp": "1756292430",
+                    "version": "3.2.3",
+                    "datestamp": "1781940321",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17555,6 +17555,69 @@
             "homepage": "https://www.drupal.org/project/user_csv_import",
             "support": {
                 "source": "https://git.drupalcode.org/project/user_csv_import"
+            }
+        },
+        {
+            "name": "drupal/user_registrationpassword",
+            "version": "2.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/user_registrationpassword.git",
+                "reference": "2.0.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/user_registrationpassword-2.0.4.zip",
+                "reference": "2.0.4",
+                "shasum": "01a0780ae17fa521ad4ff3de7a4456a0850940f9"
+            },
+            "require": {
+                "drupal/core": "^10.1 || ^11"
+            },
+            "require-dev": {
+                "drupal/hal": "^1.0 || ^2.0"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.0.4",
+                    "datestamp": "1780517495",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "intrafusion",
+                    "homepage": "https://www.drupal.org/user/424800"
+                },
+                {
+                    "name": "jide",
+                    "homepage": "https://www.drupal.org/user/146088"
+                },
+                {
+                    "name": "rob c",
+                    "homepage": "https://www.drupal.org/user/313382"
+                },
+                {
+                    "name": "vladimiraus",
+                    "homepage": "https://www.drupal.org/user/673120"
+                }
+            ],
+            "description": "Customize the destination that a user is redirected to after logging in or logged out.",
+            "homepage": "https://www.drupal.org/project/user_registrationpassword",
+            "keywords": [
+                "Drupal"
+            ],
+            "support": {
+                "source": "http://cgit.drupalcode.org/user_registrationpassword",
+                "issues": "http://drupal.org/project/issues/user_registrationpassword"
             }
         },
         {
@@ -18975,26 +19038,26 @@
         },
         {
             "name": "drupal/views_tree",
-            "version": "3.0.2",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_tree.git",
-                "reference": "3.0.2"
+                "reference": "3.0.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_tree-3.0.2.zip",
-                "reference": "3.0.2",
-                "shasum": "bafbb9541afb74264743253db463430377822089"
+                "url": "https://ftp.drupal.org/files/projects/views_tree-3.0.3.zip",
+                "reference": "3.0.3",
+                "shasum": "ec3d8d757131f8faec8f2db988baccda3cfa4dd0"
             },
             "require": {
-                "drupal/core": "^10.3 || ^11"
+                "drupal/core": "^10.3 || ^11 || ^12"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.0.2",
-                    "datestamp": "1767645604",
+                    "version": "3.0.3",
+                    "datestamp": "1782126558",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -20070,7 +20133,7 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.10.6",
+            "version": "7.10.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
@@ -20177,7 +20240,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.10.6"
+                "source": "https://github.com/guzzle/guzzle/tree/7.10"
             },
             "funding": [
                 {
@@ -20280,7 +20343,7 @@
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.10.4",
+            "version": "2.10.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
@@ -20377,7 +20440,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.10.4"
+                "source": "https://github.com/guzzle/psr7/tree/2.10"
             },
             "funding": [
                 {
@@ -23772,16 +23835,16 @@
         },
         {
             "name": "sabberworm/php-css-parser",
-            "version": "v9.3.0",
+            "version": "v9.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/MyIntervals/PHP-CSS-Parser.git",
-                "reference": "88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949"
+                "reference": "fd3bf9fb173e0df649bc4e3e0d088a1b2417c08f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/MyIntervals/PHP-CSS-Parser/zipball/88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949",
-                "reference": "88dbd0f7f91abbfe4402d0a3071e9ff4d81ed949",
+                "url": "https://api.github.com/repos/MyIntervals/PHP-CSS-Parser/zipball/fd3bf9fb173e0df649bc4e3e0d088a1b2417c08f",
+                "reference": "fd3bf9fb173e0df649bc4e3e0d088a1b2417c08f",
                 "shasum": ""
             },
             "require": {
@@ -23792,15 +23855,15 @@
             "require-dev": {
                 "php-parallel-lint/php-parallel-lint": "1.4.0",
                 "phpstan/extension-installer": "1.4.3",
-                "phpstan/phpstan": "1.12.32 || 2.1.32",
-                "phpstan/phpstan-phpunit": "1.4.2 || 2.0.8",
-                "phpstan/phpstan-strict-rules": "1.6.2 || 2.0.7",
+                "phpstan/phpstan": "1.12.33 || 2.2.2",
+                "phpstan/phpstan-phpunit": "1.4.2 || 2.0.16",
+                "phpstan/phpstan-strict-rules": "1.6.2 || 2.0.11",
                 "phpunit/phpunit": "8.5.52",
                 "rawr/phpunit-data-provider": "3.3.1",
-                "rector/rector": "1.2.10 || 2.2.8",
-                "rector/type-perfect": "1.0.0 || 2.1.0",
+                "rector/rector": "1.2.10 || 2.4.6",
+                "rector/type-perfect": "1.0.0 || 2.1.3",
                 "squizlabs/php_codesniffer": "4.0.1",
-                "thecodingmachine/phpstan-safe-rule": "1.2.0 || 1.4.1"
+                "thecodingmachine/phpstan-safe-rule": "1.2.0 || 1.4.3"
             },
             "suggest": {
                 "ext-mbstring": "for parsing UTF-8 CSS"
@@ -23808,7 +23871,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-main": "9.4.x-dev"
+                    "dev-main": "9.5.x-dev"
                 }
             },
             "autoload": {
@@ -23846,9 +23909,9 @@
             ],
             "support": {
                 "issues": "https://github.com/MyIntervals/PHP-CSS-Parser/issues",
-                "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.3.0"
+                "source": "https://github.com/MyIntervals/PHP-CSS-Parser/tree/v9.4.0"
             },
-            "time": "2026-03-03T17:31:43+00:00"
+            "time": "2026-06-18T15:10:53+00:00"
         },
         {
             "name": "sainsburys/guzzle-oauth2-plugin",
