@@ -1536,6 +1536,7 @@ var destroyAllFeatures;
             'OpenStreetMap',
             'https://tile.openstreetmap.org/${z}/${x}/${y}.png',
             {
+              tileOptions: { crossOriginKeyword: null },
               layerId: 'osm.0',
             },
           );
@@ -3920,6 +3921,17 @@ var destroyAllFeatures;
 
       // Constructs the map
       div.map = new OpenLayers.Map($(this)[0], olOptions);
+
+      // Block page scroll while pointer is over the map, but keep OL wheel zoom working.
+      function blockPageWheelScroll(e) {
+        if (e && e.preventDefault) {
+          e.preventDefault();
+        }
+      }
+      var viewport = div.map.viewPortDiv;
+      viewport.addEventListener('wheel', blockPageWheelScroll, { passive: false });
+      viewport.addEventListener('mousewheel', blockPageWheelScroll, { passive: false });
+      viewport.addEventListener('DOMMouseScroll', blockPageWheelScroll, { passive: false });
 
       // track plus and minus key presses, which influence selected grid square size
       $(document).on('keydown', function (evt) {
