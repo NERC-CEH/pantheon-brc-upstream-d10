@@ -27,10 +27,10 @@ var mediaDeleteAddedHooks = [];
  /**
  * Form submit handler that prevents the user clicking save during an upload
  */
-var checkSubmitInProgress = function () {
+var checkSubmitInProgress = function (e) {
   if ($('.file-box .progress').val() !== 0) {
     alert('Please wait till your images have finished uploading before submitting the form.');
-    indiciaData.formSubmitted = false;
+    indiciaData.resetFormSubmission(e.currentTarget);
     return false;
   }
   return true;

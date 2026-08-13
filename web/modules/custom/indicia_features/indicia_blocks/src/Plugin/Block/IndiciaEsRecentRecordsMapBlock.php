@@ -50,10 +50,8 @@ class IndiciaEsRecentRecordsMapBlock extends IndiciaEsMapBlockBase {
     iform_load_helpers(['ElasticsearchReportHelper']);
     $enabled = \ElasticsearchReportHelper::enableElasticsearchProxy();
     if (!$enabled) {
-      global $indicia_templates;
-      return [
-        '#markup' => str_replace('{message}', $this->t('Service unavailable.'), $indicia_templates['warningBox']),
-      ];
+      $this->showElasticsearchUnavailableMessage();
+      return [];
     }
     $config = $this->getConfiguration();
     // We aren't sure if this comes before or after a recent records block on

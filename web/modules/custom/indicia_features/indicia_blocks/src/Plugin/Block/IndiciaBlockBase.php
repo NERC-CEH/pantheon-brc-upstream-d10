@@ -7,6 +7,7 @@ use Drupal\Core\Block\BlockBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\user\UserInterface;
+use IForm\WarehouseRequestException;
 
 /**
  * Base class for providing Indicia blocks with permissions.
@@ -19,6 +20,20 @@ abstract class IndiciaBlockBase extends BlockBase {
    * @var int
    */
   protected static $blockCount = 0;
+
+  /**
+   * Tracks whether a warehouse downtime warning was already shown.
+   *
+   * @var bool
+   */
+  protected static $warehouseDowntimeWarningShown = FALSE;
+
+  /**
+   * Tracks whether a Elasticsearch downtime warning was already shown.
+   *
+   * @var bool
+   */
+  protected static $elasticsearchDowntimeWarningShown = FALSE;
 
   /**
    * {@inheritdoc}
@@ -228,6 +243,79 @@ abstract class IndiciaBlockBase extends BlockBase {
       'filter' => $filter,
       'must_not' => $mustNot,
     ];
+  }
+
+  /**
+   * Executes a warehouse call with fallback handling for HTTP 503.
+   *
+   * @param callable $callback
+   *   Callback that performs the warehouse request.
+   * @param mixed $fallback
+   *   Fallback value returned when a 503 is detected.
+   *
+   * @return mixed
+   *   Callback result or fallback value.
+   *
+   * @throws \Throwable
+   *   Re-throws non-503 exceptions.
+   */
+  protected function runWarehouseCall(callable $callback, $fallback = NULL) {
+    try {
+      return $callback();
+    }
+    catch (WarehouseRequestException $e) {
+      if (!$e->isUnavailable()) {
+        throw $e;
+      }
+      if (!self::$warehouseDowntimeWarningShown) {
+        self::$warehouseDowntimeWarningShown = TRUE;
+        $this->messenger()->addWarning($this->t('The recording warehouse is temporarily unavailable. Please try again shortly.'));
+      }
+      \Drupal::logger('indicia_blocks')->warning('Warehouse unavailable: @message', ['@message' => $e->getMessage()]);
+      return $fallback;
+    }
+  }
+
+  /**
+   * Wrapper for safe report helper read auth requests.
+   *
+   * @param array $connection
+   *   Connection details containing website_id and password.
+   *
+   * @return array|null
+   *   Read auth array, or NULL when warehouse unavailable.
+   */
+  protected function getReadAuthSafely(array $connection) {
+    return $this->runWarehouseCall(function () use ($connection) {
+      return \report_helper::get_read_auth($connection['website_id'], $connection['password']);
+    });
+  }
+
+  /**
+   * Wrapper for safe report data requests.
+   *
+   * @param array $params
+   *   Parameters passed to report_helper::get_report_data.
+   * @param mixed $fallback
+   *   Value returned when warehouse unavailable.
+   *
+   * @return mixed
+   *   Report data or fallback value.
+   */
+  protected function getReportDataSafely(array $params, $fallback = []) {
+    return $this->runWarehouseCall(function () use ($params) {
+      return \report_helper::get_report_data($params);
+    }, $fallback);
+  }
+
+  /**
+   * Shows a warning message about Elasticsearch being unavailable.
+   */
+  protected function showElasticsearchUnavailableMessage() {
+    if (!self::$elasticsearchDowntimeWarningShown) {
+      self::$elasticsearchDowntimeWarningShown = TRUE;
+      $this->messenger()->addWarning($this->t('The Elasticsearch reporting service is temporarily unavailable. Please try again shortly.'));
+    }
   }
 
 }

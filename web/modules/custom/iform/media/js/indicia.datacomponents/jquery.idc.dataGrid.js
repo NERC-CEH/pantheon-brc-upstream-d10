@@ -718,6 +718,20 @@
   }
 
   /**
+   * Schedule a column width calculation after the current layout pass.
+   */
+  function scheduleColumnResize(el) {
+    if (!el.settings.tbodyHasScrollBar || !el.settings.maxCharsPerCol || el.columnResizePending) {
+      return;
+    }
+    el.columnResizePending = true;
+    el.columnResizeFrame = window.requestAnimationFrame(function resizeColumns() {
+      el.columnResizePending = false;
+      setColWidths(el, el.settings.maxCharsPerCol);
+    });
+  }
+
+  /**
    * Column resizing needs to be done manually when tbody has scroll bar.
    *
    * Tbody can only have scroll bar if not it's normal CSS display setting, so
@@ -730,6 +744,13 @@
     var table = $(el).find('table.es-data-grid');
     var hiddenContainer;
     var hiddenContainerOrigStyle;
+    // Clear widths from the previous layout before measuring. In particular,
+    // Firefox can otherwise use widths set at a wider viewport as the table's
+    // intrinsic minimum width when its containing column shrinks.
+    $.each(el.settings.columns, function eachColumn(idx) {
+      $(el).find('.col-' + idx).css('width', '');
+    });
+    $(el).find('.footable-toggle-col, .col-actions, .scroll-spacer').css('width', '');
     if ($(el).is(':hidden')) {
       // If on a hidden tab, clientWidth is broken, so we need to temporarily
       // show the container with opacity 0 in order for calculations to work.
@@ -761,36 +782,24 @@
       // Some browsers have a fixed element overflow scrollbar which is always
       // visible.
       const fixedScrollbarWidth = tbody[0].offsetWidth - tbody[0].clientWidth;
-      // Some browser's scrollbars only appear when needed, so check for that.
-      const overlayScrollbarWidth = tbody[0].scrollHeight > tbody[0].clientHeight && fixedScrollbarWidth === 0 ? 17 : 0;
-      // Space header if a scroll bar visible.
+      // Space the header if a scrollbar consumes layout width. Overlay
+      // scrollbars do not reduce clientWidth, so must not alter the column
+      // width budget.
+      var scrollbarWidth = fixedScrollbarWidth;
+      $(el).find('.scroll-spacer').css('width', scrollbarWidth + 'px');
       if (tbody.find('tr').length > 0) {
-        if (fixedScrollbarWidth > 0) {
-          $(el).find('.scroll-spacer').css('width', fixedScrollbarWidth + 'px');
-          pixelsAvailable -= fixedScrollbarWidth;
-        } else {
-          $(el).find('.scroll-spacer').css('width', overlayScrollbarWidth + 'px');
-          pixelsAvailable -= overlayScrollbarWidth;
-        }
+        pixelsAvailable -= scrollbarWidth;
       }
+      var adjustedMaxCharsPerCol = {};
       $.each(el.settings.columns, function eachColumn(idx) {
         // Allow extra char per col for padding.
-        maxCharsPerCol['col-' + idx] += 1;
-        maxCharsPerRow += maxCharsPerCol['col-' + idx];
+        adjustedMaxCharsPerCol['col-' + idx] = maxCharsPerCol['col-' + idx] + 1;
+        maxCharsPerRow += adjustedMaxCharsPerCol['col-' + idx];
       });
       $.each(el.settings.columns, function eachColumn(idx) {
-        let widthPx = pixelsAvailable * (maxCharsPerCol['col-' + idx] / maxCharsPerRow);
+        let widthPx = pixelsAvailable * (adjustedMaxCharsPerCol['col-' + idx] / maxCharsPerRow);
         $(el).find('.col-' + idx).css('width', widthPx + 'px');
       });
-      // If an overlay scrollbar is present, need to expand last column to
-      // avoid it clipping the content.
-      if (overlayScrollbarWidth > 0) {
-        $(el).find('tbody tr').each(function() {
-          var lastTd = $(this).find('td:last-child');
-          const currentWidth = lastTd.width();
-          lastTd.css('width', (currentWidth + overlayScrollbarWidth) + 'px');
-        });
-      }
       // Widths are now explicit, so remove temporary anti-wrap mode used
       // during first-paint sizing to avoid a tall wrapped header.
       table.removeClass('sizing-columns');
@@ -798,9 +807,6 @@
       // before measuring heights for scrollbox and control layout.
       window.requestAnimationFrame(function() {
         setTableHeight(el);
-        if (typeof indiciaFns.updateControlLayout === 'function') {
-          indiciaFns.updateControlLayout();
-        }
       });
     }
   }
@@ -996,7 +1002,22 @@
         });
       }
       indiciaFns.updateControlLayout();
-      window.addEventListener('resize', function resize() { setTableHeight(el); });
+      if (window.ResizeObserver) {
+        el.columnResizeObserver = new window.ResizeObserver(function observeGridResize(entries) {
+          const observedWidth = entries[0].contentRect.width;
+          // Ignore height-only changes caused by setTableHeight, and tolerate
+          // sub-pixel rounding changes which can otherwise create a loop.
+          if (typeof el.lastObservedWidth === 'undefined' || Math.abs(observedWidth - el.lastObservedWidth) >= 1) {
+            el.lastObservedWidth = observedWidth;
+            scheduleColumnResize(el);
+          }
+        });
+        el.columnResizeObserver.observe(el);
+      }
+      window.addEventListener('resize', function resize() {
+        setTableHeight(el);
+        scheduleColumnResize(el);
+      });
     },
 
     /**
@@ -1082,8 +1103,9 @@
         $(el).find('table').trigger('footable_redraw');
       }
       indiciaFns.updatePagingFooter(el, response, data, 'tbody tr', afterKey);
+      el.settings.maxCharsPerCol = maxCharsPerCol;
       fireAfterPopulationCallbacks(el);
-      setColWidths(el, maxCharsPerCol);
+      scheduleColumnResize(el);
     },
 
     /**

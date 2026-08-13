@@ -137,8 +137,11 @@ class IndiciaRecorderInfoBlock extends IndiciaBlockBase {
     iform_load_helpers(['report_helper']);
     $r = [];
     $connection = iform_get_connection_details();
-    $readAuth = \report_helper::get_read_auth($connection['website_id'], $connection['password']);
-    $filters = \report_helper::get_report_data([
+    $readAuth = $this->getReadAuthSafely($connection);
+    if (!$readAuth) {
+      return $r;
+    }
+    $filters = $this->getReportDataSafely([
       'dataSource' => 'library/filters/filters_list_minimal',
       'readAuth' => $readAuth,
       'caching' => TRUE,
@@ -147,7 +150,7 @@ class IndiciaRecorderInfoBlock extends IndiciaBlockBase {
         'defines_permissions' => 't',
         'filter_user_id' => $userId,
       ],
-    ]);
+    ], []);
     foreach ($filters as $filter) {
       $r[] = $filter['title'];
     }

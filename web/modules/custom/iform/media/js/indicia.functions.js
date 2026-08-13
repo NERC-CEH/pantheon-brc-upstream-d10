@@ -73,6 +73,39 @@ window.indiciaFns = {};
   };
 
   /**
+   * Prevent accidental double submission of a form.
+   *
+   * @param DOM form
+   *   Form element.
+   */
+  indiciaFns.preventFormDoubleSubmit = function(form) {
+    // Prevent double submission of the form.
+    $(form).submit(function(e) {
+      if (typeof $(this).valid === 'function' && !$(this).valid()) {
+        return;
+      }
+      if (!this.indiciaSubmissionLocked) {
+        this.indiciaSubmissionLocked = true;
+      } else {
+        e.preventDefault();
+        return false;
+      }
+    });
+  }
+
+  /**
+   * Unblock a previously submitted form allowing re-submission.
+   *
+   * @param DOM form
+   *   Form element.
+   */
+  indiciaFns.resetFormSubmission = function(form) {
+    if (form) {
+      form.indiciaSubmissionLocked = false;
+    }
+  };
+
+  /**
    * Enable buttons hover Effect. Since jQuery 1.7 the 'live' function has been
    * deprecated and 'on' function should be used. Use this function to allow
    * non-version specific code.
@@ -665,19 +698,19 @@ window.indiciaFns = {};
     var date;
     var month;
     var day;
+    var year;
     if (typeof dateString === 'undefined' ||
         (typeof dateString === 'string' && dateString.trim() === '')) {
       return '';
     }
     date = new Date(dateString);
-    month = (1 + date.getMonth()).toString();
-    month = month.length > 1 ? month : '0' + month;
-    day = date.getDate().toString();
-    day = day.length > 1 ? day : '0' + day;
+    month = (1 + date.getUTCMonth()).toString().padStart(2, '0');
+    day = date.getUTCDate().toString().padStart(2, '0');
+    year = date.getUTCFullYear().toString().padStart(4, '0');
     return indiciaData.dateFormat
       .replace('d', day)
       .replace('m', month)
-      .replace('Y', date.getFullYear());
+      .replace('Y', year);
   };
 
   /**

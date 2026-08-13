@@ -120,8 +120,8 @@ function easy_login_allowed_taxon_groups() {
       $readAuth = data_entry_helper::get_read_auth($conn['website_id'], $conn['password']);
     }
     catch (Exception $e) {
-      \Drupal::logger('easy_login')->error('Error getting read auth tokens: @message', ['@message' => $e->getMessage()]);
-      return [t('Error loading groups - server unavailable')];
+      \Drupal::logger('easy_login')->error('Error getting read auth tokens in easy_login_allowed_taxon_groups: @message', ['@message' => $e->getMessage()]);
+      return [];
     }
     // Load the list of taxon groups. If we have a master list setting for the
     // site, use this to ensure we only pick up groups that are in use on the
@@ -151,7 +151,13 @@ function easy_login_allowed_locations() {
   if ($locationTypeId) {
     iform_load_helpers(['data_entry_helper']);
     $conn = iform_get_connection_details();
-    $readAuth = data_entry_helper::get_read_auth($conn['website_id'], $conn['password']);
+    try {
+      $readAuth = data_entry_helper::get_read_auth($conn['website_id'], $conn['password']);
+    }
+    catch (Exception $e) {
+      \Drupal::logger('easy_login')->error('Error getting read auth tokens in easy_login_allowed_locations: @message', ['@message' => $e->getMessage()]);
+      return [];
+    }
     $response = data_entry_helper::get_population_data(array(
       'table' => 'location',
       'extraParams' => $readAuth + [

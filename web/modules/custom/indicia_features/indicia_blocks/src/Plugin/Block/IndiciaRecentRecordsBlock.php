@@ -27,9 +27,12 @@ class IndiciaRecentRecordsBlock extends IndiciaBlockBase {
         '#markup' => '',
       ];
     }
-    $readAuth = \report_helper::get_read_auth($connection['website_id'], $connection['password']);
+    $readAuth = $this->getReadAuthSafely($connection);
+    if (!$readAuth) {
+      return [];
+    }
     $configuredParams = \helper_base::explode_lines_key_value_pairs($this->configuration['report_parameters']);
-    $rows = \report_helper::get_report_data([
+    $rows = $this->getReportDataSafely([
       'readAuth' => $readAuth,
       'dataSource' => 'library/occurrences/filterable_explore_list_with_geom',
       'extraParams' => [
@@ -39,7 +42,7 @@ class IndiciaRecentRecordsBlock extends IndiciaBlockBase {
       ] + $configuredParams,
       'caching' => TRUE,
       'cacheTimeout' => 60,
-    ]);
+    ], []);
     $r = <<<HTML
 <p>The following list of records includes verified records and those awaiting verification of species groups you are
 interested in which have been recently added in your area.</p>

@@ -86,10 +86,8 @@ class IndiciaEsRecordsByVerificationStatusPieBlock extends IndiciaBlockBase {
     iform_load_helpers(['ElasticsearchReportHelper']);
     $enabled = \ElasticsearchReportHelper::enableElasticsearchProxy();
     if (!$enabled) {
-      global $indicia_templates;
-      return [
-        '#markup' => str_replace('{message}', $this->t('Service unavailable.'), $indicia_templates['warningBox']),
-      ];
+      $this->showElasticsearchUnavailableMessage();
+      return [];
     }
     $this->addStatusLabelsToJs();
     // Get config with defaults.

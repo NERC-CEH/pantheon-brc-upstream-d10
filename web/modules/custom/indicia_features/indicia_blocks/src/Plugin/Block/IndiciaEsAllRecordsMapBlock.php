@@ -80,10 +80,8 @@ class IndiciaEsAllRecordsMapBlock extends IndiciaEsMapBlockBase {
     iform_load_helpers(['ElasticsearchReportHelper']);
     $enabled = \ElasticsearchReportHelper::enableElasticsearchProxy();
     if (!$enabled) {
-      global $indicia_templates;
-      return [
-        '#markup' => str_replace('{message}', $this->t('Service unavailable.'), $indicia_templates['warningBox']),
-      ];
+      $this->showElasticsearchUnavailableMessage();
+      return [];
     }
     // Get config with defaults.
     $config = array_merge([

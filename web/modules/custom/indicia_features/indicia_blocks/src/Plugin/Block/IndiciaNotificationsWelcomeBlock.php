@@ -70,7 +70,19 @@ class IndiciaNotificationsWelcomeBlock extends IndiciaBlockBase {
       $this->messenger()->addWarning('Indicia configuration incomplete.');
     }
     elseif ($userId) {
-      $readAuth = \report_helper::get_read_auth($connection['website_id'], $connection['password']);
+      $readAuth = $this->getReadAuthSafely($connection);
+      if (!$readAuth) {
+        return [
+          '#markup' => Markup::create($r),
+          '#attached' => [
+            'library' => [
+              'indicia_blocks/es-blocks',
+            ],
+          ],
+          // Rely on Indicia caching, otherwise our JS not injected onto page.
+          '#cache' => ['max-age' => 0],
+        ];
+      }
       $name = $this->getUserDisplayName();
       $notificationsCount = $this->getNotificationsCount($userId, $readAuth, $connection['website_id']);
       $message = $this->getWelcomeMessage($name, $notificationsCount);
@@ -132,12 +144,12 @@ HTML;
       $params['taxon_group_id'] = $config['taxon_group_id'];
       $simple = FALSE;
     }
-    $data = \report_helper::get_report_data([
+    $data = $this->getReportDataSafely([
       'dataSource' => 'library/notifications/notifications_list_for_notifications_centre' . ($simple ? '_simple' : ''),
       'readAuth' => $readAuth,
       'extraParams' => $params,
-    ]);
-    return $data['count'];
+    ], ['count' => 0]);
+    return $data['count'] ?? 0;
   }
 
   /**

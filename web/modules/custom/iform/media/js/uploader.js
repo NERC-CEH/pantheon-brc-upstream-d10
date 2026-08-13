@@ -137,7 +137,27 @@ jQuery(document).ready(function($) {
       })
       .fail(function(response) {
         const message = response.responseJSON && response.responseJSON.msg ? response.responseJSON.msg : 'Server error - import failed.';
-        alert(message);
+        const settingsForm = $('#settings-form');
+        settingsForm.find('#next-step').hide();
+        settingsForm.find('[name="next-import-step"]').val('fileSelectForm');
+        settingsForm.attr('aria-disabled', 'true');
+        settingsForm.find(':input').not('.choose-different-file, :hidden').attr('disabled', true);
+        if (settingsForm.find('.choose-different-file').length === 0) {
+          $('<button type="button" class="btn btn-default choose-different-file" />')
+            .text(indiciaData.lang.import_helper_2.chooseDifferentFile)
+            .on('click', function() {
+              settingsForm[0].submit();
+            })
+            .insertAfter(settingsForm.find('#next-step'));
+          $('<div class="alert alert-danger import-config-error" role="alert" />')
+            .text(indiciaData.lang.import_helper_2.configInitialisationFailed)
+            .prependTo(settingsForm);
+        }
+        $.fancyDialog({
+          title: indiciaData.lang.import_helper_2.uploadError,
+          message: message,
+          cancelButton: null
+        });
       });
     }
 
