@@ -204,21 +204,12 @@
 
   /**
    * Display the redetermination form for a specific set of records.
-   *
-   * @param object el
-   *   Verification buttons control element.
-   * @param array occurrenceIds
-   *   Array of occurrence IDs to redetermine.
-   * @param bool forceSelection
-   *   Whether to force the selection of records, disallowing whole grid
-   *   redets.
    */
-  function showRedetFormForOccurrenceIds(el, occurrenceIds, forceSelection) {
+  function showRedetFormForOccurrenceIds(el, occurrenceIds) {
     if (el.settings.verificationTemplates) {
       loadVerificationTemplates('DT', '#redet-template');
     }
     $('#redet-form').data('ids', JSON.stringify(occurrenceIds));
-    $('#redet-form').data('force-selection', forceSelection === true);
     $.fancybox.open({
       src: $('#redet-form'),
       type: 'html',
@@ -386,7 +377,7 @@
       redetFormValidator.showErrors({ 'redet-species:taxon': 'Please type a few characters then choose a name from the list of suggestions' });
     } else if (redetFormValidator.numberOfInvalids() === 0) {
       $.fancybox.close();
-      if (multiselectWholeTableMode() && !$('#redet-form').data('force-selection')) {
+      if (multiselectWholeTableMode()) {
         doRedeterminationWholeTable($('#redet-species').val(), $('#redet-form').find('.comment-textarea').val());
       } else {
         const ids = JSON.parse($('#redet-form').data('ids'));
@@ -741,7 +732,7 @@
 
     indiciaFns.on('click', '.classifier-suggestion', [], (e) => {
       $('#redet-form .multiple-warning').hide();
-      showRedetFormForOccurrenceIds(el, [$(e.currentTarget).data('occurrence_id')], true);
+      showRedetFormForOccurrenceIds(el, [$(e.currentTarget).data('occurrence_id')]);
       $.ajax({
         url: indiciaData.warehouseUrl + 'index.php/services/data/taxa_search',
         data: {
