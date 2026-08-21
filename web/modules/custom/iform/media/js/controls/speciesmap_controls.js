@@ -221,7 +221,6 @@ var control_speciesmap_addcontrols;
       $(el).uploader({
         addBtnCaption: indiciaData.uploadSettings.addBtnCaptionSubsamples,
         autopick: true,
-        autoupload: '1',
         caption: indiciaData.uploadSettings.captionSubsamples,
         container: el,
         destinationFolder: indiciaData.uploadSettings.destinationFolder,

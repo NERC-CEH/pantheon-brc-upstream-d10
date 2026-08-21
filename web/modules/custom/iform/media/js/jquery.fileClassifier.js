@@ -35,8 +35,8 @@ obtained several times, then that can either
  - add several ocuurences, one for each classification result or,
  - append all the classification results to one occurrence.
 
-If the classifer is embedded in a species_checklist and on the empty,
-cloable-row then it will lead to the addition of a new row. If it is on an
+If the classifier is embedded in a species_checklist and on the empty,
+clonable row then it will lead to the addition of a new row. If it is on an
 existing, added-row, then the results will be added to that same row, possibly
 updating the taxon. Currently having more than one result per occurrence is
 disabled by removing the classify button after a single use. That is a blunt
@@ -98,9 +98,11 @@ indiciaData.queuedClassificationResponses = [];
    * The document.ready function.
    */
   $(function(){
-    // Add a click handler for the classify button in all classifier controls.
-    //indiciaFns.on('click', '.classify-btn', classify);
+    // Add a handler for completed uploads in classifier controls.
     mediaUploadAddedHooks.push(function(div) {
+      if (div.settings.fileClassifier !== true || $(div).find('.progress').length > 0) {
+        return;
+      }
       classify(div);
     });
 
@@ -112,7 +114,7 @@ indiciaData.queuedClassificationResponses = [];
       addMediaRowOnClick(evt);
       // Locate the new classifier which has been added in a row following the
       // one with the button.
-      let $div = $(evt.target).closest('tr').next().find('div')
+      let $div = $(evt.target).closest('tr').next().find('div');
       // Configure the classifier.
       $div.classifier();
     });
@@ -145,18 +147,10 @@ indiciaData.queuedClassificationResponses = [];
         return;
       }
 
-      // Add a class to identifiy this as a classifier.
+      // Add a class to identify this as a classifier.
       $(this).addClass('file-classifier');
-
-      // Add a classify button.
-      // Obtain index of upload button which we will also give to the classify
-      // button so it is unique on page.
-      let $upload = $(this).find('button');
-      let id = $upload.attr('id');
-      // The id is like upload-select-btn-<index>
-      let index = id.split('-')[3];
     });
-  }
+  };
 
 
   /**
@@ -164,65 +158,87 @@ indiciaData.queuedClassificationResponses = [];
    * a classifier and handles the responses.
    * @param {object} div - The triggering event object.
    */
-  function classify(div){
+  function classify(div) {
     // Obtain the classifier object containing the button.
     let $classifier = $(div);
 
     // Get the list of files to be classified.
-    files = getFilesInFilebox($classifier);
+    let files = getFilesInFilebox($classifier);
 
     if (files.length === 0) {
       // Nothing to do as no files.
       return;
     }
 
-    // Put up a jQueryUI dialog saying we are going to clasify the file.
+    // Put up a jQueryUI dialog saying we are going to classify the file.
     showDialog(div, 'dialogStart', false);
 
     // Set up handler for tracking progress with posts.
     let nrPosts;
     let nrSuccess = 0;
     let nrFail = 0;
+    let createPostCompletion = function() {
+      let completed = false;
+      return function() {
+        if (completed) {
+          return;
+        }
+        completed = true;
+        nrPosts--;
+        if (nrPosts === 0) {
+          // Put up a jQueryUI dialog saying we are done.
+          // We could add something about number of successes and failures.
+          showDialog(div, 'dialogEnd');
+        }
+      };
+    };
     let donePost = function(response) {
       if (response === false) {
-        nrPosts--;
         nrFail++;
       }
       else if (response.suggestions.length <= 1) {
-        // If more than one suggestion, don't treat as handled as will be
-        // waiting for user input.
-        nrPosts--;
         nrSuccess++;
+      } else {
+        // The post remains outstanding until the user chooses or cancels.
+        return false;
       }
-
-      if (nrPosts === 0) {
-        // Put up a jQueryUI dialog saying we are done.
-        // We could add something about number of successes and failures.
-        showDialog(div, 'dialogEnd');
-      }
+      return true;
     };
     let failedPost = function(error) {
       console.log(error);
-      showDialog(div, 'classifierRequestFailed')
-      nrPosts--;
+      showDialog(div, 'classifierRequestFailed');
       nrFail++;
-    }
+    };
 
     // Post the files to the classifier.
     if (div.settings.mode.includes('single')) {
       // All the files are classified to give one result.
       nrPosts = 1;
-      doPost(div, files)
-      .then(donePost, failedPost)
-      .catch(donePost);
+      let completePost = createPostCompletion();
+      doPost(div, files, completePost)
+      .then((response) => {
+        if (donePost(response)) {
+          completePost();
+        }
+      }, (error) => {
+        failedPost(error);
+        completePost();
+      });
     }
     else {
       // Each file is classified to give a separate result.
       nrPosts = files.length;
       files.forEach((file) => {
-        doPost(div, [file])
-        .then(donePost, failedPost)
-        .catch(donePost);
+        let completePost = createPostCompletion();
+        doPost(div, [file], completePost)
+        .then((response) => {
+          if (donePost(response)) {
+            completePost();
+          }
+        }, (error) => {
+          failedPost(error);
+          completePost();
+        });
        });
     }
   };
@@ -235,7 +251,7 @@ indiciaData.queuedClassificationResponses = [];
    * @param {array} files - Array of file objects to be classified.
    * @returns {promise}
    */
-  function doPost(div, files) {
+  function doPost(div, files, completePost) {
     return new Promise((resolve, reject) => {
       // At present the classifier module can only handle one image at a time.
       $.post(div.settings.url, {
@@ -243,16 +259,16 @@ indiciaData.queuedClassificationResponses = [];
         'list': div.settings.taxonListId
       })
       .done(function(response){
-        handleResponse(div, files, response);
+        handleResponse(div, files, response, undefined, completePost);
         resolve(response);
       })
       .fail(function(jqXHR) {
         console.log(jqXHR.responseText);
-        handleResponse(div, files, null)
+        handleResponse(div, files, null);
         reject('Error posting to classifier');
       });
 
-    })
+    });
   }
 
   /**
@@ -266,7 +282,7 @@ indiciaData.queuedClassificationResponses = [];
     let last = indiciaData.queuedClassificationResponses.length;
     for (let i = 0; i < last; i++) {
       const thisResponse = indiciaData.queuedClassificationResponses.shift();
-      handleResponse(thisResponse[0], thisResponse[1], thisResponse[2])
+      handleResponse(thisResponse[0], thisResponse[1], thisResponse[2], undefined, thisResponse[3], true);
     }
   }
 
@@ -277,14 +293,14 @@ indiciaData.queuedClassificationResponses = [];
    *   Contains all the details of the control.
    * @param {array} files
    *   Array of file objects that were classified.
-   * @param {object} response.
+  * @param {object} response
    *   Response from the classifier
    */
-  function askUserToChooseSuggestion(div, files, response) {
+  function askUserToChooseSuggestion(div, files, response, completePost, deferred) {
     // Multiple suggestions made so need user input.
     let images = [];
     files.forEach((f) => {
-      images.push(`<img src="/${div.settings.interimImagePath}${f.path}" />`);
+      images.push($('<img>').attr('src', '/' + div.settings.interimImagePath + f.path)[0].outerHTML);
     });
     const imageListHtml = images.join('');
     let possibilityOptions = [];
@@ -294,24 +310,27 @@ indiciaData.queuedClassificationResponses = [];
         // suggestion as it cannot be used.
         return;
       }
-      let optionText = `<em>${suggestion.taxon}</em>`;
+      let optionText = $('<em>').text(suggestion.taxon).prop('outerHTML');
       if (suggestion.default_common_name) {
-        optionText += '<br/>' + suggestion.default_common_name;
+        optionText += '<br/>' + $('<div>').text(suggestion.default_common_name).html();
       }
-      optionText += '<br/><strong>' + suggestion.taxon_group + '</strong>';
-      suggestionJson = JSON.stringify(suggestion).replace(/"/g, '&quot;');
+      optionText += '<br/>' + $('<strong>').text(suggestion.taxon_group).prop('outerHTML');
+      let suggestionJson = $('<div>').text(JSON.stringify(suggestion)).html();
       let probabilityPercent = Math.round(suggestion.probability * 100);
       let probabilityClass = getProbabilityClass(suggestion.probability);
       let probabilityTitle = indiciaData.lang.fileClassifier.percentProbability.replace('{1}', probabilityPercent);
       possibilityOptions.push(`
         <li class="classifier-suggestion" data-suggestion="${suggestionJson}">
-          <span class="probability ${probabilityClass}-probability" title="${probabilityTitle}"></span>
+          <span class="probability ${probabilityClass}-probability" title="${$('<div>').text(probabilityTitle).html()}"></span>
           <div>${optionText}</div>
         </li>`);
     });
     if (possibilityOptions.length === 0) {
       // No valid suggestions, so treat as unknown.
-      handleResponse(div, files, null);
+      handleResponse(div, files, null, undefined, completePost, deferred);
+      if (!deferred) {
+        completePost();
+      }
       return;
     }
     const possibilityListHtml = possibilityOptions.join('');
@@ -333,6 +352,7 @@ indiciaData.queuedClassificationResponses = [];
       okButton: null,
       callbackCancel: function() {
         processQueue();
+        completePost();
       }
     });
     $('.classifier-suggestion').on('click', function(e) {
@@ -341,6 +361,7 @@ indiciaData.queuedClassificationResponses = [];
       // Also now can handle any classification responses that came in
       // after the one the user had to choose for.
       processQueue();
+      completePost();
     });
   }
 
@@ -353,16 +374,18 @@ indiciaData.queuedClassificationResponses = [];
    *   Array of file objects that were classified.
    * @param {object} response
    *   Response from the classifier.
-   * @param {object} forceSuggestion
+  * @param {object} forceSuggestion
    *   Optional suggestion object, only set if the user has chosen from a list
    *   of several suggestions.
+  * @param {function} completePost
+  *   Callback to invoke once a classification requiring user input is handled.
    */
-  function handleResponse(div, files, response, forceSuggestion) {
+  function handleResponse(div, files, response, forceSuggestion, completePost, deferred = false) {
     let unknown = div.settings.unknownTaxon;
     let $container;
     if ($('.suggestion-list').length > 0 && typeof forceSuggestion === 'undefined') {
       // Dialog for handling multiple suggestions visible, so we'll queue this one.
-      indiciaData.queuedClassificationResponses.push([div, files, response]);
+      indiciaData.queuedClassificationResponses.push([div, files, response, completePost]);
       return;
     }
     $.fancybox.close();
@@ -370,15 +393,19 @@ indiciaData.queuedClassificationResponses = [];
       // Classifier encountered an error.
       // Add a row with unknown species
       $container = addSpecies(div, files, unknown);
+      if (deferred) {
+        completePost();
+      }
     }
     else {
       let suggestions = forceSuggestion ? [forceSuggestion] : response.suggestions;
+      let prediction = Object.assign({}, unknown);
       if (suggestions.length > 1) {
-        askUserToChooseSuggestion(div, files, response);
+        askUserToChooseSuggestion(div, files, response, completePost, deferred);
       } else {
         if (suggestions.length === 1) {
           // A single suggestion was made so can select it immediately.
-          let prediction = Object.assign({}, suggestions[0]);
+          prediction = Object.assign({}, suggestions[0]);
           // Copy the suggestion to prediction so we can modify it without
           // changing response.
           if(typeof prediction.taxa_taxon_list_id === 'undefined'){
@@ -427,8 +454,9 @@ indiciaData.queuedClassificationResponses = [];
             'taxon_name_given': suggestion.taxon ?? '',
             'taxa_taxon_list_id': suggestion.taxa_taxon_list_id,
             'probability_given': suggestion.probability,
-            'classifier_chosen': i == 0 ? 't' : 'f',
-            'human_chosen': (typeof forceSuggestion === 'undefined' ? i == 0 : forceSuggestion.taxa_taxon_list_id === suggestion.taxa_taxon_list_id)
+            'classifier_chosen': i === 0 ? 't' : 'f',
+            'human_chosen': (typeof forceSuggestion === 'undefined' ? i === 0 :
+              String(forceSuggestion.taxa_taxon_list_id) === String(suggestion.taxa_taxon_list_id))
               ? 't' : 'f'
           });
         }
@@ -447,7 +475,7 @@ indiciaData.queuedClassificationResponses = [];
           'suggestions': suggestionsToSave
         });
 
-        // Save classifer response to html input for posting to our website.
+        // Save classifier response to HTML input for posting to our website.
         // Inputs should be named like
         //   sc:<species_checklist id>-<rowIdx>::classification_result:<index>
         // We need a classification result index as an occurrence can have
@@ -469,8 +497,11 @@ indiciaData.queuedClassificationResponses = [];
           .text(result);
         // Allow forms to hook into the event of a new occurrence being added.
         $.each(hook_image_classifier_new_occurrence, function (idx, fn) {
-          fn(prediction, $container);
+          fn($container, prediction);
         });
+        if (deferred) {
+          completePost();
+        }
       }
     }
   }
@@ -552,24 +583,24 @@ indiciaData.queuedClassificationResponses = [];
     if (div.settings.mode.includes('checklist:append')) {
       // Search for an existing occurrence of the same species if we can
       // append to a linked checklist
-      if (prediction.taxa_taxon_list_id !==
-          div.settings.unknownTaxon.taxa_taxon_list_id) {
+        if (String(prediction.taxa_taxon_list_id) !==
+          String(div.settings.unknownTaxon.taxa_taxon_list_id)) {
         // This is not a record of unknown. (Unknown is never appended.)
         $grid.find('.added-row').each(function() {
           let ttlId = $(this).find('input.scTaxaTaxonListId').val();
-          if (ttlId === prediction.taxa_taxon_list_id) {
+          if (String(ttlId) === String(prediction.taxa_taxon_list_id)) {
             // Found a match.
             $speciesRow = $(this);
             // Stop the loop.
             return false;
           }
-        })
+        });
       }
     }
     else if (div.settings.mode.includes('embedded')) {
       // Search for an associated occurrence which we may amend.
       let containerId = $.escapeSelector(div.settings.container);
-      let $imageRow = $('#' + containerId).closest('tr')
+      let $imageRow = $('#' + containerId).closest('tr');
       if ($imageRow.prev().hasClass('added-row')) {
         $speciesRow = $imageRow.prev();
       }
@@ -595,8 +626,8 @@ indiciaData.queuedClassificationResponses = [];
       // Not yet implemented.
     }
 
-    // If we are linked to a checklist, move the files to the speciesRow.
-    moveImagesIntoRecord(div, $speciesRow, files, prediction.probability)
+    // If we are linked to a checklist, move the files to the species row.
+    moveImagesIntoRecord(div, $speciesRow, files, prediction.probability);
 
     // Prevent the insertion of another image row.
     $speciesRow.find('.add-media-link').hide();
@@ -644,14 +675,17 @@ indiciaData.queuedClassificationResponses = [];
     else {
       // Single record form.
       // Assume there is a normal file upload control on the form.
-      $dest = $('#container-occurrence_medium-default div.filelist');
+      let mediaControlId = div.settings.mediaControlId || 'container-occurrence_medium-default';
+      let $mediaControl = $('#' + $.escapeSelector(mediaControlId));
+      if ($mediaControl.length === 0 && div.settings.mediaControlId) {
+        $mediaControl = $('#container-occurrence_medium-' + $.escapeSelector(mediaControlId));
+      }
+      $dest = $mediaControl.find('div.filelist');
       nameRoot = '';
     }
-
-    let $classifer = $('#container-' + div.settings.id);
     files.forEach((file) => {
       // Locate the file in the classifier.
-      let $src = $classifer.find('#' + file.mediafileId);
+      let $src = $(div).find('#' + file.mediafileId);
       // Rename the file inputs to match the species_checklist convention.
       $src.find('input').each(function() {
         let $this = $(this);
@@ -666,7 +700,7 @@ indiciaData.queuedClassificationResponses = [];
 
       // Move the file to the image row.
       $dest.append($src);
-     })
+    });
 
    // Remove the 'Drop files here...' text.
     $dest.find('span.drop-instruct').remove();
@@ -677,7 +711,7 @@ indiciaData.queuedClassificationResponses = [];
    *
    * Should match the behaviour of the iRecord app.
    *
-   * @param float probability
+   * @param {number} probability
    *   Probability to convert.
    *
    * @returns
@@ -740,7 +774,7 @@ indiciaData.queuedClassificationResponses = [];
 
       if (idParts[0] === 'sc') {
         // Ids we look for in a species checklist are like
-        // sc:<gridId>-<rowIdx>:<occurrenceId?>:occurrence_medium:<property>:<fiileIdx>
+        // sc:<gridId>-<rowIdx>:<occurrenceId?>:occurrence_medium:<property>:<fileIdx>
         table = idParts[3];
         property = idParts[4];
       }
@@ -765,7 +799,7 @@ indiciaData.queuedClassificationResponses = [];
    * This functions is triggered when
    * - species are added manually
    * - species are added by the classifier
-   * - species are edited namually.
+   * - species are edited manually.
    * In the latter case, we need to alter the human_chosen property of
    * suggestions in all the classification results for the row.
    * @param {object} data - The output from the species autocomplete 'result'
@@ -809,8 +843,7 @@ indiciaData.queuedClassificationResponses = [];
 
     if ($filebox.length > 0) {
       // Find the file being deleted.
-      let div = $filebox[0];
-      file = getFileInContainer(div, $container);
+      let file = getFileInContainer($container);
 
       $filebox.find('.classification-result').each(function() {
         // Iterate over classification results.

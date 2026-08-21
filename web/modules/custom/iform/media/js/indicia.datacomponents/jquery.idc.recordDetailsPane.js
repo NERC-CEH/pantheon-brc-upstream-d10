@@ -173,16 +173,20 @@
    * Loads and appends comments to the tab.
    */
   function loadComments(el) {
+    var requestedOccurrenceId = occurrenceId;
     // Check not already loaded.
-    if (loadedCommentsOcurrenceId === occurrenceId) {
+    if (loadedCommentsOcurrenceId === requestedOccurrenceId) {
       return;
     }
-    loadedCommentsOcurrenceId = occurrenceId;
     // Load the comments
     $.ajax({
       url: indiciaData.esProxyAjaxUrl + '/comments/' + indiciaData.nid,
-      data: { occurrence_id: occurrenceId },
+      data: { occurrence_id: requestedOccurrenceId },
       success: function success(response) {
+        if (occurrenceId !== requestedOccurrenceId) {
+          return;
+        }
+        loadedCommentsOcurrenceId = requestedOccurrenceId;
         $(el).find('.comments').html('');
         if (response.length === 0) {
           $('<div class="alert alert-info">There are no comments for this record.</div>')
@@ -234,15 +238,21 @@
   }
 
   function loadAttributes(el) {
+    var requestedOccurrenceId = occurrenceId;
+    var requestedSensitiveOrPrivate = sensitiveOrPrivate;
+    var requestedExtraFieldValues = extraFieldValues;
     // Check not already loaded.
-    if (loadedAttrsOcurrenceId === occurrenceId) {
+    if (loadedAttrsOcurrenceId === requestedOccurrenceId) {
       return;
     }
-    loadedAttrsOcurrenceId = occurrenceId;
     $.ajax({
       url: indiciaData.esProxyAjaxUrl + '/attrs/' + indiciaData.nid,
-      data: { occurrence_id: occurrenceId },
+      data: { occurrence_id: requestedOccurrenceId },
       success: function success(response) {
+        if (occurrenceId !== requestedOccurrenceId) {
+          return;
+        }
+        loadedAttrsOcurrenceId = requestedOccurrenceId;
         var attrsDiv = $(el).find('.record-details .attrs');
         // Make sure standard headings are present.
         var combined = $.extend({ 'Additional occurrence attributes': [] }, response);
@@ -251,7 +261,7 @@
         // False indicates record loaded but email not yet found.
         indiciaData.thisRecordEmail = false;
         $(attrsDiv).html('');
-        if (sensitiveOrPrivate) {
+        if (requestedSensitiveOrPrivate) {
           $.each($('.idc-leafletMap'), function eachMap() {
             $(this).idcLeafletMap('showFeature', publicGeom, false);
           });
@@ -272,8 +282,8 @@
           table = $('<table>').appendTo(attrsDiv);
           tbody = $('<tbody>').appendTo($(table));
           if (title === 'Additional occurrence attributes') {
-            $('<tr><th>Submitted on</th><td>' + extraFieldValues.created_on + '</td></tr>').appendTo(tbody);
-            $('<tr><th>Last updated on</th><td>' + extraFieldValues.updated_on + '</td></tr>').appendTo(tbody);
+            $('<tr><th>Submitted on</th><td>' + requestedExtraFieldValues.created_on + '</td></tr>').appendTo(tbody);
+            $('<tr><th>Last updated on</th><td>' + requestedExtraFieldValues.updated_on + '</td></tr>').appendTo(tbody);
           }
           $.each(attrs, function eachAttr() {
             var val = this.value.match(/^http(s)?:\/\//)
@@ -287,11 +297,11 @@
             }
           });
           if (title === 'Additional occurrence attributes') {
-            if (extraFieldValues.licence) {
-              $('<tr><th>Licence</th><td>' + extraFieldValues.licence + '</td></tr>').appendTo(tbody);
+            if (requestedExtraFieldValues.licence) {
+              $('<tr><th>Licence</th><td>' + requestedExtraFieldValues.licence + '</td></tr>').appendTo(tbody);
             }
-            if (extraFieldValues.external_key) {
-              $('<tr><th>ID in source system</th><td>' + extraFieldValues.external_key + '</td></tr>').appendTo(tbody);
+            if (requestedExtraFieldValues.external_key) {
+              $('<tr><th>ID in source system</th><td>' + requestedExtraFieldValues.external_key + '</td></tr>').appendTo(tbody);
             }
           }
         });

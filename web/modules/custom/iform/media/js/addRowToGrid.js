@@ -794,7 +794,6 @@ var addMediaRowOnClick;
     $($(evt.target).parent().parent()).after(imageRow);
     var opts = {
       caption: (mediaTypes.length === 1 && mediaTypes[0] === 'Image:Local') ? 'Photos' : 'Files',
-      autoupload: '1',
       msgUploadError: 'An error occurred uploading the file.',
       msgFileTooBig: 'The image file cannot be uploaded because it is larger than the maximum file size allowed.',
       runtimes: 'html5,flash,silverlight,html4',

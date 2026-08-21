@@ -294,8 +294,11 @@ var IdcEsDataSource;
     /**
      * AJAX success handler for the population call.
      */
-    function handlePopulationResponse(request, response, onlyForControl) {
+    function handlePopulationResponse(request, response, onlyForControl, requestId) {
       var source = this;
+      if (source.populationRequestId !== requestId) {
+        return;
+      }
       if (response.error || (response.code && response.code !== 200)) {
         hideAllSpinners.call(this);
         let message = 'Elasticsearch query failed';
@@ -376,6 +379,8 @@ var IdcEsDataSource;
       // Don't repopulate if exactly the same request as already loaded.
       if (request && (JSON.stringify(request) !== this.lastRequestStr || force)) {
         this.lastRequestStr = JSON.stringify(request);
+        source.populationRequestId = (source.populationRequestId || 0) + 1;
+        const requestId = source.populationRequestId;
         url = indiciaData.esProxyAjaxUrl + '/searchbyparams/' + (indiciaData.nid || '0');
         // Pass through additional parameters to the request.
         if (source.settings.filterPath) {
@@ -393,9 +398,12 @@ var IdcEsDataSource;
           type: 'post',
           data: request,
           success: function onSuccess(response) {
-            handlePopulationResponse.call(source, request, response, onlyForControl);
+            handlePopulationResponse.call(source, request, response, onlyForControl, requestId);
           },
           error: function error(jqXHR) {
+            if (source.populationRequestId !== requestId) {
+              return;
+            }
             hideAllSpinners.call(source);
             if (jqXHR.readyState === 4) {
               // Don't bother if not done - i.e. error because user navigated away.
