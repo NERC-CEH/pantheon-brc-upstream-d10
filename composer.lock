@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e02259d5e2e5a9080ed71e18f1fdd10d",
+    "content-hash": "917f9358ae72c4b425e6c8dc453b786e",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -6319,7 +6319,7 @@
         },
         {
             "name": "drupal/core-project-message",
-            "version": "10.6.15",
+            "version": "10.6.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/drupal/core-project-message.git",

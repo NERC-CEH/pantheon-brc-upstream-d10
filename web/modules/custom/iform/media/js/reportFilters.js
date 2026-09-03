@@ -25,6 +25,8 @@ var refreshFilters;
 jQuery(document).ready(function ($) {
   'use strict';
   var saving = false;
+  var originalFiltersUserId;
+  var originalFilterUserId;
   var loadingSites = false;
   var filterOverride = {};
 
@@ -1546,6 +1548,8 @@ jQuery(document).ready(function ($) {
 
   loadFilterUser = function (fu, getParams) {
     filterOverride = getParams;
+    originalFiltersUserId = fu.id;
+    originalFilterUserId = fu.user_id;
     $('#filter\\:description').val(fu.filter_description);
     $('#filter\\:sharing').val(fu.filter_sharing);
     $('#sharing-type-label').html(codeToSharingTerm(fu.filter_sharing));
@@ -1939,6 +1943,9 @@ jQuery(document).ready(function ($) {
     var adminMode = $('#filters_user\\:user_id').length === 1;
     var userId = adminMode ? $('#filters_user\\:user_id').val() : indiciaData.user_id;
     var sharing = adminMode ? $('#filter\\:sharing').val() : indiciaData.filterSharing;
+    var reassigningFilter = adminMode && indiciaData.filter.id &&
+      originalFiltersUserId && originalFilterUserId &&
+      String(userId) !== String(originalFilterUserId);
     var url;
     const filterDef = $.extend(indiciaData.filter.def, getCustomFilterInputValues());
     var filter = {
@@ -1953,8 +1960,14 @@ jQuery(document).ready(function ($) {
     // If existing filter and the title has not changed, or in admin mode, overwrite.
     if (indiciaData.filter.id && ($('#filter\\:title').val() === indiciaData.filter.title || adminMode)) {
       filter['filter:id'] = indiciaData.filter.id;
-      // Note, as overwriting, the filters_users record already exists.
-      url = indiciaData.filterPostUrl;
+      if (reassigningFilter) {
+        filter['filters_user:id'] = originalFiltersUserId;
+        filter['filters_user:user_id'] = userId;
+        url = indiciaData.filterAndUserPostUrl;
+      } else {
+        // Note, as overwriting, the filters_users record already exists.
+        url = indiciaData.filterPostUrl;
+      }
     } else {
       // New filter, so need to link to the user.
       filter['filters_user:user_id'] = userId;
