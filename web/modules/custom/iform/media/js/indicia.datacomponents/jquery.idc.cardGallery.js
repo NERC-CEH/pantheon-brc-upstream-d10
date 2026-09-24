@@ -775,7 +775,7 @@
       }
       $.each($('.idc-control'), function() {
         var controlClass = $(this).data('idc-class');
-        if (typeof this.callbacks.itemUpdate !== 'undefined') {
+        if (this.callbacks && this.callbacks.itemUpdate) {
           $(this)[controlClass]('on', 'itemUpdate', (item) => {
             $(item).removeClass('selected');
             while (item.length > 0 && $(item).hasClass('disabled')) {
