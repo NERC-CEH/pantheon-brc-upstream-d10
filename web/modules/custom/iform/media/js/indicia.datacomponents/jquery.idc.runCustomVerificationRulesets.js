@@ -189,6 +189,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

@@ -15,12 +15,20 @@
     border-radius: 4px;
     color: gray;
   }
-  /* Anchor image delete button to right */
-  .delete-file {
-    float: right;
-    color: $colour-dark-text;
-    &:hover {
-      color: $colour-dark-text-active;
+  .media-file-header {
+    background-color: $colour-header-bg;
+    color: $colour-header-text;
+    border: 1px solid $colour-header-border;
+    padding: 0.5em;
+    border-radius: 4px 4px 0 0;
+    /* Anchor image delete button to right */
+    .delete-file {
+      float: right;
+      cursor: pointer;
+      &:hover {
+        color: $colour-header-text-active;
+      }
     }
   }
+
 }

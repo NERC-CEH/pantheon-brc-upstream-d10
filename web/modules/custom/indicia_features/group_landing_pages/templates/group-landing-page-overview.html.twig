@@ -152,7 +152,7 @@
             {{ drupal_view('group_blog_entries', 'block_1', group_id) }}
             <p><a href="{{ url('<current>') }}/blog">View more...</a></p>
           {% else %}
-            <p>There are no posts yet for {{ group_title }}.<p>
+            <p>There are no posts yet for {{ group_title }}.</p>
           {% endif %}
           {% if can_post_blog %}
             <a class="btn btn-primary use-ajax" href="{{ path('group_landing_pages.modal_blog_form',  {'group_id': group_id}) }}">Add a new post</a>

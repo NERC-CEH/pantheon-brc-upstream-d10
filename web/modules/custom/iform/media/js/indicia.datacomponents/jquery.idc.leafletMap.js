@@ -94,49 +94,6 @@
   };
 
   /**
-   * Registered callbacks for different events.
-   */
-  var callbacks = {
-    move: [],
-    moveStart: [],
-    moveEnd: [],
-    zoomEnd: [],
-    itemSelect: [],
-    populateDataLayerEnd: [],
-    // Layer style changes, e.g. hook this to update a legend or scale.
-    dataLayerStyleChange: []
-  };
-
-  /**
-   * Variable to hold the marker used to highlight the currently selected row
-   * in a linked idcDataGrid.
-   */
-  var selectedRowMarker = null;
-
-  /**
-   * Variable to hold polygons by type (e.g. selection, buffer) that have been loaded onto the map.
-   */
-  var managedFeatures = {};
-
-  /**
-   * Track the currently selected grid square, when this is being used as a
-   * temporary filter on other data sources.
-   */
-  var selectedGridSquare = null;
-
-  /**
-   * If filtering applied due to selected feature, remember which sources need
-   * to be cleared when map clicked.
-   */
-  var sourcesToReloadOnMapClick = [];
-
-  /**
-   * Track if a feature has just been pre-clicked, so the map event click
-   * doesn't clear the associated filter.
-   */
-  var justClickedOnFeature = false;
-
-  /**
    * Finds the list of layer IDs that use a given source id for population.
    */
   function getLayerIdsForSource(el, sourceId) {
@@ -481,16 +438,16 @@
   function rowSelected(el, tr, zoom) {
     var doc;
     var obj;
-    if (selectedRowMarker) {
-      selectedRowMarker.removeFrom(el.map);
+    if (el.mapState.selectedRowMarker) {
+      el.mapState.selectedRowMarker.removeFrom(el.map);
     }
-    selectedRowMarker = null;
+    el.mapState.selectedRowMarker = null;
     if (tr) {
       doc = JSON.parse($(tr).attr('data-doc-source'));
       if (doc.location) {
         obj = showFeatureWkt(el, doc.location.geom, parseInt(doc.location.coordinate_uncertainty_in_meters, 10), zoom, 11);
         ensureFeatureClear(el, obj);
-        selectedRowMarker = obj;
+        el.mapState.selectedRowMarker = obj;
         if (doc.location.input_sref !== doc.location.output_sref || doc.location.input_sref_system !== doc.location.output_sref_system) {
           // @todo Also show the output sref if different.
           // Can use warehouse sref request?
@@ -541,7 +498,7 @@
       });
     }
     getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
-      $.each(callbacks.populateDataLayerEnd, function eachCallback() {
+      $.each(el.callbacks.populateDataLayerEnd, function eachCallback() {
         this(el, 'aggregation', response, maxCount, maxMetric, layer);
       });
     });
@@ -589,7 +546,7 @@
         }
       });
       getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
-        $.each(callbacks.populateDataLayerEnd, function eachCallback() {
+        $.each(el.callbacks.populateDataLayerEnd, function eachCallback() {
           this(el, 'aggregation', response, maxCount, maxMetric, layer);
         });
       });
@@ -871,12 +828,12 @@
    * Removes any previously selected grid square's selection style.
    */
   function deselectGridSquare(el) {
-    if (selectedGridSquare) {
-      selectedGridSquare.setStyle({
-        color: el.settings.layerConfig[selectedGridSquare.options.layerId].style.color,
-        fillColor: el.settings.layerConfig[selectedGridSquare.options.layerId].style.fillColor
+    if (el.mapState.selectedGridSquare) {
+      el.mapState.selectedGridSquare.setStyle({
+        color: el.settings.layerConfig[el.mapState.selectedGridSquare.options.layerId].style.color,
+        fillColor: el.settings.layerConfig[el.mapState.selectedGridSquare.options.layerId].style.fillColor
       });
-      selectedGridSquare = null;
+      el.mapState.selectedGridSquare = null;
     }
   }
 
@@ -919,7 +876,34 @@
 
       indiciaFns.registerOutputPluginClass('idcLeafletMap');
       el.settings = $.extend({}, defaults);
-      el.callbacks = callbacks;
+      // Keep callbacks and transient map interaction state with this map.
+      el.callbacks = {
+        move: [],
+        moveStart: [],
+        moveEnd: [],
+        zoomEnd: [],
+        itemSelect: [],
+        populateDataLayerEnd: [],
+        dataLayerStyleChange: []
+      };
+      /**
+       * State for features and temporary filters owned by this map instance.
+       *
+       * selectedRowMarker highlights the selected row in a linked output
+       * control. managedFeatures stores named features added through the
+       * public showFeature method. selectedGridSquare tracks a temporary grid
+       * square filter, while sourcesToReloadOnMapClick records the sources to
+       * restore when that filter is cleared. justClickedOnFeature prevents the
+       * map click handler from clearing a feature filter immediately after it
+       * is applied.
+       */
+      el.mapState = {
+        selectedRowMarker: null,
+        managedFeatures: {},
+        selectedGridSquare: null,
+        sourcesToReloadOnMapClick: [],
+        justClickedOnFeature: false
+      };
       // Apply settings passed in the HTML data-* attribute.
       if (typeof $(el).attr('data-idc-config') !== 'undefined') {
         $.extend(el.settings, JSON.parse($(el).attr('data-idc-config')));
@@ -965,17 +949,17 @@
         .on('click', function() {
           // Clear filters on any sources that resulted from the click on a
           // feature, unless it only just happened.
-          if (!justClickedOnFeature) {
+          if (!el.mapState.justClickedOnFeature) {
             $.each(el.callbacks.itemSelect, function eachCallback() {
               this(null);
             });
-            sourcesToReloadOnMapClick.forEach(function eachSrc(src) {
+            el.mapState.sourcesToReloadOnMapClick.forEach(function eachSrc(src) {
               src.populate(false);
             });
-            sourcesToReloadOnMapClick = [];
+            el.mapState.sourcesToReloadOnMapClick = [];
             deselectGridSquare(el);
           }
-          justClickedOnFeature = false;
+          el.mapState.justClickedOnFeature = false;
         });
       baseMaps = getBaseMaps(el);
       if (baseMaps.length === 0) {
@@ -1018,11 +1002,11 @@
                 if (e.layer.options.filterField && e.layer.options.filterValue) {
                   e.layer.setStyle(el.settings.selectedFeatureStyle);
                   deselectGridSquare(el);
-                  selectedGridSquare = e.layer;
+                  el.mapState.selectedGridSquare = e.layer;
                   // Since we are applying a new set of filters, we can clear the
                   // list of sources that needed to be reloaded next time the map
                   // was clicked.
-                  sourcesToReloadOnMapClick = [];
+                  el.mapState.sourcesToReloadOnMapClick = [];
                   const selectedRowOutputSelector = typeof el.settings.showSelectedRow === 'string' ? '#' + el.settings.showSelectedRow : '#' + el.settings.showSelectedRow.join(',#');
                   $.each($(selectedRowOutputSelector), function() {
                     var source = this.settings.sourceObject;
@@ -1071,9 +1055,9 @@
                     source.settings.filterToRestore = origFilter;
                     source.populate(true, this);
                     // Map click will later clear this filter.
-                    sourcesToReloadOnMapClick.push(source);
+                    el.mapState.sourcesToReloadOnMapClick.push(source);
                     // Tell the map click not to clear this filter just yet.
-                    justClickedOnFeature = true;
+                    el.mapState.justClickedOnFeature = true;
                   });
                 }
               });
@@ -1097,29 +1081,29 @@
       });
       addTools(el, baseMaps, overlays);
       el.map.on('zoomend', function zoomEnd() {
-        $.each(callbacks.zoomEnd, function eachCallback() {
+        $.each(el.callbacks.zoomEnd, function eachCallback() {
           this(el);
         });
-        if (selectedRowMarker !== null) {
+        if (el.mapState.selectedRowMarker !== null) {
           // Timeout needed as Leaflet objects not placed correctly until after
           // zoom complete.
           setTimeout(function() {
-            ensureFeatureClear(el, selectedRowMarker);
+            ensureFeatureClear(el, el.mapState.selectedRowMarker);
           }, 100);
         }
       });
       el.map.on('move', function move() {
-        $.each(callbacks.move, function eachCallback() {
+        $.each(el.callbacks.move, function eachCallback() {
           this(el);
         });
       });
       el.map.on('movestart', function moveStart() {
-        $.each(callbacks.moveStart, function eachCallback() {
+        $.each(el.callbacks.moveStart, function eachCallback() {
           this(el);
         });
       });
       el.map.on('moveend', function moveEnd() {
-        $.each(callbacks.moveEnd, function eachCallback() {
+        $.each(el.callbacks.moveEnd, function eachCallback() {
           this(el);
         });
         if (el.settings.cookies) {
@@ -1211,7 +1195,7 @@
           addFeature(el, sourceSettings.id, latlon, this._source.location.geom, this._source.location.coordinate_uncertainty_in_meters, fillOpacity, hide, '_id', this._id, label);
         });
         getLayerIdsForSource(el, sourceSettings.id).forEach(function(layer) {
-          $.each(callbacks.populateDataLayerEnd, function eachCallback() {
+          $.each(el.callbacks.populateDataLayerEnd, function eachCallback() {
             this(el, 'aggregation', response, maxCount, null, layer);
           });
         });
@@ -1241,6 +1225,9 @@
      */
     bindControls: function bindControls() {
       var el = this;
+      if (!indiciaFns.bindControl(el)) {
+        return;
+      }
       var settings = $(el)[0].settings;
       var controlClass;
       if (typeof settings.showSelectedRow !== 'undefined') {
@@ -1277,9 +1264,9 @@
      */
     clearFeature: function clearFeature(featureName) {
       featureName = typeof featureName === 'undefined' ? 'selection' : featureName;
-      if (managedFeatures[featureName]) {
-        managedFeatures[featureName].removeFrom(this.map);
-        delete managedFeatures[featureName];
+      if (this.mapState.managedFeatures[featureName]) {
+        this.mapState.managedFeatures[featureName].removeFrom(this.map);
+        delete this.mapState.managedFeatures[featureName];
       }
     },
 
@@ -1303,11 +1290,11 @@
         };
       }
       featureName = typeof featureName === 'undefined' ? 'selection' : featureName;
-      if (managedFeatures[featureName]) {
-        managedFeatures[featureName].removeFrom(this.map);
-        delete managedFeatures[featureName];
+      if (this.mapState.managedFeatures[featureName]) {
+        this.mapState.managedFeatures[featureName].removeFrom(this.map);
+        delete this.mapState.managedFeatures[featureName];
       }
-      managedFeatures[featureName] = showFeatureWkt(this, geom, 0, zoom, 14, style);
+      this.mapState.managedFeatures[featureName] = showFeatureWkt(this, geom, 0, zoom, 14, style);
     },
 
     /**
@@ -1321,10 +1308,10 @@
      * Hook up event handlers.
      */
     on: function on(event, handler) {
-      if (typeof callbacks[event] === 'undefined') {
+      if (typeof this.callbacks[event] === 'undefined') {
         indiciaFns.controlFail(this, 'Invalid event handler requested for ' + event);
       }
-      callbacks[event].push(handler);
+      this.callbacks[event].push(handler);
     },
 
     /**
@@ -1385,6 +1372,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

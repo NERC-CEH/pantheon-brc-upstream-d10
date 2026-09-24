@@ -32,7 +32,7 @@ The classifier can be
 
 When linked to a species_checklist, if the same classification result is
 obtained several times, then that can either
- - add several ocuurences, one for each classification result or,
+ - add several occurrences, one for each classification result or,
  - append all the classification results to one occurrence.
 
 If the classifier is embedded in a species_checklist and on the empty,
@@ -304,6 +304,7 @@ indiciaData.queuedClassificationResponses = [];
     });
     const imageListHtml = images.join('');
     let possibilityOptions = [];
+    let validSuggestions = [];
     response.suggestions.forEach((suggestion) => {
       if (typeof suggestion.taxa_taxon_list_id === 'undefined') {
         // Failed to match taxon to list on warehouse side, so skip this
@@ -315,19 +316,19 @@ indiciaData.queuedClassificationResponses = [];
         optionText += '<br/>' + $('<div>').text(suggestion.default_common_name).html();
       }
       optionText += '<br/>' + $('<strong>').text(suggestion.taxon_group).prop('outerHTML');
-      let suggestionJson = $('<div>').text(JSON.stringify(suggestion)).html();
       let probabilityPercent = Math.round(suggestion.probability * 100);
       let probabilityClass = getProbabilityClass(suggestion.probability);
       let probabilityTitle = indiciaData.lang.fileClassifier.percentProbability.replace('{1}', probabilityPercent);
+      const suggestionIndex = validSuggestions.push(suggestion) - 1;
       possibilityOptions.push(`
-        <li class="classifier-suggestion" data-suggestion="${suggestionJson}">
+        <li class="classifier-suggestion user-selectable-suggestion" data-suggestion-index="${suggestionIndex}">
           <span class="probability ${probabilityClass}-probability" title="${$('<div>').text(probabilityTitle).html()}"></span>
           <div>${optionText}</div>
         </li>`);
     });
     if (possibilityOptions.length === 0) {
-      // No valid suggestions, so treat as unknown.
-      handleResponse(div, files, null, undefined, completePost, deferred);
+      // No valid suggestions, so add Unknown but retain the classifier response.
+      handleResponse(div, files, response, div.settings.unknownTaxon, completePost, deferred);
       if (!deferred) {
         completePost();
       }
@@ -347,7 +348,7 @@ indiciaData.queuedClassificationResponses = [];
       </div>
     `;
     $.fancyDialog({
-      title: 'Multiple possibilities found',
+      title: indiciaData.lang.fileClassifier.multipleSuggestionsTitle,
       message: message,
       okButton: null,
       callbackCancel: function() {
@@ -355,8 +356,9 @@ indiciaData.queuedClassificationResponses = [];
         completePost();
       }
     });
-    $('.classifier-suggestion').on('click', function(e) {
-      const suggestion = $(e.currentTarget).data('suggestion');
+    $('.user-selectable-suggestion').on('click', function(e) {
+      const suggestionIndex = Number($(e.currentTarget).attr('data-suggestion-index'));
+      const suggestion = validSuggestions[suggestionIndex];
       handleResponse(div, files, response, suggestion);
       // Also now can handle any classification responses that came in
       // after the one the user had to choose for.
@@ -780,7 +782,7 @@ indiciaData.queuedClassificationResponses = [];
       }
       else {
         // Ids we look for in a standalone control are like
-        // occurrence_medium:<property>:<fiileIdx>
+        // occurrence_medium:<property>:<fileIdx>
         table = idParts[0];
         property = idParts[1];
       }
@@ -814,7 +816,7 @@ indiciaData.queuedClassificationResponses = [];
         let result = JSON.parse($(this).text());
         result.suggestions.forEach((suggestion) => {
           // Iterate over suggestions.
-          if (suggestion.taxa_taxon_list_id === data.taxa_taxon_list_id) {
+          if (String(suggestion.taxa_taxon_list_id) === String(data.taxa_taxon_list_id)) {
             // The human choice matches this suggestion.
             suggestion.human_chosen = 't';
           }

@@ -28,21 +28,6 @@
   var $ = jQuery;
 
   /**
-   * Currently selected row ID.
-   */
-  var occurrenceId;
-
-  /**
-   * Selected row sensitive or private.
-   */
-  var sensitiveOrPrivate;
-
-  /**
-   * Additional useful field values.
-   */
-  var extraFieldValues;
-
-  /**
    * Place to store public methods.
    */
   var methods;
@@ -54,20 +39,6 @@
     controlLayoutDone: false,
     includeImageClassifierInfo: false
   };
-
-  var callbacks = {
-    tabShow: []
-  };
-
-  /**
-   * The element that the row source is obtained from.
-   */
-  var rowSourceControl;
-
-  // Info for tracking loaded tabs.
-  var loadedCommentsOcurrenceId = 0;
-  var loadedAttrsOcurrenceId = 0;
-  var loadedExperienceOcurrenceId = 0;
 
   function getExperienceCells(buckets, userId, el, filter, yr) {
     var total = buckets.C + buckets.V + buckets.R;
@@ -173,9 +144,9 @@
    * Loads and appends comments to the tab.
    */
   function loadComments(el) {
-    var requestedOccurrenceId = occurrenceId;
+    var requestedOccurrenceId = el.detailsState.occurrenceId;
     // Check not already loaded.
-    if (loadedCommentsOcurrenceId === requestedOccurrenceId) {
+    if (el.detailsState.loadedCommentsOccurrenceId === requestedOccurrenceId) {
       return;
     }
     // Load the comments
@@ -183,10 +154,10 @@
       url: indiciaData.esProxyAjaxUrl + '/comments/' + indiciaData.nid,
       data: { occurrence_id: requestedOccurrenceId },
       success: function success(response) {
-        if (occurrenceId !== requestedOccurrenceId) {
+        if (el.detailsState.occurrenceId !== requestedOccurrenceId) {
           return;
         }
-        loadedCommentsOcurrenceId = requestedOccurrenceId;
+        el.detailsState.loadedCommentsOccurrenceId = requestedOccurrenceId;
         $(el).find('.comments').html('');
         if (response.length === 0) {
           $('<div class="alert alert-info">There are no comments for this record.</div>')
@@ -238,21 +209,21 @@
   }
 
   function loadAttributes(el) {
-    var requestedOccurrenceId = occurrenceId;
-    var requestedSensitiveOrPrivate = sensitiveOrPrivate;
-    var requestedExtraFieldValues = extraFieldValues;
+    var requestedOccurrenceId = el.detailsState.occurrenceId;
+    var requestedSensitiveOrPrivate = el.detailsState.sensitiveOrPrivate;
+    var requestedExtraFieldValues = el.detailsState.extraFieldValues;
     // Check not already loaded.
-    if (loadedAttrsOcurrenceId === requestedOccurrenceId) {
+    if (el.detailsState.loadedAttrsOccurrenceId === requestedOccurrenceId) {
       return;
     }
     $.ajax({
       url: indiciaData.esProxyAjaxUrl + '/attrs/' + indiciaData.nid,
       data: { occurrence_id: requestedOccurrenceId },
       success: function success(response) {
-        if (occurrenceId !== requestedOccurrenceId) {
+        if (el.detailsState.occurrenceId !== requestedOccurrenceId) {
           return;
         }
-        loadedAttrsOcurrenceId = requestedOccurrenceId;
+        el.detailsState.loadedAttrsOccurrenceId = requestedOccurrenceId;
         var attrsDiv = $(el).find('.record-details .attrs');
         // Make sure standard headings are present.
         var combined = $.extend({ 'Additional occurrence attributes': [] }, response);
@@ -313,7 +284,7 @@
   function loadExperience(el, doc) {
     var data;
     // Check not already loaded.
-    if (loadedExperienceOcurrenceId === doc.id) {
+    if (el.detailsState.loadedExperienceOccurrenceId === doc.id) {
       return;
     }
     if (doc.metadata.created_by_id === '1') {
@@ -323,7 +294,7 @@
       );
       return;
     }
-    loadedExperienceOcurrenceId = doc.id;
+    el.detailsState.loadedExperienceOccurrenceId = doc.id;
     data = {
       size: 0,
       query: {
@@ -433,7 +404,7 @@
   }
 
   function loadCurrentTabAjax(el) {
-    var selectedItem = $(rowSourceControl).find('.selected');
+    var selectedItem = $(el.detailsState.rowSourceControl).find('.selected');
     var doc;
     var activeTab = indiciaFns.activeTab($(el).find('.tabs'));
     var functions = [
@@ -506,8 +477,8 @@
 
     if (tr) {
       doc = JSON.parse($(tr).attr('data-doc-source'));
-      occurrenceId = doc.id;
-      sensitiveOrPrivate = doc.metadata.sensitivity_blur === 'F';
+      el.detailsState.occurrenceId = doc.id;
+      el.detailsState.sensitiveOrPrivate = doc.metadata.sensitivity_blur === 'F';
       anAnnotation = doc.taxon.taxon_name === doc.taxon.accepted_name ? ' (as entered)' : '';
       vnAnnotation = doc.taxon.taxon_name === doc.taxon.vernacular_name ? ' (as entered)' : '';
       addRow(rows, doc, 'ID|status|checks', ['id', '#status_icons#', '#data_cleaner_icons#'], ' | ');
@@ -542,7 +513,7 @@
       addRow(rows, doc, 'Sample comment', 'event.event_remarks');
       addRow(rows, doc, 'Occurrence comment', 'occurrence.occurrence_remarks');
 
-      extraFieldValues = {
+      el.detailsState.extraFieldValues = {
         created_on: indiciaFns.getValueForField(doc, 'metadata.created_on'),
         updated_on: indiciaFns.getValueForField(doc, 'metadata.updated_on'),
         licence: indiciaFns.getValueForField(doc, 'metadata.licence_code'),
@@ -560,7 +531,7 @@
       }
       $(recordDetails).append('<h3>Derived info</h3>');
       $(recordDetails).append('<table><tbody>' + rows.join('') + '</tbody></table>');
-      loadedAttrsOcurrenceId = 0;
+      el.detailsState.loadedAttrsOccurrenceId = 0;
       // Reference to doc.occurrence_external_key is deprecated and can be
       // removed if the BRC index has been re-indexed.
       if (doc.occurrence.source_system_key || doc.occurrence_external_key) {
@@ -610,7 +581,16 @@
     init: function init(options) {
       var el = this;
       el.settings = $.extend({}, defaults);
-      el.callbacks = callbacks;
+      // Keep selection and tab-loading state with the details-pane instance.
+      el.callbacks = { tabShow: [] };
+      el.detailsState = {
+        occurrenceId: null,
+        sensitiveOrPrivate: false,
+        extraFieldValues: {},
+        loadedCommentsOccurrenceId: 0,
+        loadedAttrsOccurrenceId: 0,
+        loadedExperienceOccurrenceId: 0,
+      };
       // Apply settings passed in the HTML data-* attribute.
       if (typeof $(el).attr('data-idc-config') !== 'undefined') {
         $.extend(el.settings, JSON.parse($(el).attr('data-idc-config')));
@@ -623,8 +603,8 @@
       if (typeof el.settings.showSelectedRow === 'undefined') {
         indiciaFns.controlFail(el, 'Missing showSelectedRow config for idcRecordDetailsPane.');
       }
-      rowSourceControl = $('#' + el.settings.showSelectedRow);
-      if (rowSourceControl.length === 0) {
+      el.detailsState.rowSourceControl = $('#' + el.settings.showSelectedRow);
+      if (el.detailsState.rowSourceControl.length === 0) {
         indiciaFns.controlFail(el, 'Missing control ' + el.settings.showSelectedRow +
           ' for idcRecordDetailsPane @showSelectedRow setting.');
       }
@@ -639,12 +619,15 @@
 
     bindControls: function() {
       var el = this;
-      var controlClass = $(rowSourceControl).data('idc-class');
+      if (!indiciaFns.bindControl(el)) {
+        return;
+      }
+      var controlClass = $(el.detailsState.rowSourceControl).data('idc-class');
       // Hook up events for the row source control.
-      $(rowSourceControl)[controlClass]('on', 'itemSelect', function itemSelect(tr) {
+      $(el.detailsState.rowSourceControl)[controlClass]('on', 'itemSelect', function itemSelect(tr) {
         doItemSelect(el, tr);
       });
-      $(rowSourceControl)[controlClass]('on', 'populate', function populate() {
+      $(el.detailsState.rowSourceControl)[controlClass]('on', 'populate', function populate() {
         $(el).find('.empty-message').show();
         $(el).find('.tabs').hide();
       });
@@ -678,6 +661,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

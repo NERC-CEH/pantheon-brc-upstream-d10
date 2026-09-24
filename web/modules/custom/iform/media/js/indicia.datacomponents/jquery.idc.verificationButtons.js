@@ -37,13 +37,6 @@
   };
 
   /**
-   * Registered callbacks for events.
-   */
-  var callbacks = {
-    itemUpdate: []
-  };
-
-  /**
    * jQuery validation instance.
    */
   var emailFormvalidator;
@@ -159,9 +152,6 @@
       file = $('#decisions-file').prop('files')[0];
       formdata.append('decisions', file);
       formdata.append('filter_id', $('.user-filter.defines-permissions').val());
-      formdata.append('es_endpoint', indiciaData.esEndpoint);
-      formdata.append('id_prefix', indiciaData.idPrefix);
-      formdata.append('warehouse_name', indiciaData.warehouseName);
       $.ajax({
         url: indiciaData.esProxyAjaxUrl + '/verifyspreadsheet/' + indiciaData.nid,
         type: 'POST',
@@ -173,8 +163,8 @@
         },
         error: function(jqXHR) {
           var msg = indiciaData.lang.verificationButtons.uploadError;
-          if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-            msg += '<br/>' + jqXHR.responseJSON.message;
+          if (jqXHR.responseJSON && (jqXHR.responseJSON.message || jqXHR.responseJSON.msg)) {
+            msg += '<br/>' + (jqXHR.responseJSON.message || jqXHR.responseJSON.msg);
           }
           $('.upload-output').removeClass('alert-info').addClass('alert-danger');
           $('.upload-output .msg').html('<p>' + msg + '</p>');
@@ -1553,8 +1543,16 @@
    * Handle the next chunk of uploaded decisions spreadsheet.
    */
   function nextSpreadsheetTask(metadata) {
+    var errorMessage;
     if ($.fancybox.getInstance() === false) {
       // Dialog has been closed, so process cancelled.
+      return;
+    }
+    if (!metadata || typeof metadata !== 'object' || !metadata.state) {
+      errorMessage = metadata && (metadata.message || metadata.msg);
+      $('.upload-output').removeClass('alert-info').addClass('alert-danger');
+      $('.upload-output .msg').empty().append($('<p>').text(errorMessage || indiciaData.lang.verificationButtons.uploadError));
+      $('.upload-output progress').hide();
       return;
     }
     if (metadata.state === 'checks failed') {
@@ -1589,15 +1587,13 @@
         type: 'POST',
         dataType: 'json',
         data: {
-          fileId: metadata.fileId,
-          id_prefix: indiciaData.idPrefix,
-          warehouse_name: indiciaData.warehouseName
+          fileId: metadata.fileId
         },
         success: nextSpreadsheetTask,
         error: function(jqXHR) {
           var msg = indiciaData.lang.verificationButtons.uploadError;
-          if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-            msg += '<br/>' + jqXHR.responseJSON.message;
+          if (jqXHR.responseJSON && (jqXHR.responseJSON.message || jqXHR.responseJSON.msg)) {
+            msg += '<br/>' + (jqXHR.responseJSON.message || jqXHR.responseJSON.msg);
           }
           $('.upload-output').removeClass('alert-info').addClass('alert-danger');
           $('.upload-output .msg').html('<p>' + msg + '</p>');
@@ -1950,7 +1946,10 @@
       var el = this;
 
       el.settings = $.extend({}, defaults);
-      el.callbacks = callbacks;
+      // Callback lists belong to this verification-control instance.
+      el.callbacks = {
+        itemUpdate: []
+      };
       // Apply settings passed in the HTML data-* attribute.
       if (typeof $(el).attr('data-idc-config') !== 'undefined') {
         $.extend(el.settings, JSON.parse($(el).attr('data-idc-config')));
@@ -1965,6 +1964,9 @@
       }
       listOutputControl = $('#' + el.settings.showSelectedRow);
       listOutputControlClass = $(listOutputControl).data('idc-class');
+      if (listOutputControlClass === 'idcDataGrid') {
+        listOutputControl[0].settings.selectFirstOnPageChange = true;
+      }
       // Form validation for redetermination
       redetFormValidator = $('#redet-form').validate();
       // Plus setup redet form texts.
@@ -2131,10 +2133,10 @@
     },
 
     on: function on(event, handler) {
-      if (typeof callbacks[event] === 'undefined') {
+      if (typeof this.callbacks[event] === 'undefined') {
         indiciaFns.controlFail(this, 'Invalid event handler requested for ' + event);
       }
-      callbacks[event].push(handler);
+      this.callbacks[event].push(handler);
     },
 
     /**
@@ -2158,6 +2160,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

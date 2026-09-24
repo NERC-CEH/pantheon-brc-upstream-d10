@@ -99,6 +99,47 @@
   indiciaData.permissionOverlayInitialViewportDone = false;
 
   /**
+   * Placeholder, will be replaced if controlLayout added to page.
+   */
+  indiciaFns.updateControlLayout = function updateControlLayout() {
+    // Not implemented.
+  };
+
+  /**
+   * Mark a control as initialised, returning false if it already is.
+   *
+   * @param object el
+   *   Control element.
+   *
+   * @return bool
+   *   True when the control should continue initialising.
+   */
+  indiciaFns.initialiseControl = function initialiseControl(el) {
+    if (el.idcInitialised) {
+      return false;
+    }
+    el.idcInitialised = true;
+    return true;
+  };
+
+  /**
+   * Mark a control's cross-control bindings as complete.
+   *
+   * @param object el
+   *   Control element.
+   *
+   * @return bool
+   *   True when the bindings should be added.
+   */
+  indiciaFns.bindControl = function bindControl(el) {
+    if (el.idcControlsBound) {
+      return false;
+    }
+    el.idcControlsBound = true;
+    return true;
+  };
+
+  /**
    * Font Awesome icon and other classes for record statuses and flags.
    */
   indiciaData.statusClasses = {
@@ -374,7 +415,7 @@
           } else if (this.human_chosen !== 'true') {
             // Display classifier not chosen label but only if not human
             // chosen.
-            selection = indiciaData.lang.classifier.suggestionNotChosen;
+            choiceInfo.push(indiciaData.lang.classifier.suggestionNotChosen);
           }
           if (this.probability_given > 0.7) {
             probabilityClass = 'high';
@@ -391,7 +432,7 @@
             <div class="details">
               <span class="taxon">${this.taxon_name_given}</span>
               <span class="classifier-name">${this.classifier} ${this.classifier_version}</span>
-              <span class="classifier-selection">${selection}</span>
+              ${choiceInfo.length ? `<span class="classifier-selection">${choiceInfo.join(' | ')}</span>` : ''}
             </div>
           </div>`;
         });
@@ -439,6 +480,10 @@
    *   page of data.
    */
   indiciaFns.populateDataSources = function populateDataSources(resetPage) {
+    if (typeof indiciaFns.deferPageStateDataSourcePopulation === 'function' &&
+        indiciaFns.deferPageStateDataSourcePopulation(resetPage)) {
+      return;
+    }
     // Track if an error message has been shown to the user for this set of
     // requests so we don't show it again.
     indiciaData.sourceErrorsShown = [];
@@ -2454,13 +2499,11 @@ jQuery(document).ready(function docReady() {
   }));
 
   /**
-   * A generic change handler for higher geography and normal location selects.
-   *
-   * @param DOM select
-   *   Select control.
+   * Synchronise location-filter map features after silent control changes.
    */
-  function onLocationSelectChange(select) {
-    const isHigherGeoSelect = $(this).hasClass('es-higher-geography-select');
+  function onLocationSelectChange(select, options) {
+    const isHigherGeoSelect = $(select).hasClass('es-higher-geography-select');
+    options = options || {};
     var thisSelect;
     var baseId;
     var selectToLoadFilterFor = select;
@@ -2484,6 +2527,10 @@ jQuery(document).ready(function docReady() {
     } else {
       locIdToLoad = $(select).val();
     }
+    if (options.locationId) {
+      locIdToLoad = options.locationId;
+      selectToLoadFilterFor = options.locationSelect || selectToLoadFilterFor;
+    }
     if (locIdToLoad === '' && indiciaData.loadedFilterLocationId) {
       // Nothing selected, but there was previuosly.
       if (!isHigherGeoSelect) {
@@ -2496,13 +2543,20 @@ jQuery(document).ready(function docReady() {
         $(this).idcLeafletMap('resetViewport');
       });
       indiciaData.loadedFilterLocationId = null;
-      indiciaFns.populateDataSources(true);
+      indiciaFns.notifyPageStateChanged(select, 'customFilterControls');
+      if (!options.deferPopulation) {
+        indiciaFns.populateDataSources(true);
+      }
     }
-    else if (locIdToLoad !== indiciaData.loadedFilterLocationId) {
+    else if (locIdToLoad && locIdToLoad !== indiciaData.loadedFilterLocationId) {
+      var restoringPageState = options.pageStateRestore && typeof indiciaFns.beginPageStateRestoreOperation === 'function';
       // A selected location which differs from the previously loaded one.
       // Remember which one we are loading so we don't reload the same one.
       indiciaData.loadedFilterLocationId = locIdToLoad;
-      $.ajax({
+      if (restoringPageState) {
+        indiciaFns.beginPageStateRestoreOperation();
+      }
+      var request = $.ajax({
         url: indiciaData.warehouseUrl + 'index.php/services/report/requestReport?report=library/locations/location_boundary_projected.xml',
         data: {
           reportSource: 'local',
@@ -2524,29 +2578,92 @@ jQuery(document).ready(function docReady() {
             $('#' + $(selectToLoadFilterFor).attr('id') + '-geom').val(data[0].boundary_geom);
           }
           $.each($('.idc-leafletMap'), function eachMap() {
-            $(map).idcLeafletMap('showFeature', data[0].boundary_geom, true);
+            $(this).idcLeafletMap('showFeature', data[0].boundary_geom, true);
           });
         }
-        indiciaFns.populateDataSources(true);
+        indiciaFns.notifyPageStateChanged(select, 'customFilterControls');
+        if (!options.deferPopulation) {
+          indiciaFns.populateDataSources(true);
+        }
       });
+      if (restoringPageState) {
+        request.always(indiciaFns.endPageStateRestoreOperation);
+      }
+      return request;
     }
+    return null;
   }
 
+  /**
+   * Restore location-filter map features after silent page-state changes.
+   */
+  indiciaFns.restoreEsLocationFilterFeatures = function restoreEsLocationFilterFeatures() {
+    var handledGroups = {};
+    var restoredValues = indiciaData.restoredEsLocationFilterValues || {};
+    var locationControls = $('.es-higher-geography-select,.es-location-select');
+    locationControls.each(function eachLocationSelect() {
+      var select = this;
+      var baseId = $(select).hasClass('linked-select') ? select.id.replace(/-\d+$/, '') : select.id;
+      var controlClass = $(select).hasClass('es-higher-geography-select') ? 'es-higher-geography-select' : 'es-location-select';
+      var groupKey = controlClass + ':' + baseId;
+      var group = $(select).hasClass('linked-select') ? locationControls.filter('.' + controlClass).filter(function matchingGroup() {
+        return this.id === baseId || this.id.indexOf(baseId + '-') === 0;
+      }) : $(select);
+      var locationId = '';
+      var locationSelect = select;
+      if (handledGroups[groupKey]) {
+        return;
+      }
+      handledGroups[groupKey] = true;
+      group.each(function eachGroupSelect() {
+        var restoredValue = restoredValues[this.id];
+        var value = restoredValue || $(this).val();
+        if (value) {
+          locationId = value;
+          locationSelect = this;
+        }
+        $('#' + this.id + '-geom').val('');
+      });
+      if (locationId) {
+        // Geometry is client-only state, so rebuild it from the location ID.
+        onLocationSelectChange(select, {
+          deferPopulation: true,
+          locationId: locationId,
+          locationSelect: locationSelect,
+          pageStateRestore: true
+        });
+      }
+      else if (indiciaData.loadedFilterLocationId) {
+        // Clear the previous client-only boundary when restoring no location.
+        onLocationSelectChange(select, { deferPopulation: true });
+      }
+    });
+  };
+
   // Hook up event handler to location select controls.
-  $('.es-higher-geography-select,.es-location-select').on('change', function selectChange() {
-    onLocationSelectChange(this);
+  $('.es-higher-geography-select,.es-location-select').on('change', function selectChange(event, options) {
+    return onLocationSelectChange(this, options);
   });
 
   /**
    * Change event handlers on filter inputs.
    */
-  $('.es-filter-param, .user-filter, .permissions-filter').on('change', function eachFilter() {
+  $('.es-filter-param, .user-filter, .permissions-filter').on('change', function eachFilter(event, options) {
+    options = options || {};
+    if ($(this).data('defer-filter-reload')) {
+      return;
+    }
     indiciaFns.updateUserFilterMapOverlays();
     // Force map to update viewport for new data.
     $.each($('.idc-leafletMap'), function eachMap() {
       this.settings.initialBoundsSet = false;
     });
-    indiciaFns.populateDataSources(true);
+    if ($(this).hasClass('es-filter-param')) {
+      indiciaFns.notifyPageStateChanged(this, 'customFilterControls');
+    }
+    if (!options.deferPopulation) {
+      indiciaFns.populateDataSources(true);
+    }
   });
 
   // Apply overlays for any preselected user filters once controls are ready.

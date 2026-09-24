@@ -198,6 +198,15 @@ if (typeof hook_species_checklist_pre_delete_row === "undefined") {
         updateMediaDetails(e.row);
       });
 
+      // Ensure media rows shown immediately when editing.
+      $table.find('tbody tr.has-media').each(function() {
+        var $row = $(this);
+        var ft = $table.data('footable');
+        if (!$row.hasClass(ft.options.classes.detailShow)) {
+          ft.toggleDetail($row);
+        }
+      });
+
       // Return the original object for chaining.
       return this;
     });

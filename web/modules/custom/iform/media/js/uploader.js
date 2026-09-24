@@ -1004,7 +1004,7 @@ jQuery(document).ready(function($) {
           if (result.unmatchedInfo) {
             // Prevent next step till matching done.
             $('#next-step').attr('disabled', true);
-            if (result.unmatchedInfo.type === 'customAttribute' || result.unmatchedInfo.type === 'otherFk') {
+            if ($.inArray(result.unmatchedInfo.type, ['customAttribute', 'sampleMethod', 'otherFk']) !== -1) {
               addFkMatchingTableToForm(result);
             }
             else if (result.unmatchedInfo.type === 'taxon') {
@@ -1270,7 +1270,13 @@ jQuery(document).ready(function($) {
     }).done(
       function(result) {
         var msg;
-        if (result.status === 'error') {
+        if (result.status === 'error' && result.rowErrorsCount) {
+          let failureMessage = indiciaData.lang.import_helper_2.importingCrashInfo;
+          msg = result.msgKey ? indiciaData.lang.import_helper_2[transferResult.msgKey] : result.msg;
+          failureMessage += '<br/>' + msg;
+          showFailureMessage(failureMessage, true);
+        }
+        else if (result.status === 'error') {
           // @todo standardise this way of doing the message.
           msg = result.msgKey ? indiciaData.lang.import_helper_2[transferResult.msgKey] : result.msg;
           $.fancyDialog({
@@ -1367,7 +1373,14 @@ jQuery(document).ready(function($) {
       },
     ).fail(
       function(jqXHR, textStatus, errorThrown) {
-        showFailureMessage(indiciaData.lang.import_helper_2.importingCrashInfo + '<br/>' + errorThrown, true);
+        let failureMessage = indiciaData.lang.import_helper_2.importingCrashInfo;
+        if (errorThrown) {
+          failureMessage += '<br/>' + errorThrown;
+        }
+        if (jqXHR.responseJSON && jqXHR.responseJSON.msg) {
+          failureMessage += '<br/>' + jqXHR.responseJSON.msg;
+        }
+        showFailureMessage(failureMessage, true);
       }
     );
   }

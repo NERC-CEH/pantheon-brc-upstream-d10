@@ -39,17 +39,46 @@
    */
   var changingSelection = false;
 
+    /**
+     * Get the navigation buttons for a gallery instance.
+     *
+     * @param DOM el
+     *   Gallery element.
+     *
+     * @returns jQuery
+     *   Navigation buttons element.
+     */
+    function getNavButtons(el) {
+      return $('#' + el.id + '-card-nav-buttons');
+    }
+
+    /**
+     * Get the navigation buttons container for a gallery instance.
+     *
+     * @param DOM el
+     *   Gallery element.
+     *
+     * @returns jQuery
+     *   Navigation buttons container element.
+     */
+    function getNavButtonsContainer(el) {
+      return $('#' + el.id + '-card-nav-buttons-cntr');
+    }
   /**
    * Declare default settings.
    */
   var defaults = {
     actions: [],
+    allowCardSelection: true,
     includeFieldCaptions: false,
+    includeExpandTool: true,
     includeFullScreenTool: true,
     includeImageClassifierInfo: false,
     includePager: true,
     includeSortTool: true,
-    keyboardNavigation: false
+    keyboardNavigation: false,
+    openImageOnClick: false,
+    popupImageGrouping: 'record'
   };
 
   /**
@@ -60,6 +89,32 @@
     itemDblClick: [],
     populate: []
   };
+
+  /**
+   * Refresh the gallery sort indicators from the linked source.
+   *
+   * Sorting is source-owned so grids and galleries sharing a source remain
+   * consistent. The gallery only owns the visual sort indicator.
+   *
+   * @param object el
+   *   Gallery element.
+   */
+  function refreshSortInfo(el) {
+    var sort = el.settings.sourceObject.settings.sort || {};
+    var sortField = Object.keys(sort)[0];
+    var sortSpans = $(el).find('.sort-dropdown li span');
+    $(sortSpans).hide().removeClass('fa-sort-alpha-up fa-sort-alpha-down-alt');
+    if (sortField) {
+      $(el).find('.sort-dropdown li').each(function eachSortItem() {
+        if ($(this).attr('data-field') === sortField) {
+          var sortSpan = $(this).find('span');
+          $(sortSpan).removeClass('fa-sort-alpha-up fa-sort-alpha-down-alt');
+          $(sortSpan).addClass(sort[sortField] === 'desc' ? 'fa-sort-alpha-down-alt' : 'fa-sort-alpha-up');
+          $(sortSpan).show();
+        }
+      });
+    }
+  }
 
   /**
      * Zooms a card in to use the full width of the control, as an overlay.
@@ -80,9 +135,9 @@
     // Move verification buttons onto the card.
     if ($('.idc-verificationButtons').length > 0) {
       $(card).closest('.idc-cardGallery').find('.footer').prepend($('.verification-buttons-cntr'));
+      // Show the navigation buttons.
+      $('.verification-buttons-cntr').after(getNavButtons($(card).closest('.idc-cardGallery')[0]));
     }
-    // Show the navigation buttons.
-    $('.verification-buttons-cntr').after($('#card-nav-buttons'));
     // Ensure card visible.
     $(card)[0].scrollIntoView();
     indiciaFns.resizeMaxCard();
@@ -127,7 +182,7 @@
       }
       if (!on) {
         // Hide the nav buttons.
-        $('#card-nav-buttons-cntr').append($('#card-nav-buttons'));
+        getNavButtonsContainer(el).append(getNavButtons(el));
       }
       indiciaFns.updateControlLayout();
     }
@@ -192,9 +247,12 @@
      *
      * Adds selected class and fires callbacks.
      */
-    indiciaFns.on('click', '#' + el.id + ' .es-card-gallery .card', {}, function onCardGalleryCardClick() {
+    indiciaFns.on('click', '#' + el.id + ' .es-card-gallery .card', {}, function onCardGalleryCardClick(event) {
       var card = this;
-      if (!changingSelection && !$(card).hasClass('selected')) {
+      if ($(event.target).closest('a[data-fancybox]').length && el.settings.openImageOnClick) {
+        return;
+      }
+      if (el.settings.allowCardSelection && !changingSelection && !$(card).hasClass('selected')) {
         $(card).closest('.es-card-gallery').find('.card.selected').removeClass('selected');
         $(card).addClass('selected');
         loadSelectedCard();
@@ -208,9 +266,12 @@
      */
     indiciaFns.on('dblclick', '#' + el.id + ' .es-card-gallery .card', {}, function onCardGalleryitemDblClick() {
       var card = this;
-      if (!changingSelection && !$(card).hasClass('selected')) {
+      if (el.settings.allowCardSelection && !changingSelection && !$(card).hasClass('selected')) {
         $(card).closest('.es-card-gallery').find('.card.selected').removeClass('selected');
         $(card).addClass('selected');
+      }
+      if (!el.settings.allowCardSelection) {
+        return;
       }
       setCardToMaxSize(card);
       inMaxSizeMode(el, true);
@@ -236,73 +297,73 @@
         $(sortSpan).show();
         sourceObj.settings.sort = {};
         sourceObj.settings.sort[fieldName] = sortDesc ? 'desc' : 'asc';
+        indiciaFns.notifyPageStateChanged(el, 'sort');
         sourceObj.populate();
       }
     });
 
     /**
+     * Navigate when arrow key pressed, or nav button clicked.
+     */
+    function handleArrowKeyNavigation(key, oldSelected) {
+      var newSelected;
+      var oldCardBounds;
+      var nextRowTop;
+      var nextRowContents = [];
+      var navFn;
+      var closestVerticalDistance = null;
+      if (key === 'ArrowLeft') {
+        newSelected = $(oldSelected).prev('.card');
+      } else if (key === 'ArrowRight') {
+        newSelected = $(oldSelected).next('.card');
+      } else {
+        navFn = key === 'ArrowUp' ? 'prev' : 'next';
+        oldCardBounds = oldSelected[0].getBoundingClientRect();
+        newSelected = $(oldSelected)[navFn]('.card');
+        // Since we are going up or down, find the whole contents of the
+        // row we are moving into by inspecting the y position.
+        while (newSelected.length !== 0) {
+          if (newSelected[0].getBoundingClientRect().y !== oldCardBounds.y) {
+            if (!nextRowTop) {
+              nextRowTop = newSelected[0].getBoundingClientRect().y;
+            } else if (nextRowTop !== newSelected[0].getBoundingClientRect().y) {
+              break;
+            }
+            nextRowContents.push(newSelected);
+          }
+          newSelected = $(newSelected)[navFn]('.card');
+        }
+        // Now find the item in that row with the closest vertical centre
+        // to the card we are leaving.
+        $.each(nextRowContents, function() {
+          var thisCardBounds = this[0].getBoundingClientRect();
+          var thisVerticalDistance = Math.abs((oldCardBounds.left + oldCardBounds.right) / 2 - (thisCardBounds.left + thisCardBounds.right) / 2);
+          if (closestVerticalDistance === null || thisVerticalDistance < closestVerticalDistance) {
+            newSelected = this;
+            closestVerticalDistance = thisVerticalDistance;
+          }
+        });
+      }
+      if (newSelected.length) {
+        changingSelection = true;
+        $(newSelected).addClass('selected');
+        $(newSelected).focus();
+        $(oldSelected).removeClass('selected');
+      }
+      // Load row on timeout to avoid rapidly hitting services if repeat-hitting key.
+      if (loadRowTimeout) {
+        clearTimeout(loadRowTimeout);
+      }
+      loadRowTimeout = setTimeout(function() {
+        loadSelectedCard();
+        changingSelection = false;
+      }, 200);
+    }
+
+    /**
      * Implement arrow key and other navigation tools.
      */
     if (el.settings.keyboardNavigation) {
-
-      /**
-       * Navigate when arrow key pressed.
-       */
-      function handleArrowKeyNavigation(key, oldSelected) {
-        var newSelected;
-        var oldCardBounds;
-        var nextRowTop;
-        var nextRowContents = [];
-        var navFn;
-        var closestVerticalDistance = null;
-        if (key === 'ArrowLeft') {
-          newSelected = $(oldSelected).prev('.card');
-        } else if (key === 'ArrowRight') {
-          newSelected = $(oldSelected).next('.card');
-        } else {
-          navFn = key === 'ArrowUp' ? 'prev' : 'next';
-          oldCardBounds = oldSelected[0].getBoundingClientRect();
-          newSelected = $(oldSelected)[navFn]('.card');
-          // Since we are going up or down, find the whole contents of the
-          // row we are moving into by inspecting the y position.
-          while (newSelected.length !== 0) {
-            if (newSelected[0].getBoundingClientRect().y !== oldCardBounds.y) {
-              if (!nextRowTop) {
-                nextRowTop = newSelected[0].getBoundingClientRect().y;
-              } else if (nextRowTop !== newSelected[0].getBoundingClientRect().y) {
-                break;
-              }
-              nextRowContents.push(newSelected);
-            }
-            newSelected = $(newSelected)[navFn]('.card');
-          }
-          // Now find the item in that row with the closest vertical centre
-          // to the card we are leaving.
-          $.each(nextRowContents, function() {
-            var thisCardBounds = this[0].getBoundingClientRect();
-            var thisVerticalDistance = Math.abs((oldCardBounds.left + oldCardBounds.right) / 2 - (thisCardBounds.left + thisCardBounds.right) / 2);
-            if (closestVerticalDistance === null || thisVerticalDistance < closestVerticalDistance) {
-              newSelected = this;
-              closestVerticalDistance = thisVerticalDistance;
-            }
-          });
-        }
-        if (newSelected.length) {
-          changingSelection = true;
-          $(newSelected).addClass('selected');
-          $(newSelected).focus();
-          $(oldSelected).removeClass('selected');
-        }
-        // Load row on timeout to avoid rapidly hitting services if repeat-hitting key.
-        if (loadRowTimeout) {
-          clearTimeout(loadRowTimeout);
-        }
-        loadRowTimeout = setTimeout(function() {
-          loadSelectedCard();
-          changingSelection = false;
-        }, 200);
-      }
-
       /**
        * Keyboard handler for the gallery.
        */
@@ -349,44 +410,44 @@
           }
         }
       });
-
-      /**
-       * Handler for the in-card nav Next button.
-       */
-      indiciaFns.on('click', '.nav-next', {}, function() {
-        var oldSelected = $(el).find('.card.selected');
-        handleArrowKeyNavigation('ArrowRight', oldSelected);
-      });
-
-      /**
-       * Handler for the in-card nav Prev button.
-       */
-      indiciaFns.on('click', '.nav-prev', {}, function() {
-        var oldSelected = $(el).find('.card.selected');
-        handleArrowKeyNavigation('ArrowLeft', oldSelected);
-      });
-
-      /**
-       * Handler for the in-card expand card button.
-       */
-      indiciaFns.on('click', '.expand-card', {}, function() {
-        const card = $(this).closest('.card');
-        setCardToMaxSize(card);
-        inMaxSizeMode(el, true);
-      });
-
-      /**
-       * Handler for the in-card expand collapse button.
-       */
-      indiciaFns.on('click', '.collapse-card', {}, function() {
-        const card = $(this).closest('.card');
-        setCardToNormalSize(card);
-        inMaxSizeMode(el, false);
-      });
-
-      // Public function so it can be called from bindControls event handlers.
-      el.loadSelectedCard = loadSelectedCard;
     }
+
+    /**
+     * Handler for the in-card nav Next button.
+     */
+    indiciaFns.on('click', `#${el.id} .nav-next`, {}, function() {
+      var oldSelected = $(el).find('.card.selected');
+      handleArrowKeyNavigation('ArrowRight', oldSelected);
+    });
+
+    /**
+     * Handler for the in-card nav Prev button.
+     */
+    indiciaFns.on('click', `#${el.id} .nav-prev`, {}, function() {
+      var oldSelected = $(el).find('.card.selected');
+      handleArrowKeyNavigation('ArrowLeft', oldSelected);
+    });
+
+    /**
+     * Handler for the in-card expand card button.
+     */
+    indiciaFns.on('click', `#${el.id} .expand-card`, {}, function() {
+      const card = $(this).closest('.card');
+      setCardToMaxSize(card);
+      inMaxSizeMode(el, true);
+    });
+
+    /**
+     * Handler for the in-card expand collapse button.
+     */
+    indiciaFns.on('click', `#${el.id} .collapse-card`, {}, function() {
+      const card = $(this).closest('.card');
+      setCardToNormalSize(card);
+      inMaxSizeMode(el, false);
+    });
+
+    // Public function so it can be called from bindControls event handlers.
+    el.loadSelectedCard = loadSelectedCard;
 
     /**
      * Next page click.
@@ -487,6 +548,9 @@
       if (typeof options !== 'undefined') {
         $.extend(el.settings, options);
       }
+      if (el.settings.openImageOnClick) {
+        $(el).addClass('open-image-on-click');
+      }
       // CardGallery does not make use of multiple sources.
       el.settings.sourceObject = indiciaData.esSourceObjects[Object.keys(el.settings.source)[0]];
 
@@ -543,7 +607,43 @@
       // Add overlay for loading.
       $('<div class="loading-spinner" style="display: block"><div>Loading...</div></div>').appendTo(el);
       initHandlers(el);
+      refreshSortInfo(el);
       indiciaFns.updateControlLayout();
+    },
+
+    /**
+     * Return gallery-owned state for the common page-state API.
+     *
+     * The gallery has no independent persisted inputs. Its sort and
+     * pagination state are exposed by the linked source instead.
+     *
+     * @return object
+     *   Empty gallery-owned state.
+     */
+    getPageState: function getPageState() {
+      return {};
+    },
+
+    /**
+     * Restore gallery presentation state without refreshing the data.
+     */
+    restorePageState: function restorePageState() {
+      if (this.settings.sourceObject.settings.mode === 'compositeAggregation' && this.settings.compositeInfo) {
+        this.settings.compositeInfo.page = 0;
+        this.settings.compositeInfo.pageAfterKeys = {};
+      }
+      refreshSortInfo(this);
+    },
+
+    /**
+     * Reset gallery presentation state without refreshing the data.
+     */
+    resetPageState: function resetPageState() {
+      if (this.settings.compositeInfo) {
+        this.settings.compositeInfo.page = 0;
+        this.settings.compositeInfo.pageAfterKeys = {};
+      }
+      refreshSortInfo(this);
     },
 
     /**
@@ -568,7 +668,7 @@
           $('.idc-verificationButtons').append($('.verification-buttons-cntr'));
         }
         // Hide the nav buttons.
-        $('#card-nav-buttons-cntr').append($('#card-nav-buttons'));
+        getNavButtonsContainer(el).append(getNavButtons(el));
       }
 
       // Cleanup before repopulating.
@@ -608,6 +708,9 @@
             var thumbwrap = $('<div>').append(thumb);
             $(thumbwrap).appendTo(imageContainer);
           });
+          if (el.settings.popupImageGrouping === 'all') {
+            $(imageContainer).find('[data-fancybox]').attr('data-fancybox', 'card-gallery-' + el.id);
+          }
         }
         $(card).addClass(classes.join(' '));
         if (el.settings.includeFieldCaptions) {
@@ -641,12 +744,14 @@
         if (el.settings.includeImageClassifierInfo && doc.identification.classifier) {
           $(indiciaFns.getImageClassifierSuggestionsHtml(doc)).appendTo(cardFooter);
         }
-        $('<button type="button" title="' + indiciaData.lang.cardGallery.expandCard + '" class="expand-card ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">' +
-          '<i class="fas fa-expand-arrows-alt"></i></i></button>')
-          .appendTo(card);
-        $('<button type="button" title="' + indiciaData.lang.cardGallery.collapseCard + '" class="collapse-card ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">' +
-          '<i class="fas fa-compress-arrows-alt"></i></button>')
-          .appendTo(card);
+        if (el.settings.includeExpandTool) {
+          $('<button type="button" title="' + indiciaData.lang.cardGallery.expandCard + '" class="expand-card ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">' +
+            '<i class="fas fa-expand-arrows-alt"></i></i></button>')
+            .appendTo(card);
+          $('<button type="button" title="' + indiciaData.lang.cardGallery.collapseCard + '" class="collapse-card ' + indiciaData.templates.buttonDefaultClass + ' ' + indiciaData.templates.buttonSmallClass + '">' +
+            '<i class="fas fa-compress-arrows-alt"></i></button>')
+            .appendTo(card);
+        }
         if (i === 0 && inMaxSizeMode(el)) {
           setCardToMaxSize(card);
           $(card).addClass('selected');
@@ -665,6 +770,9 @@
      */
     bindControls: function() {
       var el = this;
+      if (!indiciaFns.bindControl(el)) {
+        return;
+      }
       $.each($('.idc-control'), function() {
         var controlClass = $(this).data('idc-class');
         if (typeof this.callbacks.itemUpdate !== 'undefined') {
@@ -719,6 +827,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

@@ -25,6 +25,16 @@
 #controls > div {
   padding-bottom: $form-group-margin-bottom;
 }
+/* Tweak spacing for checkbox label before as BS defaults expect after. */
+.form-check-label-before {
+  padding-left: 0;
+
+  .form-check-input {
+    float: none;
+    margin-left: 8px;
+    margin-right: 0;
+  }
+}
 #entry_form, #indicia-entry-form {
   div.form-group {
     p.inline-error {
@@ -33,11 +43,6 @@
     /* Removes last-child reset to zero in default theme overrides. */
     &:last-child {
       margin-bottom: $form-group-margin-bottom;
-    }
-    input[type="checkbox"] {
-      margin-left: 8px;
-      margin-right: 8px;
-      font-size: 150%;
     }
   }
   .species-grid {

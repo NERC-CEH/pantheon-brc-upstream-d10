@@ -99,6 +99,11 @@ class GroupLandingPagesController extends ControllerBase {
    */
   public function groupBlog($title) {
     $groups = $this->getGroupFromTitle($title);
+    if (count($groups) !== 1) {
+      $this->messenger()->addWarning($this->t('The link you have followed does not refer to a unique group name.'));
+      hostsite_goto_page('<front>');
+      return [];
+    }
     return [
       'view' => [
         '#type' => 'view',
@@ -155,10 +160,17 @@ class GroupLandingPagesController extends ControllerBase {
    *   the user.
    */
   private function getMembershipInfo(array $group, array $readAuth) {
+    $r = [
+      'isMember' => FALSE,
+      'isAdmin' => FALSE,
+      'isPending' => FALSE,
+      'isContainerGroupMember' => FALSE,
+      'isContainerGroupAdmin' => FALSE,
+    ];
     $indiciaUserId = hostsite_get_user_field('indicia_user_id');
     if (!$indiciaUserId) {
       // Not linked to warehouse so can't be a member.
-      return [];
+      return $r;
     }
     $membership = \helper_base::get_population_data([
       'table' => 'groups_user',
@@ -172,19 +184,13 @@ class GroupLandingPagesController extends ControllerBase {
       ],
       'nocache' => TRUE,
     ]);
-    $r = [
-      'isMember' => FALSE,
-      'isAdmin' => FALSE,
-      'isPending' => FALSE,
-      'isContainerGroupMember' => FALSE,
-      'isContainerGroupAdmin' => FALSE,
-    ];
     foreach ($membership as $m) {
       if ($m['pending'] === 't') {
         // Capture pending membership if for the main page group.
         $r['isPending'] = $r['isPending'] || ($m['group_id'] == $group['id']);
+        continue;
       }
-      elseif ($m['administrator'] === 't') {
+      if ($m['administrator'] === 't') {
         $r['isAdmin'] = $r['isAdmin'] || ($m['group_id'] == $group['id']);
         $r['isContainerGroupAdmin'] = $r['isContainerGroupAdmin'] || ($m['group_id'] == $group['contained_by_group_id']);
       }

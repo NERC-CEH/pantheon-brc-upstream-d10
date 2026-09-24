@@ -565,7 +565,95 @@ var IdcEsDataSource;
         }
       });
     }
+    this.pageStateDefaults = this.getPageState();
     return this;
+  };
+
+  /**
+   * Return the source state owned by page-state persistence.
+   *
+   * Sort and pagination are source-level state because multiple output
+   * controls can share the same source.
+   *
+   * @return object
+   *   Serializable source state.
+   */
+  IdcEsDataSource.prototype.getPageState = function getPageState() {
+    var pageSize = this.settings.mode.match(/Aggregation$/)
+      ? this.settings.aggregationSize
+      : this.settings.size;
+    var numericPageSize = parseInt(pageSize, 10);
+    var numericFrom = parseInt(this.settings.from, 10);
+    return {
+      sort: $.extend(true, {}, this.settings.sort || {}),
+      from: isNaN(numericFrom) || numericFrom < 0 ? 0 : numericFrom,
+      pageSize: isNaN(numericPageSize) || numericPageSize <= 0 ? null : numericPageSize
+    };
+  };
+
+  /**
+   * Restore source state without starting a request.
+   *
+   * Composite aggregations use opaque cursors rather than offsets, so their
+   * page position is intentionally reset to the first page.
+   *
+   * @param object state
+  *   Previously captured source state. Omitted fields are left unchanged.
+   */
+  IdcEsDataSource.prototype.restorePageState = function restorePageState(state) {
+    if (!state || typeof state !== 'object') {
+      return;
+    }
+    if (Object.prototype.hasOwnProperty.call(state, 'sort') &&
+        state.sort && typeof state.sort === 'object' && !Array.isArray(state.sort)) {
+      this.settings.sort = $.extend(true, {}, state.sort);
+    }
+    if (Object.prototype.hasOwnProperty.call(state, 'pageSize')) {
+      var pageSize = parseInt(state.pageSize, 10);
+      if (!isNaN(pageSize) && pageSize > 0) {
+        if (this.settings.mode.match(/Aggregation$/)) {
+          this.settings.aggregationSize = pageSize;
+        }
+        else {
+          this.settings.size = pageSize;
+        }
+      }
+    }
+    if (Object.prototype.hasOwnProperty.call(state, 'from')) {
+      var from = parseInt(state.from, 10);
+      if (this.settings.mode === 'compositeAggregation') {
+        this.settings.from = 0;
+        delete this.settings.after_key;
+      }
+      else if (!isNaN(from) && from >= 0) {
+        this.settings.from = from;
+      }
+    }
+  };
+
+  /**
+   * Restore the source's settings from its initial configuration.
+   *
+   * This is used by the page-state reset action and does not populate the
+   * source by itself.
+  *
+  * @param object fields
+  *   Optional map of source-state fields to reset. All fields reset when
+  *   omitted.
+   */
+  IdcEsDataSource.prototype.resetPageState = function resetPageState(fields) {
+    var state = {};
+    var fieldsToReset = fields || {
+      sort: true,
+      from: true,
+      pageSize: true
+    };
+    $.each(['sort', 'from', 'pageSize'], function eachField(idx, field) {
+      if (fieldsToReset[field]) {
+        state[field] = this.pageStateDefaults[field];
+      }
+    }.bind(this));
+    this.restorePageState(state);
   };
 
   // Find hidden tabs that contain ES outputs and hook up a function to cause

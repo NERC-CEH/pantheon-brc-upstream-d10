@@ -5,3 +5,4 @@ group_edit_alias: /groups/edit
 species_details_alias: ''
 species_details_within_group_alias: ''
 logo_selector: '[rel="home"][class*=logo]'
+group_page_paths_excluded_from_links: []

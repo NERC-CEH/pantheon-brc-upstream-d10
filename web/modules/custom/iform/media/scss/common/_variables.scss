@@ -11,10 +11,13 @@ $colour-hover-row: #333333;
 $colour-select-row: #ffffff;
 $colour-select-row-bg: $colour-range-1-d;
 
-$colour-dark-text: #444;
-$colour-dark-text-active: #000;
-
 $colour-dark-bg: #333333;
 $colour-dark-text: #ffffff;
+$colour-dark-text-active: #eeeeee;
+
+$colour-header-bg: #f1f1f1;
+$colour-header-text: #444444;
+$colour-header-text-active: #000000;
+$colour-header-border: darken($colour-header-bg, 10%);
 
 $spacer: 15px;

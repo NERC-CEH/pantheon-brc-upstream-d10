@@ -51,11 +51,18 @@
     if (indiciaData.esScope === 'user') {
       return true;
     }
+    // If my records applied to Who pane.
+    if (indiciaData.filter?.def?.my_records === '1') {
+      return true;
+    }
+    // Or filter has a created_by_id limit for the current user.
     if (typeof filter.bool_queries !== 'undefined') {
       filter.bool_queries.forEach((qry) => {
-        if (qry.bool_clause === 'must' && typeof qry.field !== 'undefined' && qry.field === 'metadata.created_by_id'
-            && typeof qry.query_type !== 'undefined' && qry.query_type === 'term'
-            && typeof qry.value !== 'undefined' && qry.value == indiciaData.user_id) {
+        if ((qry.bool_clause === 'must' || qry.bool_clause === 'filter')
+            && qry.field === 'metadata.created_by_id'
+            && qry.query_type === 'term'
+            && qry.value !== undefined
+            && String(qry.value) === String(indiciaData.user_id)) {
           filterFound = true;
         }
       });
@@ -183,6 +190,33 @@
   }
 
   /**
+   * Convert a date entered in the configured display format to ISO format.
+   *
+   * @param string dateValue
+   *   Date in the configured display format, or an ISO date.
+   *
+   * @returns string
+   *   Date in yyyy-mm-dd format.
+   */
+  function dateToIso(dateValue) {
+    if (!dateValue || dateValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
+      return dateValue;
+    }
+    const parts = dateValue.split(/\D+/);
+    const formatParts = indiciaData.dateFormat.split(/[^A-Za-z]+/);
+    if (parts.length !== 3 || formatParts.length !== 3) {
+      return dateValue;
+    }
+    const year = parts[formatParts.indexOf('Y')];
+    const month = parts[formatParts.indexOf('m')];
+    const day = parts[formatParts.indexOf('d')];
+    if (!year || !month || !day) {
+      return dateValue;
+    }
+    return [year, month.padStart(2, '0'), day.padStart(2, '0')].join('-');
+  }
+
+  /**
    * Perform the actual bulk edit operation once proceed confirmed.
    *
    * @param DOM dlg
@@ -260,20 +294,43 @@
    */
   function getUpdates(el) {
     let r = {};
-    if ($(el).find('[name="edit-recorder-name"]').val()) {
-      r.recorder_name = $(el).find('[name="edit-recorder-name"]').val();
+    // Can't skip requirement to reverify changed records if the date or sref
+    // change.
+    let canSkipReverify = $(el).find('[name="edit-date"]').val().trim() === ''
+        && $(el).find('[name="edit-sref"]').val().trim() === '';
+    if ($(el).find('[name="edit-recorder-name"]').val().trim() !== '') {
+      r.recorder_name = $(el).find('[name="edit-recorder-name"]').val().trim();
     }
-    if ($(el).find('[name="edit-location-name"]').val()) {
-      r.location_name = $(el).find('[name="edit-location-name"]').val();
+    if ($(el).find('[name="edit-location-name"]').val().trim() !== '') {
+      r.location_name = $(el).find('[name="edit-location-name"]').val().trim();
     }
-    if ($(el).find('[name="edit-date"]').val()) {
-      r.date = $(el).find('[name="edit-date"]').val();
+    if ($(el).find('[name="edit-date"]').val().trim() !== '') {
+      r.date = dateToIso($(el).find('[name="edit-date"]').val());
     }
-    if ($(el).find('[name="edit-sref"]').val()) {
-      r.sref = $(el).find('[name="edit-sref"]').val();
-      r.sref_system = $(el).find('[name="edit-sref_system"]').val();
+    if ($(el).find('[name="edit-sref"]').val().trim() !== '') {
+      r.sref = $(el).find('[name="edit-sref"]').val().trim();
+      r.sref_system = $(el).find('[name="edit-sref_system"]').val().trim();
+    }
+    if ($(el).find('[name="append-comment"]').val().trim() !== '') {
+      r.append_comment = $(el).find('[name="append-comment"]').val().trim();
+    }
+    if ($(el).find('[name="skip-reverify"]:visible').prop('checked') && canSkipReverify) {
+      r.skip_reverify = true;
     }
     return r;
+  }
+
+  /**
+   * Show the skip-reverify option only when date and spatial reference are unchanged.
+   *
+   * @param DOM dlg
+   *   Dialog element.
+   */
+  function updateSkipReverifyVisibility(dlg) {
+    const hasDateOrSref = dlg.find('[name="edit-date"], [name="edit-sref"]').filter(function hasValue() {
+      return $(this).val().trim() !== '';
+    }).length > 0;
+    dlg.find('#ctrl-wrap-skip-reverify').css('visibility', hasDateOrSref ? 'hidden' : '');
   }
 
   /**
@@ -284,6 +341,7 @@
   function previewClickHandler(el) {
     const dlg = $('#' + $(el)[0].settings.id + '-dlg');
     const updates = getUpdates(dlg);
+    const todoListInfo = getTodoListInfo(el);
     if (Object.keys(updates).length === 0) {
       $.fancyDialog({
         title: indiciaData.lang.bulkEditor.cannotProceed,
@@ -292,8 +350,15 @@
       });
       return;
     }
+    // Hide context sensitive messages - will show appropriate ones once we
+    // have the preview info.
+    $(dlg).find('.preview-messages p').hide();
+    $(dlg).find('.preview-info-partial strong').text(todoListInfo.total);
+    // Show the preview.
     $(dlg).find('.preview-output').show();
     $(dlg).find('.bulk-edit-form-controls').hide();
+    $(dlg).find('#ctrl-wrap-append-comment').hide();
+    $(dlg).find('#ctrl-wrap-skip-reverify').hide();
     $(dlg).find('.preview-bulk-edit').attr('disabled', true);
     let previewRequest = {
       updates: updates,
@@ -301,20 +366,25 @@
       restrictToOwnData: $(el)[0].settings.restrictToOwnData
     };
     if ($('#' + $(el)[0].settings.linkToDataControl).hasClass('multiselect-mode')) {
-      previewRequest['occurrence:ids'] = getTodoListInfo(el).ids.join(',');
+      previewRequest['occurrence:ids'] = todoListInfo.ids.join(',');
     } else {
       const filter = indiciaFns.getFormQueryData($(el)[0].settings.sourceObject, false);
       previewRequest['occurrence:idsFromElasticFilter'] = filter;
     }
     $.post(indiciaData.esProxyAjaxUrl + '/bulkeditpreview/' + indiciaData.nid, previewRequest, null, 'json')
       .done(function(response) {
-        $.each(response, function() {
+        const hasVerifiedRecords = response.aggregations.has_verified_records.doc_count > 0;
+        $(dlg).find(todoListInfo.total > response.records.length ? '.preview-info-partial' : '.preview-info-complete').show();
+        if (hasVerifiedRecords) {
+          $(dlg).find(updates.skip_reverify ? '.preview-info-skip-reverify' : '.preview-info-verified').show();
+        }
+        $.each(response.records, function() {
           const tr = $('<tr>').appendTo($(dlg).find('.preview-output tbody'));
-          let date = this._source.event.date_start;
+          let date = indiciaFns.formatDate(this._source.event.date_start);
           let recordedBy = typeof this._source.event.recorded_by === 'undefined' ? indiciaData.lang.bulkEditor.noValue : this._source.event.recorded_by;
           let locationName = typeof this._source.location.verbatim_locality === 'undefined' ? indiciaData.lang.bulkEditor.noValue : this._source.location.verbatim_locality;
           let sref = this._source.location.input_sref;
-          date = updates.date ? `<span class="old-value">${date}</span> <span class="new-value">${updates.date}</span>` : date;
+          date = updates.date ? `<span class="old-value">${date}</span> <span class="new-value">${indiciaFns.formatDate(updates.date)}</span>` : date;
           recordedBy = updates.recorder_name ? `<span class="old-value">${recordedBy}</span> <span class="new-value">${updates.recorder_name}</span>` : recordedBy;
           locationName = updates.location_name ? `<span class="old-value">${locationName}</span> <span class="new-value">${updates.location_name}</span>` : locationName;
           sref = updates.sref ? `<span class="old-value">${sref}</span> <span class="new-value">${updates.sref}</span>` : sref;
@@ -327,6 +397,16 @@
           tr.append(`<th>${sref}</th>`);
           tr.append(`<th>${recordedBy}</th>`);
         })
+        if (updates.append_comment) {
+          const previewComment = $('<div class="preview-comment">');
+          $('<h3 class="preview-comment-heading">')
+            .text(indiciaData.lang.bulkEditor.addComment)
+            .appendTo(previewComment);
+          $('<p>')
+            .text(updates.append_comment)
+            .appendTo(previewComment);
+          $(dlg).find('.preview-output').append(previewComment);
+        }
         $(dlg).find('.proceed-bulk-edit').removeAttr('disabled');
       });
     return;
@@ -382,14 +462,19 @@
     dlg.find('.message').html(todoInfo.message);
     dlg.find('.bulk-edit-action-buttons').show();
     dlg.find('.bulk-edit-form-controls').show();
+    dlg.find('#ctrl-wrap-append-comment').show();
+    dlg.find('#ctrl-wrap-skip-reverify').show();
+    dlg.find('#ctrl-wrap-skip-reverify').css('visibility', 'visible');
     dlg.find('.post-bulk-edit-info').hide();
     dlg.find('.post-bulk-edit-info .close-bulk-edit-dlg').attr('disabled', true);
     dlg.find('.post-bulk-edit-info .output p').remove();
     dlg.find('.preview-output').hide();
     dlg.find('.preview-output tbody tr').remove();
+    dlg.find('.preview-comment').remove();
     dlg.find('.proceed-bulk-edit').attr('disabled', true);
     dlg.find('.preview-bulk-edit').removeAttr('disabled');
     dlg.find('.ctrl-wrap input').val('');
+    dlg.find('#append-comment').val('');
 
     // Now open it.
     $.fancybox.open({
@@ -405,6 +490,15 @@
    */
   function initHandlers(el) {
     $(el).find('.bulk-edit-records-btn').on('click', bulkEditRecordsBtnClickHandler);
+
+    const dlg = $('#' + $(el)[0].settings.id + '-dlg');
+    const dateOrSrefControls = dlg.find('[name="edit-date"], #edit-date\\:date, [name="edit-sref"]');
+    dateOrSrefControls.on('input change', function updateSkipReverify() {
+      window.setTimeout(function refreshSkipReverify() {
+        updateSkipReverifyVisibility(dlg);
+      }, 0);
+    });
+    updateSkipReverifyVisibility(dlg);
 
     $(el).find('.preview-bulk-edit').on('click', () => {
       previewClickHandler(el);
@@ -471,6 +565,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

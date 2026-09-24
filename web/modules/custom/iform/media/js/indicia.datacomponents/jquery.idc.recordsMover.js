@@ -51,11 +51,17 @@
     if (indiciaData.esScope === 'user') {
       return true;
     }
+    // If my records applied to Who pane.
+    if (indiciaData.filter?.def?.my_records === '1') {
+      return true;
+    }
     if (typeof filter.bool_queries !== 'undefined') {
       filter.bool_queries.forEach((qry) => {
-        if (qry.bool_clause === 'must' && typeof qry.field !== 'undefined' && qry.field === 'metadata.created_by_id'
-            && typeof qry.query_type !== 'undefined' && qry.query_type === 'term'
-            && typeof qry.value !== 'undefined' && qry.value == indiciaData.user_id) {
+        if ((qry.bool_clause === 'must' || qry.bool_clause === 'filter')
+            && qry.field === 'metadata.created_by_id'
+            && qry.query_type === 'term'
+            && qry.value !== undefined
+            && String(qry.value) === String(indiciaData.user_id)) {
           filterFound = true;
         }
       });
@@ -402,6 +408,9 @@
         return true;
       } else if (typeof methodOrOptions === 'object' || !methodOrOptions) {
         // Default to "init".
+        if (!indiciaFns.initialiseControl(this)) {
+          return true;
+        }
         return methods.init.apply(this, passedArgs);
       }
       // If we get here, the wrong method was called.

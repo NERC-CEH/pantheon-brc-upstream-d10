@@ -695,18 +695,31 @@ window.indiciaFns = {};
    *   Date formatted.
    */
   indiciaFns.formatDate = function formatDate(dateString) {
+    var parts;
     var date;
     var month;
     var day;
     var year;
+
     if (typeof dateString === 'undefined' ||
         (typeof dateString === 'string' && dateString.trim() === '')) {
       return '';
     }
-    date = new Date(dateString);
-    month = (1 + date.getUTCMonth()).toString().padStart(2, '0');
-    day = date.getUTCDate().toString().padStart(2, '0');
-    year = date.getUTCFullYear().toString().padStart(4, '0');
+
+    if (typeof dateString === 'string' &&
+        /^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
+      parts = dateString.split('-');
+      year = parts[0];
+      month = parts[1];
+      day = parts[2];
+    }
+    else {
+      date = new Date(dateString);
+      month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      day = String(date.getUTCDate()).padStart(2, '0');
+      year = String(date.getUTCFullYear()).padStart(4, '0');
+    }
+
     return indiciaData.dateFormat
       .replace('d', day)
       .replace('m', month)
@@ -722,11 +735,18 @@ window.indiciaFns = {};
    */
   indiciaFns.changeLinkedParentSelect = function changeLinkedParentSelect(el, options) {
     var childSelect = $('#' + options.escapedId);
+    var childId = childSelect.attr('id');
     var parentSelect = $(el);
+    var restoredValues = indiciaData.restoredEsLocationFilterValues || {};
+    var hasRestoredValue = Object.prototype.hasOwnProperty.call(restoredValues, childId);
+    var restoringPageState = hasRestoredValue && typeof indiciaFns.beginPageStateRestoreOperation === 'function';
     var controlName;
     var ctrlLabel;
     if (parentSelect.val()) {
-      $.getJSON(options.request + '&' + options.query.replace('%22val%22', parentSelect.val()), function onResponse(data) {
+      if (restoringPageState) {
+        indiciaFns.beginPageStateRestoreOperation();
+      }
+      var request = $.getJSON(options.request + '&' + options.query.replace('%22val%22', parentSelect.val()), function onResponse(data) {
         childSelect.find('option').remove();
         if (data.length > 0) {
           childSelect.removeClass('ui-state-disabled');
@@ -737,7 +757,10 @@ window.indiciaFns = {};
           $.each(data, function eachData() {
             childSelect.append('<option value="' + this[options.valueField] + '">' + this[options.captionField] + '</option>');
           });
-          if (typeof indiciaData['default' + options.id] !== 'undefined') {
+          if (hasRestoredValue) {
+            childSelect.val(restoredValues[childId]);
+          }
+          if (!hasRestoredValue && typeof indiciaData['default' + options.id] !== 'undefined') {
             $(childSelect).find('option[value="' + indiciaData['default' + options.id] + '"]').attr('selected', true);
           }
         } else {
@@ -755,14 +778,19 @@ window.indiciaFns = {};
           }
           childSelect.addClass('ui-state-disabled').html('<option disabled>' + options.instruct + '</option>');
         }
-        childSelect.trigger('change');
+        delete restoredValues[childId];
+        childSelect.trigger('change', hasRestoredValue ? [{ deferPopulation: true, pageStateRestore: true }] : []);
       });
+      if (restoringPageState) {
+        request.always(indiciaFns.endPageStateRestoreOperation);
+      }
     } else {
       if (options.hideChildrenUntilLoaded) {
         childSelect.hide();
       }
       childSelect.addClass('ui-state-disabled').html('<option disabled>' + options.instruct + '</option>');
-      childSelect.trigger('change');
+      delete restoredValues[childId];
+      childSelect.trigger('change', hasRestoredValue ? [{ deferPopulation: true, pageStateRestore: true }] : []);
     }
   };
 

@@ -3,7 +3,7 @@
     if (indiciaData.logoPath && indiciaData.logoSelector) {
       var logoEl = $(indiciaData.logoSelector).first();
       // Find the main page logo and insert this after.
-      $('<img src="' + indiciaData.warehouseUrl + 'upload/' + indiciaData.logoPath + '" id="group-logo">')
+      $('<img src="' + indiciaData.warehouseUrl + 'upload/med-' + indiciaData.logoPath + '" id="group-logo">')
         .appendTo(logoEl);
     }
   });

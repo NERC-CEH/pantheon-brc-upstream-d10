@@ -95,6 +95,18 @@ class GroupLandingPagesSettingsForm extends ConfigFormBase {
       '#required' => FALSE,
     ];
 
+    $form['group_page_paths_excluded_from_links'] = [
+      '#type' => 'textarea',
+      '#title' => $this->t('Group page paths excluded from links'),
+      '#description' => $this->t(<<<TXT
+        Enter one page path per line without leading slash. These pages remain associated with
+        groups but are not shown in the group links block. An example usage is to block direct
+        access to the page used to link a group to an app.
+      TXT),
+      '#default_value' => implode("\n", $config->get('group_page_paths_excluded_from_links') ?? []),
+      '#required' => FALSE,
+    ];
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -102,6 +114,11 @@ class GroupLandingPagesSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
+    $excluded_paths = preg_split('/\R/', $form_state->getValue('group_page_paths_excluded_from_links'));
+    $excluded_paths = array_values(array_filter(array_map(function ($path) {
+      return trim(trim($path), '/');
+    }, $excluded_paths)));
+
     // Retrieve the configuration.
     $this->config(static::SETTINGS)
       // Set the submitted configuration settings.
@@ -112,6 +129,7 @@ class GroupLandingPagesSettingsForm extends ConfigFormBase {
       ->set('species_details_alias', $form_state->getValue('species_details_alias'))
       ->set('species_details_within_group_alias', $form_state->getValue('species_details_within_group_alias'))
       ->set('logo_selector', $form_state->getValue('logo_selector'))
+      ->set('group_page_paths_excluded_from_links', $excluded_paths)
       ->save();
 
     parent::submitForm($form, $form_state);

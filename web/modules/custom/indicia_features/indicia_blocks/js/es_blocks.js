@@ -187,13 +187,18 @@ jQuery(document).ready(function($) {
    */
   indiciaFns.handleRecordsByYearChartResponse = function(div, sourceSettings, response) {
     let chartData = [];
-    response.aggregations.by_year.buckets.forEach(function (w) {
+    let bucketsByYear = {};
+    response.aggregations.by_year.buckets.forEach(function (bucket) {
+      bucketsByYear[bucket.key] = bucket.doc_count;
+    });
+    let thisYear = new Date().getFullYear();
+    for (let year = thisYear - 10; year <= thisYear; year++) {
       chartData.push({
         taxon: 'foo',
-        period: w.key,
-        values: w.doc_count
+        period: year,
+        values: bucketsByYear[year] || 0
       });
-    });
+    }
     brccharts.temporal({
       selector: '#' + div.id,
       chartStyle: 'bar',

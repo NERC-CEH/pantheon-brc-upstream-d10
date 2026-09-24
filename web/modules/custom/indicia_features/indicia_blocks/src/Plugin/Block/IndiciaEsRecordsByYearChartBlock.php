@@ -52,10 +52,15 @@ class IndiciaEsRecordsByYearChartBlock extends IndiciaBlockBase {
         'by_year' => [
           'terms' => [
             'field' => 'event.year',
+            'size' => 11,
+            'order' => ['_key' => 'asc'],
           ],
         ],
       ],
       'filterBoolClauses' => $this->getFilterBoolClauses($config),
+      'numericFilters' => [
+        'event.year' => (date('Y') - 10) . '-' . date('Y'),
+      ],
     ]);
     $r .= \ElasticsearchReportHelper::customScript([
       'id' => 'recordsByYearChart-' . self::$blockCount,

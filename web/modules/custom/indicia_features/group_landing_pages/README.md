@@ -1,11 +1,11 @@
 Provides landing pages for groups (sometimes known as activities or projects). After installation,
 the landing page for any group can be found at the URL `/groups/<group title>`, where
 `<group title>` is replaced by the title of the group in lowercase and with spaces replaced by
-hyphens. Group landing pages arae themeable using the Drupal templating system and can include
+hyphens. Group landing pages are themeable using the Drupal templating system and can include
 various reports and data outputs built using group data as well as a blog of news about the group.
 
-If you are using this module to provide access to a public landing page for groups, that users who
-are not logged in can access, then ensure that you set the "Elasticsearch all records permission"
+If you are using this module to provide public landing pages for groups accessible to users who
+are not logged in, then ensure that you set the "Elasticsearch all records permission"
 setting on the Configuration > IForm settings page to access iform content and ensure that
 anonymous users have access to the access iform content permission on the People > Permissions
 page.
@@ -19,9 +19,9 @@ hooks:
 * `group_landing_page_progress` - the progress summary tab.
 * `group_landing_page_taxa` - the taxa/species information tab.
 
-Example templates are provided in the module's templates folder which describes the variables
-available in the header comment. Copy the required files to your theme's templates folders and
-modify them if you need a customised default group landing page template.
+Example templates are provided in the module's templates folder, and their header comments describe
+the variables available in the header comment. Copy the required files to your theme's templates
+folders and modify them if you need a customised default group landing page template.
 
 Theme suggestions are provided to allow you to create versions of the template file specific to
 certain group types, to container/contained groups, or specific to individual groups:
@@ -92,5 +92,5 @@ The Group Landing Pages module also provides the following blocks:
 * group_landing_pages_group_page_links - a list of links to pages related to the group which the
   user has access to.
 
-Refer to the provided template (templates/group-landing-page-overview.html.twig) for and example of
+Refer to the provided template (templates/group-landing-page-overview.html.twig) for an example of
 how to include the group blog entries view on the page.

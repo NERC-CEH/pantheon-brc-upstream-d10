@@ -9,6 +9,7 @@ use Drupal\Core\Entity\EntityFormBuilderInterface;
 use Drupal\node\Entity\Node;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 /**
  * A controller class for the group blog entry form.
@@ -55,12 +56,14 @@ class BlogFormController extends ControllerBase {
    */
   public function openModalBlogForm() {
     $response = new AjaxResponse();
+    $groupId = (int) $this->requestStack->getCurrentRequest()->query->get('group_id');
+    if (!$groupId || !group_landing_pages_can_post_blog($groupId)) {
+      throw new AccessDeniedHttpException();
+    }
 
     // Get the modal form using the form builder.
     $node = Node::create(['type' => 'group_blog']);
-    if (!empty($this->requestStack->getCurrentRequest()->query->get('group_id'))) {
-      $node->set('field_group_id', $this->requestStack->getCurrentRequest()->query->get('group_id'));
-    }
+    $node->set('field_group_id', $groupId);
     $form = $this->entityFormBuilder->getForm($node);
 
     // Add an AJAX command to open a modal dialog with the form as the content.
