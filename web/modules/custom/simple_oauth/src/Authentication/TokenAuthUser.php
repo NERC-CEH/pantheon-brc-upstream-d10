@@ -118,7 +118,7 @@ class TokenAuthUser implements TokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
-  public function access($operation, AccountInterface $account = NULL, $return_as_object = FALSE) {
+  public function access($operation, AccountInterface|null $account = NULL, $return_as_object = FALSE) {
     return $this->subject->access($operation, $account, $return_as_object);
   }
 

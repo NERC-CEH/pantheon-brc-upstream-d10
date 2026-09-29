@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "28ba6cb35d7587bb215318d2143b90e7",
+    "content-hash": "92f87751d7628a754c32bbde5c1c4009",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -9908,6 +9908,59 @@
             }
         },
         {
+            "name": "drupal/forum",
+            "version": "1.0.6",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/forum.git",
+                "reference": "1.0.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/forum-1.0.6.zip",
+                "reference": "1.0.6",
+                "shasum": "2a90c003d0966b9833c4ab0370008f3d0c5cf6fd"
+            },
+            "require": {
+                "drupal/core": "^10 || ^11",
+                "drupal/history": "*"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "1.0.6",
+                    "datestamp": "1773954131",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "andypost",
+                    "homepage": "https://www.drupal.org/user/118908"
+                },
+                {
+                    "name": "jepster_",
+                    "homepage": "https://www.drupal.org/user/786132"
+                },
+                {
+                    "name": "larowlan",
+                    "homepage": "https://www.drupal.org/user/395439"
+                }
+            ],
+            "description": "Provides discussion forums.",
+            "homepage": "https://www.drupal.org/project/forum",
+            "support": {
+                "source": "https://git.drupalcode.org/project/forum"
+            }
+        },
+        {
             "name": "drupal/galleriajs",
             "version": "1.2.0",
             "source": {
@@ -15511,6 +15564,56 @@
             }
         },
         {
+            "name": "drupal/responsivewrappers",
+            "version": "2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://git.drupalcode.org/project/responsivewrappers.git",
+                "reference": "2.1.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://ftp.drupal.org/files/projects/responsivewrappers-2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": "a3e79cc0e8ae8b14af4d16cc1bb459e842a47971"
+            },
+            "require": {
+                "drupal/core": "^10.3 || ^11 || ^12"
+            },
+            "type": "drupal-module",
+            "extra": {
+                "drupal": {
+                    "version": "2.1.0",
+                    "datestamp": "1787740016",
+                    "security-coverage": {
+                        "status": "covered",
+                        "message": "Covered by Drupal's security advisory policy"
+                    }
+                }
+            },
+            "notification-url": "https://packages.drupal.org/8/downloads",
+            "license": [
+                "GPL-2.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Oriol Roselló Castells",
+                    "homepage": "https://www.drupal.org/u/oriol_e9g",
+                    "role": "Maintainer"
+                },
+                {
+                    "name": "oriol_e9g",
+                    "homepage": "https://www.drupal.org/user/66422"
+                }
+            ],
+            "description": "Responsive bootstrap wrappers input content filter.",
+            "homepage": "https://www.drupal.org/project/responsivewrappers",
+            "support": {
+                "source": "https://git.drupalcode.org/project/responsivewrappers",
+                "issues": "https://www.drupal.org/project/issues/responsivewrappers"
+            }
+        },
+        {
             "name": "drupal/restui",
             "version": "1.22.0",
             "source": {
@@ -16065,69 +16168,6 @@
             "homepage": "https://www.drupal.org/project/show_email",
             "support": {
                 "source": "https://git.drupalcode.org/project/show_email"
-            }
-        },
-        {
-            "name": "drupal/shs",
-            "version": "2.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/shs.git",
-                "reference": "2.0.7"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/shs-2.0.7.zip",
-                "reference": "2.0.7",
-                "shasum": "fc7f8f3c5d76c190b58c7870b00822a7dd1ff712"
-            },
-            "require": {
-                "drupal/core": "^10.5 || ^11.1"
-            },
-            "require-dev": {
-                "drupal/chosen": "*"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "2.0.7",
-                    "datestamp": "1787321461",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "jhedstrom",
-                    "homepage": "https://www.drupal.org/user/208732"
-                },
-                {
-                    "name": "joseph.olstad",
-                    "homepage": "https://www.drupal.org/user/1321830"
-                },
-                {
-                    "name": "scottm316",
-                    "homepage": "https://www.drupal.org/user/259511"
-                },
-                {
-                    "name": "smulvih2",
-                    "homepage": "https://www.drupal.org/user/795442"
-                },
-                {
-                    "name": "stborchert",
-                    "homepage": "https://www.drupal.org/user/36942"
-                }
-            ],
-            "description": "Creates a simple hierarchical select widget for taxonomy fields.",
-            "homepage": "https://www.drupal.org/project/shs",
-            "support": {
-                "source": "https://git.drupalcode.org/project/shs"
             }
         },
         {

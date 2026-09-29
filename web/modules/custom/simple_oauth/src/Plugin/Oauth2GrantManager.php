@@ -133,7 +133,7 @@ class Oauth2GrantManager extends DefaultPluginManager implements Oauth2GrantMana
   /**
    * {@inheritdoc}
    */
-  public function getAuthorizationServer($grant_type, ConsumerInterface $client = NULL) {
+  public function getAuthorizationServer($grant_type, ConsumerInterface|null $client = NULL) {
     try {
       /** @var \Drupal\simple_oauth\Plugin\Oauth2GrantInterface $plugin */
       $plugin = $this->createInstance($grant_type);

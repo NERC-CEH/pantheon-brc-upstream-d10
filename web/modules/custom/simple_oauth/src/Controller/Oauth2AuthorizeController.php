@@ -209,7 +209,7 @@ class Oauth2AuthorizeController extends ControllerBase {
     AccountInterface $current_user,
     $can_grant_codes,
     $remembers_clients = FALSE,
-    KnownClientsRepositoryInterface $known_clients_repository = NULL
+    KnownClientsRepositoryInterface|null $known_clients_repository = NULL
   ) {
     // Once the user has logged in set the user on the AuthorizationRequest.
     $user_entity = new UserEntity();

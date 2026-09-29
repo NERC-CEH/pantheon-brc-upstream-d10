@@ -55,7 +55,6 @@
         "drupal/pathologic": "^2.0",
         "drupal/rules": "4.x",
         "drupal/serial": "2.1",
-        "drupal/shs": "^2.0",
         "drupal/sitemap": "^2.0",
         "drupal/typed_data": "^2.1",
         "drupal/views_base_url": "^2.1",
@@ -305,7 +304,9 @@
         "guzzlehttp/guzzle": "^7.0",
         "drupal/klaro_js": "^3.1",
         "drupal/user_registrationpassword": "^2.0",
-        "drupal/registration_role": "^2.0"
+        "drupal/registration_role": "^2.0",
+        "drupal/responsivewrappers": "^2.1",
+        "drupal/forum": "^1.0"
     },
     "conflict": {
         "drupal/drupal": "*"

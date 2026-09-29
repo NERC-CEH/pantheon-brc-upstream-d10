@@ -20,6 +20,6 @@ interface Oauth2GrantManagerInterface {
    * @return \League\OAuth2\Server\AuthorizationServer
    *   The authorization server.
    */
-  public function getAuthorizationServer($grant_type, ConsumerInterface $client = NULL);
+  public function getAuthorizationServer($grant_type, ConsumerInterface|null $client = NULL);
 
 }
