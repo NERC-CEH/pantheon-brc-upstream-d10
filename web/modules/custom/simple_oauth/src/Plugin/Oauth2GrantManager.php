@@ -113,7 +113,7 @@ class Oauth2GrantManager extends DefaultPluginManager implements Oauth2GrantMana
     AccessTokenRepositoryInterface $access_token_repository,
     RefreshTokenRepositoryInterface $refresh_token_repository,
     ConfigFactoryInterface $config_factory,
-    ResponseTypeInterface $response_type = NULL
+    ResponseTypeInterface|null $response_type = NULL
   ) {
     parent::__construct('Plugin/Oauth2Grant', $namespaces, $module_handler, 'Drupal\simple_oauth\Plugin\Oauth2GrantInterface', 'Drupal\simple_oauth\Annotation\Oauth2Grant');
 
