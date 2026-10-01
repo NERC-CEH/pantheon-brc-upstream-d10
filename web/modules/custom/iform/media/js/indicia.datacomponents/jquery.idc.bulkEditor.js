@@ -296,23 +296,23 @@
     let r = {};
     // Can't skip requirement to reverify changed records if the date or sref
     // change.
-    let canSkipReverify = $(el).find('[name="edit-date"]').val().trim() === ''
-        && $(el).find('[name="edit-sref"]').val().trim() === '';
-    if ($(el).find('[name="edit-recorder-name"]').val().trim() !== '') {
-      r.recorder_name = $(el).find('[name="edit-recorder-name"]').val().trim();
+    let canSkipReverify = $(el).find('[name="bulk-edit-date"]').val().trim() === ''
+        && $(el).find('[name="bulk-edit-sref"]').val().trim() === '';
+    if ($(el).find('[name="bulk-edit-recorder-name"]').val().trim() !== '') {
+      r.recorder_name = $(el).find('[name="bulk-edit-recorder-name"]').val().trim();
     }
-    if ($(el).find('[name="edit-location-name"]').val().trim() !== '') {
-      r.location_name = $(el).find('[name="edit-location-name"]').val().trim();
+    if ($(el).find('[name="bulk-edit-location-name"]').val().trim() !== '') {
+      r.location_name = $(el).find('[name="bulk-edit-location-name"]').val().trim();
     }
-    if ($(el).find('[name="edit-date"]').val().trim() !== '') {
-      r.date = dateToIso($(el).find('[name="edit-date"]').val());
+    if ($(el).find('[name="bulk-edit-date"]').val().trim() !== '') {
+      r.date = dateToIso($(el).find('[name="bulk-edit-date"]').val());
     }
-    if ($(el).find('[name="edit-sref"]').val().trim() !== '') {
-      r.sref = $(el).find('[name="edit-sref"]').val().trim();
-      r.sref_system = $(el).find('[name="edit-sref_system"]').val().trim();
+    if ($(el).find('[name="bulk-edit-sref"]').val().trim() !== '') {
+      r.sref = $(el).find('[name="bulk-edit-sref"]').val().trim();
+      r.sref_system = $(el).find('[name="bulk-edit-sref_system"]').val().trim();
     }
-    if ($(el).find('[name="append-comment"]').val().trim() !== '') {
-      r.append_comment = $(el).find('[name="append-comment"]').val().trim();
+    if ($(el).find('[name="bulk-edit-append-comment"]').val().trim() !== '') {
+      r.append_comment = $(el).find('[name="bulk-edit-append-comment"]').val().trim();
     }
     if ($(el).find('[name="skip-reverify"]:visible').prop('checked') && canSkipReverify) {
       r.skip_reverify = true;
@@ -327,7 +327,7 @@
    *   Dialog element.
    */
   function updateSkipReverifyVisibility(dlg) {
-    const hasDateOrSref = dlg.find('[name="edit-date"], [name="edit-sref"]').filter(function hasValue() {
+    const hasDateOrSref = dlg.find('[name="bulk-edit-date"], [name="bulk-edit-sref"]').filter(function hasValue() {
       return $(this).val().trim() !== '';
     }).length > 0;
     dlg.find('#ctrl-wrap-skip-reverify').css('visibility', hasDateOrSref ? 'hidden' : '');
@@ -492,7 +492,7 @@
     $(el).find('.bulk-edit-records-btn').on('click', bulkEditRecordsBtnClickHandler);
 
     const dlg = $('#' + $(el)[0].settings.id + '-dlg');
-    const dateOrSrefControls = dlg.find('[name="edit-date"], #edit-date\\:date, [name="edit-sref"]');
+    const dateOrSrefControls = dlg.find('[name="bulk-edit-date"], #bulk-edit-date\\:date, [name="bulk-edit-sref"]');
     dateOrSrefControls.on('input change', function updateSkipReverify() {
       window.setTimeout(function refreshSkipReverify() {
         updateSkipReverifyVisibility(dlg);
