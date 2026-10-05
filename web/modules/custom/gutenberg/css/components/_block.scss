@@ -1,0 +1,18 @@
+.wp-block {
+
+  &[data-align="wide"],
+  &[data-align="full"] {
+
+    img {
+      width: 100%;
+    }
+  }
+}
+
+// The block-library style.css sets display:block on .wp-block-social-link,
+// which causes the <li> to flex-stretch in the editor (where the parent lacks
+// the .wp-block-social-links ancestor that triggers the display:inline-block
+// override). Force inline-flex so the item sizes to its content in the editor.
+.wp-block-social-link {
+  display: inline-flex !important;
+}

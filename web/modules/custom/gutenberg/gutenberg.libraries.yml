@@ -1,0 +1,1189 @@
+react:
+  version: 18.3.1
+  js:
+    js/vendor/react.min.js:
+      minified: true
+react-dom:
+  version: 18.3.1
+  js:
+    js/vendor/react-dom.min.js:
+      minified: true
+lodash:
+  version: 4.17.21
+  js:
+    js/vendor/lodash.min.js:
+      preprocess: false
+      minified: true
+    js/lodash-deprecated.js: {  }
+  dependencies:
+    - gutenberg/deprecated
+moment:
+  version: 2.29.4
+  js:
+    js/vendor/moment.min.js:
+      minified: true
+sprintf:
+  version: 1.1.3
+  js:
+    js/vendor/sprintf.min.js:
+      minified: true
+regenerator-runtime:
+  version: 0.14.1
+  js:
+    js/vendor/regenerator-runtime.js: {  }
+polyfill:
+  version: 0.14.1
+  js:
+    js/vendor/regenerator-runtime.js: {  }
+admin:
+  js:
+    build/admin/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/admin/style-index.css: {  }
+claro:
+  js:
+    build/claro/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/claro/style-index.css: {  }
+gin:
+  js:
+    build/gin/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/gin/style-index.css: {  }
+  dependencies:
+    - gin/gin_base
+default-admin:
+  js:
+    build/default-admin/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/default-admin/style-index.css: {  }
+blocks-edit:
+  dependencies:
+    - gutenberg/drupal-editor
+  css: {  }
+  js: {  }
+blocks-view:
+  css:
+    base: {  }
+    theme: {  }
+  js: {  }
+drupal-block-settings:
+  js:
+    build/block-settings/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/data
+special-media-selection:
+  js:
+    build/special-media-selection/index.js:
+      minified: true
+      preprocess: false
+media-attributes:
+  js:
+    build/media-attributes/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/element
+    - gutenberg/hooks
+dashicons:
+  css:
+    theme:
+      js/vendor/dashicons/css/dashicons.css: {  }
+drupal.dialog.sidebar:
+  js:
+    build/sidebar/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/sidebar/style-index.css: {  }
+  dependencies:
+    - core/jquery
+    - core/once
+    - core/drupal
+    - core/drupal.ajax
+    - core/drupal.announce
+    - core/drupal.dialog
+    - core/drupal.dialog.ajax
+drupal-content-block-utils:
+  js:
+    build/content-block-utils/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/content-block-utils/style-index.css: {  }
+  dependencies:
+    - gutenberg/data
+interactivity:
+  js:
+    js/vendor/gutenberg/interactivity/index.min.js:
+      minified: true
+      preprocess: false
+a11y:
+  js:
+    js/vendor/gutenberg/a11y/index.js: {  }
+  dependencies:
+    - gutenberg/dom-ready
+    - gutenberg/i18n
+    - gutenberg/polyfill
+annotations:
+  js:
+    js/vendor/gutenberg/annotations/index.js: {  }
+  dependencies:
+    - gutenberg/data
+    - gutenberg/hooks
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/rich-text
+api-fetch:
+  js:
+    js/vendor/gutenberg/api-fetch/index.js: {  }
+    js/api-fetch.js: {  }
+  dependencies:
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+    - gutenberg/url
+    - core/jquery
+    - core/drupal
+autop:
+  js:
+    js/vendor/gutenberg/autop/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+blob:
+  js:
+    js/vendor/gutenberg/blob/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+block-directory:
+  js:
+    js/vendor/gutenberg/block-directory/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/block-directory/style.css: { preprocess: false, attributes: { id: wp-block-directory-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/api-fetch
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/editor
+    - gutenberg/element
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/notices
+    - gutenberg/plugins
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/theme
+    - gutenberg/url
+block-editor:
+  js:
+    js/vendor/gutenberg/block-editor/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/block-editor/content.css: { preprocess: false, attributes: { id: wp-block-editor-content-css } }
+      js/vendor/gutenberg/block-editor/default-editor-styles.css: {  }
+      js/vendor/gutenberg/block-editor/style.css: { preprocess: false, attributes: { id: wp-block-editor-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/blob
+    - gutenberg/block-serialization-default-parser
+    - gutenberg/blocks
+    - gutenberg/commands
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/date
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/global-styles-engine
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/image-cropper
+    - gutenberg/is-shallow-equal
+    - gutenberg/keyboard-shortcuts
+    - gutenberg/keycodes
+    - gutenberg/notices
+    - gutenberg/polyfill
+    - gutenberg/preferences
+    - gutenberg/primitives
+    - gutenberg/priority-queue
+    - gutenberg/private-apis
+    - gutenberg/rich-text
+    - gutenberg/style-engine
+    - gutenberg/theme
+    - gutenberg/token-list
+    - gutenberg/upload-media
+    - gutenberg/url
+    - gutenberg/warning
+block-library:
+  js:
+    js/vendor/gutenberg/block-library/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/block-library/classic.css: {  }
+      js/vendor/gutenberg/block-library/common.css: {  }
+      js/vendor/gutenberg/block-library/editor-elements.css: {  }
+      js/vendor/gutenberg/block-library/editor.css: { preprocess: false, attributes: { id: wp-edit-blocks-css } }
+      js/vendor/gutenberg/block-library/elements.css: {  }
+      js/vendor/gutenberg/block-library/style.css: { preprocess: false, attributes: { id: wp-block-library-css } }
+    base:
+      js/vendor/gutenberg/block-library/reset.css: { preprocess: false, attributes: { id: wp-reset-editor-styles-css } }
+    theme:
+      js/vendor/gutenberg/block-library/theme.css: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/api-fetch
+    - gutenberg/autop
+    - gutenberg/blob
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/date
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/escape-html
+    - gutenberg/global-styles-engine
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/keycodes
+    - gutenberg/latex-to-mathml
+    - gutenberg/notices
+    - gutenberg/patterns
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/rich-text
+    - gutenberg/server-side-render
+    - gutenberg/shortcode
+    - gutenberg/upload-media
+    - gutenberg/url
+    - gutenberg/wordcount
+block-serialization-default-parser:
+  js:
+    js/vendor/gutenberg/block-serialization-default-parser/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+block-serialization-spec-parser:
+  js:
+    js/vendor/gutenberg/block-serialization-spec-parser/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+blocks:
+  js:
+    js/vendor/gutenberg/blocks/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/autop
+    - gutenberg/blob
+    - gutenberg/block-serialization-default-parser
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/is-shallow-equal
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+    - gutenberg/rich-text
+    - gutenberg/shortcode
+    - gutenberg/warning
+commands:
+  js:
+    js/vendor/gutenberg/commands/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/commands/style.css: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/components
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/keyboard-shortcuts
+    - gutenberg/keycodes
+    - gutenberg/polyfill
+    - gutenberg/preferences
+    - gutenberg/primitives
+    - gutenberg/private-apis
+components:
+  js:
+    js/vendor/gutenberg/components/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/components/style.css: { preprocess: false, attributes: { id: wp-components-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/compose
+    - gutenberg/date
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/escape-html
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/is-shallow-equal
+    - gutenberg/keycodes
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/rich-text
+    - gutenberg/warning
+compose:
+  js:
+    js/vendor/gutenberg/compose/index.js: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-jsx-runtime
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/is-shallow-equal
+    - gutenberg/keycodes
+    - gutenberg/polyfill
+    - gutenberg/priority-queue
+    - gutenberg/private-apis
+core-commands:
+  js:
+    js/vendor/gutenberg/core-commands/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/commands
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/router
+    - gutenberg/url
+core-data:
+  js:
+    js/vendor/gutenberg/core-data/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/element
+    - gutenberg/global-styles-engine
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/is-shallow-equal
+    - gutenberg/notices
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/rich-text
+    - gutenberg/sync
+    - gutenberg/url
+    - gutenberg/warning
+data:
+  js:
+    js/vendor/gutenberg/data/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/compose
+    - gutenberg/deprecated
+    - gutenberg/element
+    - gutenberg/is-shallow-equal
+    - gutenberg/polyfill
+    - gutenberg/priority-queue
+    - gutenberg/private-apis
+    - gutenberg/redux-routine
+data-controls:
+  js:
+    js/vendor/gutenberg/data-controls/index.js: {  }
+  dependencies:
+    - gutenberg/api-fetch
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/polyfill
+date:
+  js:
+    js/vendor/gutenberg/date/index.js: {  }
+  dependencies:
+    - gutenberg/moment
+    - gutenberg/deprecated
+    - gutenberg/polyfill
+deprecated:
+  js:
+    js/vendor/gutenberg/deprecated/index.js: {  }
+  dependencies:
+    - gutenberg/hooks
+    - gutenberg/polyfill
+dom:
+  js:
+    js/vendor/gutenberg/dom/index.js: {  }
+  dependencies:
+    - gutenberg/deprecated
+    - gutenberg/polyfill
+dom-ready:
+  js:
+    js/vendor/gutenberg/dom-ready/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+editor:
+  js:
+    js/vendor/gutenberg/editor/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/editor/style.css: { preprocess: false, attributes: { id: wp-editor-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/api-fetch
+    - gutenberg/blob
+    - gutenberg/block-editor
+    - gutenberg/block-serialization-default-parser
+    - gutenberg/blocks
+    - gutenberg/commands
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/date
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/escape-html
+    - gutenberg/global-styles-engine
+    - gutenberg/global-styles-ui
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/keyboard-shortcuts
+    - gutenberg/keycodes
+    - gutenberg/media-editor
+    - gutenberg/media-fields
+    - gutenberg/media-utils
+    - gutenberg/notices
+    - gutenberg/patterns
+    - gutenberg/plugins
+    - gutenberg/polyfill
+    - gutenberg/preferences
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/rich-text
+    - gutenberg/server-side-render
+    - gutenberg/theme
+    - gutenberg/upload-media
+    - gutenberg/url
+    - gutenberg/viewport
+    - gutenberg/warning
+    - gutenberg/wordcount
+element:
+  js:
+    js/vendor/gutenberg/element/index.js: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/escape-html
+    - gutenberg/polyfill
+escape-html:
+  js:
+    js/vendor/gutenberg/escape-html/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+format-library:
+  js:
+    js/vendor/gutenberg/format-library/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/format-library/style.css: { preprocess: false, attributes: { id: wp-format-library-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/block-editor
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/latex-to-mathml
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/rich-text
+    - gutenberg/url
+global-styles-engine:
+  js:
+    js/vendor/gutenberg/global-styles-engine/index.js: {  }
+  dependencies:
+    - gutenberg/blocks
+    - gutenberg/data
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+    - gutenberg/style-engine
+global-styles-ui:
+  js:
+    js/vendor/gutenberg/global-styles-ui/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/global-styles-ui/style.css: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/api-fetch
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/date
+    - gutenberg/element
+    - gutenberg/global-styles-engine
+    - gutenberg/i18n
+    - gutenberg/keycodes
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/theme
+hooks:
+  js:
+    js/vendor/gutenberg/hooks/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+html-entities:
+  js:
+    js/vendor/gutenberg/html-entities/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+i18n:
+  js:
+    js/i18n.js: {  }
+    js/drupal-gutenberg-translations.js: {  }
+  dependencies:
+    - gutenberg/hooks
+    - gutenberg/polyfill
+    - gutenberg/sprintf
+icons:
+  js:
+    js/vendor/gutenberg/icons/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/element
+    - gutenberg/polyfill
+    - gutenberg/primitives
+image-cropper:
+  js:
+    js/vendor/gutenberg/image-cropper/index.js: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-jsx-runtime
+    - gutenberg/element
+    - gutenberg/polyfill
+interface:
+  js:
+    js/vendor/gutenberg/interface/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/interface/style.css: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/plugins
+    - gutenberg/polyfill
+    - gutenberg/preferences
+    - gutenberg/primitives
+    - gutenberg/viewport
+is-shallow-equal:
+  js:
+    js/vendor/gutenberg/is-shallow-equal/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+keyboard-shortcuts:
+  js:
+    js/vendor/gutenberg/keyboard-shortcuts/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/keycodes
+    - gutenberg/polyfill
+keycodes:
+  js:
+    js/vendor/gutenberg/keycodes/index.js: {  }
+  dependencies:
+    - gutenberg/i18n
+    - gutenberg/polyfill
+latex-to-mathml:
+  js:
+    js/vendor/gutenberg/latex-to-mathml/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+list-reusable-blocks:
+  js:
+    js/vendor/gutenberg/list-reusable-blocks/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/list-reusable-blocks/style.css: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/blob
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/polyfill
+media-editor:
+  js:
+    js/vendor/gutenberg/media-editor/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/media-editor/style.css: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/api-fetch
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/date
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/keyboard-shortcuts
+    - gutenberg/keycodes
+    - gutenberg/notices
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/theme
+media-fields:
+  js:
+    js/vendor/gutenberg/media-fields/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/media-fields/style.css: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/theme
+    - gutenberg/url
+media-utils:
+  js:
+    js/vendor/gutenberg/media-utils/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/media-utils/style.css: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/api-fetch
+    - gutenberg/blob
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/date
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/keycodes
+    - gutenberg/media-fields
+    - gutenberg/notices
+    - gutenberg/polyfill
+    - gutenberg/preferences
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/theme
+    - gutenberg/warning
+notices:
+  js:
+    js/vendor/gutenberg/notices/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/notices/style.css: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/components
+    - gutenberg/data
+    - gutenberg/polyfill
+nux:
+  js:
+    js/vendor/gutenberg/nux/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/nux/style.css: { preprocess: false, attributes: { id: wp-nux-css } }
+  dependencies:
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/polyfill
+patterns:
+  js:
+    js/vendor/gutenberg/patterns/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/patterns/style.css: { preprocess: false, attributes: { id: wp-patterns-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/notices
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/url
+plugins:
+  js:
+    js/vendor/gutenberg/plugins/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/compose
+    - gutenberg/deprecated
+    - gutenberg/element
+    - gutenberg/hooks
+    - gutenberg/is-shallow-equal
+    - gutenberg/polyfill
+    - gutenberg/primitives
+preferences:
+  js:
+    js/vendor/gutenberg/preferences/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/preferences/style.css: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/a11y
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/primitives
+    - gutenberg/private-apis
+preferences-persistence:
+  js:
+    js/vendor/gutenberg/preferences-persistence/index.js: {  }
+  dependencies:
+    - gutenberg/api-fetch
+    - gutenberg/polyfill
+primitives:
+  js:
+    js/vendor/gutenberg/primitives/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/element
+    - gutenberg/polyfill
+priority-queue:
+  js:
+    js/vendor/gutenberg/priority-queue/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+private-apis:
+  js:
+    js/vendor/gutenberg/private-apis/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+react-jsx-runtime:
+  js:
+    js/vendor/gutenberg/react-jsx-runtime/index.js: {  }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/polyfill
+redux-routine:
+  js:
+    js/vendor/gutenberg/redux-routine/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+reusable-blocks:
+  js:
+    js/vendor/gutenberg/reusable-blocks/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/reusable-blocks/style.css: { preprocess: false, attributes: { id: wp-reusable-blocks-css } }
+  dependencies:
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/polyfill
+rich-text:
+  js:
+    js/vendor/gutenberg/rich-text/index.js: {  }
+  dependencies:
+    - gutenberg/a11y
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/dom
+    - gutenberg/element
+    - gutenberg/escape-html
+    - gutenberg/i18n
+    - gutenberg/keycodes
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+router:
+  js:
+    js/vendor/gutenberg/router/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/compose
+    - gutenberg/element
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+    - gutenberg/url
+server-side-render:
+  js:
+    js/vendor/gutenberg/server-side-render/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/url
+shortcode:
+  js:
+    js/vendor/gutenberg/shortcode/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+style-engine:
+  js:
+    js/vendor/gutenberg/style-engine/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+sync:
+  js:
+    js/vendor/gutenberg/sync/index.js: {  }
+  dependencies:
+    - gutenberg/api-fetch
+    - gutenberg/hooks
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+theme:
+  js:
+    js/vendor/gutenberg/theme/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/compose
+    - gutenberg/deprecated
+    - gutenberg/element
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+token-list:
+  js:
+    js/vendor/gutenberg/token-list/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+undo-manager:
+  js:
+    js/vendor/gutenberg/undo-manager/index.js: {  }
+  dependencies:
+    - gutenberg/is-shallow-equal
+    - gutenberg/polyfill
+upload-media:
+  js:
+    js/vendor/gutenberg/upload-media/index.js: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/blob
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/polyfill
+    - gutenberg/private-apis
+    - gutenberg/url
+url:
+  js:
+    js/vendor/gutenberg/url/index.js: {  }
+    js/url.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+    - core/drupal
+viewport:
+  js:
+    js/vendor/gutenberg/viewport/index.js: {  }
+  dependencies:
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/polyfill
+warning:
+  js:
+    js/vendor/gutenberg/warning/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+widgets:
+  js:
+    js/vendor/gutenberg/widgets/index.js: {  }
+  css:
+    component:
+      js/vendor/gutenberg/widgets/style.css: {  }
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/notices
+    - gutenberg/polyfill
+    - gutenberg/primitives
+wordcount:
+  js:
+    js/vendor/gutenberg/wordcount/index.js: {  }
+  dependencies:
+    - gutenberg/polyfill
+drupal-block-library:
+  js:
+    build/block-library/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/drupal-components
+    - gutenberg/react-jsx-runtime
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/rich-text
+drupal-components:
+  js:
+    build/components/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/data
+    - gutenberg/editor
+    - gutenberg/element
+    - gutenberg/i18n
+drupal-sdc-blocks:
+  js:
+    build/sdc-blocks/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/drupal-components
+    - gutenberg/react-jsx-runtime
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/data
+    - gutenberg/element
+    - gutenberg/i18n
+    - core/jquery
+    - core/drupal
+drupal-editor:
+  js:
+    build/editor/index.js:
+      minified: true
+      preprocess: false
+  css:
+    theme:
+      build/editor/style-index.css: { preprocess: false, attributes: { id: edit-node-editor-css } }
+  dependencies:
+    - gutenberg/drupal-block-library
+    - gutenberg/drupal-sdc-blocks
+    - gutenberg/drupal-components
+    - gutenberg/drupal-filters
+    - gutenberg/drupal-media-attributes
+    - gutenberg/drupal-overrides
+    - gutenberg/drupal-plugins
+    - gutenberg/react-jsx-runtime
+    - gutenberg/commands
+    - gutenberg/core-commands
+    - gutenberg/dashicons
+    - gutenberg/data
+    - gutenberg/format-library
+    - gutenberg/preferences
+    - gutenberg/preferences-persistence
+    - gutenberg/special-media-selection
+    - gutenberg/media-attributes
+    - gutenberg/edit-entity
+    - gutenberg/editor
+    - gutenberg/blocks
+    - gutenberg/element
+    - gutenberg/block-editor
+    - gutenberg/notices
+    - gutenberg/lodash
+    - core/jquery
+    - core/drupal
+    - core/drupal.ajax
+    - core/drupalSettings
+    - core/once
+drupal-filters:
+  js:
+    build/filters/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/drupal-components
+    - gutenberg/react-jsx-runtime
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/data
+    - gutenberg/editor
+    - gutenberg/element
+    - gutenberg/hooks
+    - gutenberg/i18n
+    - gutenberg/plugins
+drupal-overrides:
+  js:
+    build/overrides/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/block-library
+    - gutenberg/blocks
+drupal-plugins:
+  js:
+    build/plugins/index.js:
+      minified: true
+      preprocess: false
+  dependencies:
+    - gutenberg/drupal-components
+    - gutenberg/react-jsx-runtime
+    - gutenberg/components
+    - gutenberg/data
+    - gutenberg/editor
+    - gutenberg/element
+    - gutenberg/i18n
+    - gutenberg/plugins
+edit-entity:
+  js:
+    build/edit-entity/index.js:
+      minified: true
+      preprocess: false
+  css:
+    component:
+      build/style-edit-entity/style-index.css: { preprocess: false, attributes: { id: wp-edit-post-css } }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/react-dom
+    - gutenberg/react-jsx-runtime
+    - gutenberg/api-fetch
+    - gutenberg/block-editor
+    - gutenberg/block-library
+    - gutenberg/blocks
+    - gutenberg/commands
+    - gutenberg/components
+    - gutenberg/compose
+    - gutenberg/core-data
+    - gutenberg/data
+    - gutenberg/deprecated
+    - gutenberg/editor
+    - gutenberg/element
+    - gutenberg/global-styles-engine
+    - gutenberg/hooks
+    - gutenberg/html-entities
+    - gutenberg/i18n
+    - gutenberg/keyboard-shortcuts
+    - gutenberg/keycodes
+    - gutenberg/notices
+    - gutenberg/plugins
+    - gutenberg/preferences
+    - gutenberg/primitives
+    - gutenberg/private-apis
+    - gutenberg/theme
+    - gutenberg/url
+    - gutenberg/widgets

@@ -1,0 +1,49 @@
+.media-entity-search-input {
+  margin: 0 !important;
+
+  input {
+    padding: 0 4px !important;
+    line-height: 28px !important;
+  }
+
+  @media (min-width: 600px) {
+
+    input {
+      width: 240px !important;
+    }
+  }
+}
+
+.wp-block-drupalmedia-drupal-media-entity {
+  margin-right: 0;
+  margin-left: 0;
+
+  figcaption {
+    text-align: center;
+  }
+
+  // Remote video (oEmbed) — make iframes responsive within the block.
+  // Reset explicit width/height attributes so aspect-ratio takes effect.
+  iframe {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border: 0;
+  }
+}
+
+// Overlay to prevent video/iframe interaction when the block is not selected.
+// Mirrors the pattern used by core/embed's interactive-overlay.
+.drupal-media-entity__content {
+  position: relative;
+}
+
+.drupal-media-entity__interactive-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}

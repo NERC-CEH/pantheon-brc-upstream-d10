@@ -1,0 +1,38 @@
+{%- set classes = ['card'] -%}
+{%- if highlighted -%}
+  {%- set classes = classes|merge(['card--highlighted']) -%}
+{%- endif -%}
+{%- if variant == 'horizontal' -%}
+  {%- set classes = classes|merge(['card--horizontal']) -%}
+{%- endif -%}
+{%- if tag -%}
+  {%- set classes = classes|merge(['card--tagged']) -%}
+{%- endif -%}
+
+<article class="{{ classes|join(' ') }}">
+  {% if tag %}
+    <span class="card__tag">{{ tag }}</span>
+  {% endif %}
+
+  {% block media %}
+    <div class="card__media">
+      {{ media }}
+    </div>
+  {% endblock %}
+
+  <div class="card__body">
+    {% if title %}
+      <h3 class="card__title">{{ title }}</h3>
+    {% endif %}
+
+    {% block content %}
+      <div class="card__content">
+        {{ content }}
+      </div>
+    {% endblock %}
+
+    {% if link_url and link_text %}
+      <a href="{{ link_url }}" class="card__link">{{ link_text }}</a>
+    {% endif %}
+  </div>
+</article>

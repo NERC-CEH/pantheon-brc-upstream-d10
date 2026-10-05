@@ -1,0 +1,13 @@
+card-v2:
+  js:
+    js/card-v2.js: {}
+  dependencies:
+    - gutenberg_test_block_api_v2/card-v2-style
+    - gutenberg/blocks
+    - gutenberg/block-editor
+    - gutenberg/element
+
+card-v2-style:
+  css:
+    theme:
+      css/card-v2.css: {}

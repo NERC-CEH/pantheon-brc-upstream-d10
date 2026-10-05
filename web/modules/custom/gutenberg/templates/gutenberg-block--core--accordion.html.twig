@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/accordion block.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the wrapper (includes data-wp-interactive
+ *   and data-wp-context directives added by the preprocess hook).
+ * - inner_content: Rendered inner blocks (the accordion items).
+ * - wrapper_tag: The HTML tag for the wrapper (typically 'div').
+ *
+ * @see template_preprocess_gutenberg_block__core__accordion()
+ *
+ * @ingroup themeable
+ */
+#}
+<{{ wrapper_tag }}{{ attributes }}>{{ inner_content }}</{{ wrapper_tag }}>

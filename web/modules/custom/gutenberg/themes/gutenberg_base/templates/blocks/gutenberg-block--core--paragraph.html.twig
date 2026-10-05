@@ -1,0 +1,14 @@
+{#
+/**
+ * @file
+ * Template for the core/paragraph block.
+ *
+ * Available variables:
+ *   - attributes: HTML attributes for the wrapper element (class, style, id…).
+ *   - inner_content: Paragraph text (without the block's own <p> wrapper).
+ *   - block_content: Full serialized block HTML including the <p> wrapper.
+ *   - block_name: The block name ('core/paragraph').
+ *   - block_attributes: Raw block attributes array from the editor.
+ */
+#}
+<p{{ attributes.addClass(block_attributes.dropCap ? 'has-drop-cap' : '') }}>{{ inner_content }}</p>

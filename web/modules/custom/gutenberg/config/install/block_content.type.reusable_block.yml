@@ -1,0 +1,10 @@
+langcode: en
+status: true
+dependencies:
+  enforced:
+    module:
+      - gutenberg
+id: reusable_block
+label: Pattern
+revision: false
+description: 'Build your pattern on Gutenberg editor and re-use it everywhere.'

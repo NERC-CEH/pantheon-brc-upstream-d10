@@ -1,0 +1,32 @@
+/* global Drupal, drupalSettings */
+
+function addQueryArgs(url, args) {
+  const esc = encodeURIComponent;
+  const qs = Object.keys(args)
+    .map(key => `${esc(key)}=${esc(args[key])}`)
+    .join('&');
+
+  if (url === 'edit.php') {
+    if (args && args.post_type === 'wp_block') {
+      return Drupal.url('admin/content/reusable-blocks');
+    }
+  } else if (url === 'post.php') {
+    if (args.post && args.action === 'edit') {
+      return Drupal.url(drupalSettings.path.currentPath);
+    }
+  }
+
+  url = `${url}?langcode=${drupalSettings.path.currentLanguage}`;
+
+  if (qs) {
+    if (url.indexOf('?') === -1) {
+      return `${url}?${qs}`;
+    }
+    return `${url}&${qs}`;
+  }
+
+  return url;
+}
+
+window.wp = window.wp || {};
+window.wp.url = { ...window.wp.url, addQueryArgs };

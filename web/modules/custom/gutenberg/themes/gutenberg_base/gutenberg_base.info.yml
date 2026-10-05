@@ -1,0 +1,27 @@
+name: Gutenberg Base
+type: theme
+base theme: stable9
+description: A complete base theme for Gutenberg-powered sites. Extend via child themes.
+core_version_requirement: ^10.3 || ^11 || ^12
+dependencies:
+  - gutenberg:gutenberg
+libraries:
+  - gutenberg_base/global
+  - gutenberg_base/dark-mode
+regions:
+  header: Header
+  primary_menu: Primary menu
+  secondary_menu: Secondary menu
+  search: Search
+  highlighted: Highlighted
+  breadcrumb: Breadcrumb
+  content_above: Content above
+  content: Content
+  sidebar: Sidebar
+  content_below: Content below
+  footer: Footer
+
+# Information added by Drupal.org packaging script on 2026-10-02
+version: '4.0.0-beta2+29-dev'
+project: 'gutenberg'
+datestamp: 1790941177

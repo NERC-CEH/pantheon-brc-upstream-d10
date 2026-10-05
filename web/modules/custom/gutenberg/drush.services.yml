@@ -1,0 +1,13 @@
+services:
+  gutenberg.stress_commands:
+    class: Drupal\gutenberg\Commands\GutenbergStressCommands
+    arguments:
+      - '@plugin.manager.gutenberg.library'
+      - '@plugin.manager.gutenberg.blocks_library'
+      - '@account_switcher'
+      - '@http_kernel'
+      - '@entity_type.manager'
+      - '@request_stack'
+      - '@form_builder'
+    tags:
+      - { name: drush.command }

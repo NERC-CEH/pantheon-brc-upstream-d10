@@ -1,0 +1,11 @@
+blocks:
+  js:
+    dist/blocks.js: {}
+  css:
+    layout:
+      dist/style-blocks.css: { weight: 100 }
+  dependencies:
+    - gutenberg/react
+    - gutenberg/block-editor
+    - gutenberg/blocks
+    - gutenberg/components

@@ -1,0 +1,17 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for a page title.
+ *
+ * Available variables:
+ * - title_attributes: HTML attributes for the page title element.
+ * - title_prefix: Additional output populated by modules.
+ * - title: The page title, for use in the actual content.
+ * - title_suffix: Additional output populated by modules.
+ */
+#}
+{{ title_prefix }}
+{% if title %}
+  <h1{{ title_attributes.addClass('page-title') }}>{{ title }}</h1>
+{% endif %}
+{{ title_suffix }}

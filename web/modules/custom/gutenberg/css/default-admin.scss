@@ -1,0 +1,43 @@
+// Core's Default Admin theme (core/themes/default_admin). Its primary color
+// follows the accent color picked in the theme settings (--accent-base).
+:root,
+[data-gin-accent] {
+  --wp-admin-theme-color: var(--admin-color-primary) !important;
+  --wp-admin-theme-color-darker-10: var(--admin-color-primary-hover) !important;
+  --wp-admin-theme-color-darker-20: var(--admin-color-primary-active) !important;
+  --wp-admin-border-width-focus: 2px;
+  --wp-components-color-accent: var(--wp-admin-theme-color) !important;
+  --wp-components-color-accent-inverted: #fff !important;
+  --wp-components-color-accent-darker-10: var(--wp-admin-theme-color-darker-10) !important;
+  --wp-components-color-accent-darker-20: var(--wp-admin-theme-color-darker-20) !important;
+}
+
+// Default Admin shows every single checkbox as a toggle (without the
+// .form-boolean--type-toggle class). Keep its size instead of the 18px
+// checkbox size from _sidebar-gutenberg-theme.scss, which squashes it into a
+// circle.
+.drupal-sidebar-panel .drupal-panel__content :not(.form-checkboxes) > .form-type--checkbox > input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 1.5rem;
+  margin-right: 0;
+}
+
+// The danger action link keeps its regular padding with .action-link--small.
+// Match the .button--small Save and Preview buttons next to it.
+.editor-header .drupal-form-actions .action-link--danger.action-link--small {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding-block: calc(var(--admin-space-2xs) + 2px);
+  padding-inline: var(--admin-space-s);
+  border-radius: var(--admin-radius-s);
+  font-size: var(--admin-font-size-2xs);
+
+  // The theme's base :any-link:hover color wins over the danger link's white
+  // hover text on the red background.
+  &:hover,
+  &:focus {
+    color: var(--admin-color-bg-surface);
+  }
+}

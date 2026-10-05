@@ -1,0 +1,125 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override to display a node.
+ *
+ * On its page, the node starts with a page header band (the back link, the
+ * title and the submitted line), unless the content places the title with an
+ * entity title block, e.g. as the heading of a Cover. The Gutenberg content
+ * renders in its own column, see field--text-long.html.twig.
+ *
+ * As a teaser, the node is a card: an optional image, then a tinted body
+ * with the title and the summary.
+ *
+ * Available variables:
+ * - node: The node entity with limited access to object properties and methods.
+ * - label: (optional) The title of the node.
+ * - content: All node items.
+ * - author_picture: The node author user entity, rendered using the "compact"
+ *   view mode.
+ * - date: (optional) Themed creation date field.
+ * - author_name: (optional) Themed author name field.
+ * - url: Direct URL of the current node.
+ * - display_submitted: Whether submission information should be displayed.
+ * - attributes: HTML attributes for the containing element.
+ * - title_attributes: Same as attributes, except applied to the main title tag.
+ * - content_attributes: Same as attributes, except applied to the main
+ *   content tag.
+ * - author_attributes: Same as attributes, except applied to the author of
+ *   the node tag.
+ * - title_prefix: Additional output populated by modules.
+ * - title_suffix: Additional output populated by modules.
+ * - view_mode: View mode; for example, "teaser" or "full".
+ * - teaser: Flag for the teaser state.
+ * - page: Flag for the full page state.
+ * - page_header: Whether to render the page header band with the title and
+ *   the back link (see gutenberg_base_preprocess_node()).
+ * - back_link: (optional) The url and the text of the link back to the parent
+ *   page, from the second level on, when page_header is set.
+ *
+ * @see \Drupal\node\Hook\NodeThemeHooks::preprocessNode()
+ */
+#}
+{%
+  set classes = [
+    'node',
+    'node--type-' ~ node.bundle|clean_class,
+    node.isPromoted() ? 'node--promoted',
+    node.isSticky() ? 'node--sticky',
+    not node.isPublished() ? 'node--unpublished',
+    view_mode ? 'node--view-mode-' ~ view_mode|clean_class,
+  ]
+%}
+
+{% if teaser %}
+  <article{{ attributes.addClass(classes) }}>
+    {# The image field of the standard Article content type, when it has a value. #}
+    {% set media = content.field_image|render %}
+    {% if media|trim %}
+      <div class="node__media">
+        {{ media }}
+      </div>
+    {% endif %}
+    <div class="node__body">
+      {{ title_prefix }}
+      <h3{{ title_attributes.addClass('node__title') }}>
+        <a href="{{ url }}" rel="bookmark">{{ label }}</a>
+      </h3>
+      {{ title_suffix }}
+      <div{{ content_attributes.addClass('node__summary') }}>
+        {{ content|without('field_image') }}
+      </div>
+    </div>
+  </article>
+{% else %}
+  <article{{ attributes.addClass(classes) }}>
+
+    {% if page_header %}
+      <header class="page-header">
+        <div class="container">
+          <div class="container-narrow page-header__inner">
+            {% if back_link %}
+              <a class="back-link" href="{{ back_link.url }}">
+                <span class="icon icon-arrow-left" aria-hidden="true"></span>{{ back_link.text }}
+              </a>
+            {% endif %}
+            {{ title_prefix }}
+            {# node__title and wp-block-post-title, like the title the editor shows: the global styles of core/post-title apply to both. #}
+            <h1{{ title_attributes.addClass('page-header__title', 'node__title', 'wp-block-post-title') }}>{{ label }}</h1>
+            {{ title_suffix }}
+            {% if display_submitted %}
+              <div class="node__meta">
+                {% if author_picture %}
+                  <div class="node__author-image">
+                    {{ author_picture }}
+                  </div>
+                {% else %}
+                  <span class="node__avatar" aria-hidden="true"></span>
+                {% endif %}
+                <span{{ author_attributes }}>
+                  {{ 'By'|t }} {{ author_name }}
+                </span>
+                <span aria-hidden="true">·</span>
+                <time>{{ date }}</time>
+                {{ metadata }}
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </header>
+    {% else %}
+      {{ title_prefix }}
+      {% if label and not page %}
+        <h2{{ title_attributes.addClass('node__title') }}>
+          <a href="{{ url }}" rel="bookmark">{{ label }}</a>
+        </h2>
+      {% endif %}
+      {{ title_suffix }}
+    {% endif %}
+
+    <div{{ content_attributes.addClass('node__content', page ? 'region-content') }}>
+      {{ content }}
+    </div>
+
+  </article>
+{% endif %}

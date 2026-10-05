@@ -1,0 +1,241 @@
+:root, [data-gin-accent] {
+  --wp-admin-theme-color: var(--gin-color-primary) !important;
+  --wp-admin-theme-color--rgb: var(--gin-color-primary-rgb) !important;
+  --wp-admin-theme-color-darker-10: color-mix(in srgb, var(--wp-admin-theme-color) 90%, #000) !important;
+  --wp-admin-theme-color-darker-20: color-mix(in srgb, var(--wp-admin-theme-color) 80%, #000) !important;
+  --wp-admin-border-width-focus: 2px;
+  --wp-components-color-accent: var(--wp-admin-theme-color) !important;
+  --wp-components-color-accent-inverted: #fff !important;
+  --wp-components-color-accent-darker-10: var(--wp-admin-theme-color-darker-10) !important;
+}
+
+:where(*) .gin-sticky-form-actions>.drupal-form-actions__menu,
+:is(#extra-specificity-hack, [data-drupal-admin-styles]) .gin-sticky-form-actions>.drupal-form-actions__menu {
+  margin-inline-start: var(--gin-spacing-xs) !important;
+}
+
+@media (min-width: 782px) {
+
+  .interface-interface-skeleton {
+    left: var(--drupal-displace-offset-left, var(--sidebar-width, 264px)) !important;
+    top: 0 !important;
+  }
+
+  .gin--horizontal-toolbar .interface-interface-skeleton {
+    left: 0 !important;
+    top: var(--gin-toolbar-height) !important;
+  }
+
+  .gin--classic-toolbar .interface-interface-skeleton {
+    left: 0 !important;
+    top: var(--gin-toolbar-y-offset) !important;
+  }
+
+  // The Navigation module's top bar stays above the editor.
+  body.gin--core-navigation:not(.is-fullscreen-mode) .interface-interface-skeleton {
+    top: var(--drupal-displace-offset-top, 0px) !important;
+  }
+}
+
+// Below 61em Gin's own toolbar (gin_toolbar) hides its sidebar behind a top
+// bar, but its hidden displace placeholder still reports the sidebar width.
+@media (max-width: 60.99em) {
+
+  body.gin--navigation:not(.is-fullscreen-mode) .interface-interface-skeleton {
+    top: var(--drupal-displace-offset-top, 0px) !important;
+    right: 0 !important;
+    left: 0 !important;
+  }
+}
+
+// With the Navigation module, Gin renders its sticky form actions in the top
+// bar. The editor header already has Save, Preview, Delete and a settings
+// sidebar toggle, so only keep the Published checkbox Gin moves there.
+.top-bar .gin-sticky-form-actions {
+
+  > .form-submit,
+  > .action-link,
+  > .meta-sidebar__trigger,
+  > .gin-tooltip {
+    display: none !important;
+  }
+}
+
+// Gin's top bar styles hide Delete in every .gin-sticky-form-actions, which
+// includes the editor header's actions.
+.editor-header .gin-sticky-form-actions [data-drupal-selector="edit-delete"] {
+  display: inline-block;
+}
+
+// Gin's buttons have no margin of their own.
+.editor-header .drupal-form-actions .gutenberg-header-settings .gin-sticky-form-actions {
+  gap: var(--gin-spacing-xs, 8px);
+}
+
+.edit-post-header {
+
+  .form-actions {
+    margin-block: 0;
+  }
+}
+
+.edit-post-layout {
+
+  fieldset:not(.fieldgroup) {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    > legend {
+      position: initial;
+
+      &.components-visually-hidden {
+        position: absolute;
+      }
+
+    }
+  }
+
+  &__metaboxes {
+
+    .accordion__item.more-settings {
+      width: 100%;
+    }
+  }
+}
+
+.edit-post-fullscreen-mode-close {
+
+  &.has-icon {
+    height: 61px !important;
+  }
+}
+
+// The admin theme puts its focus ring, a box-shadow, on every focused
+// element. The editor's controls have rings of their own, so only keep it on
+// the Drupal form elements: the form actions in the header, and the fields in
+// the sidebar, in "More settings" and in the settings of field blocks.
+.page-wrapper :focus:not(
+  .drupal-form-actions *,
+  .drupal-panel__content *,
+  .edit-post-layout__metaboxes *,
+  [data-gutenberg-field-widget] *
+) {
+  box-shadow: none !important;
+}
+
+// Sidebar width is now set globally in _sidebar.scss (380px).
+
+// Neutralize Gin form styles within Gutenberg sidebar panels.
+.drupal-sidebar-panel .drupal-panel__content {
+
+  .form-element {
+    border: 1px solid #949494;
+    border-radius: 2px;
+    background-color: #fff;
+    color: #1e1e1e;
+    min-height: 0;
+    padding: 8px;
+    font-size: 13px;
+
+    &:focus {
+      border-color: var(--wp-admin-theme-color);
+      box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+      outline: none;
+    }
+
+    &--type-select {
+      padding-right: 24px;
+    }
+  }
+
+  .form-item {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .form-item__label {
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  // Override Gin dark mode within sidebar panels.
+  .gin--dark-mode & {
+    color: #1e1e1e;
+
+    .form-element {
+      background-color: #fff;
+      color: #1e1e1e;
+      border-color: #949494;
+    }
+  }
+
+  .claro-details,
+  details.claro-details {
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: inherit;
+  }
+
+  .claro-details__summary,
+  .claro-details > .claro-details__summary {
+    display: none !important;
+  }
+
+  .claro-details__wrapper,
+  .claro-details > .claro-details__wrapper,
+  .details-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .form-boolean--type-toggle {
+    width: 36px;
+    height: 18px;
+    min-width: 36px;
+    background-color: #949494;
+    border: none;
+    border-radius: 9px;
+
+    &::before {
+      top: 3px;
+      left: 3px;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: none;
+    }
+
+    &::after {
+      display: none;
+    }
+
+    &:checked {
+      background-color: var(--wp-admin-theme-color);
+
+      &::before {
+        transform: translateX(18px);
+      }
+    }
+  }
+}
+
+// The danger action link keeps its regular padding with .action-link--small.
+// Match the .button--small Save and Preview buttons next to it.
+.editor-header .drupal-form-actions .action-link--danger.action-link--small {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2rem;
+  padding-block: calc(var(--gin-spacing-xxs) + 2px);
+  padding-inline: var(--gin-spacing-s);
+  border-radius: var(--gin-border-s);
+  font-size: var(--gin-font-size-xxs);
+}

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "92f87751d7628a754c32bbde5c1c4009",
+    "content-hash": "b179e89f089fe5be3a5f03d21645b2dc",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -2987,17 +2987,17 @@
         },
         {
             "name": "drupal/ai_content_suggestions",
-            "version": "1.5.0",
+            "version": "1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ai_content_suggestions.git",
-                "reference": "1.5.0"
+                "reference": "1.5.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ai_content_suggestions-1.5.0.zip",
-                "reference": "1.5.0",
-                "shasum": "edb60b1e8e4228a32539c5288b369f286eee1f9b"
+                "url": "https://ftp.drupal.org/files/projects/ai_content_suggestions-1.5.1.zip",
+                "reference": "1.5.1",
+                "shasum": "f7027db270a2185dde9c4374d72804d38126f107"
             },
             "require": {
                 "drupal/ai": "^1.4",
@@ -3007,8 +3007,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.5.0",
-                    "datestamp": "1783627222",
+                    "version": "1.5.1",
+                    "datestamp": "1790965412",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -10246,100 +10246,6 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/group",
                 "issues": "https://drupal.org/project/issues/group"
-            }
-        },
-        {
-            "name": "drupal/gutenberg",
-            "version": "3.0.6",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/gutenberg.git",
-                "reference": "3.0.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/gutenberg-3.0.6.zip",
-                "reference": "3.0.6",
-                "shasum": "1810358286a21c19269b34f1aec92a806b6f89ff"
-            },
-            "require": {
-                "drupal/core": "^9.5 || ^10 || ^11",
-                "ext-json": "*",
-                "php": ">=7.4"
-            },
-            "require-dev": {
-                "phpspec/prophecy-phpunit": "^2"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "3.0.6",
-                    "datestamp": "1737591143",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Marco Fernandes (marcofernandes)",
-                    "homepage": "https://www.drupal.org/u/marcofernandes"
-                },
-                {
-                    "name": "Thor Andre Gretland (thorandre)",
-                    "homepage": "https://www.drupal.org/u/thorandre"
-                },
-                {
-                    "name": "Roberto Ornelas (roborn)",
-                    "homepage": "https://www.drupal.org/u/roborn"
-                },
-                {
-                    "name": "codebymikey",
-                    "homepage": "https://www.drupal.org/u/codebymikey"
-                },
-                {
-                    "name": "Stephan Zeidler (szeidler)",
-                    "homepage": "https://www.drupal.org/u/szeidler"
-                },
-                {
-                    "name": "maciek.kaczmarski",
-                    "homepage": "https://www.drupal.org/user/3560153"
-                },
-                {
-                    "name": "marcofernandes",
-                    "homepage": "https://www.drupal.org/user/2127558"
-                },
-                {
-                    "name": "perandre",
-                    "homepage": "https://www.drupal.org/user/221337"
-                },
-                {
-                    "name": "roborn",
-                    "homepage": "https://www.drupal.org/user/139474"
-                },
-                {
-                    "name": "szeidler",
-                    "homepage": "https://www.drupal.org/user/767652"
-                },
-                {
-                    "name": "thorandre",
-                    "homepage": "https://www.drupal.org/user/223878"
-                },
-                {
-                    "name": "truls1502",
-                    "homepage": "https://www.drupal.org/user/325866"
-                }
-            ],
-            "description": "Drupal Gutenberg brings the powerful admin features of Gutenberg Editor to Drupal.",
-            "homepage": "https://www.drupal.org/project/gutenberg",
-            "support": {
-                "source": "https://git.drupalcode.org/project/gutenberg",
-                "issues": "https://www.drupal.org/project/issues/gutenberg"
             }
         },
         {
@@ -18517,52 +18423,6 @@
             }
         },
         {
-            "name": "drupal/view_user_email",
-            "version": "1.0.5",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/view_user_email.git",
-                "reference": "1.0.5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/view_user_email-1.0.5.zip",
-                "reference": "1.0.5",
-                "shasum": "5d6b0a05ad5330434d4b444d618f7f22b4798703"
-            },
-            "require": {
-                "drupal/core": "^8.0.0 || ^9 || ^10 || ^11"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "1.0.5",
-                    "datestamp": "1760920615",
-                    "security-coverage": {
-                        "status": "not-covered",
-                        "message": "Project has not opted into security advisory coverage!"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "David Loor (davo20019)",
-                    "homepage": "https://www.drupal.org/u/davo20019",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "Allow site administrator the ability to grant users of certain roles access to another users email address.",
-            "homepage": "https://www.drupal.org/project/view_user_email",
-            "support": {
-                "source": "http://cgit.drupalcode.org/view_user_email",
-                "issues": "https://www.drupal.org/project/issues/view_user_email"
-            }
-        },
-        {
             "name": "drupal/views_aggregator",
             "version": "2.1.1",
             "source": {
@@ -18979,17 +18839,17 @@
         },
         {
             "name": "drupal/views_bulk_operations",
-            "version": "4.4.8",
+            "version": "4.4.9",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/views_bulk_operations.git",
-                "reference": "4.4.8"
+                "reference": "4.4.9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-4.4.8.zip",
-                "reference": "4.4.8",
-                "shasum": "81f6500e31a618546f201ad9f9c909d66de8a6cd"
+                "url": "https://ftp.drupal.org/files/projects/views_bulk_operations-4.4.9.zip",
+                "reference": "4.4.9",
+                "shasum": "462c9401ed32f77d5f38d0a5304782737c3d2ab3"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11"
@@ -19000,8 +18860,8 @@
             "require-dev": {
                 "drupal/search_api": "^1.35",
                 "drush/drush": "^12 || ^13",
-                "phpstan/phpstan-deprecation-rules": "^1",
-                "phpstan/phpstan-strict-rules": "^1"
+                "phpstan/phpstan-deprecation-rules": "^1 || ^2",
+                "phpstan/phpstan-strict-rules": "^1 || ^2"
             },
             "suggest": {
                 "drush/drush": "^12 || ^13"
@@ -19009,8 +18869,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.4.8",
-                    "datestamp": "1788861318",
+                    "version": "4.4.9",
+                    "datestamp": "1790863781",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -20535,6 +20395,18 @@
             "time": "2026-09-28T17:51:46+00:00"
         },
         {
+            "name": "fonticonpicker/fonticonpicker",
+            "version": "v3.1.1",
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/fontIconPicker/fontIconPicker/releases/download/v3.1.1/fontIconPicker.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0 || ~2.0"
+            },
+            "type": "drupal-library"
+        },
+        {
             "name": "google/recaptcha",
             "version": "1.3.1",
             "source": {
@@ -21126,16 +20998,16 @@
         },
         {
             "name": "laminas/laminas-feed",
-            "version": "2.26.2",
+            "version": "2.26.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-feed.git",
-                "reference": "ff46114defd883d6f783acd39effc0dcd2a08055"
+                "reference": "86ce3b1ea7c5010413cb24c8d58530b084e8f901"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/ff46114defd883d6f783acd39effc0dcd2a08055",
-                "reference": "ff46114defd883d6f783acd39effc0dcd2a08055",
+                "url": "https://api.github.com/repos/laminas/laminas-feed/zipball/86ce3b1ea7c5010413cb24c8d58530b084e8f901",
+                "reference": "86ce3b1ea7c5010413cb24c8d58530b084e8f901",
                 "shasum": ""
             },
             "require": {
@@ -21203,7 +21075,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2026-09-14T21:00:46+00:00"
+            "time": "2026-10-03T12:45:16+00:00"
         },
         {
             "name": "laminas/laminas-stdlib",
@@ -31887,16 +31759,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.37",
+            "version": "9.6.38",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "aceaa623912caf8e80bffea22fc4103a0a01565f"
+                "reference": "8b5f757e8e92071bfdbfa93943f94f84c4e31007"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/aceaa623912caf8e80bffea22fc4103a0a01565f",
-                "reference": "aceaa623912caf8e80bffea22fc4103a0a01565f",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8b5f757e8e92071bfdbfa93943f94f84c4e31007",
+                "reference": "8b5f757e8e92071bfdbfa93943f94f84c4e31007",
                 "shasum": ""
             },
             "require": {
@@ -31970,7 +31842,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.37"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.38"
             },
             "funding": [
                 {
@@ -31978,7 +31850,7 @@
                     "type": "other"
                 }
             ],
-            "time": "2026-09-23T09:59:59+00:00"
+            "time": "2026-10-05T05:44:26+00:00"
         },
         {
             "name": "ramsey/collection",
@@ -33218,16 +33090,16 @@
         },
         {
             "name": "seld/phar-utils",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/phar-utils.git",
-                "reference": "990bbd0e92caa216d52eca0935f6e35e589bfaa5"
+                "reference": "65fb381613fd31745d39a740a112a233f978d2d9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/phar-utils/zipball/990bbd0e92caa216d52eca0935f6e35e589bfaa5",
-                "reference": "990bbd0e92caa216d52eca0935f6e35e589bfaa5",
+                "url": "https://api.github.com/repos/Seldaek/phar-utils/zipball/65fb381613fd31745d39a740a112a233f978d2d9",
+                "reference": "65fb381613fd31745d39a740a112a233f978d2d9",
                 "shasum": ""
             },
             "require": {
@@ -33260,9 +33132,9 @@
             ],
             "support": {
                 "issues": "https://github.com/Seldaek/phar-utils/issues",
-                "source": "https://github.com/Seldaek/phar-utils/tree/1.2.2"
+                "source": "https://github.com/Seldaek/phar-utils/tree/1.2.3"
             },
-            "time": "2026-08-01T12:48:55+00:00"
+            "time": "2026-10-01T08:16:23+00:00"
         },
         {
             "name": "seld/signal-handler",

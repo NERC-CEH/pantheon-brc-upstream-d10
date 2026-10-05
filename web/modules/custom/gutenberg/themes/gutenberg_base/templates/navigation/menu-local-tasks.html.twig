@@ -1,0 +1,22 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for primary and secondary local tasks.
+ *
+ * Available variables:
+ * - primary: HTML list items representing primary tasks.
+ * - secondary: HTML list items representing secondary tasks.
+ */
+#}
+{% if primary %}
+  <nav role="navigation" aria-label="{{ 'Primary tabs'|t }}">
+    <h2 class="visually-hidden">{{ 'Primary tabs'|t }}</h2>
+    <ul class="tabs tabs--primary">{{ primary }}</ul>
+  </nav>
+{% endif %}
+{% if secondary %}
+  <nav role="navigation" aria-label="{{ 'Secondary tabs'|t }}">
+    <h2 class="visually-hidden">{{ 'Secondary tabs'|t }}</h2>
+    <ul class="tabs tabs--secondary">{{ secondary }}</ul>
+  </nav>
+{% endif %}

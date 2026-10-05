@@ -1,0 +1,158 @@
+:root {
+  --wp-admin-theme-color: #003cc5 !important;
+  --wp-admin-theme-color--rgb: 0, 60, 197;
+  --wp-admin-theme-color-darker-10: #0036b1 !important;
+  --wp-admin-theme-color-darker-10--rgb: 0, 54, 177;
+  --wp-admin-theme-color-darker-20: #00339a !important;
+  --wp-admin-theme-color-darker-20--rgb: 0, 51, 154;
+  --wp-admin-border-width-focus: 2px;
+  --wp-components-color-accent: var(--wp-admin-theme-color) !important;
+  --wp-components-color-accent-inverted: #fff !important;
+  --wp-components-color-accent-darker-10: var(--wp-admin-theme-color-darker-10) !important;
+}
+
+.edit-post-header {
+
+  .form-actions {
+    margin-block: 0;
+  }
+}
+
+.edit-post-layout {
+
+  fieldset:not(.fieldgroup) {
+    padding: 0;
+    border: 0;
+    background: none;
+
+    > legend {
+      position: initial;
+
+      &.components-visually-hidden {
+        position: absolute;
+      }
+      
+    }
+  }
+
+  &__metaboxes {
+
+    .accordion__item.more-settings {
+      width: 100%;
+    }
+  }
+}
+
+.edit-post-fullscreen-mode-close {
+
+  &.has-icon {
+    height: 61px !important;
+  }
+}
+
+// The admin theme puts its focus ring, a box-shadow, on every focused
+// element. The editor's controls have rings of their own, so only keep it on
+// the Drupal form elements: the form actions in the header, and the fields in
+// the sidebar, in "More settings" and in the settings of field blocks.
+.page-wrapper :focus:not(
+  .drupal-form-actions *,
+  .drupal-panel__content *,
+  .edit-post-layout__metaboxes *,
+  [data-gutenberg-field-widget] *
+) {
+  box-shadow: none !important;
+}
+
+// Sidebar width is now set globally in _sidebar.scss (380px).
+
+// Neutralize Claro form styles within Gutenberg sidebar panels.
+.drupal-sidebar-panel .drupal-panel__content {
+
+  .form-element {
+    border: 1px solid #949494;
+    border-radius: 2px;
+    background-color: #fff;
+    color: #1e1e1e;
+    min-height: 0;
+    padding: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+
+    &:focus {
+      border-color: var(--wp-admin-theme-color, #007cba);
+      box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #007cba);
+      outline: none;
+    }
+
+    &--type-select {
+      padding-right: 24px;
+    }
+  }
+
+  .form-item {
+    margin-top: 0;
+    margin-bottom: 16px;
+  }
+
+  .form-item__label {
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .claro-details,
+  details.claro-details {
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: inherit;
+  }
+
+  .claro-details__summary,
+  .claro-details > .claro-details__summary {
+    display: none !important;
+  }
+
+  .claro-details__wrapper,
+  .claro-details > .claro-details__wrapper,
+  .details-wrapper {
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .form-boolean--type-toggle {
+    width: 36px;
+    height: 18px;
+    min-width: 36px;
+    background-color: #949494;
+    border: none;
+    border-radius: 9px;
+
+    &::before {
+      top: 3px;
+      left: 3px;
+      width: 12px;
+      height: 12px;
+      background: #fff;
+      border-radius: 50%;
+      box-shadow: none;
+    }
+
+    &::after {
+      display: none;
+    }
+
+    &:checked {
+      background-color: var(--wp-admin-theme-color, #007cba);
+
+      &::before {
+        transform: translateX(18px);
+      }
+    }
+  }
+}

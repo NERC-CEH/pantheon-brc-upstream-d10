@@ -1,0 +1,42 @@
+/* Synced from the Claude Design project (.design/theme/weight-light.css). Drupal adaptations are marked "Drupal:". */
+/* Light weight set — opt-in via data-weight="light" on <html>. Remove the attribute to revert.
+   Pairs the type with the logo's thin strokes: body 300, headings 400, emphasis/buttons 500. */
+[data-weight="light"] { --font-weight-regular: 300; --font-weight-medium: 400; --font-weight-semibold: 500; --font-weight-bold: 500; }
+[data-weight="light"] body { font-weight: 300; }
+[data-weight="light"] .u-head-xl,
+[data-weight="light"] .u-head-lg,
+[data-weight="light"] .u-head-md,
+[data-weight="light"] .u-head-sm,
+[data-weight="light"] .u-head-xs,
+[data-weight="light"] h1,
+[data-weight="light"] h2,
+[data-weight="light"] h3,
+[data-weight="light"] h4,
+[data-weight="light"] h5,
+[data-weight="light"] h6,
+[data-weight="light"] .page-title,
+[data-weight="light"] .page-header__title,
+[data-weight="light"] .site-branding__name,
+[data-weight="light"] .node--view-mode-teaser .node__title,
+[data-weight="light"] .link-card__title,
+[data-weight="light"] .wp-block-pullquote p,
+[data-weight="light"] .has-drop-cap:not(:focus)::first-letter,
+[data-weight="light"] .factbox__title,
+[data-weight="light"] .block__title,
+[data-weight="light"] fieldset > legend,
+[data-weight="light"] .fieldset__legend { font-weight: 400; }
+[data-weight="light"] .form-item__label,
+[data-weight="light"] .form-item > label,
+[data-weight="light"] .form-item__error-message,
+[data-weight="light"] .menu--main .menu__link.is-active,
+[data-weight="light"] .menu--sidebar .menu__link.is-active,
+[data-weight="light"] .tabs__link.is-active,
+[data-weight="light"] .messages__title,
+[data-weight="light"] .field__label,
+[data-weight="light"] .comment__avatar,
+[data-weight="light"] .comment__author,
+[data-weight="light"] .pager__item--current,
+[data-weight="light"] th,
+[data-weight="light"] .wp-block-search__label { font-weight: 400; }
+[data-weight="light"] :where(strong, b), [data-weight="light"] .button, [data-weight="light"] .form-submit, [data-weight="light"] .wp-block-button__link, [data-weight="light"] .wp-element-button { font-weight: 500; }
+[data-weight="light"] .button--link, [data-weight="light"] .form-type-checkbox > label, [data-weight="light"] .form-type-radio > label, [data-weight="light"] .site-branding__slogan { font-weight: 300; }

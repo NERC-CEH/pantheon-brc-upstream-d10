@@ -1,0 +1,21 @@
+# Libraries to be added to the node/entity edit form when using Gutenberg editor.
+libraries-edit:
+  - example_blocks/blocks
+# Libraries to be added to the node/entity view.
+libraries-view:
+  - example_blocks/blocks
+# Blocks which can be rendered server side using Twig templates.
+dynamic-blocks:
+  example-blocks/dynamic-card: {}
+
+# Add custom blocks to the following section.
+# The blocks defined here can be enabled or disabled for each content type.
+custom-blocks:
+  categories:
+    - reference: media # The category where the block will be added.
+      name: Media
+      blocks:
+        - id: example-blocks/card
+          name: Card
+        - id: example-blocks/dynamic-card
+          name: Dynamic Card

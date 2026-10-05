@@ -1,0 +1,21 @@
+{
+  "name": "example_blocks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "dev": "wp-scripts start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@wordpress/scripts": "^27.2.0"
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^12.19.1",
+    "@wordpress/blocks": "^12.28.1",
+    "@wordpress/components": "^26.0.1"
+  }
+}

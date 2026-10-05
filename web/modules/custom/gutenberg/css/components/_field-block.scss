@@ -1,0 +1,50 @@
+// Field block (drupal/field).
+
+// The widgets of fields placed in the content show in the block settings
+// sidebar, not in "More settings".
+.gutenberg-field-widget--placed:not(.gutenberg-field-widget--in-sidebar) {
+  display: none;
+}
+
+.drupal-field-block__widget {
+  // The title widget is hidden in the form when the title is edited in the
+  // canvas, but not in the block settings.
+  .gutenberg-field-widget--in-sidebar.hidden {
+    display: block;
+  }
+
+  input[type='text'],
+  input[type='email'],
+  input[type='number'],
+  input[type='tel'],
+  input[type='url'],
+  textarea,
+  select {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .form-item:first-child {
+    margin-top: 0;
+  }
+}
+
+.drupal-field-block__content {
+  position: relative;
+}
+
+.drupal-field-block__loading {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+// Empty rows of multi-value fields are for typing new values, while the block
+// is selected.
+.wp-block-drupal-field:not(.is-selected):not(.has-child-selected) .drupal-field-block__value.is-idle-hidden {
+  display: none;
+}

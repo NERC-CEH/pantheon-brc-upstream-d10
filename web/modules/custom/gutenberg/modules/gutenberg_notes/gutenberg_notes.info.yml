@@ -1,0 +1,14 @@
+name: Gutenberg Notes
+type: module
+description: 'Block-level commenting (Notes) for Gutenberg-enabled content types.'
+package: Gutenberg
+core_version_requirement: ^10.3 || ^11 || ^12
+php: 8.1
+dependencies:
+  - gutenberg:gutenberg
+  - drupal:comment
+
+# Information added by Drupal.org packaging script on 2026-10-02
+version: '4.0.0-beta2+29-dev'
+project: 'gutenberg'
+datestamp: 1790941177

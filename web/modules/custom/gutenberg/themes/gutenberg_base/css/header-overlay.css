@@ -1,0 +1,55 @@
+/**
+ * @file
+ * "Overlay the site header": a hero cover under a translucent site header.
+ *
+ * When the content of a node starts with a Cover block whose "Overlay the
+ * site header" option is on (see js/cover-header-overlay.js), and the title
+ * is placed in the content, so that no page header band renders above it,
+ * gutenberg_base.theme adds the has-header-overlay class to <body>. Then:
+ * - the sticky site header gets a translucent background while the page is
+ *   at the top (js/navigation.js adds is-scrolled otherwise), and stays
+ *   opaque while the menu panel hangs under it;
+ * - the cover is pulled up under the header by the height of the header,
+ *   and pads its content down by as much, so nothing hides behind it. The
+ *   regions between the header and the content take no space when they show
+ *   nothing, which is the case for visitors, and the content has no top
+ *   padding (both in css/theme/layout.css).
+ *
+ * The rules are off while something visible sits between the header and
+ * the content, which the cover would otherwise cover: status messages,
+ * right after saving, and the local tasks of editors. :has() is live: a
+ * message added later switches the layout back until it is dismissed.
+ *
+ * --header-overlay-alpha is the opacity of the header over the cover, for
+ * sub-themes to change.
+ */
+
+:root {
+  --header-overlay-alpha: 70%;
+}
+
+/* The translucent header. The opaque background first, as the fallback of browsers without color-mix(). */
+.has-header-overlay:not(:has(.messages, .tabs, .action-links)) .site-header {
+  background: var(--color-bg);
+  background: color-mix(in srgb, var(--color-bg) var(--header-overlay-alpha), transparent);
+  transition: transform var(--duration-slow), background var(--duration-base);
+}
+
+/* Opaque again once scrolled, and while the menu panel is open. */
+.has-header-overlay:not(:has(.messages, .tabs, .action-links)) .site-header:is(.is-scrolled, .is-open) {
+  background: var(--color-bg);
+}
+
+/*
+ * The cover under the header. The header keeps its z-index, so it paints
+ * over the cover. A cover with a minimum height of its own keeps it.
+ *
+ * "The first child that is not svg, style or script": blocks can render
+ * such elements before themselves, e.g. the SVG filter of a duotone, so the
+ * cover is not always the :first-child of the content.
+ */
+.has-header-overlay:not(:has(.messages, .tabs, .action-links)) .node__content > .layout-content:first-child > .wp-block-cover:nth-child(1 of :not(svg, style, script)) {
+  margin-top: calc(-1 * var(--header-height));
+  padding-top: calc(var(--header-height) + var(--space-7));
+  min-height: calc(28rem + var(--header-height));
+}

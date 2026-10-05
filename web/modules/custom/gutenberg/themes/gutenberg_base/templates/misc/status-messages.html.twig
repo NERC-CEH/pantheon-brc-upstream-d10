@@ -1,0 +1,61 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for status messages.
+ *
+ * Displays status, error, and warning messages, grouped by type, as flat
+ * tinted bars with an icon and a dismiss button (see js/messages.js).
+ *
+ * Available variables:
+ * - message_list: List of messages to be displayed, grouped by type.
+ * - status_headings: List of all status types.
+ * - attributes: HTML attributes for the element, including:
+ *   - class: HTML classes.
+ */
+#}
+{%
+  set icons = {
+    'status': 'circle-check',
+    'warning': 'triangle-alert',
+    'error': 'circle-alert',
+    'info': 'info',
+  }
+%}
+<div data-drupal-messages class="messages-list">
+  <div class="messages__wrapper">
+    {% for type, messages in message_list %}
+      {%
+        set classes = [
+          'messages',
+          'messages--' ~ type,
+        ]
+      %}
+      <div{{ attributes
+        .addClass(classes)
+        .setAttribute('data-drupal-selector', 'messages')
+        .setAttribute('role', type == 'error' ? 'alert' : 'status')
+        .setAttribute('aria-label', status_headings[type])
+      }}>
+        <span class="icon icon-{{ icons[type]|default('info') }} messages__icon" aria-hidden="true"></span>
+        <div class="messages__content">
+          {% if status_headings[type] %}
+            <h2 class="visually-hidden">{{ status_headings[type] }}</h2>
+          {% endif %}
+          {% if messages|length > 1 %}
+            <ul class="messages__list">
+              {% for message in messages %}
+                <li class="messages__item">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            {{ messages|first }}
+          {% endif %}
+        </div>
+        <button class="messages__dismiss" type="button" aria-label="{{ 'Dismiss'|t }}">
+          <span class="icon icon-x" aria-hidden="true"></span>
+        </button>
+      </div>
+      {% set attributes = attributes.removeClass(classes) %}
+    {% endfor %}
+  </div>
+</div>

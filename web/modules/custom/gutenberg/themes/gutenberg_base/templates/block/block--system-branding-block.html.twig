@@ -1,0 +1,38 @@
+{% extends "block.html.twig" %}
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for a branding block.
+ *
+ * The branding is one link to the front page: the logo, then the site name
+ * with the slogan under it. The default logo of the theme is inlined, so that
+ * it follows the text color (see gutenberg_base_preprocess_block()).
+ *
+ * Each branding element variable (logo, name, slogan) is only available if
+ * enabled in the block configuration.
+ *
+ * Available variables:
+ * - site_logo: Logo for site as defined in Appearance or theme settings.
+ * - site_logo_inline: The default logo of the theme as inline SVG, if used.
+ * - site_name: Name for site as defined in Site information settings.
+ * - site_slogan: Slogan for site as defined in Site information settings.
+ */
+#}
+{% set attributes = attributes.addClass('block--branding') %}
+{% block content %}
+  <a class="site-branding" href="{{ path('<front>') }}" rel="home" title="{{ 'Home'|t }}">
+    {% if site_logo_inline %}
+      {{ site_logo_inline }}
+    {% elseif site_logo %}
+      <img class="site-branding__logo" src="{{ site_logo }}" alt="" fetchpriority="high" />
+    {% endif %}
+    {% if site_name or site_slogan %}
+      <span class="site-branding__name">
+        {{ site_name }}
+        {% if site_slogan %}
+          <span class="site-branding__slogan">{{ site_slogan }}</span>
+        {% endif %}
+      </span>
+    {% endif %}
+  </a>
+{% endblock %}

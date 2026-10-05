@@ -1,0 +1,27 @@
+langcode: en
+status: true
+dependencies:
+  config:
+    - block_content.type.reusable_block
+    - field.field.block_content.reusable_block.field_pattern_category
+    - field.field.block_content.reusable_block.field_pattern_sync_status
+  module:
+    - gutenberg
+  enforced:
+    module:
+      - gutenberg
+id: block_content.reusable_block.default
+targetEntityType: block_content
+bundle: reusable_block
+mode: default
+content:
+  field_pattern_category:
+    type: entity_reference_label
+    label: hidden
+    settings:
+      link: false
+    third_party_settings: {  }
+    weight: 0
+    region: content
+hidden:
+  field_pattern_sync_status: true

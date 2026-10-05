@@ -1,0 +1,71 @@
+.gutenberg__editor {
+  position: relative;
+
+  * {
+    box-sizing: border-box;
+
+    &:focus {
+      outline-width: 0;
+    }
+  }
+
+  .block-gutenberg{
+    pointer-events: none;
+  }
+}
+
+// Seven theme is a bit aggressive regarding font size
+.block-editor-block-list__layout {
+  // font-family: 'serif';
+  // font-size: 16px;
+
+  &.is-root-container {
+    padding-top: 40px;
+  }
+}
+
+// When the title is shown in the editor, space it from the content with the
+// block gap, as the title is spaced from the blocks on the frontend, instead
+// of the h1's default margin plus the root container's padding.
+.editor-visual-editor__post-title-wrapper:not(:empty) {
+
+  > .editor-post-title {
+    margin-bottom: 0;
+  }
+
+  + .block-editor-block-list__layout.is-root-container {
+    padding-top: var(--wp--style--block-gap, 1.5rem);
+  }
+}
+
+.block-editor-block-card__content {
+  line-height: 1;
+}
+
+// Fit the (non-fullscreen) editor between the Drupal admin chrome. Both the
+// classic Toolbar and the Navigation module (sidebar + top bar) register
+// themselves with Drupal.displace(), which keeps these custom properties in
+// sync as trays open, the sidebar expands or the viewport resizes.
+body:not(.is-fullscreen-mode) .interface-interface-skeleton {
+  top: var(--drupal-displace-offset-top, 0px);
+  right: var(--drupal-displace-offset-right, 0px);
+  bottom: var(--drupal-displace-offset-bottom, 0px);
+  left: var(--drupal-displace-offset-left, 0px);
+  // Follow the Navigation sidebar's expand/collapse animation.
+  transition: left var(--admin-toolbar-transition, 0s),
+    right var(--admin-toolbar-transition, 0s);
+}
+
+// Below its standard breakpoint the classic Toolbar's vertical tray overlays
+// the page instead of pushing it (no .toolbar-fixed), but it still reports
+// its width as a left/right offset.
+body.toolbar-vertical.toolbar-tray-open:not(.toolbar-fixed):not(.is-fullscreen-mode) .interface-interface-skeleton {
+  right: 0;
+  left: 0;
+}
+
+ul.block-editor-block-navigation__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}

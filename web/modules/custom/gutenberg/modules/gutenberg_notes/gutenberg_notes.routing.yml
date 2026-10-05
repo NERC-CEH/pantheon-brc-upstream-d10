@@ -1,0 +1,50 @@
+gutenberg_notes.list:
+  path: '/editor/notes/{entity_type}/{entity_id}'
+  defaults:
+    _controller: '\Drupal\gutenberg_notes\Controller\NotesController::listNotes'
+  methods: [GET]
+  requirements:
+    _permission: 'use gutenberg notes'
+  options:
+    parameters:
+      entity_id:
+        type: integer
+
+gutenberg_notes.create:
+  path: '/editor/notes/{entity_type}/{entity_id}'
+  defaults:
+    _controller: '\Drupal\gutenberg_notes\Controller\NotesController::createNote'
+  methods: [POST]
+  requirements:
+    _permission: 'use gutenberg notes'
+    _csrf_request_header_token: 'TRUE'
+  options:
+    parameters:
+      entity_id:
+        type: integer
+
+gutenberg_notes.update:
+  path: '/editor/notes/{comment_id}'
+  defaults:
+    _controller: '\Drupal\gutenberg_notes\Controller\NotesController::updateNote'
+  methods: [PUT]
+  requirements:
+    _permission: 'use gutenberg notes'
+    _csrf_request_header_token: 'TRUE'
+  options:
+    parameters:
+      comment_id:
+        type: integer
+
+gutenberg_notes.delete:
+  path: '/editor/notes/{comment_id}'
+  defaults:
+    _controller: '\Drupal\gutenberg_notes\Controller\NotesController::deleteNote'
+  methods: [DELETE]
+  requirements:
+    _permission: 'use gutenberg notes'
+    _csrf_request_header_token: 'TRUE'
+  options:
+    parameters:
+      comment_id:
+        type: integer

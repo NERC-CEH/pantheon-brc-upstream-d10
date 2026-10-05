@@ -1,0 +1,7 @@
+langcode: en
+status: true
+dependencies: {  }
+name: 'Pattern Categories'
+vid: pattern_categories
+description: 'Categories used for Gutenberg patterns.'
+weight: 0

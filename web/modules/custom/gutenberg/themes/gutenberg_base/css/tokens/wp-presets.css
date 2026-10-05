@@ -1,0 +1,45 @@
+/* Synced from the Claude Design project (.design/tokens/wp-presets.css). Drupal adaptations are marked "Drupal:". */
+/* Gutenberg preset aliases. Editor-generated classes (.has-*-color, .has-*-font-size)
+   and theme.json-driven blocks resolve through these names. */
+body { /* Drupal: on body, not :root, to beat the module's generated body { --wp--preset-* } declarations */
+  --wp--preset--color--base: var(--color-bg);
+  --wp--preset--color--contrast: var(--color-text);
+  --wp--preset--color--muted: var(--color-text-muted);
+  --wp--preset--color--surface: var(--color-surface-muted);
+  --wp--preset--color--border: var(--color-border);
+  --wp--preset--color--accent: var(--color-accent);
+  --wp--preset--color--accent-subtle: var(--color-accent-subtle);
+  --wp--preset--color--tint: var(--color-tint);
+  --wp--preset--color--tint-strong: var(--color-tint-strong);
+  --wp--preset--color--tint-alt: var(--color-tint-alt);
+  --wp--preset--color--tint-alt-strong: var(--color-tint-alt-strong);
+  --wp--preset--color--inverse: var(--color-surface-inverse);
+
+  /* Gradients — built from semantic tokens so they follow the active scheme */
+  --wp--preset--gradient--tint-to-base: linear-gradient(180deg, var(--color-tint) 0%, var(--color-bg) 100%);
+  --wp--preset--gradient--tint-to-secondary: linear-gradient(135deg, var(--color-tint) 0%, var(--color-tint-alt) 100%);
+  --wp--preset--gradient--primary-deep: linear-gradient(135deg, var(--color-surface-inverse) 0%, var(--color-accent-hover) 100%);
+  --wp--preset--gradient--scrim-bottom: linear-gradient(180deg, rgb(0 0 0 / 0) 35%, rgb(0 0 0 / 0.75) 100%);
+
+  --wp--preset--font-family--sans: var(--font-sans);
+  --wp--preset--font-family--mono: var(--font-mono);
+
+  --wp--preset--font-size--small: var(--font-size-small);
+  --wp--preset--font-size--medium: var(--font-size-medium);
+  --wp--preset--font-size--large: var(--font-size-large);
+  --wp--preset--font-size--x-large: var(--font-size-x-large);
+  --wp--preset--font-size--xx-large: var(--font-size-xx-large);
+  --wp--preset--font-size--huge: var(--font-size-huge);
+
+  --wp--preset--spacing--20: var(--space-2);
+  --wp--preset--spacing--30: var(--space-3);
+  --wp--preset--spacing--40: var(--space-4);
+  --wp--preset--spacing--50: var(--space-5);
+  --wp--preset--spacing--60: var(--space-6);
+  --wp--preset--spacing--70: var(--space-7);
+  --wp--preset--spacing--80: var(--space-8);
+
+  --wp--style--global--content-size: var(--content-size);
+  --wp--style--global--wide-size: var(--wide-size);
+  --wp--style--block-gap: var(--block-gap);
+}

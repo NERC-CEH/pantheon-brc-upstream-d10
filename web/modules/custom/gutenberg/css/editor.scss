@@ -1,0 +1,19 @@
+@import './base/variables';
+@import './components/node-form';
+@import './components/edit-post';
+@import './components/block-editor';
+@import './components/sidebar';
+@import './components/sidebar-gutenberg-theme';
+@import './components/block';
+@import './components/layout';
+@import './components/media-entity';
+@import './components/ui-dialog';
+@import './components/media-browser';
+@import './components/media-entity-browser';
+@import './components/drupal-block';
+@import './components/sdc-slot';
+@import './components/field-block';
+
+input, textarea {
+  box-sizing: border-box;
+}

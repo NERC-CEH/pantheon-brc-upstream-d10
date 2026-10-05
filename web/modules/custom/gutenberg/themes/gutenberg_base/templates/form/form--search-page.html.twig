@@ -1,0 +1,29 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for the form of a search page.
+ *
+ * Like a node page, a search page starts with a page header band: the title,
+ * with the searched keywords, the number of results and the search form. The
+ * results follow it in the narrow column (see css/theme/drupal.css).
+ *
+ * Available variables, besides those of form.html.twig:
+ * - search_title: The title of the page.
+ * - search_count: (optional) The number of results.
+ *
+ * @see gutenberg_base_preprocess_form__search_page()
+ */
+#}
+<div class="page-header">
+  <div class="container">
+    <div class="container-narrow page-header__inner">
+      <h1 class="page-header__title">{{ search_title }}</h1>
+      {% if search_count %}
+        <p class="page-header__lead">{{ search_count }}</p>
+      {% endif %}
+      <form{{ attributes }}>
+        {{ children }}
+      </form>
+    </div>
+  </div>
+</div>

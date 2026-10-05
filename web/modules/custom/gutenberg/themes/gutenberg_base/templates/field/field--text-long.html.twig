@@ -1,0 +1,56 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for a long text field.
+ *
+ * The Gutenberg content column: the blocks are direct children of the
+ * .layout-content element, which constrains them to the content width, and
+ * lets wide and full blocks out (see css/theme/layout.css).
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the containing element.
+ * - label_hidden: Whether to show the field label or not.
+ * - title_attributes: HTML attributes for the title.
+ * - label: The label for the field.
+ * - multiple: TRUE if a field can contain multiple items.
+ * - items: List of all the field items. Each item contains:
+ *   - attributes: List of HTML attributes for each item.
+ *   - content: The field item's content.
+ *
+ * @see template_preprocess_field()
+ */
+#}
+{# A teaser shows the field inside a card, not as the content column. #}
+{%
+  set classes = element['#view_mode'] == 'teaser' ? [] : [
+    'layout-content',
+    'entry-content',
+    'is-layout-constrained',
+  ]
+%}
+{%
+  set title_classes = [
+    'field__label',
+    label_display == 'visually_hidden' ? 'visually-hidden',
+  ]
+%}
+{% if label_hidden %}
+  {% if multiple %}
+    <div{{ attributes }}>
+      {% for item in items %}
+        <div{{ item.attributes.addClass(classes) }}>{{ item.content }}</div>
+      {% endfor %}
+    </div>
+  {% else %}
+    {% for item in items %}
+      <div{{ attributes.addClass(classes) }}>{{ item.content }}</div>
+    {% endfor %}
+  {% endif %}
+{% else %}
+  <div{{ attributes }}>
+    <div{{ title_attributes.addClass(title_classes) }}>{{ label }}</div>
+    {% for item in items %}
+      <div{{ item.attributes.addClass(classes) }}>{{ item.content }}</div>
+    {% endfor %}
+  </div>
+{% endif %}

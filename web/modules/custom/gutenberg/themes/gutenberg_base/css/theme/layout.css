@@ -1,0 +1,79 @@
+/* Synced from the Claude Design project (.design/theme/layout.css). Drupal adaptations are marked "Drupal:". */
+/* Containers + Gutenberg layout */
+.container { width: 100%; max-width: var(--page-max); margin-inline: auto; padding-inline: var(--gutter); }
+.container-narrow { width: 100%; max-width: var(--content-size); margin-inline: auto; }
+.container > .container-narrow { padding-inline: 0; }
+
+/* Constrained layout: children sit at content width; .alignwide = container; .alignfull = bleed */
+.is-layout-constrained > *, .layout-content > * { max-width: var(--content-size); margin-inline: auto; }
+.is-layout-constrained > .alignwide, .layout-content > .alignwide { max-width: calc(var(--wide-size) - 2 * var(--gutter)); }
+.is-layout-constrained > .alignfull, .layout-content > .alignfull { max-width: none; }
+.layout-content { padding-inline: var(--gutter); }
+.layout-content > .alignfull { margin-inline: calc(var(--gutter) * -1); }
+.alignfull > .wp-element-caption, .alignfull > figcaption { padding-inline: var(--gutter); }
+
+/* Prose: fluid step-3 body, 1.7 line-height (source .u-wysiwyg) */
+.layout-content, .u-wysiwyg { font-size: var(--step-3); line-height: 1.7; }
+
+/* Prose rhythm (u-wysiwyg / flow layout): adjacent siblings get the gap; headings pull extra space above */
+.is-layout-flow > * + *, .layout-content > * + * { margin-block-start: var(--block-gap); }
+.layout-content > h2, .is-layout-flow > h2 { margin-block-start: var(--step-8); }
+.layout-content > h3, .is-layout-flow > h3 { margin-block-start: var(--step-7); }
+.layout-content > h4, .is-layout-flow > h4 { margin-block-start: var(--step-6); }
+.layout-content > :is(h2, h3, h4) + *, .is-layout-flow > :is(h2, h3, h4) + * { margin-block-start: var(--step-2); }
+.layout-content > h2 + h3, .layout-content > h3 + h4 { margin-block-start: var(--step-3); }
+.layout-content > :is(figure, .wp-block-quote, .wp-block-pullquote, .factbox), .is-layout-flow > :is(figure, .wp-block-quote) { margin-block: var(--step-7); }
+.layout-content > :first-child, .is-layout-flow > :first-child { margin-block-start: 0; }
+
+.is-layout-flex { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
+.is-layout-grid { display: grid; gap: var(--card-gap); grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr)); }
+.alignleft { float: left; margin-inline-end: var(--space-5); }
+.alignright { float: right; margin-inline-start: var(--space-5); }
+.aligncenter { margin-inline: auto; }
+
+/* Page */
+.page-wrapper { min-height: 100vh; display: flex; flex-direction: column; }
+.page-wrapper > main { flex: 1; }
+.region-content { padding-block: var(--space-7) var(--space-block-lg); }
+.region-highlighted { padding-top: var(--space-5); }
+
+/* Section = full-width band that holds a heading row + content. Builder spacing between sections. */
+.section { padding-block: var(--space-section); }
+.section--tint { background: var(--color-tint); color: var(--color-tint-text); }
+.section--alt { background: var(--color-tint-alt); color: var(--color-tint-alt-text); }
+.section--alt .node__body, .section--alt .link-card { --color-tint: var(--color-bg); --color-tint-strong: var(--color-tint-alt-strong); }
+.section--muted { background: var(--color-surface-muted); }
+.section--inverse { background: var(--color-surface-inverse); color: var(--color-text-inverse); }
+.section--inverse a { color: inherit; }
+.section__head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: var(--space-2) var(--space-5); margin-bottom: var(--space-7); }
+.section__head h2 { font-size: var(--step-7); }
+.section__link { font-size: var(--step-3); }
+
+/* Sidebar layout (229px | 1fr from source) */
+.layout-sidebar { display: grid; gap: var(--space-7); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 64rem) { .layout-sidebar { grid-template-columns: 229px minmax(0, 1fr); } }
+.block__title { font-size: var(--step-4); font-weight: 500; margin-bottom: var(--space-3); }
+
+/* Drupal: the other node fields share the content column; the login and contact forms stay narrow. */
+.node__content > :not(.layout-content) { width: 100%; max-width: calc(var(--content-size) + 2 * var(--gutter)); margin-inline: auto; padding-inline: var(--gutter); }
+.node__content > .links { display: flex; flex-wrap: wrap; gap: var(--space-5); list-style: none; font-size: var(--step-2); margin-top: var(--space-5); }
+.links li:empty { display: none; }
+.layout-content { display: flow-root; }
+.region-content-above { padding-top: var(--space-5); }
+/* Region wrappers print even when nothing in them shows: the messages placeholder, the page title block hidden on node pages. Without a visible block or a message, they take no space. */
+:is(.region-highlighted, .region-breadcrumb, .region-content-above, .region-content-below):not(:has(.block:not([hidden]), .messages)) { display: none; }
+/* The content of a node page starts right under the header: a full-width block like a hero cover sits flush, and text gets its space from the rhythm of the blocks. The bottom padding stays, and the other pages keep the space of the design. */
+.node__content.region-content { padding-top: 0; }
+/* After the page header band of a node, the content keeps the space of the design. */
+.page-header + .node__content { padding-top: var(--space-7); }
+.region-content-above > * + * { margin-top: var(--space-3); }
+.region-content .user-login-form, .region-content .user-pass, .region-content .user-register-form, .region-content .contact-message-form { max-width: var(--content-size); }
+/* Views of teasers are a card grid (core renders the rows in a class-less wrapper); other views keep their own markup. */
+:has(> .views-row > .node--view-mode-teaser) { display: grid; gap: var(--card-gap); grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr)); }
+:has(> .views-row > .node--view-mode-teaser) > :not(.views-row) { grid-column: 1 / -1; }
+.views-row > .node--view-mode-teaser { height: 100%; }
+.node__summary { font-size: var(--step-3); line-height: 1.5; }
+.node__summary :where(h1, h2, h3, h4, h5, h6) { font-size: var(--step-4); }
+.node__summary > * + * { margin-top: var(--space-2); }
+.node__summary .links { display: flex; flex-wrap: wrap; gap: var(--space-4); list-style: none; padding: 0; margin-top: auto; font-size: var(--step-2); }
+.feed-icon { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-5); font-size: var(--step-2); }

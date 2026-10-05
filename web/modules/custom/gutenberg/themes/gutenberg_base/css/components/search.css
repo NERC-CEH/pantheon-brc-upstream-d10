@@ -1,0 +1,109 @@
+/**
+ * @file
+ * Header search component.
+ */
+
+/* --- Desktop: compact inline search --- */
+
+.header-search {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  justify-content: center;
+}
+
+.header-search .form-item {
+  margin-bottom: 0;
+}
+
+.header-search form {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.header-search input[type="search"],
+.header-search input[type="text"] {
+  width: 150px;
+  padding: 0.4em 0.8em;
+  border-radius: 0.25rem 0 0 0.25rem;
+  border-right: none;
+  font-size: var(--wp--preset--font-size--small, 0.875rem);
+}
+
+.header-search input[type="search"]:focus,
+.header-search input[type="text"]:focus {
+  border-right: none;
+}
+
+/* --- Submit button as search icon --- */
+
+.header-search input[type="submit"],
+.header-search button[type="submit"] {
+  padding: 0.4em 0.6em;
+  border-radius: 0 0.25rem 0.25rem 0;
+  background-color: transparent;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23757575' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 16px;
+  border: 1px solid var(--wp--preset--color--border, #dcdcde);
+  border-left: none;
+  color: transparent;
+  font-size: 0;
+  width: 36px;
+  min-height: 34px;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.header-search input[type="submit"]:hover,
+.header-search button[type="submit"]:hover {
+  background-color: var(--wp--preset--color--light, #f0f0f0);
+}
+
+.header-search input[type="submit"]:focus,
+.header-search button[type="submit"]:focus {
+  border-color: var(--wp--preset--color--primary, #0073aa);
+  outline: none;
+  box-shadow: 0 0 0 1px var(--wp--preset--color--primary, #0073aa);
+}
+
+/* --- Hide label in header search (keep accessible) --- */
+
+.header-search label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Mobile: full-width search at top of dropdown --- */
+
+@media (max-width: 1024px) {
+
+  .header-search {
+    width: 100%;
+    order: -1;
+    margin-left: 0;
+    padding-bottom: var(--wp--preset--spacing--10, 8px);
+    margin-bottom: var(--wp--preset--spacing--10, 8px);
+    border-bottom: 1px solid var(--wp--preset--color--border, #dcdcde);
+  }
+
+  .header-search form {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .header-search input[type="search"],
+  .header-search input[type="text"] {
+    width: 100%;
+    flex: 1;
+  }
+}

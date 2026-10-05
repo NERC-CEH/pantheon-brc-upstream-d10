@@ -1,0 +1,34 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/social-link block.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the <li> wrapper (includes CSS classes
+ *   such as wp-block-social-link, wp-social-link, wp-social-link-{service}).
+ * - url: The URL for the social link (pre-normalized with scheme).
+ * - icon: Raw SVG markup for the service icon.
+ * - label: Accessible text label for the service.
+ * - rel: Optional rel attribute value for the anchor.
+ * - open_in_new_tab: Boolean, whether to open in a new tab.
+ * - show_labels: Boolean, whether to show labels visually (default false).
+ *
+ * @see template_preprocess_gutenberg_block__core__social_link()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if url %}
+<li{{ attributes }}>
+  <a href="{{ url }}" class="wp-block-social-link-anchor"
+    {% if open_in_new_tab %}
+      target="_blank" rel="{{ (rel ~ ' noopener nofollow')|trim }}"
+    {% elseif rel %}
+      rel="{{ rel }}"
+    {% endif %}
+  >
+    {{ icon|raw }}
+    <span class="wp-block-social-link-label{{ show_labels ? '' : ' screen-reader-text' }}">{{ label }}</span>
+  </a>
+</li>
+{% endif %}

@@ -1,0 +1,155 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override to display a single page.
+ *
+ * The page follows the design system of the theme: a sticky header with the
+ * branding, the quick links (secondary menu), a search button, the dark mode
+ * toggle and a menu toggle that open a panel with the search form and the
+ * main menu; the content; and a footer whose blocks are columns. On smaller
+ * screens, the quick links and the dark mode toggle move to the bottom of the
+ * panel (see js/navigation.js).
+ *
+ * A full node page renders its own page header band and content column (see
+ * node.html.twig), so its content is not wrapped in a container here.
+ *
+ * Available variables:
+ *
+ * General utility variables:
+ * - base_path: The base URL path of the Drupal installation.
+ * - is_front: A flag indicating if the current page is the front page.
+ * - logged_in: A flag indicating if the user is registered and signed in.
+ * - is_admin: A flag indicating if the user has permission to access
+ *   administration pages.
+ * - is_node_page: Whether the page is the page of a node.
+ * - is_search_page: Whether the page is a search page, which renders its own
+ *   page header band, like a node page.
+ *
+ * Site identity:
+ * - front_page: The URL of the front page.
+ *
+ * Regions:
+ * - page.header: Items for the header region (branding).
+ * - page.primary_menu: Items for the primary menu region (the menu panel).
+ * - page.secondary_menu: Items for the secondary menu region (quick links).
+ * - page.search: Items for the search region (the menu panel).
+ * - page.highlighted: Items for the highlighted region (messages).
+ * - page.breadcrumb: Items for the breadcrumb region.
+ * - page.content_above: Items for the content above region.
+ * - page.content: The main content of the current page.
+ * - page.sidebar: Items for the sidebar.
+ * - page.content_below: Items for the content below region.
+ * - page.footer: Items for the footer region.
+ *
+ * @see \Drupal\Core\Theme\ThemePreprocess::preprocessPage()
+ * @see html.html.twig
+ */
+#}
+{% set has_panel = page.primary_menu or page.search or page.secondary_menu %}
+<div class="page-wrapper" id="top">
+
+  {% if page.header or page.primary_menu or page.secondary_menu or page.search %}
+    <header class="site-header" role="banner">
+      <div class="container site-header__inner">
+        {{ page.header }}
+
+        <div class="site-header__actions">
+          {{ page.secondary_menu }}
+
+          {% if page.search %}
+            <button class="header-search" type="button" aria-controls="menu-panel">
+              <span class="icon icon-search" aria-hidden="true"></span>{{ 'Search'|t }}
+            </button>
+          {% endif %}
+
+          <button class="header-search dark-mode-toggle" type="button" aria-pressed="false" aria-label="{{ 'Switch to dark mode'|t }}">
+            <span class="icon icon-moon" aria-hidden="true"></span>
+            <span class="icon icon-sun" aria-hidden="true"></span>
+            <span class="dark-mode-toggle__label">{{ 'Switch to dark mode'|t }}</span>
+          </button>
+
+          {% if has_panel %}
+            <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-panel">
+              <span class="icon icon-menu" aria-hidden="true"></span>
+              <span class="menu-toggle__label">{{ 'Menu'|t }}</span>
+            </button>
+          {% endif %}
+        </div>
+      </div>
+
+      {% if has_panel %}
+        <div id="menu-panel" class="menu-panel" hidden>
+          <div class="menu-panel__scrim"></div>
+          <div class="container">
+            {% if page.search %}
+              <div class="menu-panel__search">
+                {{ page.search }}
+              </div>
+            {% endif %}
+            {{ page.primary_menu }}
+            <div class="menu-panel__extras"></div>
+          </div>
+        </div>
+      {% endif %}
+    </header>
+  {% endif %}
+
+  <main id="main-content" class="main-content" tabindex="-1">
+    {% if page.highlighted %}
+      <div class="container region-highlighted">
+        {{ page.highlighted }}
+      </div>
+    {% endif %}
+
+    {% if page.breadcrumb %}
+      <div class="container region-breadcrumb">
+        {{ page.breadcrumb }}
+      </div>
+    {% endif %}
+
+    {% if page.content_above %}
+      <div class="container region-content-above">
+        {{ page.content_above }}
+      </div>
+    {% endif %}
+
+    {% if page.sidebar %}
+      <div class="container region-content">
+        <div class="layout-sidebar">
+          <aside class="layout-sidebar__aside" role="complementary">
+            {{ page.sidebar }}
+          </aside>
+          <div class="layout-main">
+            {{ page.content }}
+          </div>
+        </div>
+      </div>
+    {% elseif is_node_page or is_search_page %}
+      {{ page.content }}
+    {% else %}
+      <div class="container region-content">
+        {{ page.content }}
+      </div>
+    {% endif %}
+
+    {% if page.content_below %}
+      <div class="container region-content-below">
+        {{ page.content_below }}
+      </div>
+    {% endif %}
+  </main>
+
+  {% if page.footer %}
+    <footer class="site-footer" role="contentinfo">
+      <div class="container">
+        <div class="site-footer__top">
+          <a class="button button--primary" href="#top">{{ 'Back to top'|t }}</a>
+        </div>
+        <div class="site-footer__cols">
+          {{ page.footer }}
+        </div>
+      </div>
+    </footer>
+  {% endif %}
+
+</div>

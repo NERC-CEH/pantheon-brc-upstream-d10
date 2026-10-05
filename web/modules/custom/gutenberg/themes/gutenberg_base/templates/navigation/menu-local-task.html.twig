@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for a local task link.
+ *
+ * The link gets the tabs__link class, and is-active when it is the active
+ * tab (see gutenberg_base_preprocess_menu_local_task()).
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the wrapper element.
+ * - is_active: Whether the task item is an active tab.
+ * - link: A rendered link element.
+ */
+#}
+{%
+  set classes = [
+    'tabs__tab',
+    is_active ? 'is-active',
+  ]
+%}
+<li{{ attributes.addClass(classes) }}>{{ link }}</li>

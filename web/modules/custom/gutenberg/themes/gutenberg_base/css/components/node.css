@@ -1,0 +1,58 @@
+/**
+ * @file
+ * Node component.
+ */
+
+.node__header {
+  margin-bottom: var(--wp--preset--spacing--30, 24px);
+}
+
+.node__title {
+  margin: 0;
+}
+
+.node__title a {
+  color: var(--wp--preset--color--dark, #1a1a1a);
+  text-decoration: none;
+}
+
+.node__title a:hover {
+  color: var(--wp--preset--color--primary, #0073aa);
+}
+
+.node__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--wp--preset--spacing--10, 8px);
+  margin-top: var(--wp--preset--spacing--10, 8px);
+  font-size: var(--wp--preset--font-size--small, 0.875rem);
+  color: var(--wp--preset--color--muted, #757575);
+}
+
+.node__author-image img {
+  display: block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* --- Teaser --- */
+
+.node--view-mode-teaser {
+  padding-bottom: var(--wp--preset--spacing--30, 24px);
+  margin-bottom: var(--wp--preset--spacing--30, 24px);
+  border-bottom: 1px solid var(--wp--preset--color--border, #dcdcde);
+}
+
+.node--view-mode-teaser:last-child {
+  border-bottom: none;
+}
+
+/* --- Unpublished indicator --- */
+
+.node--unpublished {
+  position: relative;
+  padding-left: var(--wp--preset--spacing--30, 24px);
+  border-left: 4px solid var(--wp--preset--color--accent, #d63638);
+}

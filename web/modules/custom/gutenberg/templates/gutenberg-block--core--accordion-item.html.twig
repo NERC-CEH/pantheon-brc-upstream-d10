@@ -1,0 +1,19 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/accordion-item block.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the wrapper (includes data-wp-context,
+ *   data-wp-class--is-open, data-wp-init, and data-wp-on-window--hashchange
+ *   directives added by the preprocess hook).
+ * - inner_content: Rendered inner blocks (heading and panel), with
+ *   Interactivity API directives applied to the toggle button and panel.
+ * - wrapper_tag: The HTML tag for the wrapper (typically 'div').
+ *
+ * @see template_preprocess_gutenberg_block__core__accordion_item()
+ *
+ * @ingroup themeable
+ */
+#}
+<{{ wrapper_tag }}{{ attributes }}>{{ inner_content }}</{{ wrapper_tag }}>

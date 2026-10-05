@@ -1,0 +1,15 @@
+# Schema for the configuration files of the Gutenberg Base theme.
+
+gutenberg_base.settings:
+  type: theme_settings
+  label: 'Gutenberg Base settings'
+  mapping:
+    color_scheme:
+      type: string
+      label: 'Color scheme'
+    light_weight:
+      type: boolean
+      label: 'Light type weights'
+    button_shape:
+      type: string
+      label: 'Button shape'

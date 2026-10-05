@@ -1,0 +1,648 @@
+<?php
+
+namespace Drupal\gutenberg\Service;
+
+use Drupal\Core\Database\Connection;
+use Drupal\Core\Entity\EntityDisplayRepositoryInterface;
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Render\RendererInterface;
+use Drupal\editor\Entity\Editor;
+use Drupal\file\FileInterface;
+use Drupal\gutenberg\DataProvider\EntityDataProviderManager;
+use Drupal\gutenberg\MediaEntityRendererInterface;
+use Drupal\gutenberg\MediaTypeGuesserInterface;
+use Drupal\gutenberg\MediaUploaderInterface;
+use Drupal\gutenberg\Persistence\MediaTypePersistenceManager;
+use Drupal\media\MediaInterface;
+use Drupal\media\Plugin\media\Source\File;
+use Drupal\media\Plugin\media\Source\OEmbedInterface;
+use Drupal\media_library\MediaLibraryState;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+
+/**
+ * The media service class.
+ */
+class MediaService {
+
+  /**
+   * The media type guesser.
+   *
+   * @var \Drupal\gutenberg\MediaTypeGuesserInterface
+   */
+  protected $mediaTypeGuesser;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * The media type persistence manager.
+   *
+   * @var \Drupal\gutenberg\Persistence\MediaTypePersistenceManager
+   */
+  protected $mediaTypePersisterManager;
+
+  /**
+   * The entity data provider manager.
+   *
+   * @var \Drupal\gutenberg\DataProvider\EntityDataProviderManager
+   */
+  protected $entityDataProviderManager;
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * The media uploader.
+   *
+   * @var \Drupal\gutenberg\MediaUploaderInterface
+   */
+  protected $mediaUploader;
+
+  /**
+   * Drupal\Core\Render\RendererInterface instance.
+   *
+   * @var \Drupal\Core\Render\RendererInterface
+   */
+  protected $renderer;
+
+  /**
+   * The entity type bundle info.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   */
+  protected $entityTypeBundleInfo;
+
+  /**
+   * The media entity renderer.
+   *
+   * @var \Drupal\gutenberg\MediaEntityRendererInterface
+   */
+  protected $mediaEntityRenderer;
+
+  /**
+   * The media library UI builder.
+   *
+   * @var \Drupal\media_library\MediaLibraryUiBuilder|null
+   */
+  protected $builder;
+
+  /**
+   * The database connection.
+   *
+   * @var \Drupal\Core\Database\Connection
+   */
+  protected $connection;
+
+  /**
+   * The entity display repository.
+   *
+   * @var \Drupal\Core\Entity\EntityDisplayRepositoryInterface
+   */
+  protected $entityDisplayRepository;
+
+  /**
+   * MediaController constructor.
+   *
+   * @param \Drupal\gutenberg\MediaTypeGuesserInterface $media_type_guesser
+   *   The media type guesser.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   * @param \Drupal\gutenberg\Persistence\MediaTypePersistenceManager $media_type_persistence_manager
+   *   The media type persistence manager.
+   * @param \Drupal\gutenberg\DataProvider\EntityDataProviderManager $entity_data_provider_manager
+   *   The entity data provider manager.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   * @param \Drupal\gutenberg\MediaUploaderInterface $media_uploader
+   *   The media uploader.
+   * @param \Drupal\Core\Render\RendererInterface $renderer
+   *   The renderer.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   The entity type bundle service.
+   * @param \Drupal\gutenberg\MediaEntityRendererInterface $media_entity_renderer
+   *   The media entity renderer.
+   * @param \Drupal\Core\Database\Connection $connection
+   *   The database connection.
+   * @param \Drupal\Core\Entity\EntityDisplayRepositoryInterface $entity_display_repository
+   *   The entity display repository.
+   */
+  public function __construct(
+    MediaTypeGuesserInterface $media_type_guesser,
+    EntityTypeManagerInterface $entity_type_manager,
+    MediaTypePersistenceManager $media_type_persistence_manager,
+    EntityDataProviderManager $entity_data_provider_manager,
+    ModuleHandlerInterface $module_handler,
+    MediaUploaderInterface $media_uploader,
+    RendererInterface $renderer,
+    EntityTypeBundleInfoInterface $entity_type_bundle_info,
+    MediaEntityRendererInterface $media_entity_renderer,
+    Connection $connection,
+    EntityDisplayRepositoryInterface $entity_display_repository,
+  ) {
+    $this->mediaTypeGuesser = $media_type_guesser;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->mediaTypePersisterManager = $media_type_persistence_manager;
+    $this->entityDataProviderManager = $entity_data_provider_manager;
+    $this->moduleHandler = $module_handler;
+    $this->mediaUploader = $media_uploader;
+    $this->renderer = $renderer;
+    $this->entityTypeBundleInfo = $entity_type_bundle_info;
+    $this->mediaEntityRenderer = $media_entity_renderer;
+    $this->connection = $connection;
+    $this->entityDisplayRepository = $entity_display_repository;
+
+    if ($this->moduleHandler->moduleExists('media_library')) {
+      $this->builder = \Drupal::getContainer()->get('gutenberg.media_library.ui_builder');
+    }
+  }
+
+  /**
+   * Renders media library dialog for Gutenberg editor.
+   *
+   * @param array $media_types
+   *   Array of media types.
+   * @param array|null $media_bundles
+   *   Array of media bundles.
+   *
+   * @return string
+   *   The rendered element.
+   *
+   * @throws \Drupal\gutenberg\Service\MediaTypeNotFoundException
+   */
+  public function renderDialog(array $media_types, ?array $media_bundles = NULL) {
+    $media_types = array_filter($media_types)
+      ? $media_types
+      : ['application', 'image', 'audio', 'video', 'text'];
+    $allowed_media_type_ids = [];
+    foreach ($media_types as $media_type) {
+      $allowed_media_type_ids = array_merge($allowed_media_type_ids, $this->mediaTypeGuesser->guess($media_type));
+    }
+
+    if (!empty($media_bundles)) {
+      // Filter by bundle.
+      $allowed_media_type_ids = array_intersect($allowed_media_type_ids, $media_bundles);
+    }
+
+    if (!$allowed_media_type_ids) {
+      throw new MediaTypeNotFoundException();
+    }
+
+    $buildUi = $this->builder->buildUi(
+      MediaLibraryState::create('gutenberg.media_library.opener', array_unique($allowed_media_type_ids), reset($allowed_media_type_ids), 1)
+    );
+    $this->moduleHandler->alter('gutenberg_media_library_view', $buildUi);
+
+    return $this->renderer->render($buildUi);
+  }
+
+  /**
+   * Render media entities.
+   *
+   * @param \Drupal\media\MediaInterface $media_entity
+   *   Media entity instance.
+   *
+   * @return array
+   *   The rendered view modes.
+   */
+  public function getRenderedMediaEntity(MediaInterface $media_entity) {
+    $rendered_view_modes = [];
+
+    try {
+      /** @var \Drupal\media\Entity\Media $media_entity */
+      $view_modes = $this->entityDisplayRepository->getViewModeOptionsByBundle('media', $media_entity->bundle());
+
+      foreach ($view_modes as $view_mode => $view_mode_name) {
+        $rendered_view_modes[$view_mode] = [
+          'view_mode' => $view_mode,
+          'view_mode_name' => (string) $view_mode_name,
+          'html' => $this->mediaEntityRenderer->render($media_entity, $view_mode),
+        ];
+      }
+    }
+    catch (\Throwable $exception) {
+      // Catch silently.
+    }
+
+    return $rendered_view_modes;
+  }
+
+  /**
+   * Save uploaded file, create file and media entity if possible.
+   *
+   * @param string $form_field_name
+   *   The file field name.
+   * @param \Symfony\Component\HttpFoundation\File\UploadedFile $uploaded_file
+   *   Uploaded file instance.
+   * @param \Drupal\editor\Entity\Editor $editor
+   *   Editor entity instance.
+   *
+   * @return mixed
+   *   The media entity data.
+   *
+   * @throws \Drupal\gutenberg\Service\FileEntityNotSavedException
+   * @throws \Drupal\gutenberg\Service\MediaEntityNotSavedException
+   * @throws \Drupal\gutenberg\Service\MediaEntityNotMatchedException
+   */
+  public function processMediaEntityUpload(string $form_field_name, UploadedFile $uploaded_file, Editor $editor) {
+    $media_installed = $this->moduleHandler->moduleExists('media');
+
+    // Allow all media file types by default.
+    $file_settings = [];
+
+    if ($media_installed) {
+      $mime_type_pieces = explode('/', $uploaded_file->getClientMimeType());
+      if (!$media_type = $this->mediaTypeGuesser->guess(
+        reset($mime_type_pieces),
+        MediaTypeGuesserInterface::RETURN_NEGOTIATED
+      )) {
+        throw new MediaEntityNotMatchedException();
+      }
+
+      // Fetch settings to restrict the file extensions by the Media entity.
+      $file_settings = $this->mediaTypePersisterManager->getFileSettings($media_type);
+    }
+
+    /** @var \Drupal\file\Entity\File $file_entity */
+    if (!$file_entity = $this->mediaUploader->upload($form_field_name, $uploaded_file, $editor, $file_settings)) {
+      throw new FileEntityNotSavedException();
+    }
+
+    if ($media_installed) {
+      if (!$media_entity = $this->mediaTypePersisterManager->save($media_type, $file_entity)) {
+        throw new MediaEntityNotSavedException();
+      }
+
+      return $this->entityDataProviderManager->getData('media', $file_entity, [
+        'media_id' => $media_entity->id(),
+        'media_type' => $media_entity->bundle(),
+      ]);
+    }
+
+    return $this->entityDataProviderManager->getData('file', $file_entity);
+  }
+
+  /**
+   * Load file entity data.
+   *
+   * @param \Drupal\file\FileInterface $file
+   *   File entity instance.
+   *
+   * @return mixed
+   *   The file entity data.
+   *
+   * @throws \Exception
+   */
+  public function loadFileData(FileInterface $file) {
+    return $this->entityDataProviderManager->getData('file', $file);
+  }
+
+  /**
+   * Load media entity data.
+   *
+   * @param \Drupal\media\MediaInterface $media
+   *   Media entity instance.
+   *
+   * @return mixed
+   *   The file entity data for the specified media.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function loadMediaData(MediaInterface $media) {
+    $data = [];
+    $media_source = $media->getSource();
+    if ($media_source instanceof File) {
+      $media_file = $media->get($media_source->getConfiguration()['source_field']);
+      $file_entity = $media_file->entity;
+      $data = $this->entityDataProviderManager->getData('file', $file_entity);
+
+      if ($item = $media_file->first()) {
+        // Populate the default alt and title text properties.
+        $file_data = $item->getValue();
+        if (!empty($file_data['alt'])) {
+          if (empty($data['alt'])) {
+            $data['alt'] = $file_data['alt'];
+          }
+          if (empty($data['alt_text'])) {
+            $data['alt_text'] = $file_data['alt'];
+          }
+        }
+        if (!empty($file_data['title']) && empty($data['title'])) {
+          $data['title'] = $file_data['title'];
+        }
+      }
+    }
+    elseif ($media_source instanceof OEmbedInterface) {
+      // OEmbed sources (e.g. remote_video) have no file — extract metadata
+      // and format as WordPress attachment structure for the block inserter.
+      $media_attributes = $media_source->getMetadataAttributes();
+      $oembed_data = [];
+      foreach (array_keys($media_attributes) as $attribute) {
+        $oembed_data[$attribute] = $media_source->getMetadata($media, $attribute);
+      }
+
+      $source_url = $media_source->getSourceFieldValue($media);
+
+      // Get the thumbnail from the media entity's thumbnail field (locally
+      // stored file), not from OEmbed metadata which uses thumbnail_uri.
+      $thumbnail_url = '';
+      $thumbnail_file = $media->get('thumbnail')->entity;
+      if ($thumbnail_file) {
+        $thumbnail_url = \Drupal::service('file_url_generator')->generateAbsoluteString($thumbnail_file->getFileUri());
+      }
+
+      $data = [
+        'id' => (int) $media->id(),
+        'title' => $oembed_data['title'] ?? $media->label(),
+        'url' => $source_url,
+        'source_url' => $source_url,
+        'link' => $source_url,
+        'alt' => '',
+        'alt_text' => '',
+        'author' => $media->getOwnerId(),
+        'caption' => '',
+        'status' => 'inherit',
+        'type' => 'video',
+        'media_type' => 'video',
+        'mime_type' => 'video/x-oembed',
+        'date' => date('c', $media->getCreatedTime()),
+        'media_details' => [
+          'file' => $media->label(),
+          'sizes' => $thumbnail_url ? [
+            'medium' => [
+              'source_url' => $thumbnail_url,
+              'width' => (int) ($media->get('thumbnail')->width ?? 480),
+              'height' => (int) ($media->get('thumbnail')->height ?? 360),
+            ],
+          ] : [],
+        ],
+        'oembed_source_url' => $source_url,
+        'oembed_provider' => $oembed_data['provider_name'] ?? '',
+      ];
+    }
+    else {
+      // Handle everything else.
+      $data['value'] = $media_source->getSourceFieldValue($media);
+    }
+
+    $data['media_entity'] = [
+      'bundle' => $media->bundle(),
+      'plugin' => $media_source->getPluginId(),
+      'id' => $media->id(),
+      'label' => $media->label(),
+      'entity_uuid' => $media->uuid(),
+    ];
+
+    return $data;
+  }
+
+  /**
+   * Search for file entities.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Current request.
+   * @param string $type
+   *   Mime type of searched files.
+   * @param string $search
+   *   Specific filename to search for.
+   *
+   * @return array
+   *   The found file entities.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
+   * @throws \Drupal\Component\Plugin\Exception\PluginNotFoundException
+   */
+  public function search(Request $request, string $type = '', string $search = '') {
+    $query = $this->entityTypeManager->getStorage('file')->getQuery();
+    $query->addTag('gutenberg_media_search');
+
+    if ($search !== '*') {
+      $query->condition('filename', $search, 'CONTAINS');
+    }
+
+    if ($type !== '*') {
+      $group = $query->orConditionGroup();
+      foreach (explode(' ', $type) as $type_item) {
+        $group->condition('filemime', $type_item, 'CONTAINS');
+      }
+      $query->condition($group);
+    }
+    $query->sort('created', 'DESC');
+    $query->accessCheck(TRUE);
+
+    $per_page = (int) $request->query->get('per_page', 20);
+    $page = (int) $request->query->get('page', 0);
+    $query->range($page * $per_page, $per_page);
+
+    $this->moduleHandler->invokeAll('gutenberg_media_search_query_alter', [
+      $request,
+      $type,
+      $search,
+      $query,
+    ]);
+
+    $files = $this->entityTypeManager->getStorage('file')->loadMultiple($query->execute());
+    $result = [];
+
+    foreach ($files as $file) {
+      $result[] = $this->entityDataProviderManager->getData('file', $file);
+    }
+
+    return $result;
+  }
+
+  /**
+   * Update media data.
+   *
+   * @param string $fid
+   *   File entity ID.
+   * @param array $data
+   *   Media data.
+   *
+   * @throws \Exception
+   */
+  public function updateMediaData(string $fid, array $data) {
+    $this->connection->merge('file_managed_data')
+      ->key(['fid' => $fid])
+      ->fields([
+        'data' => serialize($data),
+      ])
+      ->execute();
+  }
+
+  /**
+   * List media entities in WordPress attachment format.
+   *
+   * @param string $media_type
+   *   The general media type (image, video, audio).
+   * @param string $search
+   *   Search string to filter by media name.
+   * @param int $per_page
+   *   Number of results to return.
+   * @param string $orderby
+   *   Field to order by (date or title).
+   *
+   * @return array
+   *   Array of media entities in WP attachment format.
+   */
+  public function listMedia(string $media_type = '', string $search = '', int $per_page = 10, string $orderby = 'date'): array {
+    if (!$this->moduleHandler->moduleExists('media')) {
+      return $this->listFiles($media_type, $search, $per_page, $orderby);
+    }
+
+    // Resolve media type to bundle IDs.
+    $bundle_ids = [];
+    if ($media_type !== '') {
+      $bundle_ids = $this->mediaTypeGuesser->guess($media_type);
+      if (empty($bundle_ids)) {
+        return [];
+      }
+    }
+
+    $query = $this->entityTypeManager->getStorage('media')->getQuery();
+    $query->accessCheck(TRUE);
+
+    if (!empty($bundle_ids)) {
+      $query->condition('bundle', $bundle_ids, 'IN');
+    }
+
+    if ($search !== '') {
+      $query->condition('name', $search, 'CONTAINS');
+    }
+
+    // Map orderby to entity field.
+    $sort_field = $orderby === 'title' ? 'name' : 'created';
+    $sort_direction = $orderby === 'title' ? 'ASC' : 'DESC';
+    $query->sort($sort_field, $sort_direction);
+
+    $query->range(0, $per_page);
+
+    $media_ids = $query->execute();
+    if (empty($media_ids)) {
+      return [];
+    }
+
+    $media_entities = $this->entityTypeManager->getStorage('media')->loadMultiple($media_ids);
+    $results = [];
+
+    foreach ($media_entities as $media_entity) {
+      try {
+        $data = $this->loadMediaData($media_entity);
+        $results[] = $data;
+      }
+      catch (\Throwable $e) {
+        // Skip entities that fail to load.
+      }
+    }
+
+    return $results;
+  }
+
+  /**
+   * List file entities as fallback when media module is disabled.
+   *
+   * @param string $media_type
+   *   The general media type (image, video, audio).
+   * @param string $search
+   *   Search string to filter by filename.
+   * @param int $per_page
+   *   Number of results to return.
+   * @param string $orderby
+   *   Field to order by (date or title).
+   *
+   * @return array
+   *   Array of file entities in WP attachment format.
+   */
+  protected function listFiles(string $media_type = '', string $search = '', int $per_page = 10, string $orderby = 'date'): array {
+    $query = $this->entityTypeManager->getStorage('file')->getQuery();
+    $query->accessCheck(TRUE);
+
+    if ($media_type !== '') {
+      $query->condition('filemime', $media_type . '/', 'STARTS_WITH');
+    }
+
+    if ($search !== '') {
+      $query->condition('filename', $search, 'CONTAINS');
+    }
+
+    $sort_field = $orderby === 'title' ? 'filename' : 'created';
+    $sort_direction = $orderby === 'title' ? 'ASC' : 'DESC';
+    $query->sort($sort_field, $sort_direction);
+
+    $query->range(0, $per_page);
+
+    $file_ids = $query->execute();
+    if (empty($file_ids)) {
+      return [];
+    }
+
+    $files = $this->entityTypeManager->getStorage('file')->loadMultiple($file_ids);
+    $results = [];
+
+    foreach ($files as $file) {
+      try {
+        $results[] = $this->entityDataProviderManager->getData('file', $file);
+      }
+      catch (\Throwable $e) {
+        // Skip files that fail to load.
+      }
+    }
+
+    return $results;
+  }
+
+  /**
+   * Get media entity results for autocomplete endpoint.
+   *
+   * @param string $search
+   *   Text to search. Can be an ID.
+   *
+   * @return array
+   *   The media entity results.
+   */
+  public function getMediaEntityAutoCompleteData(string $search) {
+    try {
+      $query = $this->entityTypeManager->getStorage('media')
+        ->getQuery()
+        ->accessCheck(TRUE);
+      if (is_numeric($search)) {
+        $query->condition('id', $search);
+      }
+      else {
+        $query->condition('name', $search, 'CONTAINS');
+      }
+      $query->condition('uid', \Drupal::currentUser()->id());
+      $query->sort('created', 'DESC');
+      $query->accessCheck(TRUE);
+      $media_ids = $query->execute();
+      $media_entities = $this->entityTypeManager->getStorage('media')->loadMultiple($media_ids ?: []);
+
+      return array_values(
+        array_map(function (MediaInterface $media_entity) {
+          return [
+            'title' => $media_entity->getName(),
+            'url' => $media_entity->getName() . ' (' . $media_entity->id() . ')',
+            'id' => $media_entity->id(),
+            'media_type' => $media_entity->bundle(),
+            'file_id' => $media_entity->getSource()->getSourceFieldValue($media_entity),
+          ];
+        }, $media_entities)
+      );
+    }
+    catch (\Throwable $exception) {
+      return [];
+    }
+  }
+
+}

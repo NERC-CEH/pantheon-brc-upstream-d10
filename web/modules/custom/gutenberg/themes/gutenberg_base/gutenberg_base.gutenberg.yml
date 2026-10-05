@@ -1,0 +1,317 @@
+# Gutenberg configuration of the Gutenberg Base theme.
+#
+# The presets and global styles below mirror the theme.json of the design
+# system (.design/theme.json): "__experimentalFeatures" is its "settings"
+# and "globalStyles" its "styles". Keep them in sync when the design changes.
+#
+# Dynamic blocks — server-side rendering via Drupal Twig templates.
+#
+# Any Gutenberg block can be re-rendered on the server by declaring it here.
+# When a block is listed, Drupal replaces its client-saved HTML with the output
+# of a matching Twig template, letting you inject server-side logic, access
+# Drupal services, and control the markup fully.
+#
+# Declaration syntax:
+#   dynamic-blocks:
+#     namespace/block-name: {}
+#
+# Twig template naming convention (most-specific wins):
+#   gutenberg-block--{namespace}--{block-name}.html.twig
+#   gutenberg-block--{namespace}.html.twig
+#   gutenberg-block.html.twig  (fallback — shows a red dev placeholder)
+#
+# Template variables:
+#   {{ attributes }}     — Drupal Attribute object for the wrapper element.
+#                          Pre-populated by template_preprocess_gutenberg_block()
+#                          with wp-block-*, className, align, textAlign, fontSize.
+#                          Add block-specific classes via a custom preprocess hook
+#                          (e.g. template_preprocess_gutenberg_block__core__column)
+#                          or directly in Twig with attributes.addClass().
+#   {{ inner_content }}  — The rendered inner blocks, with the block's own
+#                          serialized wrapper stripped. Use this inside a wrapper
+#                          element provided by the template (container blocks).
+#   {{ block_content }}  — The full serialized block HTML including the block's
+#                          own wrapper. Use this when you do not want to replace
+#                          the wrapper (pass-through or leaf blocks).
+#   {{ block_name }}     — The block name, e.g. 'core/paragraph'.
+#   {{ block_attributes }}— Raw block attributes array from the editor JSON.
+#
+# Existing example overrides in this theme (templates/blocks/):
+#   gutenberg-block--core--column.html.twig    — container block example
+#   gutenberg-block--core--paragraph.html.twig — leaf block example
+#
+# Uncomment and extend the list below to activate dynamic rendering:
+#
+# dynamic-blocks:
+#   core/heading: {}
+#   core/column: {}
+#   core/paragraph: {}
+
+# Editor scripts of the theme: js/editor.js applies the color scheme and the
+# weight set of the theme settings to the canvas, and
+# js/cover-header-overlay.js adds the "Overlay the site header" option to
+# the Cover block, a showcase of extending a core block from a theme.
+libraries-edit:
+  - gutenberg_base/editor
+
+theme-support:
+  alignWide: true
+  supportsLayout: true
+  __unstableIsBlockBasedTheme: true
+  richEditingEnabled: true
+  canLockBlocks: true
+  imageDefaultSize: "large"
+
+  allowedMimeTypes:
+    jpg|jpeg|jpe: image/jpeg
+    png: image/png
+    gif: image/gif
+    webp: image/webp
+    svg: image/svg+xml
+    mp4|m4v: video/mp4
+    webm: video/webm
+    ogv: video/ogg
+    mov|qt: video/quicktime
+    mp3|m4a|m4b: audio/mpeg
+    pdf: application/pdf
+
+  enableCustomUnits:
+    - px
+    - rem
+    - "%"
+    - vw
+
+  # The design has no custom colors, font sizes, gradients or spacing sizes:
+  # editors pick from the presets, so content follows the color scheme.
+  disableCustomColors: true
+  disableCustomFontSizes: true
+  disableCustomGradients: true
+  disableCustomSpacingSizes: true
+
+  # Editor styles, loaded in the canvas in this order. The generated preset
+  # CSS is prepended and the globalStyles CSS appended by the module. The
+  # files are the same as the frontend "global" library, without the Drupal
+  # template styles (css/theme/drupal.css), plus css/editor-overrides.css.
+  styles:
+    - css:
+        css/tokens/fonts.css: {}
+        css/tokens/colors.css: {}
+        css/tokens/typography.css: {}
+        css/tokens/spacing.css: {}
+        css/tokens/effects.css: {}
+        css/tokens/wp-presets.css: {}
+        css/theme/base.css: {}
+        css/icons.css: {}
+        css/theme/layout.css: {}
+        css/theme/forms.css: {}
+        css/theme/blocks.css: {}
+        css/theme/weight-light.css: {}
+        css/round-buttons.css: {}
+    - css:
+        css/editor-overrides.css: {}
+
+  # Structured global styles — converted to CSS by GlobalStylesGenerator.
+  # Mirrors theme.json "styles". Block styles live in css/theme/blocks.css.
+  globalStyles:
+    color:
+      text: "var:preset|color|contrast"
+      background: "var:preset|color|base"
+    typography:
+      fontFamily: "var:preset|font-family|sans"
+      fontSize: "var:preset|font-size|medium"
+      lineHeight: "1.6"
+    spacing:
+      blockGap: "1.5rem"
+    elements:
+      heading:
+        typography:
+          fontWeight: "500"
+      link:
+        color:
+          text: "var:preset|color|contrast"
+        typography:
+          textDecoration: "underline"
+      button:
+        color:
+          background: "var:preset|color|inverse"
+          text: "var:preset|color|base"
+        typography:
+          fontWeight: "600"
+        border:
+          radius: "0"
+
+  # Presets and feature toggles. Mirrors theme.json "settings".
+  __experimentalFeatures:
+    border:
+      radius: true
+      color: true
+      style: true
+      width: true
+
+    spacing:
+      margin: true
+      padding: true
+      blockGap: true
+      customSpacingSize: false
+      units:
+        - px
+        - rem
+        - "%"
+        - vw
+      spacingSizes:
+        theme:
+          - name: "2XS"
+            size: "0.5rem"
+            slug: "20"
+          - name: "XS"
+            size: "0.75rem"
+            slug: "30"
+          - name: "S"
+            size: "1rem"
+            slug: "40"
+          - name: "M"
+            size: "1.5rem"
+            slug: "50"
+          - name: "L"
+            size: "2rem"
+            slug: "60"
+          - name: "XL"
+            size: "3rem"
+            slug: "70"
+          - name: "2XL"
+            size: "4rem"
+            slug: "80"
+
+    layout:
+      contentSize: "700px"
+      wideSize: "1440px"
+
+    color:
+      custom: false
+      customGradient: false
+      customDuotone: false
+      background: true
+      button: true
+      caption: true
+      heading: true
+      link: true
+      text: true
+      defaultPalette: false
+      defaultGradients: false
+      defaultDuotone: false
+      # The monochrome palette. The theme setting "Color scheme" swaps it for
+      # a palette in schemes/ (see gutenberg_base_gutenberg_definition_alter()).
+      # On the frontend the presets are aliases of the semantic tokens
+      # (css/tokens/wp-presets.css), so they follow the scheme and dark mode.
+      palette:
+        theme:
+          - name: "Base"
+            slug: "base"
+            color: "#ffffff"
+          - name: "Contrast"
+            slug: "contrast"
+            color: "#0e0e11"
+          - name: "Muted"
+            slug: "muted"
+            color: "#55555f"
+          - name: "Surface"
+            slug: "surface"
+            color: "#f7f7f8"
+          - name: "Tint"
+            slug: "tint"
+            color: "#efeff1"
+          - name: "Tint strong"
+            slug: "tint-strong"
+            color: "#e2e2e6"
+          - name: "Secondary"
+            slug: "tint-alt"
+            color: "#f3f1ec"
+          - name: "Secondary strong"
+            slug: "tint-alt-strong"
+            color: "#e6e1d6"
+          - name: "Inverse"
+            slug: "inverse"
+            color: "#0e0e11"
+      gradients:
+        theme:
+          - name: "Tint to base"
+            slug: "tint-to-base"
+            gradient: "linear-gradient(180deg, #efeff1 0%, #ffffff 100%)"
+          - name: "Tint to secondary"
+            slug: "tint-to-secondary"
+            gradient: "linear-gradient(135deg, #efeff1 0%, #f3f1ec 100%)"
+          - name: "Primary deep"
+            slug: "primary-deep"
+            gradient: "linear-gradient(135deg, #0e0e11 0%, #3d3d45 100%)"
+          - name: "Scrim (bottom)"
+            slug: "scrim-bottom"
+            gradient: "linear-gradient(180deg, rgba(0,0,0,0) 35%, rgba(0,0,0,0.75) 100%)"
+      duotone:
+        theme:
+          - name: "Primary / tint"
+            slug: "primary-tint"
+            colors:
+              - "#0e0e11"
+              - "#efeff1"
+          - name: "Primary / secondary"
+            slug: "primary-secondary"
+            colors:
+              - "#0e0e11"
+              - "#f3f1ec"
+          - name: "Secondary / base"
+            slug: "secondary-base"
+            colors:
+              - "#0e0e11"
+              - "#f3f1ec"
+          - name: "Grayscale"
+            slug: "grayscale"
+            colors:
+              - "#111111"
+              - "#f4f4f4"
+
+    typography:
+      lineHeight: true
+      fontWeight: true
+      fontStyle: true
+      letterSpacing: true
+      textAlign: true
+      textDecoration: true
+      textTransform: true
+      dropCap: true
+      customFontSize: false
+      __experimentalFontFamily: true
+      fontFamilies:
+        theme:
+          - name: "Rubik"
+            slug: "sans"
+            fontFamily: "\"Rubik\", ui-sans-serif, system-ui, sans-serif"
+          - name: "JetBrains Mono"
+            slug: "mono"
+            fontFamily: "\"JetBrains Mono\", ui-monospace, monospace"
+      # The fluid step scale of css/tokens/typography.css.
+      fontSizes:
+        theme:
+          - name: "Small"
+            size: "clamp(13px, 0.4464vw + 9.57px, 16px)"
+            slug: "small"
+          - name: "Medium"
+            size: "clamp(14px, 0.5952vw + 9.43px, 18px)"
+            slug: "medium"
+          - name: "Large"
+            size: "clamp(16px, 0.744vw + 10.29px, 21px)"
+            slug: "large"
+          - name: "XL"
+            size: "clamp(21px, 1.3393vw + 10.71px, 30px)"
+            slug: "x-large"
+          - name: "2XL"
+            size: "clamp(30px, 2.6786vw + 9.43px, 48px)"
+            slug: "xx-large"
+          - name: "Huge"
+            size: "clamp(48px, 3.5714vw + 20.57px, 72px)"
+            slug: "huge"
+
+    # Shadows are not part of the design language.
+    shadow:
+      defaultPresets: false
+      presets:
+        theme: []

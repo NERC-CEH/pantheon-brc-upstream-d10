@@ -1,0 +1,78 @@
+$schema: https://git.drupalcode.org/project/drupal/-/raw/HEAD/core/assets/schemas/v1/metadata.schema.json
+name: Card
+status: stable
+description: A versatile card component with media and content slots.
+group: Content
+
+props:
+  type: object
+  properties:
+    title:
+      type: string
+      title: Title
+      description: The card heading text.
+      examples:
+        - 'Card Title'
+    description:
+      type: string
+      title: Description
+      description: A short summary or body text.
+      examples:
+        - 'A brief description of the card content.'
+    link_url:
+      type: string
+      title: Link URL
+      format: uri
+      description: Optional link destination.
+      examples:
+        - 'https://example.com'
+    link_text:
+      type: string
+      title: Link Text
+      description: The text for the call-to-action link.
+      examples:
+        - 'Read more'
+    highlighted:
+      type: boolean
+      title: Highlighted
+      description: Whether to apply the highlighted/featured style.
+      default: false
+    tag:
+      type: string
+      title: Tag
+      description: An optional category or tag label.
+      enum:
+        - ''
+        - 'news'
+        - 'blog'
+        - 'event'
+      meta:enum:
+        '': '-- None --'
+        news: 'News'
+        blog: 'Blog'
+        event: 'Event'
+
+slots:
+  media:
+    title: Media
+    description: Slot for images, videos, or other media.
+    examples:
+      - '<img src="https://picsum.photos/600/400" alt="Placeholder" />'
+    gutenberg_templateLock: all
+    gutenberg_template:
+      - [core/image]
+  content:
+    title: Content
+    description: Slot for arbitrary body content below the description.
+    examples:
+      - '<p>Additional content goes here.</p>'
+    gutenberg_template:
+      - [core/paragraph, {placeholder: 'Add card content…'}]
+
+variants:
+  default:
+    title: Default
+    description: Standard card layout.
+  horizontal:
+    title: Horizontal
+    description: Side-by-side media and content layout.

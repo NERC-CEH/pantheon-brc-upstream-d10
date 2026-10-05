@@ -1,0 +1,445 @@
+@use "sass:list";
+@use "@wordpress/base-styles/colors" as *;
+@use "@wordpress/base-styles/variables" as *;
+
+// The Drupal blue, behind the illustrations.
+$drupal-welcome-guide-blue: #009cde;
+
+.edit-post-welcome-guide,
+.edit-template-welcome-guide {
+	width: 312px;
+
+	&__image {
+		display: block;
+		background: $drupal-welcome-guide-blue;
+		margin: 0 0 $grid-unit-20;
+
+		> img {
+			display: block;
+			max-width: 100%;
+			object-fit: cover;
+		}
+	}
+
+	&__heading {
+		font-family: $default-font;
+		font-size: 24px;
+		line-height: 1.4;
+		margin: $grid-unit-20 0 $grid-unit-20 0;
+		padding: 0 $grid-unit-30;
+	}
+
+	&__text {
+		font-size: $default-font-size;
+		line-height: 1.4;
+		margin: 0 0 $grid-unit-30 0;
+		padding: 0 $grid-unit-30;
+	}
+
+	&__inserter-icon {
+		margin: 0 4px;
+		vertical-align: text-top;
+
+		rect {
+			fill: var(--wp-admin-theme-color);
+		}
+	}
+
+	.components-button {
+
+		&:hover {
+
+			svg {
+				color: $white;
+			}
+		}
+	}
+}
+
+.edit-template-welcome-guide {
+
+	.components-button svg {
+		color: $white;
+	}
+}
+
+// Illustrations of the Drupal editor (illustrations.js). They loop like the
+// upstream GIFs; their static styles are the frame shown with reduced motion.
+// The editor UI in them follows the admin theme color.
+.drupal-welcome-illustration {
+	max-width: 100%;
+	height: auto;
+
+	&__bg {
+		fill: $drupal-welcome-guide-blue;
+	}
+
+	&__accent {
+		fill: var(--wp-admin-theme-color);
+	}
+
+	&__outline {
+		stroke: var(--wp-admin-theme-color);
+	}
+
+	&__cursor {
+		filter: drop-shadow(0 1px 1px rgba($black, 0.2));
+	}
+
+	* {
+		animation-fill-mode: both;
+		animation-iteration-count: infinite;
+		animation-timing-function: ease-in-out;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+
+		* {
+			animation: none !important;
+		}
+	}
+}
+
+// Blocks: the blocks of a page appear one by one, each selected in turn.
+$drupal-welcome-canvas-steps: 6, 16, 26, 36;
+
+.drupal-welcome-illustration--canvas {
+
+	@for $i from 1 through 4 {
+		$start: list.nth($drupal-welcome-canvas-steps, $i);
+		$end: if($i < 4, list.nth($drupal-welcome-canvas-steps, $i + 1), 88);
+
+		@keyframes drupal-welcome-canvas-block-#{$i} {
+
+			0%,
+			#{$start * 1%} {
+				opacity: 0;
+				transform: translateY(8px);
+			}
+
+			#{($start + 5) * 1%},
+			92% {
+				opacity: 1;
+				transform: none;
+			}
+
+			100% {
+				opacity: 0;
+				transform: none;
+			}
+		}
+
+		@keyframes drupal-welcome-canvas-outline-#{$i} {
+
+			0%,
+			#{$start * 1%},
+			#{$end * 1%},
+			100% {
+				opacity: 0;
+			}
+
+			#{($start + 1) * 1%},
+			#{($end - 1) * 1%} {
+				opacity: 1;
+			}
+		}
+
+		.drupal-welcome-illustration__block--#{$i} {
+			animation-name: drupal-welcome-canvas-block-#{$i};
+			animation-duration: 8s;
+		}
+
+		.drupal-welcome-illustration__outline--#{$i} {
+			opacity: if($i < 4, 0, 1);
+			animation-name: drupal-welcome-canvas-outline-#{$i};
+			animation-duration: 8s;
+		}
+	}
+}
+
+// Block settings: a color picked in the sidebar colors the selected block.
+@keyframes drupal-welcome-editor-cursor {
+
+	0%,
+	8% {
+		transform: translate(150px, 204px);
+	}
+
+	38% {
+		transform: translate(266px, 95px);
+	}
+
+	42% {
+		transform: translate(266px, 95px) scale(0.85);
+	}
+
+	46%,
+	86% {
+		transform: translate(266px, 95px);
+	}
+
+	96%,
+	100% {
+		transform: translate(150px, 204px);
+	}
+}
+
+@keyframes drupal-welcome-editor-color {
+
+	0%,
+	44%,
+	96%,
+	100% {
+		opacity: 0;
+	}
+
+	50%,
+	90% {
+		opacity: 1;
+	}
+}
+
+.drupal-welcome-illustration--editor {
+
+	.drupal-welcome-illustration__cursor {
+		transform: translate(266px, 95px);
+		animation-name: drupal-welcome-editor-cursor;
+		animation-duration: 7s;
+	}
+
+	.drupal-welcome-illustration__block-color,
+	.drupal-welcome-illustration__swatch-ring {
+		animation-name: drupal-welcome-editor-color;
+		animation-duration: 7s;
+	}
+}
+
+// Block library: the inserter opens, and an image block is added from it.
+@keyframes drupal-welcome-library-cursor {
+
+	0% {
+		transform: translate(200px, 170px);
+	}
+
+	12% {
+		transform: translate(53px, 35px);
+	}
+
+	14% {
+		transform: translate(53px, 35px) scale(0.85);
+	}
+
+	17%,
+	24% {
+		transform: translate(53px, 35px);
+	}
+
+	42% {
+		transform: translate(75px, 124px);
+	}
+
+	45% {
+		transform: translate(75px, 124px) scale(0.85);
+	}
+
+	48%,
+	88% {
+		transform: translate(75px, 124px);
+	}
+
+	98%,
+	100% {
+		transform: translate(200px, 170px);
+	}
+}
+
+@keyframes drupal-welcome-library-inserter {
+
+	0%,
+	16%,
+	94%,
+	100% {
+		fill: var(--wp-admin-theme-color);
+	}
+
+	18%,
+	92% {
+		fill: $gray-900;
+	}
+}
+
+@keyframes drupal-welcome-library-plus {
+
+	0%,
+	16%,
+	94%,
+	100% {
+		transform: none;
+	}
+
+	20%,
+	90% {
+		transform: rotate(45deg);
+	}
+}
+
+@keyframes drupal-welcome-library-panel {
+
+	0%,
+	16%,
+	100% {
+		transform: translateX(-106px);
+	}
+
+	24%,
+	91% {
+		transform: none;
+	}
+}
+
+@keyframes drupal-welcome-library-highlight {
+
+	0%,
+	40%,
+	91%,
+	100% {
+		opacity: 0;
+	}
+
+	42%,
+	90% {
+		opacity: 1;
+	}
+}
+
+@keyframes drupal-welcome-library-block {
+
+	0%,
+	47%,
+	100% {
+		opacity: 0;
+		transform: scale(0.96);
+	}
+
+	53%,
+	91% {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes drupal-welcome-library-after-block {
+
+	0%,
+	47%,
+	100% {
+		transform: translateY(-72px);
+	}
+
+	53%,
+	91% {
+		transform: none;
+	}
+}
+
+.drupal-welcome-illustration--library {
+
+	.drupal-welcome-illustration__cursor {
+		transform: translate(75px, 124px);
+		animation-name: drupal-welcome-library-cursor;
+	}
+
+	.drupal-welcome-illustration__inserter-bg {
+		fill: $gray-900;
+		animation-name: drupal-welcome-library-inserter;
+	}
+
+	.drupal-welcome-illustration__inserter-plus {
+		transform: rotate(45deg);
+		transform-box: fill-box;
+		transform-origin: center;
+		animation-name: drupal-welcome-library-plus;
+	}
+
+	.drupal-welcome-illustration__panel {
+		animation-name: drupal-welcome-library-panel;
+	}
+
+	.drupal-welcome-illustration__panel-highlight {
+		fill: color-mix(in srgb, var(--wp-admin-theme-color) 8%, transparent);
+		stroke: var(--wp-admin-theme-color);
+		animation-name: drupal-welcome-library-highlight;
+	}
+
+	.drupal-welcome-illustration__new-block {
+		transform-box: fill-box;
+		transform-origin: center;
+		animation-name: drupal-welcome-library-block;
+	}
+
+	.drupal-welcome-illustration__after-new-block {
+		animation-name: drupal-welcome-library-after-block;
+	}
+
+	.drupal-welcome-illustration__cursor,
+	.drupal-welcome-illustration__inserter-bg,
+	.drupal-welcome-illustration__inserter-plus,
+	.drupal-welcome-illustration__panel,
+	.drupal-welcome-illustration__panel-highlight,
+	.drupal-welcome-illustration__new-block,
+	.drupal-welcome-illustration__after-new-block {
+		animation-duration: 9s;
+	}
+}
+
+// Documentation: the guide on drupal.org scrolls, section by section.
+@keyframes drupal-welcome-documentation-page {
+
+	0%,
+	20%,
+	100% {
+		transform: none;
+	}
+
+	40%,
+	55% {
+		transform: translateY(-48px);
+	}
+
+	75%,
+	90% {
+		transform: translateY(-96px);
+	}
+}
+
+@keyframes drupal-welcome-documentation-toc {
+
+	0%,
+	20%,
+	100% {
+		transform: none;
+	}
+
+	40%,
+	55% {
+		transform: translateY(12px);
+	}
+
+	75%,
+	90% {
+		transform: translateY(24px);
+	}
+}
+
+.drupal-welcome-illustration--documentation {
+
+	.drupal-welcome-illustration__page {
+		animation-name: drupal-welcome-documentation-page;
+		animation-duration: 8s;
+	}
+
+	.drupal-welcome-illustration__toc-current {
+		animation-name: drupal-welcome-documentation-toc;
+		animation-duration: 8s;
+	}
+}

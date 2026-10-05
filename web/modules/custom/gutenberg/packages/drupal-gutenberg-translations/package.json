@@ -1,0 +1,13 @@
+{
+  "name": "drupal-gutenberg-translations",
+  "version": "2.0.0",
+  "description": "Command line that generates a Drupal-compatible translations file from Gutenberg __(), _n(), _x() and _nx() calls.",
+  "main": "index.js",
+  "private": true,
+  "license": "GPL-2.0-or-later",
+  "author": "The Frontkom Contributors",
+  "keywords": ["Drupal", "Frontkom", "Gutenberg", "I18N"],
+  "bin": {
+    "drupal-gutenberg-translations": "./index.js"
+  }
+}

@@ -1,0 +1,76 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "example-blocks/card",
+    "title": "Card",
+    "description": "A block that displays a card with a picture and text.",
+    "textdomain": "default",
+    "category": "design",
+    "icon": "businessman",
+    "attributes": {
+      "imageUrl": {
+        "type": "string",
+        "source": "attribute",
+        "attribute": "src",
+        "selector": "img"
+      },
+      "imageUuid": {
+        "type": "string",
+        "source": "attribute",
+        "attribute": "data-entity-uuid",
+        "selector": "img"
+      },
+      "imageAlt": {
+        "type": "string",
+        "source": "attribute",
+        "attribute": "alt",
+        "selector": "img"
+      },
+      "title": {
+        "type": "string",
+        "source": "text",
+        "selector": "h2"
+      },
+      "subhead": {
+        "type": "string",
+        "source": "text",
+        "selector": "h2 + p"
+      },
+      "metadata": {
+        "type": "string"
+      }
+    },
+    "supports": {
+      "align": false,
+      "anchor": true,
+      "color": {
+        "background": true,
+        "text": true
+      }
+    },
+    "styles": [
+      {
+        "name": "default",
+        "label": "Default",
+        "isDefault": true
+      },
+      {
+        "name": "image-right",
+        "label": "Right aligned image"
+      }
+    ],
+    "variations": [
+      {
+        "name": "pet",
+        "title": "Pet Card",
+        "description": "A card for a pet.",
+        "icon": "pets",
+        "attributes": {
+          "className": "is-style-pet", 
+          "imageUrl": "https://images.unsplash.com/photo-1524698604136-5a02fb1f7ec9?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+          "imageAlt": "Photo by Shane Guymon on Unsplash"
+        },
+        "isActive": [ "className" ]
+      }
+    ]
+  }

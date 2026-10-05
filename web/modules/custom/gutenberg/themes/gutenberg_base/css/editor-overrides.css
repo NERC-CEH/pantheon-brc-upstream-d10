@@ -1,0 +1,98 @@
+/**
+ * @file
+ * Editor-only overrides for Gutenberg Base theme.
+ *
+ * Loaded last in the editor canvas (theme-support.styles in
+ * gutenberg_base.gutenberg.yml). The other editor styles are the token and
+ * theme CSS of the frontend; css/theme/layout.css applies its .layout-content
+ * rules to the canvas root container too.
+ */
+
+/**
+ * Mirror frontend flow/constrained layout gap rules in the editor.
+ *
+ * On the frontend, GlobalStylesGenerator::generateLayoutGapCss() outputs:
+ *   :where(.is-layout-flow) > *     { margin-block-start: 0; ... }        (0,0,0)
+ *   :where(.is-layout-flow) > * + * { margin-block-start: 1.5rem; ... }   (0,0,0)
+ *
+ * In the editor, block-library/reset.css applies:
+ *   :where(.editor-styles-wrapper) p { margin: revert; }                  (0,0,1)
+ *
+ * The p-element selector gives reset.css specificity (0,0,1), which beats the
+ * :where()-wrapped layout rules at (0,0,0). Paragraphs therefore get browser-
+ * default margins (~1em) instead of the flow gap — no gap at all for the first
+ * child and double-margin for adjacent ones.
+ *
+ * Omitting :where() from the container class gives specificity (0,1,0), which
+ * beats reset.css. Both the reset rule and the sibling gap rule are required:
+ * the first zeros all margins, the second restores the gap between siblings.
+ */
+.is-layout-flow > *,
+.is-layout-constrained > * {
+  margin-block-start: 0;
+  margin-block-end: 0;
+}
+
+.is-layout-flow > * + *,
+.is-layout-constrained > * + * {
+  margin-block-start: var(--wp--style--block-gap, 1.5rem);
+  margin-block-end: 0;
+}
+
+/*
+ * The root container of the canvas is the .layout-content of the frontend:
+ * the prose size and the heading rhythm of css/theme/layout.css, by hand.
+ */
+.is-root-container {
+  padding-inline: var(--gutter);
+  font-size: var(--step-3);
+  line-height: 1.7;
+}
+
+.is-root-container > .alignfull {
+  margin-inline: calc(var(--gutter) * -1);
+}
+
+.is-root-container > h2 { margin-block-start: var(--step-8); }
+
+.is-root-container > h3 { margin-block-start: var(--step-7); }
+
+.is-root-container > h4 { margin-block-start: var(--step-6); }
+
+.is-root-container > :is(h2, h3, h4) + * { margin-block-start: var(--step-2); }
+
+.is-root-container > h2 + h3, .is-root-container > h3 + h4 { margin-block-start: var(--step-3); }
+
+.is-root-container > :is(figure, .wp-block-quote, .wp-block-pullquote, .factbox) { margin-block: var(--step-7); }
+
+.is-root-container > :first-child { margin-block-start: 0; }
+
+/* The editor title, like the page header title of the frontend. */
+.editor-post-title__input,
+.wp-block-post-title {
+  font-family: var(--font-heading);
+  font-size: var(--step-8);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+}
+
+/*
+ * "Overlay the site header" of a first Cover (js/cover-header-overlay.js):
+ * a placeholder of the site header, a translucent bar of its height at the
+ * top of the cover, with the content padded below it as on the page. Only a
+ * hint: the real header is not part of the canvas. No z-index is needed, the
+ * cover isolates its stacking and its background layers are behind.
+ */
+.wp-block-cover.has-header-overlay:not(.is-placeholder) {
+  padding-top: calc(var(--header-height) + var(--space-7));
+  min-height: calc(28rem + var(--header-height));
+}
+
+.wp-block-cover.has-header-overlay:not(.is-placeholder)::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: var(--header-height);
+  background: color-mix(in srgb, var(--color-bg) 70%, transparent);
+  pointer-events: none;
+}

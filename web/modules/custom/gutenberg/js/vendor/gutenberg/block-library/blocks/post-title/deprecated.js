@@ -1,0 +1,169 @@
+"use strict";
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// packages/block-library/src/post-title/deprecated.js
+var deprecated_exports = {};
+__export(deprecated_exports, {
+  default: () => deprecated_default
+});
+module.exports = __toCommonJS(deprecated_exports);
+var import_migrate_font_family = __toESM(require("../utils/migrate-font-family.cjs"));
+var import_migrate_text_align = __toESM(require("../utils/migrate-text-align.cjs"));
+var v2 = {
+  attributes: {
+    textAlign: {
+      type: "string"
+    },
+    level: {
+      type: "number",
+      default: 2
+    },
+    levelOptions: {
+      type: "array"
+    },
+    isLink: {
+      type: "boolean",
+      default: false
+    },
+    rel: {
+      type: "string",
+      attribute: "rel",
+      default: ""
+    },
+    linkTarget: {
+      type: "string",
+      default: "_self"
+    }
+  },
+  supports: {
+    anchor: true,
+    align: ["wide", "full"],
+    html: false,
+    color: {
+      gradients: true,
+      link: true,
+      __experimentalDefaultControls: {
+        background: true,
+        text: true,
+        link: true
+      }
+    },
+    spacing: {
+      padding: true,
+      margin: true
+    },
+    typography: {
+      fontSize: true,
+      lineHeight: true,
+      __experimentalFontFamily: true,
+      __experimentalTextTransform: true,
+      __experimentalTextDecoration: true,
+      __experimentalFontStyle: true,
+      __experimentalFontWeight: true,
+      __experimentalLetterSpacing: true,
+      __experimentalDefaultControls: {
+        fontSize: true
+      }
+    },
+    interactivity: {
+      clientNavigation: true
+    },
+    __experimentalBorder: {
+      radius: true,
+      color: true,
+      width: true,
+      style: true,
+      __experimentalDefaultControls: {
+        radius: true,
+        color: true,
+        width: true,
+        style: true
+      }
+    }
+  },
+  migrate: import_migrate_text_align.default,
+  isEligible(attributes) {
+    return !!attributes.textAlign || !!attributes.className?.match(
+      /\bhas-text-align-(left|center|right)\b/
+    );
+  },
+  save: () => null
+};
+var v1 = {
+  attributes: {
+    textAlign: {
+      type: "string"
+    },
+    level: {
+      type: "number",
+      default: 2
+    },
+    isLink: {
+      type: "boolean",
+      default: false
+    },
+    rel: {
+      type: "string",
+      attribute: "rel",
+      default: ""
+    },
+    linkTarget: {
+      type: "string",
+      default: "_self"
+    }
+  },
+  supports: {
+    align: ["wide", "full"],
+    html: false,
+    color: {
+      gradients: true,
+      link: true
+    },
+    spacing: {
+      margin: true
+    },
+    typography: {
+      fontSize: true,
+      lineHeight: true,
+      __experimentalFontFamily: true,
+      __experimentalFontWeight: true,
+      __experimentalFontStyle: true,
+      __experimentalTextTransform: true
+    }
+  },
+  save() {
+    return null;
+  },
+  migrate: import_migrate_font_family.default,
+  isEligible({ style }) {
+    return style?.typography?.fontFamily;
+  }
+};
+var deprecated_default = [v2, v1];
+//# sourceMappingURL=deprecated.cjs.map

@@ -1,0 +1,316 @@
+// Hide the WP "Trash" actions dropdown on the sidebar post card.
+.editor-post-card-panel .editor-all-actions-button {
+  display: none;
+}
+
+// Collapse the title wrapper when the title isn't shown in the editor.
+.edit-post-visual-editor__post-title-wrapper:empty,
+.editor-visual-editor__post-title-wrapper:empty {
+  margin: 0 !important;
+}
+
+// The code editor renders the title regardless of post type support.
+.gutenberg__editor--no-title .editor-text-editor__body .editor-post-title {
+  display: none;
+}
+
+.edit-post-sidebar,
+.editor-sidebar {
+
+  select {
+    background-repeat: no-repeat;
+    background-position: center right;
+  }
+}
+
+.edit-post-header,
+.editor-header {
+
+  .edit-post-fullscreen-mode-close {
+    // background-color: #0678be;
+    display: none;
+
+    &.drupal {
+
+      .is-fullscreen-mode & {
+        display: flex;
+      }
+    }
+
+    // svg {
+    //   width: 48px;
+    //   height: 48px
+    // }
+  }
+}
+
+.edit-post-layout,
+.editor-layout {
+  transition: ease-in-out 0.2s all;
+}
+
+// The editor regions take focus when clicked, and draw their borders with a
+// box-shadow, which the admin theme focus styles remove (claro.scss, gin.scss).
+.interface-interface-skeleton {
+
+  .interface-interface-skeleton__header:focus {
+    box-shadow: 0 1px rgba(0, 0, 0, 0.133) !important;
+  }
+
+  .interface-interface-skeleton__sidebar:focus {
+    box-shadow: -1px 0 rgba(0, 0, 0, 0.133) !important;
+  }
+
+  .interface-interface-skeleton__secondary-sidebar:focus {
+    box-shadow: 1px 0 rgba(0, 0, 0, 0.133) !important;
+  }
+}
+
+.edit-post-welcome-guide {
+
+  .components-guide__page-control {
+
+    li[aria-current="step"] {
+
+      svg {
+
+        circle {
+          fill: $primary-color;
+        }
+      }
+    }
+  }
+}
+
+// Hide Welcome Guide & Help menu items from Tools menu
+.edit-post-more-menu__content {
+
+  .components-popover__content {
+
+    .components-dropdown-menu__menu {
+
+      .components-menu-group:nth-child(3) {
+
+        div[role='group'] {
+
+          *:nth-child(4), *:nth-child(5) {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}
+
+body {
+
+  #toolbar-bar {
+    transition: ease-in-out 0.2s margin-top;
+  }
+}
+
+// WordPress admin sets a 13px base font size on <body>, and newer
+// @wordpress/components and @wordpress/ui styles inherit it (sidebar tabs,
+// ToolsPanel headings, the meta boxes toggle). Drupal admin themes use a
+// larger body size, so restore the WordPress base on the editor UI and on
+// the overlays it renders into <body>.
+.gutenberg__editor,
+.components-popover,
+.components-modal__screen-overlay {
+  font-size: 13px;
+}
+
+// WordPress admin also resets fieldsets globally, which components such as
+// the "Hide block" modal rely on. :where() keeps element-level specificity so
+// Claro's class-based fieldset styles on Drupal form fields still apply.
+:where(.gutenberg__editor, .components-popover, .components-modal__screen-overlay) fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+body.is-fullscreen-mode {
+
+  #toolbar-bar {
+
+    /* display: none; */
+    margin-top: -4rem;
+  }
+
+  .edit-post-layout,
+  .editor-layout {
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 999 !important;
+  }
+
+  .ui-autocomplete {
+    z-index: 1000;
+  }
+}
+
+input[type="search"] {
+  box-sizing: border-box;
+}
+
+// Gin and Default Admin add a close button and an overlay for their own
+// meta sidebar on narrow screens. The editor has its own settings sidebar,
+// so they do nothing here.
+.gutenberg {
+
+  .meta-sidebar__close,
+  .meta-sidebar__overlay {
+    display: none !important;
+  }
+}
+
+// Drupal form actions (Save, Preview, Delete) in the editor header.
+.drupal-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .gutenberg-header-settings {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .form-actions {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 0;
+      margin-block: 0;
+
+      a {
+        white-space: nowrap;
+      }
+    }
+  }
+}
+
+// Saved entity status next to the title in the document bar, as the
+// Navigation module's top bar badge shows it.
+// The editor caps the title at 70% of the bar, which the badge would eat into.
+.editor-document-bar__title:has(> .drupal-entity-status) {
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  h1 {
+    min-width: 0;
+  }
+}
+
+.drupal-entity-status {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 1px solid transparent; // For forced colors.
+  border-radius: 1rem;
+  background-color: #d8dfea;
+  color: #1e1e1e;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 16px;
+  white-space: nowrap;
+
+  &.is-published {
+    background-color: #9cfccf;
+    color: #005c31;
+  }
+}
+
+// "Page actions" group in the editor's Options (⋮) menu. The menu popup lays
+// out its items on a grid, which the group has to pass through.
+.drupal-page-actions-menu-group,
+.drupal-page-actions-menu-group > [role="group"] {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+}
+
+.drupal-page-actions-menu-group {
+  // Separator from the View group below, like the menu's own separators.
+  &::after {
+    content: "";
+    grid-column: 1 / -1;
+    height: 1px;
+    margin-block: var(--wpds-dimension-gap-xs, 4px);
+    margin-inline: var(--wp-ui-menu-group-head-padding-inline, 8px);
+    background-color: var(--wpds-color-stroke-surface-neutral-weak, #e0e0e0);
+  }
+
+  .components-menu-group__label {
+    display: flex;
+    grid-column: 1 / -1;
+    align-items: center;
+    min-height: var(--wpds-dimension-size-md, 32px);
+    margin: 0;
+    padding-block: var(--wpds-dimension-padding-xs, 4px);
+    padding-inline: var(--wp-ui-menu-group-head-padding-inline, 8px);
+    color: var(--wpds-color-foreground-content-neutral-weak, #757575);
+    font-size: var(--wpds-typography-font-size-xs, 11px);
+    line-height: var(--wpds-typography-line-height-xs, 16px);
+  }
+}
+
+// Wide screens: all buttons inline, no dropdown toggle.
+@media (min-width: 783px) {
+
+  .drupal-form-actions__dropdown {
+    display: none;
+  }
+
+  .drupal-form-actions__menu {
+    display: contents;
+  }
+}
+
+// Small screens: only Save + "..." toggle visible.
+@media (max-width: 782px) {
+
+  .drupal-form-actions__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    color: #1e1e1e;
+
+    &:hover {
+      background: #f0f0f0;
+    }
+  }
+
+  .drupal-form-actions__menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    padding: 8px;
+    z-index: 100001;
+    min-width: 160px;
+
+    &.is-open {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    input, button, a {
+      width: 100%;
+      text-align: left;
+      white-space: nowrap;
+    }
+  }
+}

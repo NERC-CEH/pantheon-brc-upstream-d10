@@ -1,0 +1,53 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for displaying a single search result.
+ *
+ * A search result is a plain teaser: the teaser card of the design, with a
+ * white body and text only. It starts with the content type as a tag, and
+ * the date when the content type displays it.
+ *
+ * Available variables:
+ * - type: (optional) The label of the content type.
+ * - date: (optional) The date the content was created.
+ *   See gutenberg_base_preprocess_search_result().
+ * - url: URL of the result.
+ * - title: Title of the result.
+ * - snippet: A small preview of the result. Does not apply to user searches.
+ * - info: String of all the meta information ready for print. Not printed: the
+ *   type and the date replace it.
+ * - plugin_id: The machine-readable name of the plugin being executed, such
+ *   as "node_search" or "user_search".
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ * - info_split: Contains same data as info, but split into separate parts.
+ * - title_attributes: HTML attributes for the title.
+ * - content_attributes: HTML attributes for the content.
+ *
+ * @see template_preprocess_search_result()
+ */
+#}
+<article class="node node--view-mode-teaser is-plain search-result">
+  <div class="node__body">
+    {% if type or date %}
+      <div class="search-result__meta">
+        {% if type %}
+          <span class="tag">{{ type }}</span>
+        {% endif %}
+        {% if date %}
+          <span>{{ date }}</span>
+        {% endif %}
+      </div>
+    {% endif %}
+    {{ title_prefix }}
+    <h3{{ title_attributes.addClass('node__title') }}>
+      <a href="{{ url }}">{{ title }}</a>
+    </h3>
+    {{ title_suffix }}
+    {% if snippet %}
+      <p{{ content_attributes.addClass('node__summary') }}>{{ snippet }}</p>
+    {% endif %}
+  </div>
+</article>

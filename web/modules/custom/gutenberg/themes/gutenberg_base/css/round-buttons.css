@@ -1,0 +1,27 @@
+/**
+ * @file
+ * Round buttons: the "Button shape" theme setting (data-buttons on <html>).
+ *
+ * Buttons, including the Button block and the menu toggle, become pills.
+ * Fields and tags stay square. The search form, whose button is attached to
+ * the field, separates them with a gap, and gives the field back its border
+ * on the side of the button. A Button block with a border radius of its own
+ * keeps it, as that is an inline style.
+ */
+
+[data-buttons="round"] :is(.button, .form-submit, .wp-block-button__link, .wp-element-button, .menu-toggle) {
+  border-radius: var(--radius-full);
+}
+
+[data-buttons="round"] .search-form .form-search {
+  border-inline-end: 1px solid var(--color-border-strong);
+}
+
+[data-buttons="round"] .search-form .form-search:is(:hover, :focus) {
+  border-inline-end-color: var(--color-text);
+}
+
+[data-buttons="round"] .search-block-form form,
+[data-buttons="round"] .search-page-form > .container-inline {
+  gap: var(--space-2);
+}

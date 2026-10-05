@@ -1,0 +1,26 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/playlist block.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the <figure> wrapper (includes
+ *   data-wp-interactive and data-wp-context directives).
+ * - player_html: Raw HTML for the current-track info and <audio> element.
+ * - inner_content: Rendered inner blocks (the track list <ol>).
+ * - block_attributes: Raw block attributes (e.g. caption).
+ *
+ * @see template_preprocess_gutenberg_block__core__playlist()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if player_html is not empty %}
+<figure{{ attributes }}>
+  {{ player_html|raw }}
+  {{ inner_content }}
+  {% if block_attributes.caption %}
+    <figcaption class="wp-element-caption">{{ block_attributes.caption }}</figcaption>
+  {% endif %}
+</figure>
+{% endif %}

@@ -1,0 +1,174 @@
+<?php
+
+/**
+ * @file
+ * Hooks for the Gutenberg Notes module.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+
+/**
+ * Implements hook_form_alter().
+ *
+ * Adds a submit handler to the content type form so the gutenberg_notes
+ * comment field is created/removed when Gutenberg is enabled/disabled.
+ */
+function gutenberg_notes_form_alter(&$form, FormStateInterface $form_state, $form_id) {
+  if ($form_id !== 'node_type_edit_form' && $form_id !== 'node_type_add_form') {
+    return;
+  }
+
+  if (!isset($form['gutenberg'])) {
+    return;
+  }
+
+  $form['actions']['submit']['#submit'][] = '_gutenberg_notes_node_type_form_submit';
+  if (isset($form['actions']['save_continue'])) {
+    $form['actions']['save_continue']['#submit'][] = '_gutenberg_notes_node_type_form_submit';
+  }
+}
+
+/**
+ * Submit handler for the content type form.
+ *
+ * Creates the gutenberg_notes comment field when Gutenberg is enabled,
+ * or removes it (together with all associated comments) when disabled.
+ */
+function _gutenberg_notes_node_type_form_submit(array $form, FormStateInterface $form_state) {
+  $bundle = $form_state->getValue('type');
+  $gutenberg_enabled = (bool) $form_state->getValue('enable_gutenberg_experience');
+
+  if ($gutenberg_enabled) {
+    _gutenberg_notes_ensure_field_storage();
+    _gutenberg_notes_ensure_field_instance($bundle);
+  }
+  else {
+    _gutenberg_notes_remove_field_and_comments($bundle);
+  }
+}
+
+/**
+ * Implements hook_form_BASE_FORM_ID_alter() for node forms.
+ *
+ * Injects Notes settings into drupalSettings so the Gutenberg editor
+ * shows the Notes sidebar for Gutenberg-enabled content types.
+ */
+function gutenberg_notes_form_node_form_alter(&$form, FormStateInterface $form_state) {
+  $node = $form_state->getFormObject()->getEntity();
+
+  if ($node->getEntityTypeId() !== 'node') {
+    return;
+  }
+
+  // Only enable notes for Gutenberg-enabled node types.
+  if (!_gutenberg_is_gutenberg_enabled($node)) {
+    return;
+  }
+
+  // Only enable when the comment field exists for this bundle.
+  $bundle = $node->bundle();
+  $entity_field_manager = \Drupal::service('entity_field.manager');
+  $fields = $entity_field_manager->getFieldDefinitions('node', $bundle);
+
+  if (!isset($fields['gutenberg_notes'])) {
+    return;
+  }
+
+  // Signal to api-fetch.js that Notes is available.
+  $form['#attached']['drupalSettings']['gutenberg']['notesEnabled'] = TRUE;
+
+  // Provide the entity context so api-fetch.js can build controller URLs.
+  $form['#attached']['drupalSettings']['gutenberg']['notes'] = [
+    'entityType' => $node->getEntityTypeId(),
+    'entityId' => (int) $node->id(),
+  ];
+}
+
+/**
+ * Removes the gutenberg_notes field and all associated comments for a bundle.
+ *
+ * @param string $bundle
+ *   The node type machine name.
+ */
+function _gutenberg_notes_remove_field_and_comments(string $bundle) {
+  $entity_type_manager = \Drupal::entityTypeManager();
+
+  // Delete all gutenberg_note comments for nodes of this bundle.
+  $nids = $entity_type_manager->getStorage('node')->getQuery()
+    ->condition('type', $bundle)
+    ->accessCheck(FALSE)
+    ->execute();
+
+  if (!empty($nids)) {
+    $comment_storage = $entity_type_manager->getStorage('comment');
+    $cids = $comment_storage->getQuery()
+      ->condition('comment_type', 'gutenberg_note')
+      ->condition('entity_type', 'node')
+      ->condition('entity_id', $nids, 'IN')
+      ->accessCheck(FALSE)
+      ->execute();
+
+    if (!empty($cids)) {
+      $comments = $comment_storage->loadMultiple($cids);
+      $comment_storage->delete($comments);
+    }
+  }
+
+  // Delete the field instance for this bundle.
+  $field_config = \Drupal::entityTypeManager()
+    ->getStorage('field_config')
+    ->load("node.$bundle.gutenberg_notes");
+
+  if ($field_config) {
+    $field_config->delete();
+  }
+}
+
+/**
+ * Creates the field storage for gutenberg_notes if it doesn't exist.
+ */
+function _gutenberg_notes_ensure_field_storage() {
+  $existing = \Drupal::service('entity_field.manager')
+    ->getFieldStorageDefinitions('node');
+
+  if (!isset($existing['gutenberg_notes'])) {
+    FieldStorageConfig::create([
+      'entity_type' => 'node',
+      'field_name' => 'gutenberg_notes',
+      'type' => 'comment',
+      'settings' => [
+        'comment_type' => 'gutenberg_note',
+      ],
+    ])->save();
+  }
+}
+
+/**
+ * Creates a gutenberg_notes field instance on a bundle if missing.
+ */
+function _gutenberg_notes_ensure_field_instance(string $bundle) {
+  $existing = \Drupal::service('entity_field.manager')
+    ->getFieldDefinitions('node', $bundle);
+
+  if (!isset($existing['gutenberg_notes'])) {
+    FieldConfig::create([
+      'label' => 'Gutenberg Notes',
+      'description' => 'Block-level notes for collaborative editing.',
+      'field_name' => 'gutenberg_notes',
+      'entity_type' => 'node',
+      'bundle' => $bundle,
+      'default_value' => [
+        [
+          'status' => 2,
+          'cid' => 0,
+          'last_comment_timestamp' => 0,
+          'last_comment_name' => NULL,
+          'last_comment_uid' => 0,
+          'comment_count' => 0,
+        ],
+      ],
+    ])->save();
+  }
+}

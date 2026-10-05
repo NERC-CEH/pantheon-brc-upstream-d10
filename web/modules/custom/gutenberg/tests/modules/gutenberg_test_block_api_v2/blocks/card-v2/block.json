@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 2,
+  "name": "gutenberg-test/card-v2",
+  "title": "Card (API v2)",
+  "category": "design",
+  "icon": "id-alt",
+  "attributes": {
+    "title": {
+      "type": "string",
+      "source": "html",
+      "selector": ".wp-block-gutenberg-test-card-v2__title"
+    },
+    "subhead": {
+      "type": "string",
+      "source": "html",
+      "selector": ".wp-block-gutenberg-test-card-v2__subhead"
+    }
+  },
+  "supports": {
+    "align": ["wide", "full"],
+    "anchor": true,
+    "color": {
+      "background": true,
+      "text": true
+    },
+    "spacing": {
+      "padding": true,
+      "margin": true
+    },
+    "typography": {
+      "fontSize": true
+    }
+  },
+  "styles": [
+    { "name": "default", "label": "Default", "isDefault": true },
+    { "name": "outlined", "label": "Outlined" }
+  ]
+}

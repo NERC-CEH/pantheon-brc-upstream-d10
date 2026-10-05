@@ -1,0 +1,44 @@
+diff --git a/node_modules/@wordpress/interface/build-style/style-rtl.css b/node_modules/@wordpress/interface/build-style/style-rtl.css
+index 529c2d5..53c7dc0 100644
+--- a/node_modules/@wordpress/interface/build-style/style-rtl.css
++++ b/node_modules/@wordpress/interface/build-style/style-rtl.css
+@@ -111,7 +111,7 @@
+ }
+ @media (min-width: 782px) {
+   .interface-complementary-area {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-complementary-area .components-panel {
+@@ -368,7 +368,7 @@ body.is-fullscreen-mode .interface-interface-skeleton {
+ }
+ @media (min-width: 782px) {
+   .interface-interface-skeleton__actions {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-interface-skeleton__actions:focus, .interface-interface-skeleton__actions:focus-within {
+diff --git a/node_modules/@wordpress/interface/build-style/style.css b/node_modules/@wordpress/interface/build-style/style.css
+index 040929f..fac12b1 100644
+--- a/node_modules/@wordpress/interface/build-style/style.css
++++ b/node_modules/@wordpress/interface/build-style/style.css
+@@ -111,7 +111,7 @@
+ }
+ @media (min-width: 782px) {
+   .interface-complementary-area {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-complementary-area .components-panel {
+@@ -368,7 +368,7 @@ body.is-fullscreen-mode .interface-interface-skeleton {
+ }
+ @media (min-width: 782px) {
+   .interface-interface-skeleton__actions {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-interface-skeleton__actions:focus, .interface-interface-skeleton__actions:focus-within {

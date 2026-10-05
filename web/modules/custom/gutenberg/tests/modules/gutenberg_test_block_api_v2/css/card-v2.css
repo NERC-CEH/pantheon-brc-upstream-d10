@@ -1,0 +1,8 @@
+.wp-block-gutenberg-test-card-v2 {
+  padding: 24px;
+  border-radius: 12px;
+}
+
+.wp-block-gutenberg-test-card-v2.is-style-outlined {
+  border: 2px solid currentcolor;
+}

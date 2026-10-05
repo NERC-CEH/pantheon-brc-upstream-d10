@@ -1,0 +1,18 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/cover block.
+ *
+ * Unlike simpler container blocks, the Cover block has complex internal
+ * structure (background span, inner-container div) that must be preserved.
+ * We output block_content directly rather than re-wrapping with inner_content,
+ * because extractInnerHtml strips the background and inner-container elements.
+ *
+ * The preprocess hook modifies block_content for embed-video backgrounds.
+ *
+ * @see template_preprocess_gutenberg_block__core__cover()
+ *
+ * @ingroup themeable
+ */
+#}
+{{ block_content }}

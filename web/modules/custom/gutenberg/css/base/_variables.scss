@@ -1,0 +1,11 @@
+$primary-color: #0678be;
+
+:root {
+    --primary-color: #0678be;
+    --wp-block-synced-color: #7a00df;
+
+    // Set some Claro variables not existing in 9.x
+    --messages-bg-color: #353641;
+    --messages-fg-color: #fff;
+    --font-size-xs: 0.79rem;
+}

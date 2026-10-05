@@ -1,0 +1,1 @@
+(()=>{"use strict";const r=jQuery;Drupal.AjaxCommands.prototype.openInSidebar=(e,t,o)=>{if(!t.selector)return!1;const n=r(t.selector);e.wrapper||(e.wrapper=n.attr("id")),t.command="insert",t.method="html",e.commands.insert(e,t,o)}})();

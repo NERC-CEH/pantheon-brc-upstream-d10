@@ -1,0 +1,9 @@
+use gutenberg:
+  title: 'Use Gutenberg experience'
+  description: 'Access to any Gutenberg related actions'
+manage blocks lock:
+  title: 'Manage blocks lock'
+  description: 'Ability to manage blocks lock in Gutenberg editor'
+create and edit custom gutenberg content blocks:
+  title: 'Create and edit custom content blocks'
+  description: 'Ability to create and edit custom non-reusable Drupal content blocks in the editor.'

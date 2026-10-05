@@ -23,7 +23,22 @@
 					"type": "zip"
 				}
 			}
-		}		
+		},		
+        {
+            "type": "package",
+            "package": {
+                "name": "fonticonpicker/fonticonpicker",
+                "version": "v3.1.1",
+                "type": "drupal-library",
+                "dist": {
+                    "url": "https://github.com/fontIconPicker/fontIconPicker/releases/download/v3.1.1/fontIconPicker.zip",
+                    "type": "zip"
+                },
+                "require": {
+                  "composer/installers": "~1.0 || ~2.0"
+                }
+            }
+        }
 	],
     "require": {
         "pantheon-upstreams/upstream-configuration": "dev-main",
@@ -125,7 +140,7 @@
         "drupal/field_display_label": "*",
         "drupal/field_group": "4.x",
         "drupal/field_permissions": "^1.4",
-        "drupal/font_iconpicker": "^1.1",
+        "drupal/font_iconpicker": "^1.2",
         "drupal/fontawesome": "*",
         "drupal/fontawesome_menu_icons": "^3.0",
         "drupal/galleriajs": "^1.1",
@@ -133,7 +148,6 @@
         "drupal/gnode": "^3.3",
         "drupal/google_analytics": "*",
         "drupal/group": "^3.3",
-        "drupal/gutenberg": "^3.0",
         "drupal/hierarchical_taxonomy_menu": "^2.0",
         "drupal/hierarchy_manager": "^3.4",
         "drupal/iframe": "^3.0",
@@ -208,7 +222,7 @@
         "drupal/views_autocomplete_filters": "^2.0",
         "drupal/views_autosubmit": "*",
         "drupal/views_bootstrap": "3.x",
-        "drupal/views_bulk_operations": "^4.3",
+        "drupal/views_bulk_operations": "^4.4",
         "drupal/views_condition": "^2.0",
         "drupal/views_conditional": "^1.10",
         "drupal/views_fieldsets": "*",
@@ -260,7 +274,6 @@
         "drupal/fixed_text_link_formatter": "^1.7",
         "drupal/htmlmail": "^4.0@beta",
         "drupal/show_email": "^1.2",
-        "drupal/view_user_email": "^1.0",
         "drupal/jquery_ui_autocomplete": "^2.1",
         "drupal/jquery_ui_menu": "^2.1",
         "drupal/flexible_permissions": "2.*",
@@ -306,7 +319,8 @@
         "drupal/user_registrationpassword": "^2.0",
         "drupal/registration_role": "^2.0",
         "drupal/responsivewrappers": "^2.1",
-        "drupal/forum": "^1.0"
+        "drupal/forum": "^1.0",
+        "fonticonpicker/fonticonpicker": "^3.1"
     },
     "conflict": {
         "drupal/drupal": "*"

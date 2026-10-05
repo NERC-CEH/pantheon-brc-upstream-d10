@@ -1,0 +1,43 @@
+/**
+ * @file
+ * Status messages component.
+ */
+
+.messages-list {
+  padding: var(--wp--preset--spacing--20, 16px) var(--wp--preset--spacing--30, 24px);
+}
+
+.messages__wrapper {
+  max-width: var(--wp--style--global--wide-size, 1200px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.messages {
+  padding: var(--wp--preset--spacing--20, 16px) var(--wp--preset--spacing--30, 24px);
+  margin-bottom: var(--wp--preset--spacing--20, 16px);
+  border-left: 4px solid;
+  border-radius: 0.25rem;
+  background: var(--wp--preset--color--light, #f0f0f0);
+}
+
+.messages--status {
+  border-left-color: var(--color-status, #4caf50);
+}
+
+.messages--warning {
+  border-left-color: var(--color-warning, #ff9800);
+}
+
+.messages--error {
+  border-left-color: var(--wp--preset--color--accent, #d63638);
+}
+
+.messages__list {
+  margin: 0;
+  padding: 0 0 0 1.25em;
+}
+
+.messages__item + .messages__item {
+  margin-top: 0.5em;
+}

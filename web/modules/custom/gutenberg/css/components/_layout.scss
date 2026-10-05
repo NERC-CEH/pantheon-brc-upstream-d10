@@ -1,0 +1,7 @@
+.edit-post-meta-boxes-main {
+
+  > div {
+    // Allow the contents of the meta boxes to be scrollable independent of the parent.
+    overflow: auto;
+  }
+}

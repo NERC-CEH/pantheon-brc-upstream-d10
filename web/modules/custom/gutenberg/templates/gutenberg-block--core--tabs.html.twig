@@ -1,0 +1,19 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/tabs block.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the wrapper (includes data-wp-interactive,
+ *   data-wp-context, data-wp-init, and data-wp-on--keydown directives added
+ *   by the preprocess hook).
+ * - inner_content: Rendered inner blocks (tabs menu and tab panels), with
+ *   template buttons replaced by real tab buttons and panel directives applied.
+ * - wrapper_tag: The HTML tag for the wrapper (typically 'div').
+ *
+ * @see template_preprocess_gutenberg_block__core__tabs()
+ *
+ * @ingroup themeable
+ */
+#}
+<{{ wrapper_tag }}{{ attributes }}>{{ inner_content }}</{{ wrapper_tag }}>

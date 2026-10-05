@@ -1,0 +1,42 @@
+{#
+/**
+ * @file
+ * Theme implementation for the core/playlist-track block.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the <li> wrapper.
+ * - unique_id: Unique ID used by the Interactivity API context.
+ * - title: Track title.
+ * - artist: Track artist name.
+ * - length: Track duration string (e.g. "3:42").
+ *
+ * @see template_preprocess_gutenberg_block__core__playlist_track()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if title is not empty %}
+<li{{ attributes }}>
+  <button
+    data-wp-context='{"uniqueId":"{{ unique_id }}"}'
+    data-wp-on--click="actions.changeTrack"
+    data-wp-bind--aria-current="state.isCurrentTrack"
+    class="wp-block-playlist-track__button"
+  >
+    <span class="wp-block-playlist-track__content">
+      {% if title %}
+        <span class="wp-block-playlist-track__title">{{ title }}</span>
+      {% endif %}
+      {% if artist %}
+        <span class="wp-block-playlist-track__artist">{{ artist }}</span>
+      {% endif %}
+    </span>
+    {% if length %}
+      <span class="wp-block-playlist-track__length">
+        <span class="screen-reader-text">Length: </span>{{ length }}
+      </span>
+    {% endif %}
+    <span class="screen-reader-text">Select to play this track</span>
+  </button>
+</li>
+{% endif %}

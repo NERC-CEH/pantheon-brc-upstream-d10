@@ -1,0 +1,124 @@
+/*
+ * Card: a tinted block with a media slot on top. No border, no radius, no
+ * shadow; the tint deepens on hover, like the node teaser.
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--color-tint);
+  color: var(--color-tint-text);
+  transition: background var(--duration-base);
+}
+
+.card:hover {
+  background: var(--color-tint-strong);
+}
+
+.card--highlighted {
+  --color-tint: var(--color-tint-alt);
+  --color-tint-strong: var(--color-tint-alt-strong);
+  --color-tint-text: var(--color-tint-alt-text);
+}
+
+.card--horizontal {
+  flex-direction: row;
+}
+
+.card--horizontal .card__media {
+  flex: 0 0 40%;
+  max-width: 40%;
+  max-height: none;
+}
+
+.card--horizontal .card__body {
+  flex: 1;
+}
+
+.card--tagged {
+  position: relative;
+}
+
+.card__tag {
+  position: absolute;
+  top: var(--space-3);
+  inset-inline-start: var(--space-3);
+  z-index: 1;
+  display: inline-block;
+  padding: 4px 8px;
+  background: var(--color-tint-strong);
+  color: var(--color-tint-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  transition: background var(--duration-base);
+}
+
+.card:hover .card__tag {
+  background: var(--color-tint);
+}
+
+.card__media {
+  overflow: hidden;
+  background: var(--color-surface-sunken);
+  aspect-ratio: 4 / 3;
+}
+
+.card__media:empty {
+  display: none;
+}
+
+.card__media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+}
+
+.card__title {
+  margin: 0;
+  font-size: var(--step-5);
+  font-weight: 500;
+  line-height: 1.3;
+  text-decoration: underline;
+  text-decoration-thickness: var(--underline-thin);
+  text-underline-offset: var(--underline-offset);
+  transition: text-decoration-thickness var(--duration-base);
+}
+
+.card:hover .card__title {
+  text-decoration-thickness: var(--underline-thick);
+}
+
+.card__description,
+.card__content {
+  font-size: var(--step-3);
+  line-height: 1.5;
+}
+
+.card__content:empty {
+  display: none;
+}
+
+.card__link {
+  align-self: flex-start;
+  margin-top: auto;
+  padding-top: var(--space-2);
+  font-size: var(--step-3);
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-thickness: var(--underline-thin);
+  text-underline-offset: var(--underline-offset);
+}
+
+.card__link:hover {
+  text-decoration-thickness: var(--underline-thick);
+}

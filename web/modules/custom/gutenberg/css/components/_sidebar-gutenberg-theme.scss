@@ -1,0 +1,249 @@
+// Gutenberg-style overrides for Drupal form elements in sidebar panels.
+// Scoped under .drupal-panel__content to avoid leaking into the rest of the page.
+
+.drupal-sidebar-panel .drupal-panel__content {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  color: #1e1e1e;
+  line-height: 1.4;
+
+  // Details elements — fully neutralize since PluginDocumentSettingPanel
+  // provides the panel chrome (header, border, padding, open/close).
+  details,
+  details.claro-details,
+  .claro-details {
+    border: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    color: inherit;
+
+    summary,
+    .claro-details__summary {
+      display: none !important;
+    }
+
+    // Force content visible regardless of open attribute —
+    // PluginDocumentSettingPanel controls expand/collapse.
+    // No direct-child combinator — Claro may nest wrappers differently.
+    .details-wrapper,
+    .claro-details__wrapper {
+      display: block !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+    }
+
+    // The panel already pads its content; halve the admin theme's
+    // 16px 16px 24px accordion content margin.
+    .claro-details__content,
+    .gin-details__content {
+      margin: 8px 8px 12px;
+    }
+  }
+
+  // Entity meta header (title, status, langcode).
+  .entity-meta__header {
+    border: 0;
+    padding: 0;
+    margin: 0 0 16px;
+    background: none;
+  }
+
+  // Form items — consistent spacing.
+  .form-item {
+    margin-top: 0;
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Labels.
+  label,
+  .form-item__label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #1e1e1e;
+    line-height: 1.4;
+  }
+
+  // Text inputs, textareas, selects.
+  input[type="text"],
+  input[type="url"],
+  input[type="email"],
+  input[type="number"],
+  input[type="password"],
+  input[type="search"],
+  input[type="date"],
+  input[type="datetime-local"],
+  textarea,
+  select,
+  .form-element {
+    width: 100%;
+    height: 36px;
+    padding: 8px;
+    border: 1px solid #949494;
+    border-radius: 2px;
+    background-color: #fff;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1e1e1e;
+    box-sizing: border-box;
+    outline: none;
+    box-shadow: none;
+    -webkit-appearance: none;
+    appearance: none;
+    transition: border-color 0.1s ease, box-shadow 0.1s ease;
+    min-height: 0;
+
+    &:focus {
+      border-color: var(--wp-admin-theme-color, #007cba);
+      box-shadow: 0 0 0 1px var(--wp-admin-theme-color, #007cba);
+      outline: 2px solid transparent;
+    }
+  }
+
+  textarea,
+  textarea.form-element {
+    height: auto;
+    min-height: 80px;
+    resize: vertical;
+  }
+
+  select,
+  select.form-element {
+    padding-right: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%231e1e1e'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 10px 6px;
+  }
+
+  // Toggle switches (Published, Create new revision, Sticky, Promote).
+  .form-boolean--type-toggle {
+    position: relative;
+    display: inline-block;
+    width: 36px;
+    height: 18px;
+    min-width: 36px;
+    border-radius: 9px;
+    background-color: #949494;
+    transition: background-color 0.1s ease;
+    border: none;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    vertical-align: middle;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      transition: transform 0.1s ease;
+      box-shadow: none;
+    }
+
+    // Reset Claro/Gin ::after pseudo-element.
+    &::after {
+      display: none;
+    }
+
+    &:checked {
+      background-color: var(--wp-admin-theme-color, #007cba);
+
+      &::before {
+        transform: translateX(18px);
+      }
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 2px #fff,
+        0 0 0 4px var(--wp-admin-theme-color, #007cba);
+      outline: 2px solid transparent;
+    }
+  }
+
+  // Toggle item layout — label and toggle side by side.
+  .form-item.form-type--boolean {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    // Claro and Default Admin indent boolean items to make room for the
+    // checkbox on the left, but here it sits on the right.
+    margin-inline-start: 0;
+
+    label {
+      text-transform: none;
+      font-size: 13px;
+      font-weight: 400;
+      margin-bottom: 0;
+      padding-inline-start: 0;
+      order: -1;
+    }
+  }
+
+  // Description text.
+  .form-item__description,
+  .description {
+    font-size: 12px;
+    color: #757575;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  // Autocomplete — remove Drupal's background icon.
+  .form-autocomplete {
+    background-image: none !important;
+  }
+
+  // Fieldsets within panels.
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    background: none;
+
+    legend {
+      font-size: 11px;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding: 0;
+      margin-bottom: 4px;
+    }
+  }
+
+  // Standard checkboxes (non-toggle).
+  input[type="checkbox"]:not(.form-boolean--type-toggle) {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  // Vertical tabs remnants — hide if any remain.
+  .vertical-tabs {
+    border: 0;
+    margin: 0;
+    padding: 0;
+
+    &__menu {
+      display: none;
+    }
+  }
+}

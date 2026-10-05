@@ -1,0 +1,11 @@
+name: 'Gutenberg test: block API v2'
+type: module
+description: 'Provides a block registered with block API version 2.'
+package: Testing
+dependencies:
+  - gutenberg:gutenberg
+
+# Information added by Drupal.org packaging script on 2026-10-02
+version: '4.0.0-beta2+29-dev'
+project: 'gutenberg'
+datestamp: 1790941177

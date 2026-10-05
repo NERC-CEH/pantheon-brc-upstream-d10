@@ -1,0 +1,257 @@
+/* Synced from the Claude Design project (.design/theme/drupal.css). Drupal adaptations are marked "Drupal:". */
+/* Drupal core templates */
+
+/* ── Site header: logo left; quick links, search, Menu toggle right ── */
+.site-header { position: sticky; top: 0; z-index: var(--z-sticky); background: var(--color-bg); transition: transform var(--duration-slow); }
+.site-header.is-hidden { transform: translateY(-100%); }
+.site-header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-6); height: var(--header-height); }
+.site-header__actions { display: flex; align-items: center; gap: var(--space-6); }
+.site-branding { display: flex; align-items: center; gap: var(--space-3); color: var(--color-text); text-decoration: none; }
+.site-branding:hover { text-decoration: none; }
+.site-branding__logo { width: auto; height: 42px; color: var(--color-text); flex: none; display: block; }
+.site-branding__name { font-size: var(--step-5); font-weight: 500; line-height: 1.1; }
+.site-branding__slogan { display: block; font-size: var(--step-1); color: var(--color-text-muted); font-weight: 400; }
+.header-search { display: flex; align-items: center; gap: var(--space-2); background: none; border: 0; padding: 0; font: inherit; font-size: var(--step-3); color: var(--color-text); cursor: pointer; }
+.header-search:hover { text-decoration: underline; text-underline-offset: var(--underline-offset); }
+.menu-toggle { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 44px; padding: var(--space-2) var(--space-3); background: var(--color-tint); color: var(--color-tint-text); border: 0; font: inherit; font-size: var(--step-3); cursor: pointer; transition: background var(--duration-base); }
+.menu-toggle:hover, .menu-toggle[aria-expanded="true"] { background: var(--color-tint-strong); }
+@media (max-width: 1023px) { .menu--quick, .header-search { display: none; } }
+
+/* Menu panel (opens under the header) */
+.menu-panel { position: absolute; inset: 100% 0 auto; background: var(--color-tint); color: var(--color-tint-text); padding-block: var(--space-7); max-height: calc(100vh - var(--header-height)); overflow-y: auto; }
+.menu-panel__scrim { position: fixed; inset: var(--header-height) 0 0; background: rgb(255 255 255 / 0.6); z-index: -1; }
+[data-theme="dark"] .menu-panel__scrim { background: rgb(0 0 0 / 0.6); }
+.menu-panel__search { margin-bottom: var(--space-6); }
+
+/* ── Menus ── */
+.menu { list-style: none; margin: 0; padding: 0; }
+.menu li + li { margin-top: 0; }
+.menu__link { color: var(--color-text); text-decoration: none; }
+.menu__link:hover { text-decoration: underline; text-decoration-thickness: var(--underline-thin); text-underline-offset: var(--underline-offset); }
+.menu--quick { display: flex; gap: var(--space-6); }
+.menu--quick .menu__link { font-size: var(--step-3); }
+.menu--quick .menu__link.is-active { text-decoration: underline; text-decoration-thickness: var(--underline-thick); }
+/* Main menu inside the panel: two columns of chevron rows with hairline dividers */
+.menu--main { display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--space-5); }
+@media (min-width: 1024px) { .menu--main { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-flow: column; grid-template-rows: repeat(var(--rows, 4), auto); } }
+.menu--main .menu__link { display: flex; align-items: center; gap: var(--space-4); padding-block: var(--space-3); border-bottom: 1px solid var(--color-border-subtle); font-size: var(--step-4); }
+.menu--main .menu__link > .icon { transition: transform var(--duration-base) var(--ease-out); }
+.menu--main .menu__link:hover > .icon { transform: translateX(4px); }
+.menu--main .menu__link.is-active { font-weight: 500; }
+.menu--footer { display: flex; flex-direction: column; gap: var(--space-2); }
+.menu--footer .menu__link { text-decoration: underline; text-decoration-thickness: var(--underline-thin); text-underline-offset: var(--underline-offset); display: inline-flex; align-items: center; gap: var(--space-2); }
+.menu--footer .menu__link:hover { text-decoration-thickness: var(--underline-thick); }
+.menu--sidebar { display: grid; }
+.menu--sidebar .menu__link { display: block; padding-block: var(--space-2); border-bottom: 1px solid var(--color-border-subtle); font-size: var(--step-3); }
+.menu--sidebar .menu__link.is-active { font-weight: 500; text-decoration: underline; text-decoration-thickness: var(--underline-thick); }
+
+/* ── Page header band (tinted, holds breadcrumb/back link, label, title, lead) ── */
+.page-header { background: var(--color-tint); color: var(--color-tint-text); padding-block: var(--space-7); }
+.page-header__inner { display: grid; gap: var(--space-3); }
+.page-header__label { font-size: var(--step-3); }
+.page-header__title { font-size: var(--step-8); font-weight: 500; line-height: 1.2; }
+.page-header__lead { font-size: var(--step-4); line-height: 1.5; max-width: 40em; padding-block: 10px 0; }
+.page-header__meta { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); font-size: var(--step-3); }
+.page-header__meta > span { display: inline-flex; align-items: center; gap: var(--space-2); }
+.page-header__actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-3); }
+.page-header.is-alt { background: var(--color-tint); }
+.page-header--plain { background: none; color: inherit; }
+.back-link { display: inline-flex; align-items: center; gap: var(--space-1); padding-block: 10px; font-size: var(--step-3); color: inherit; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+
+/* Breadcrumb */
+.breadcrumb ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); font-size: var(--step-2); }
+.breadcrumb li + li { margin-top: 0; }
+.breadcrumb li + li::before { content: "/"; margin-inline-end: var(--space-2); opacity: 0.5; }
+.breadcrumb a { color: inherit; }
+.breadcrumb [aria-current] { opacity: 0.8; }
+
+.page-title { font-size: var(--step-8); font-weight: 500; line-height: 1.2; margin: 0; }
+
+/* Local tasks */
+.tabs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-5); border-bottom: 1px solid var(--color-border-subtle); }
+.tabs li + li { margin-top: 0; }
+.tabs__link { display: block; padding-block: var(--space-3); margin-bottom: -1px; color: var(--color-text); text-decoration: none; font-size: var(--step-2); border-bottom: 2px solid transparent; }
+.tabs__link:hover { border-bottom-color: var(--color-border-strong); }
+.tabs__link.is-active { border-bottom-color: var(--color-text); font-weight: 500; }
+.tabs--secondary { border: 0; gap: var(--space-4); }
+
+/* Status messages — flat tinted bar, left rule */
+.messages { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-3); align-items: start; padding: var(--space-4) var(--space-5); border-inline-start: 4px solid /* Drupal: RTL */; font-size: var(--step-3); line-height: 1.5; }
+.messages + .messages { margin-top: var(--space-2); }
+.messages__icon { font-size: 1.25rem; margin-top: 0.1em; }
+.messages__title { font-weight: 500; margin: 0 0 var(--space-1); font-size: inherit; }
+.messages__list { margin: 0; padding-inline-start: 1.1em; }
+.messages__content a { color: inherit; }
+.messages__dismiss { background: none; border: 0; padding: 0; color: inherit; cursor: pointer; font-size: 1.25rem; line-height: 1; }
+.messages--status { background: var(--color-success-bg); border-color: var(--color-success); color: var(--color-success-text); }
+.messages--warning { background: var(--color-warning-bg); border-color: var(--color-warning); color: var(--color-warning-text); }
+.messages--error { background: var(--color-danger-bg); border-color: var(--color-danger); color: var(--color-danger-text); }
+.messages--info { background: var(--color-info-bg); border-color: var(--color-info-text); color: var(--color-info-text); }
+
+/* ── Node ── */
+.node__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); font-size: var(--step-2); color: var(--color-text-muted); }
+.node__meta a { color: var(--color-text); }
+.node__avatar { width: 40px; height: 40px; border-radius: var(--radius-round); background: var(--color-tint-strong); flex: none; }
+
+/* Teaser: image on top, tinted body, whole card is one link. No border, no radius, no shadow. */
+.node--view-mode-teaser { display: flex; flex-direction: column; height: 100%; color: var(--color-tint-text); text-decoration: none; }
+.node--view-mode-teaser .node__media { aspect-ratio: 4 / 3; overflow: hidden; background: var(--color-surface-sunken); }
+.node--view-mode-teaser .node__media img { width: 100%; height: 100%; object-fit: cover; }
+.node--view-mode-teaser .node__body { flex: 1; display: flex; flex-direction: column; gap: var(--space-2); padding: var(--space-4); background: var(--color-tint); transition: background var(--duration-base); }
+.node--view-mode-teaser:hover .node__body { background: var(--color-tint-strong); }
+.node--view-mode-teaser .node__title { font-size: var(--step-5); font-weight: 500; line-height: 1.3; }
+.node--view-mode-teaser .node__title a { color: inherit; }
+.node--view-mode-teaser .node__title .u-underline, .node--view-mode-teaser .node__title a { text-decoration-line: underline; text-decoration-thickness: var(--underline-thin); text-underline-offset: var(--underline-offset); }
+.node--view-mode-teaser:hover .node__title :is(a, .u-underline) { text-decoration-thickness: var(--underline-thick); }
+.node--view-mode-teaser .node__summary { font-size: var(--step-3); line-height: 1.5; }
+.node--view-mode-teaser .node__facts { display: grid; gap: var(--space-1); font-size: var(--step-2); margin-top: auto; padding-top: var(--space-2); }
+.node--view-mode-teaser .node__facts > span { display: inline-flex; align-items: center; gap: var(--space-2); }
+/* Plain teaser (past events, search results): white body, text only */
+.node--view-mode-teaser.is-plain .node__body { background: none; padding-inline: 0; }
+.node--view-mode-teaser.is-plain:hover .node__body { background: none; }
+.node--unpublished { outline: 2px dashed var(--color-warning); outline-offset: 4px; }
+.node__links { display: flex; gap: var(--space-5); font-size: var(--step-2); margin-top: var(--space-5); }
+
+/* Fields */
+.field + .field { margin-top: var(--space-4); }
+.field__label { font-weight: 500; font-size: var(--step-3); }
+.field--label-inline { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+.field--label-inline .field__label::after { content: ":"; }
+.field__items { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+
+/* Tag — small square chip on the strong tint. Never a pill, never uppercase. */
+.tag { display: inline-flex; align-self: flex-start; align-items: center; gap: var(--space-1); padding: 4px 8px; background: var(--color-tint-strong); color: var(--color-tint-text); font-size: 13px; font-weight: 500; line-height: 1.3; text-decoration: none; transition: background var(--duration-base); }
+a.tag:hover { background: var(--color-tint); text-decoration: underline; }
+.group:hover .tag, .node--view-mode-teaser:hover .tag { background: var(--color-tint); }
+.tag--inverse { background: var(--color-surface-inverse); color: var(--color-text-inverse); }
+.tag--outline { background: none; box-shadow: inset 0 0 0 1px currentcolor; }
+
+/* Comments */
+.comments { border-top: 1px solid var(--color-border); padding-top: var(--space-7); margin-top: var(--space-8); }
+.comments__title { font-size: var(--step-6); margin-bottom: var(--space-5); }
+.comment { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: var(--space-3); padding-block: var(--space-5); }
+.comment + .comment { border-top: 1px solid var(--color-border-subtle); }
+.comment.indented, .indented { padding-inline-start: calc(40px + var(--space-3)); }
+.comment__avatar { width: 40px; height: 40px; border-radius: var(--radius-round); background: var(--color-tint-strong); display: grid; place-items: center; font-size: var(--step-2); font-weight: 500; }
+.comment__meta { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: baseline; font-size: var(--step-2); }
+.comment__author { font-weight: 500; }
+.comment__time { color: var(--color-text-muted); }
+.comment__content { font-size: var(--step-3); margin-top: var(--space-1); }
+.comment__links { display: flex; gap: var(--space-4); margin-top: var(--space-2); font-size: var(--step-2); }
+
+/* Pager — square, ink current page */
+.pager__items { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--space-2); }
+.pager__item + .pager__item { margin-top: 0; }
+.pager__item a, .pager__item--current, .pager__item--ellipsis { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); min-width: 44px; height: 44px; padding-inline: var(--space-3); font-size: var(--step-3); color: var(--color-text); text-decoration: none; }
+.pager__item a:hover { background: var(--color-tint); }
+.pager__item--current { background: var(--color-surface-inverse); color: var(--color-text-inverse); font-weight: 500; }
+.pager__item--previous a, .pager__item--next a { text-decoration: underline; text-underline-offset: var(--underline-offset); }
+.pager__item--previous a:hover, .pager__item--next a:hover { background: none; text-decoration-thickness: var(--underline-thick); }
+
+/* Views */
+.views-grid { display: grid; gap: var(--card-gap); grid-template-columns: repeat(auto-fill, minmax(min(20rem, 100%), 1fr)); }
+.views-grid--2 { grid-template-columns: repeat(auto-fill, minmax(min(28rem, 100%), 1fr)); }
+.views-list > * + * { border-top: 1px solid var(--color-border-subtle); padding-top: var(--space-5); margin-top: var(--space-5); }
+.view-empty { padding: var(--space-7); text-align: center; background: var(--color-surface-muted); }
+.views-exposed-form { display: flex; flex-wrap: wrap; gap: var(--space-4); align-items: end; margin-bottom: var(--space-7); }
+.views-exposed-form .form-item { margin: 0; }
+
+/* Tables */
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: var(--step-2); }
+th { text-align: start; font-weight: 500; border-bottom: 1px solid var(--color-border); }
+th, td { padding-block: var(--space-3); padding-inline: 0 var(--space-3) /* Drupal: RTL */; border-bottom: 1px solid var(--color-border-subtle); vertical-align: top; }
+thead th { border-bottom-color: var(--color-border); }
+th a { color: inherit; }
+
+/* ── Site footer ── */
+.site-footer { border-top: 1px solid var(--color-border); padding-block: var(--space-7); font-size: var(--step-3); }
+.site-footer__top { margin-bottom: var(--space-7); }
+.site-footer__cols { display: flex; flex-direction: column; gap: var(--space-7); }
+@media (min-width: 1024px) { .site-footer__cols { flex-direction: row; gap: var(--space-9); } }
+.site-footer__col { display: flex; flex-direction: column; gap: var(--space-2); }
+.site-footer__col h2 { font-size: var(--step-5); margin-bottom: var(--space-1); }
+
+/* Error pages */
+.error-page { padding-block: var(--space-9); display: grid; gap: var(--space-4); max-width: var(--content-size); }
+.error-page__code { font-size: var(--step-3); color: var(--color-text-muted); }
+.error-page .page-title { font-size: var(--step-9); }
+.error-page__text { font-size: var(--step-4); margin: 0; }
+
+/* Drupal: template adaptations. */
+.site-header { top: var(--drupal-displace-offset-top, 0); }
+@media (max-width: 1023px) { .menu--quick { display: none; } } /* the design's own mobile rule comes before its display: flex */
+.menu-panel[hidden] { display: none; }
+.menu-panel__scrim { top: calc(var(--header-height) + var(--drupal-displace-offset-top, 0px)); }
+/* Nested menu levels inside the panel. */
+.menu--main .menu { grid-column: 1 / -1; }
+.menu--main .menu .menu__link { font-size: var(--step-3); padding-inline-start: var(--space-6); }
+.menu--quick .menu { display: none; }
+/* Dark mode toggle: moon at rest, sun in dark mode. */
+.dark-mode-toggle .icon-sun, [data-theme="dark"] .dark-mode-toggle .icon-moon { display: none; }
+[data-theme="dark"] .dark-mode-toggle .icon-sun { display: inline-block; }
+html.dark-mode-transition, html.dark-mode-transition * { transition: background-color var(--duration-slow) ease, color var(--duration-slow) ease, border-color var(--duration-slow) ease !important; }
+/* Messages region. */
+.region-highlighted:empty { display: none; }
+.messages__wrapper > .messages + .messages { margin-top: var(--space-2); }
+/* Footer: each block is a column. */
+.site-footer__cols > .region { display: contents; }
+.site-footer__cols .block { display: flex; flex-direction: column; gap: var(--space-2); }
+.site-footer__cols .block__title { font-size: var(--step-5); margin-bottom: var(--space-1); }
+/* Page header band: the breadcrumb and the submitted line inherit the tint text color. */
+.page-header .breadcrumb { font-size: var(--step-2); }
+.page-header .node__meta { color: inherit; }
+/* Entity title block (drupal/entity-title) and the editor title share the page title style. */
+.wp-block-post-title { font-size: var(--step-8); font-weight: 500; line-height: 1.2; }
+/* Teaser card: the title link covers the whole card; other links stay clickable. */
+.node--view-mode-teaser { position: relative; }
+.node--view-mode-teaser .node__title a::after { content: ""; position: absolute; inset: 0; }
+.node--view-mode-teaser .node__summary a, .node--view-mode-teaser .node__body .tag { position: relative; z-index: 1; }
+/* Comments: core user pictures and links list. */
+.comment__avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+/* Node author picture: the user picture of the compact user display, in the place of the avatar. */
+.node__author-image { width: 40px; height: 40px; flex: none; border-radius: var(--radius-round); overflow: hidden; }
+.node__author-image :is(article, div, a) { display: contents; }
+.node__author-image img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.comment__links ul { display: flex; gap: var(--space-4); list-style: none; margin: 0; padding: 0; }
+.comment__links li + li { margin: 0; }
+/* Local tasks below the band. */
+.region-content-above .tabs { margin-top: var(--space-3); }
+/* Views and node links lists. */
+.node__links ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; }
+/* Search page: the search form renders the page header band (form--search-page.html.twig), and the results follow in the narrow column. The band has the title, so the "Search results" heading is only for screen readers. The results are plain teasers, each followed by a rule, with the content type and the date above the title, and two lines of the snippet. */
+.search-page { padding-bottom: var(--space-7); }
+.search-page .page-header { margin-bottom: var(--space-7); }
+.search-page > .block__content > :not(.page-header) { display: block; margin-inline: max(var(--gutter), calc((100% - var(--content-size)) / 2)); }
+.search-page > .block__content > h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.search-results { list-style: none; margin: 0; padding: 0; }
+.search-results > li { margin: 0; border-bottom: 1px solid var(--color-border); }
+.search-result__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); font-size: var(--step-2); color: var(--color-text-muted); }
+.search-result .node__summary { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; color: var(--color-text-muted); }
+/* Node preview: core fixes its bar over the sticky header. Here it is an inverse bar above the header, aligned with the header container, that scrolls away: the back link, then the view mode select. It prints outside the page canvas, so it keeps core's displace offsets, e.g. for the Navigation sidebar. */
+.node-preview-container { --preview-inset: max(var(--gutter), calc((100% - var(--drupal-displace-offset-left, 0px) - var(--drupal-displace-offset-right, 0px) - var(--page-max)) / 2 + var(--gutter))); position: static; padding-block: var(--space-3); padding-inline: calc(var(--drupal-displace-offset-left, 0px) + var(--preview-inset)) calc(var(--drupal-displace-offset-right, 0px) + var(--preview-inset)); background: var(--color-surface-inverse); color: var(--color-text-inverse); font-size: var(--step-2); }
+[dir="rtl"] .node-preview-container { padding-inline: calc(var(--drupal-displace-offset-right, 0px) + var(--preview-inset)) calc(var(--drupal-displace-offset-left, 0px) + var(--preview-inset)); }
+.node-preview-form-select { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5); }
+.node-preview-backlink { color: inherit; }
+.node-preview-container .form-type-select { display: flex; align-items: center; gap: var(--space-3); margin: 0; }
+.node-preview-container .form-type-select > label { color: inherit; font-size: inherit; }
+.node-preview-container .form-select { width: auto; height: 40px; font-size: var(--step-2); }
+/* Smaller screens: the quick links and the dark mode toggle move to the bottom of the menu panel (js/navigation.js), where the toggle shows its label. The search form is always in the panel, so the Search button stays hidden. */
+.dark-mode-toggle__label { display: none; }
+.menu-panel__extras { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-4) var(--space-6); margin-top: var(--space-6); }
+.menu-panel__extras:empty { display: none; }
+.menu-panel__extras .menu--quick { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); }
+.menu-panel__extras .dark-mode-toggle { display: flex; }
+.menu-panel__extras .dark-mode-toggle__label { display: inline; }
+@media (max-width: 1023px) { .site-header__actions:not(:has(.menu-toggle)) .dark-mode-toggle { display: flex; } } /* no panel: the toggle stays in the header */
+/* Footer: an inverse band, whose links take its text color; the Back to top button is reversed too. The first-level links of the footer menu head columns of their children, side by side on larger screens, like the footer blocks. */
+.site-footer { border-top: 0; background: var(--color-surface-inverse); color: var(--color-text-inverse); }
+.site-footer a { color: inherit; }
+.site-footer .button--primary { background: var(--color-text-inverse); border-color: var(--color-text-inverse); color: var(--color-surface-inverse); }
+.site-footer .button--primary:hover { background: transparent; border-color: var(--color-text-inverse); color: var(--color-text-inverse); }
+.menu--footer:has(> li > .menu) { gap: var(--space-6); }
+.menu--footer > li:has(> .menu) > .menu__link { font-weight: 500; text-decoration: none; }
+.menu--footer > li:has(> .menu) > .menu__link:hover { text-decoration: underline; }
+.menu--footer .menu { display: flex; flex-direction: column; gap: var(--space-2); margin-top: var(--space-3); }
+@media (min-width: 1024px) { .menu--footer:has(> li > .menu) { flex-direction: row; gap: var(--space-9); } }

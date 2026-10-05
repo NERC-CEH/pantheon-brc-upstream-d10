@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a Gutenberg block server-side.
+ *
+ * Available variables:
+ * - block_name: The Gutenberg block name (e.g. 'core/paragraph').
+ * - block_content: The full serialized block HTML including wrapper.
+ *     Use this for leaf blocks to preserve editor-applied classes.
+ * - inner_content: The inner content with the block's wrapper stripped.
+ *     Use this inside a wrapper element for container blocks.
+ * - block_attributes: Raw block attributes array from the editor JSON.
+ * - attributes: Drupal Attribute object for the wrapper element.
+ * - wrapper_tag: The HTML tag of the block's original wrapper (e.g. 'div',
+ *     'p', 'h2'). Useful in block-specific template overrides.
+ * - is_container: TRUE when the block wraps inner blocks, FALSE for leaf blocks.
+ *
+ * @see template_preprocess_gutenberg_block()
+ *
+ * @ingroup themeable
+ */
+#}
+{% if is_container %}
+  <{{ wrapper_tag }}{{ attributes }}>{{ inner_content }}</{{ wrapper_tag }}>
+{% else %}
+  {{ block_content }}
+{% endif %}

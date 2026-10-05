@@ -1,0 +1,5 @@
+init:
+  js:
+    js/notes-init.js: { weight: -50 }
+  dependencies:
+    - core/drupalSettings

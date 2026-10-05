@@ -1,0 +1,12 @@
+/**
+ * @file
+ * Frontend styles for Gutenberg blocks.
+ */
+
+.wp-block-drupalmedia-drupal-media-entity iframe {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 0;
+}

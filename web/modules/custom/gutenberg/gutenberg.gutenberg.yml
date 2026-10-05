@@ -1,0 +1,14 @@
+libraries-edit: []
+libraries-view:
+  - gutenberg/blocks-view
+  - gutenberg/fit-text-view
+dynamic-blocks:
+  drupalmedia/drupal-media-entity: {}
+  core/accordion: {}
+  core/accordion-item: {}
+  core/cover: {}
+  core/file: {}
+  core/tabs: {}
+  core/social-link: {}
+  core/playlist: {}
+  core/playlist-track: {}

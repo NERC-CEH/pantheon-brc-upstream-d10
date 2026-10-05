@@ -1,0 +1,56 @@
+"use strict";
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var icon_exports = {};
+__export(icon_exports, {
+  default: () => icon_default
+});
+module.exports = __toCommonJS(icon_exports);
+var import_jsx_runtime = require("react/jsx-runtime");
+var import_primitives = require("@wordpress/primitives");
+var icon_default = /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_primitives.SVG, { xmlns: "http://www.w3.org/2000/svg", viewBox: "0 0 24 24", children: [
+  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    import_primitives.Path,
+    {
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+      d: "M19.5 9.5L9.5 9.5L9.5 8L19.5 8L19.5 9.5Z",
+      fill: "currentColor"
+    }
+  ),
+  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    import_primitives.Path,
+    {
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+      d: "M19.5 13L9.5 13L9.5 11.5L19.5 11.5L19.5 13Z",
+      fill: "currentColor"
+    }
+  ),
+  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
+    import_primitives.Path,
+    {
+      fillRule: "evenodd",
+      clipRule: "evenodd",
+      d: "M19.5 16.3999L9.5 16.3999L9.5 14.8999L19.5 14.8999L19.5 16.3999Z",
+      fill: "currentColor"
+    }
+  ),
+  /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_primitives.Path, { d: "M4.5 6.25L8.5 8.75L4.5 11.25L4.5 6.25Z", fill: "currentColor" })
+] });
+//# sourceMappingURL=icon.js.map

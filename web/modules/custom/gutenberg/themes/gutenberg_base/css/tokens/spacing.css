@@ -1,0 +1,28 @@
+/* Synced from the Claude Design project (.design/tokens/spacing.css). Drupal adaptations are marked "Drupal:". */
+:root {
+  /* Fixed small steps for inline UI; fluid steps borrow from the type scale */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: var(--step-2);  /* 13 → 16 */
+  --space-4: var(--step-3);  /* 14 → 18 */
+  --space-5: var(--step-5);  /* 18 → 24 */
+  --space-6: var(--step-6);  /* 21 → 30 */
+  --space-7: var(--step-8);  /* 30 → 48 */
+  --space-8: var(--step-9);  /* 36 → 60 */
+  --space-9: var(--step-10); /* 48 → 72 */
+
+  --space-section: var(--step-8);             /* padding inside a tinted section */
+  --space-block-sm: var(--step-5);            /* builder spacing between blocks */
+  --space-block-md: var(--step-8);
+  --space-block-lg: var(--step-10);
+  --gutter: clamp(20px, 5vw, var(--step-10)); /* container inline padding */
+  --block-gap: var(--step-5);                 /* prose rhythm */
+  --card-gap: var(--step-3);
+
+  --content-size: 700px;
+  --wide-size: 1440px;
+  --page-max: 1440px;
+  --header-height: 72px;
+}
+@media (min-width: 1024px) { :root { --header-height: 100px; } }

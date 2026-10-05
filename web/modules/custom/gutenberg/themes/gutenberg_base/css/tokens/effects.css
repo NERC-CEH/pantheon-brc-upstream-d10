@@ -1,0 +1,33 @@
+/* Synced from the Claude Design project (.design/tokens/effects.css). Drupal adaptations are marked "Drupal:". */
+:root {
+  /* Square by default. --radius-round is only for avatars. */
+  --radius-none: 0;
+  --radius-sm: 0;
+  --radius-md: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-round: 999px;
+  --radius-full: 999px;
+
+  --border-width: 1px;
+  --border-width-strong: 4px; /* quote rule */
+
+  /* Shadows are not part of the language; only the menu overlay scrim uses depth. */
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: 0 8px 24px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 16px 40px rgb(0 0 0 / 0.12);
+
+  --focus-ring: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-focus);
+
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-standard: ease-out;
+  --ease-out: ease-out;
+
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-toolbar: 500;
+}

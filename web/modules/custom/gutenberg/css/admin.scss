@@ -1,0 +1,121 @@
+@import './base/variables';
+@import './components/media-browser';
+@import './components/media-entity-browser';
+
+#views-form-reusable-blocks-page-1 {
+
+  .views-view-responsive-grid,
+  .views-view-grid {
+
+    .views-col, &__item {
+      cursor: pointer;
+      max-height: 360px;
+      overflow: hidden;
+      position: relative;
+      border: 1px solid #dbdbdb;
+      background: #fff;
+      margin: 16px 16px 2px 2px;
+      transition: border-color 0.2s, color 0.2s;
+      padding: 0 15px 15px;
+
+      &:hover {
+        margin: 14px 14px 0 0;
+        border: solid 3px #40b6ff;
+      }
+
+      .views-field-info {
+        padding: 0 10px;
+        border-bottom: 1px solid #dbdbdb;
+
+        .pattern-synced {
+          color: var(--wp-block-synced-color);;
+
+          &::before {
+            content: "S";
+            width: 24px;
+            display: inline-block;
+            background-color: var(--wp-block-synced-color);
+            -webkit-mask-image: url(../images/synced.svg);
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: left center;
+            mask-image: url(../images/synced.svg);
+            mask-repeat: no-repeat;
+            mask-position: left center;
+          }
+        }
+      }
+
+      .views-field-rendered-entity {
+
+        .field--name-body {
+          transform: scale(0.5);
+          transform-origin: top left;
+          width: 720px;
+          max-height: 180px;
+        }
+
+        .field--name-field-pattern-category {
+          display: flex;
+          column-gap: 5px;
+          margin: 5px 0;
+  
+          .field__item {
+            background-color: var(--messages-bg-color);
+            color: var(--messages-fg-color);
+            font-size: var(--font-size-xs);
+            padding: 5px 15px;
+            text-transform: uppercase;
+            border-radius: 9999px;
+          }
+        }  
+      }
+
+      .views-field-block-content-bulk-form {
+
+        .field-content {
+          position: absolute;
+          top: -2px;
+          right: 15px;
+        }
+      }
+    }
+  }
+}
+
+#edit-allowed-blocks-details {
+
+  .details-wrapper {
+    display: flex;
+    flex-direction: row;
+
+    fieldset {
+      flex: 1;
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+#edit-allowed-drupal-blocks-details {
+
+  .details-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    fieldset {
+      margin-right: 10px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.ajax-progress-throbber .throbber {
+  padding: 1px 7px 2px !important;
+}

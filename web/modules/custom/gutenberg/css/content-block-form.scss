@@ -1,0 +1,53 @@
+#content-block-form-wrapper {
+
+  .form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    background: #fff;
+    border-top: solid 1px #ccc;
+  }
+
+  .fieldset {
+    box-shadow: none;
+    border-bottom: solid 1px #ccc;
+
+    &__wrapper {
+      margin: 0;
+    }
+
+    &__label {
+      margin: 0;
+      padding: 0;
+      font-weight: 400;
+      font-size: 11px;
+      text-transform: uppercase;  
+    }
+  }
+
+  th {
+    font-weight: 400;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .action-link--extrasmall {
+    font-size: 11px;
+    font-weight: 400;
+  }
+
+  .form-element {
+    padding: 4px;
+    min-height: 34px;
+  }
+
+  .tabledrag-changed-warning {
+    display: none !important;
+  }
+
+  .form-item__label {
+    font-weight: 400;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+}

@@ -1,0 +1,65 @@
+diff --git a/node_modules/@wordpress/editor/build-module/components/more-menu/index.mjs b/node_modules/@wordpress/editor/build-module/components/more-menu/index.mjs
+index 24f43b7..0ef09ef 100644
+--- a/node_modules/@wordpress/editor/build-module/components/more-menu/index.mjs
++++ b/node_modules/@wordpress/editor/build-module/components/more-menu/index.mjs
+@@ -1,7 +1,7 @@
+ // packages/editor/src/components/more-menu/index.jsx
+ import { __, _x } from "@wordpress/i18n";
+ import { useSelect, useDispatch } from "@wordpress/data";
+-import { Button } from "@wordpress/components";
++import { Button, Slot } from "@wordpress/components";
+ import { moreVertical } from "@wordpress/icons";
+ import { store as preferencesStore } from "@wordpress/preferences";
+ import { store as interfaceStore, ActionItem } from "@wordpress/interface";
+@@ -73,6 +73,7 @@ function MoreMenu({ isRevisionMode = false }) {
+         className: "editor-more-menu__popup",
+         positioner,
+         children: [
++          /* @__PURE__ */ jsx(Slot, { name: "DrupalMoreMenuTop" }),
+           /* @__PURE__ */ jsxs(Menu.Group, { children: [
+             /* @__PURE__ */ jsx(Menu.GroupLabel, { children: _x("View", "noun") }),
+             /* @__PURE__ */ jsx(
+diff --git a/node_modules/@wordpress/editor/build-style/style-rtl.css b/node_modules/@wordpress/editor/build-style/style-rtl.css
+index c5144cc..e47b230 100644
+--- a/node_modules/@wordpress/editor/build-style/style-rtl.css
++++ b/node_modules/@wordpress/editor/build-style/style-rtl.css
+@@ -228,7 +228,7 @@
+ 
+ @media (min-width: 782px) {
+   .interface-complementary-area {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-complementary-area .components-panel {
+@@ -495,7 +495,7 @@ body.is-fullscreen-mode .interface-interface-skeleton {
+ 
+ @media (min-width: 782px) {
+   .interface-interface-skeleton__actions {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-interface-skeleton__actions:focus, .interface-interface-skeleton__actions:focus-within {
+diff --git a/node_modules/@wordpress/editor/build-style/style.css b/node_modules/@wordpress/editor/build-style/style.css
+index 4229b4e..4b87385 100644
+--- a/node_modules/@wordpress/editor/build-style/style.css
++++ b/node_modules/@wordpress/editor/build-style/style.css
+@@ -228,7 +228,7 @@
+ 
+ @media (min-width: 782px) {
+   .interface-complementary-area {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-complementary-area .components-panel {
+@@ -495,7 +495,7 @@ body.is-fullscreen-mode .interface-interface-skeleton {
+ 
+ @media (min-width: 782px) {
+   .interface-interface-skeleton__actions {
+-    width: 280px;
++    width: 380px;
+   }
+ }
+ .interface-interface-skeleton__actions:focus, .interface-interface-skeleton__actions:focus-within {

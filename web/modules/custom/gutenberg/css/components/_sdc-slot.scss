@@ -1,0 +1,12 @@
+// SDC Slot blocks — hidden InnerBlocks container.
+
+// Hide the InnerBlocks container in parent SDC blocks.
+// The actual slot content is portaled to SlotPortalTarget positions.
+.sdc-inner-blocks-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+}

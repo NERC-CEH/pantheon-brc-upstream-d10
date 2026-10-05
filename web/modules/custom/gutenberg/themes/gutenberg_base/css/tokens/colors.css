@@ -1,0 +1,259 @@
+/* Synced from the Claude Design project (.design/tokens/colors.css). Drupal adaptations are marked "Drupal:". */
+:root {
+  /* Neutral ramp — cool-leaning zinc */
+  --gray-0: #fff;
+  --gray-50: #f7f7f8;
+  --gray-100: #efeff1;
+  --gray-200: #e2e2e6;
+  --gray-300: #cacad1;
+  --gray-400: #a0a0aa;
+  --gray-500: #74747f;
+  --gray-600: #55555f;
+  --gray-700: #3d3d45;
+  --gray-800: #27272d;
+  --gray-900: #18181c;
+  --gray-950: #0e0e11;
+
+  /* Accent ramp — restrained blue. Rebrand by overriding --accent-* only. */
+  --accent-50: #eff5ff;
+  --accent-100: #dbe8fe;
+  --accent-200: #bdd5fd;
+  --accent-300: #8fb8fa;
+  --accent-400: #5b92f5;
+  --accent-500: #3470ea;
+  --accent-600: #1f56d6;
+  --accent-700: #1a45ad;
+  --accent-800: #1b3b8a;
+  --accent-900: #1c336d;
+
+  /* Status (maps to Drupal messages: status / warning / error) */
+  --green-50: #ebf7f0;
+  --green-200: #b5e2c8;
+  --green-600: #17804a;
+  --green-800: #0f5132;
+  --amber-50: #fdf5e3;
+  --amber-200: #f4d690;
+  --amber-600: #a86300;
+  --amber-800: #6b3f00;
+  --red-50: #fdeeed;
+  --red-200: #f5bdb9;
+  --red-600: #c4312b;
+  --red-800: #82201c;
+
+  /* Semantic — reference these in components, never the ramps */
+  --color-bg: var(--gray-0);
+  --color-surface: var(--gray-0);
+  --color-surface-muted: var(--gray-50);    /* section background (paler than tints) */
+  --color-surface-sunken: var(--gray-100);
+  --color-surface-inverse: var(--gray-950);
+  --color-tint: var(--gray-100);            /* card / header band fill at rest */
+  --color-tint-strong: var(--gray-200);     /* hover step; tag fill */
+  --color-tint-text: var(--gray-950);
+  --color-tint-alt: #f3f1ec;              /* secondary tint — alternate sections / cards */
+  --color-tint-alt-strong: #e6e1d6;
+  --color-tint-alt-text: var(--gray-950);
+  --color-border: var(--gray-950);          /* structural rules: accordion, footer, menu */
+  --color-border-subtle: var(--gray-200);   /* dividers inside tinted areas */
+  --color-border-strong: var(--gray-400);   /* inputs */
+  --color-text: var(--gray-950);
+  --color-text-muted: var(--gray-600);
+  --color-text-subtle: var(--gray-500);
+  --color-text-inverse: var(--gray-0);
+  --color-accent: var(--gray-950);          /* neutral: accent = ink. Sub-themes point this at a brand ramp. */
+  --color-accent-hover: var(--gray-700);
+  --color-accent-subtle: var(--gray-100);
+  --color-accent-contrast: #fff;
+  --color-link: var(--color-text);          /* links are ink + underline, not blue */
+  --color-link-hover: var(--color-text);
+  --color-focus: var(--accent-600);
+  --color-selection: var(--accent-100);
+  --color-info-bg: #fdf3e1;                 /* factbox "info" — warm cream */
+  --color-info-text: #42300f;
+
+  --color-success: var(--green-600);
+  --color-success-bg: var(--green-50);
+  --color-success-border: var(--green-200);
+  --color-success-text: var(--green-800);
+  --color-warning: var(--amber-600);
+  --color-warning-bg: var(--amber-50);
+  --color-warning-border: var(--amber-200);
+  --color-warning-text: var(--amber-800);
+  --color-danger: var(--red-600);
+  --color-danger-bg: var(--red-50);
+  --color-danger-border: var(--red-200);
+  --color-danger-text: var(--red-800);
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --color-bg: var(--gray-950);
+  --color-surface: var(--gray-950);
+  --color-surface-muted: #141417;
+  --color-surface-sunken: var(--gray-900);
+  --color-surface-inverse: var(--gray-50);
+  --color-tint: var(--gray-900);
+  --color-tint-strong: var(--gray-800);
+  --color-tint-text: var(--gray-50);
+  --color-tint-alt: #1d1b17;
+  --color-tint-alt-strong: #2c2923;
+  --color-tint-alt-text: var(--gray-50);
+  --color-border: var(--gray-50);
+  --color-border-subtle: var(--gray-800);
+  --color-border-strong: var(--gray-600);
+  --color-text: var(--gray-50);
+  --color-text-muted: var(--gray-400);
+  --color-text-subtle: var(--gray-500);
+  --color-text-inverse: var(--gray-950);
+  --color-accent: var(--gray-50);
+  --color-accent-hover: var(--gray-300);
+  --color-accent-subtle: var(--gray-900);
+  --color-accent-contrast: var(--gray-950);
+  --color-link: var(--gray-50);
+  --color-link-hover: var(--gray-50);
+  --color-focus: var(--accent-400);
+  --color-selection: var(--accent-800);
+  --color-info-bg: #2a2111;
+  --color-info-text: #f5dfb4;
+  --color-success-bg: #0f2a1d;
+  --color-success-border: #1b4d33;
+  --color-success-text: #9bdcb8;
+  --color-warning-bg: #2b1f07;
+  --color-warning-border: #5a3d0a;
+  --color-warning-text: #f1cd7e;
+  --color-danger-bg: #2e1211;
+  --color-danger-border: #5e211e;
+  --color-danger-text: #f3a9a4;
+  color-scheme: dark;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Color schemes. Set data-scheme on <html> (or any wrapper).
+   Each scheme remaps ONLY semantic tokens:
+     primary   → --color-surface-inverse (buttons, pager, inverse bands) + --color-link
+     tint      → --color-tint / -strong / -text (cards, page header, menu panel)
+     secondary → --color-tint-alt / -strong / -text (alternate sections & cards)
+   Default (no attribute) = monochrome.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  /* Blue ramp — navy primary */
+  --blue-50: #eef4fb; --blue-100: #dde9f6; --blue-200: #bcd3ec; --blue-300: #8fb3dc;
+  --blue-600: #1f4f8a; --blue-800: #14325a; --blue-900: #0d2442; --blue-950: #081a33;
+  /* Sand ramp — blue scheme secondary */
+  --sand-50: #fbf6ec; --sand-100: #f6ecd6; --sand-200: #ecd8ad; --sand-900: #3d2a07;
+  /* Green ramp — petrol primary */
+  --green-t-50: #eff6f4; --green-t-100: #dfedea; --green-t-200: #b1d4cc; --green-t-300: #9fc0b7;
+  --green-t-600: #1f5a4e; --green-t-900: #12302a; --green-t-950: #0b211c;
+  /* Peach ramp — green scheme secondary */
+  --peach-50: #fef6f4; --peach-100: #fdebe8; --peach-200: #ffc4a8; --peach-900: #3e0b06;
+}
+
+[data-scheme="blue"] {
+  --color-surface-inverse: var(--blue-900);
+  --color-accent: var(--blue-900);
+  --color-accent-hover: var(--blue-600);
+  --color-accent-subtle: var(--blue-100);
+  --color-link: var(--blue-900);
+  --color-link-hover: var(--blue-900);
+  --color-text: #0a1526;
+  --color-border: var(--blue-900);
+  --color-surface-muted: var(--blue-50);
+  --color-tint: var(--blue-100);
+  --color-tint-strong: var(--blue-200);
+  --color-tint-text: var(--blue-950);
+  --color-border-subtle: var(--blue-200);
+  --color-tint-alt: var(--sand-100);
+  --color-tint-alt-strong: var(--sand-200);
+  --color-tint-alt-text: var(--sand-900);
+  --color-focus: var(--blue-600);
+  --color-selection: var(--blue-200);
+}
+[data-scheme="green"] {
+  --color-surface-inverse: var(--green-t-900);
+  --color-accent: var(--green-t-900);
+  --color-accent-hover: var(--green-t-600);
+  --color-accent-subtle: var(--green-t-100);
+  --color-link: var(--green-t-900);
+  --color-link-hover: var(--green-t-900);
+  --color-text: #0b1a17;
+  --color-border: var(--green-t-900);
+  --color-surface-muted: var(--green-t-50);
+  --color-tint: var(--green-t-100);
+  --color-tint-strong: var(--green-t-200);
+  --color-tint-text: var(--green-t-900);
+  --color-border-subtle: var(--green-t-200);
+  --color-tint-alt: var(--peach-100);
+  --color-tint-alt-strong: var(--peach-200);
+  --color-tint-alt-text: var(--peach-900);
+  --color-focus: var(--green-t-600);
+  --color-selection: var(--green-t-200);
+}
+[data-theme="dark"][data-scheme="blue"], [data-theme="dark"] [data-scheme="blue"] {
+  --color-bg: #07111f; --color-surface: #07111f; --color-surface-muted: #0b1a2e;
+  --color-surface-inverse: var(--blue-100); --color-text-inverse: var(--blue-950);
+  --color-accent: var(--blue-100); --color-link: var(--blue-100); --color-link-hover: var(--blue-100);
+  --color-text: var(--blue-50); --color-border: var(--blue-100);
+  --color-tint: #10243f; --color-tint-strong: #183257; --color-tint-text: var(--blue-50); --color-border-subtle: #183257;
+  --color-tint-alt: #2a2110; --color-tint-alt-strong: #3a2e17; --color-tint-alt-text: var(--sand-100);
+  --color-focus: var(--blue-300);
+}
+[data-theme="dark"][data-scheme="green"], [data-theme="dark"] [data-scheme="green"] {
+  --color-bg: #08130f; --color-surface: #08130f; --color-surface-muted: #0d1f1a;
+  --color-surface-inverse: var(--green-t-100); --color-text-inverse: var(--green-t-900);
+  --color-accent: var(--green-t-100); --color-link: var(--green-t-100); --color-link-hover: var(--green-t-100);
+  --color-text: var(--green-t-50); --color-border: var(--green-t-100);
+  --color-tint: #12302a; --color-tint-strong: #1b4238; --color-tint-text: var(--green-t-100); --color-border-subtle: #1b4238;
+  --color-tint-alt: #3e0b06; --color-tint-alt-strong: #5a1a10; --color-tint-alt-text: var(--peach-100);
+  --color-focus: var(--green-t-300);
+}
+
+/* Red — burgundy primary, rose tint, slate secondary */
+:root {
+  --red-t-50: #fdf4f3; --red-t-100: #fbe6e4; --red-t-200: #f4c4bf; --red-t-300: #e89a92;
+  --red-t-600: #9e2a2b; --red-t-900: #5c1117; --red-t-950: #3d0a0e;
+  --slate-100: #e6ebef; --slate-200: #c9d3db; --slate-900: #1c2a36;
+  /* Yellow — umber primary, butter tint, sage secondary */
+  --yellow-t-50: #fffbeb; --yellow-t-100: #fdf2c4; --yellow-t-200: #f7df85; --yellow-t-300: #eec94a;
+  --yellow-t-600: #7a5a00; --yellow-t-900: #3b2c02; --yellow-t-950: #261c00;
+  --sage-100: #e3eee8; --sage-200: #c3dccf; --sage-900: #16352a;
+}
+[data-scheme="red"] {
+  --color-surface-inverse: var(--red-t-900);
+  --color-accent: var(--red-t-900); --color-accent-hover: var(--red-t-600); --color-accent-subtle: var(--red-t-100);
+  --color-link: var(--red-t-900); --color-link-hover: var(--red-t-900);
+  --color-text: #1f0a0c; --color-border: var(--red-t-900);
+  --color-surface-muted: var(--red-t-50);
+  --color-tint: var(--red-t-100); --color-tint-strong: var(--red-t-200); --color-tint-text: var(--red-t-950);
+  --color-border-subtle: var(--red-t-200);
+  --color-tint-alt: var(--slate-100); --color-tint-alt-strong: var(--slate-200); --color-tint-alt-text: var(--slate-900);
+  --color-focus: var(--red-t-600); --color-selection: var(--red-t-200);
+}
+[data-scheme="yellow"] {
+  --color-surface-inverse: var(--yellow-t-900);
+  --color-accent: var(--yellow-t-900); --color-accent-hover: var(--yellow-t-600); --color-accent-subtle: var(--yellow-t-100);
+  --color-link: var(--yellow-t-900); --color-link-hover: var(--yellow-t-900);
+  --color-text: #1c1500; --color-border: var(--yellow-t-900);
+  --color-surface-muted: var(--yellow-t-50);
+  --color-tint: var(--yellow-t-100); --color-tint-strong: var(--yellow-t-200); --color-tint-text: var(--yellow-t-950);
+  --color-border-subtle: var(--yellow-t-200);
+  --color-tint-alt: var(--sage-100); --color-tint-alt-strong: var(--sage-200); --color-tint-alt-text: var(--sage-900);
+  --color-focus: var(--yellow-t-600); --color-selection: var(--yellow-t-200);
+}
+[data-theme="dark"][data-scheme="red"], [data-theme="dark"] [data-scheme="red"] {
+  --color-bg: #150708; --color-surface: #150708; --color-surface-muted: #1f0c0e;
+  --color-surface-inverse: var(--red-t-100); --color-text-inverse: var(--red-t-950);
+  --color-accent: var(--red-t-100); --color-link: var(--red-t-100); --color-link-hover: var(--red-t-100);
+  --color-text: var(--red-t-50); --color-border: var(--red-t-100);
+  --color-tint: #34101a; --color-tint-strong: #4a1822; --color-tint-text: var(--red-t-100); --color-border-subtle: #4a1822;
+  --color-tint-alt: #18222c; --color-tint-alt-strong: #23313d; --color-tint-alt-text: var(--slate-100);
+  --color-focus: var(--red-t-300);
+}
+[data-theme="dark"][data-scheme="yellow"], [data-theme="dark"] [data-scheme="yellow"] {
+  --color-bg: #121003; --color-surface: #121003; --color-surface-muted: #1b1705;
+  --color-surface-inverse: var(--yellow-t-200); --color-text-inverse: var(--yellow-t-950);
+  --color-accent: var(--yellow-t-200); --color-link: var(--yellow-t-100); --color-link-hover: var(--yellow-t-100);
+  --color-text: var(--yellow-t-50); --color-border: var(--yellow-t-200);
+  --color-tint: #2e2406; --color-tint-strong: #42340a; --color-tint-text: var(--yellow-t-100); --color-border-subtle: #42340a;
+  --color-tint-alt: #12271f; --color-tint-alt-strong: #1b3a2e; --color-tint-alt-text: var(--sage-100);
+  --color-focus: var(--yellow-t-300);
+}

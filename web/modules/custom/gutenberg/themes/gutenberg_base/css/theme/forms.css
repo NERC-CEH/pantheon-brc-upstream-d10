@@ -1,0 +1,96 @@
+/* Synced from the Claude Design project (.design/theme/forms.css). Drupal adaptations are marked "Drupal:". */
+/* Drupal Form API elements — square, 1px border, 48px targets */
+.form-item { display: grid; gap: var(--space-2); margin-bottom: var(--space-5); }
+.form-item:last-child { margin-bottom: 0; }
+.form-item__label, .form-item > label { font-size: var(--step-3); font-weight: 500; color: var(--color-text); }
+.form-required::after { content: " *"; color: var(--color-danger); }
+.form-item__description, .form-item .description { font-size: var(--step-2); color: var(--color-text-muted); line-height: 1.4; }
+.form-item__error-message, .form-item--error-message /* Drupal: core class */ { font-size: var(--step-2); color: var(--color-danger); font-weight: 500; }
+
+.form-element, .form-text, .form-email, .form-search, .form-tel, .form-url, .form-number, .form-date, .form-password, .form-select, .form-textarea {
+  width: 100%; font: inherit; font-size: var(--step-3); color: var(--color-text);
+  background: var(--color-bg); border: 1px solid var(--color-border-strong); border-radius: 0;
+  padding: 0 var(--space-4); height: 48px; line-height: 1.4; appearance: none;
+  transition: border-color var(--duration-fast);
+}
+.form-textarea { height: auto; min-height: 8rem; padding: var(--space-3) var(--space-4); resize: vertical; line-height: 1.6; }
+.form-select {
+  padding-inline-end: 2.75rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 8 5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.875rem center;
+}
+:is(.form-element, .form-text, .form-email, .form-search, .form-password, .form-select, .form-textarea):hover { border-color: var(--color-text); }
+:is(.form-element, .form-text, .form-email, .form-search, .form-password, .form-select, .form-textarea):focus { outline: 2px solid var(--color-focus); outline-offset: 0; border-color: var(--color-text); }
+:is(.form-element, .form-text, .form-email, .form-password, .form-select, .form-textarea, .form-search)::placeholder { color: var(--color-text-subtle); }
+:is(.form-element, .form-text, .form-email, .form-password, .form-select, .form-textarea).error { border-color: var(--color-danger); border-width: 2px; }
+:is(.form-element, .form-text, .form-email, .form-password, .form-select, .form-textarea):disabled { background: var(--color-surface-sunken); color: var(--color-text-subtle); cursor: not-allowed; }
+
+.form-type-checkbox, .form-type-radio { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-3); align-items: start; margin-bottom: var(--space-3); }
+.form-type-checkbox > label, .form-type-radio > label { font-weight: 400; }
+.form-type-checkbox .form-item__description, .form-type-radio .form-item__description { grid-column: 2; }
+.form-checkbox, .form-radio { appearance: none; margin: 0.1em 0 0; width: 22px; height: 22px; flex: none; border: 1px solid var(--color-text); background: var(--color-bg); cursor: pointer; display: grid; place-items: center; }
+.form-checkbox { border-radius: 0; }
+.form-radio { border-radius: var(--radius-round); }
+.form-checkbox:checked { background: var(--color-text); }
+.form-checkbox:checked::after { content: ""; width: 12px; height: 12px; background: var(--color-bg); clip-path: polygon(14% 44%, 0 59%, 40% 100%, 100% 22%, 85% 8%, 39% 69%); }
+.form-radio:checked::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-text); }
+.form-checkbox:focus-visible, .form-radio:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.form-checkbox:disabled, .form-radio:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.form-actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; margin-top: var(--space-6); }
+
+fieldset, .fieldset { border: 0; border-top: 1px solid var(--color-border); padding: var(--space-5) 0 0; margin: 0 0 var(--space-6); min-width: 0; }
+fieldset > legend, .fieldset__legend { padding-block: 0; padding-inline: 0 var(--space-3) /* Drupal: RTL */; font-size: var(--step-5); font-weight: 500; }
+
+/* Details (#type details) — same pattern as the accordion */
+.details { border: 1px solid var(--color-border); margin-bottom: var(--space-4); }
+.details > summary { cursor: pointer; padding: var(--space-3) var(--space-4); font-size: var(--step-3); list-style: none; display: flex; gap: var(--space-2); align-items: center; transition: background var(--duration-base); }
+.details > summary::-webkit-details-marker { display: none; }
+.details > summary::before { content: ""; width: 10px; height: 10px; border-right: 2px solid currentcolor; border-bottom: 2px solid currentcolor; transform: rotate(45deg) translate(-2px, -2px); transition: transform var(--duration-base); flex: none; margin-inline: 4px 6px; }
+.details[open] > summary::before { transform: rotate(-135deg) translate(-2px, -2px); }
+.details > summary:hover, .details[open] > summary { background: var(--color-tint); }
+.details__wrapper { padding: var(--space-4); }
+
+/* Buttons — square. Primary = ink fill. Secondary = 1px ink outline. */
+.button, .form-submit, .wp-block-button__link, .wp-element-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+  min-height: 48px; padding: var(--space-2) var(--space-5); border-radius: 0;
+  font: inherit; font-size: var(--step-3); font-weight: 600; line-height: 1.2; text-align: center; overflow-wrap: break-word;
+  text-decoration: none; cursor: pointer; border: 1px solid var(--color-text);
+  width: max-content; max-width: 100%; flex-shrink: 0;
+  background: transparent; color: var(--color-text);
+  transition: background var(--duration-base), color var(--duration-base), border-color var(--duration-base);
+}
+.button:hover, .form-submit:hover { background: var(--color-tint); color: var(--color-text); text-decoration: none; }
+.button--primary, .form-submit.button--primary, .wp-block-button__link, .wp-element-button { background: var(--color-surface-inverse); border-color: var(--color-surface-inverse); color: var(--color-text-inverse); }
+.button--primary:hover, .form-submit.button--primary:hover, .wp-block-button__link:hover, .wp-element-button:hover { background: var(--color-tint); border-color: var(--color-tint); color: var(--color-tint-text); }
+.button--tint { background: var(--color-tint); border-color: var(--color-tint); color: var(--color-tint-text); }
+.button--tint:hover { background: var(--color-tint-strong); border-color: var(--color-tint-strong); }
+.button--danger { background: var(--color-danger); border-color: var(--color-danger); color: #fff; }
+.button--danger:hover { background: var(--red-800); border-color: var(--red-800); color: #fff; }
+.button--link { background: none; border-color: transparent; padding-inline: 0; font-weight: 400; text-decoration: underline; text-decoration-thickness: var(--underline-thin); text-underline-offset: var(--underline-offset); min-height: 0; }
+.button--link:hover { background: none; text-decoration-thickness: var(--underline-thick); }
+.button--small { min-height: 36px; padding: var(--space-1) var(--space-3); font-size: var(--step-2); }
+.button--large { min-height: 56px; padding: var(--space-2) var(--space-6); font-size: var(--step-4); }
+.button--icon { width: 44px; min-height: 44px; padding: 0; }
+.button--small.button--icon { width: 36px; min-height: 36px; }
+.button:disabled, .button.is-disabled, .form-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Search form */
+.search-form { display: flex; gap: 0; }
+.search-form .form-item { margin: 0; flex: 1; }
+.search-form .form-search { border-inline-end: 0; /* Drupal: RTL */ }
+.search-form .button { min-height: 48px; }
+
+/* Drupal: RTL: the select arrow is on the side of its end padding. :dir() rather than [dir], as the editor prefixes the selectors of the canvas styles. */
+.form-select:dir(rtl) { background-position: left 0.875rem center; }
+/* Drupal: core wraps the Search block in .search-block-form, and moves the form classes to it (the theme adds .search-form): the form inside lays out the field and the button, at the full width of the block. */
+.search-block-form > .block__content { flex: 1; }
+.search-block-form form { display: flex; }
+.search-block-form .form-actions { margin: 0; }
+.search-block-form .form-item, .search-form .form-item { margin: 0; }
+/* Drupal: the search page form: the field and the button, then the help link and the advanced search. */
+.search-page-form { flex-wrap: wrap; gap: var(--space-3); }
+.search-page-form > .container-inline { display: flex; flex: 1 1 100%; align-items: flex-end; }
+.search-page-form > details { flex-basis: 100%; }
+.search-page-form .search-help-link { font-size: var(--step-2); }

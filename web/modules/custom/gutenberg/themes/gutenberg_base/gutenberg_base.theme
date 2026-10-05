@@ -1,0 +1,404 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the Gutenberg Base theme.
+ */
+
+use Drupal\block\Entity\Block;
+use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableMetadata;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Markup;
+use Drupal\gutenberg\BlockProcessor\EntityTitleProcessor;
+use Drupal\gutenberg\Controller\UtilsController;
+use Drupal\gutenberg\Parser\BlockParser;
+use Drupal\node\Entity\NodeType;
+use Drupal\node\NodeInterface;
+
+// The color schemes and the settings form.
+require_once __DIR__ . '/theme-settings.php';
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ */
+function gutenberg_base_preprocess_html(&$variables) {
+  // The color scheme, the weight set and the button shape are attributes on
+  // <html>, read by the token CSS. Dark mode is set by html.html.twig and
+  // js/dark-mode.js.
+  $scheme = _gutenberg_base_theme_setting('color_scheme') ?: 'mono';
+  if ($scheme !== 'mono' && isset(gutenberg_base_color_schemes()[$scheme])) {
+    $variables['html_attributes']->setAttribute('data-scheme', $scheme);
+  }
+  if (_gutenberg_base_theme_setting('light_weight')) {
+    $variables['html_attributes']->setAttribute('data-weight', 'light');
+  }
+  if (_gutenberg_base_theme_setting('button_shape') === 'round') {
+    $variables['html_attributes']->setAttribute('data-buttons', 'round');
+  }
+  $variables['#cache']['tags'][] = 'config:gutenberg_base.settings';
+
+  if (!empty($variables['page']['sidebar'])) {
+    $variables['attributes']['class'][] = 'has-sidebar';
+  }
+
+  // A node whose content starts with a Cover that overlays the site header
+  // (see js/cover-header-overlay.js and css/header-overlay.css). The class
+  // is on <body> because the header is in page.html.twig, outside the
+  // content. The page then follows the node content, so it is tied to the
+  // node.
+  if ($node = _gutenberg_base_route_node()) {
+    $variables['#cache']['tags'] = Cache::mergeTags($variables['#cache']['tags'] ?? [], $node->getCacheTags());
+    $variables['#cache']['contexts'][] = 'route';
+    if (_gutenberg_base_has_header_overlay($node)) {
+      $variables['attributes']['class'][] = 'has-header-overlay';
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page.html.twig.
+ */
+function gutenberg_base_preprocess_page(&$variables) {
+  $variables['has_sidebar'] = !empty($variables['page']['sidebar']);
+  // A full node page renders its own page header band and content column
+  // (see node.html.twig), so the page does not wrap it in a container.
+  $variables['is_node_page'] = (bool) _gutenberg_base_route_node();
+  // So does a search page (see form--search-page.html.twig).
+  $variables['is_search_page'] = _gutenberg_base_is_search_page();
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for node.html.twig.
+ */
+function gutenberg_base_preprocess_node(&$variables) {
+  /** @var \Drupal\node\NodeInterface $node */
+  $node = $variables['node'];
+  $variables['date'] = \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'medium');
+
+  // An author without a picture gets the avatar placeholder of the design,
+  // rather than the empty user display.
+  $owner = $node->getOwner();
+  if (!empty($variables['author_picture']) && (!$owner || !$owner->hasField('user_picture') || $owner->get('user_picture')->isEmpty())) {
+    unset($variables['author_picture']);
+  }
+
+  // On its page, the node renders its title in a page header band above the
+  // content, and the page title block is hidden (see
+  // gutenberg_base_preprocess_block()). From the second level on, the band
+  // starts with a link back to the parent page, the last link of the
+  // breadcrumb. The band is left out when the content places the title with
+  // an entity title block, e.g. in a Cover.
+  $variables['page_header'] = FALSE;
+  if ($variables['page'] && !EntityTitleProcessor::isPlaced($node)) {
+    $variables['page_header'] = TRUE;
+    $breadcrumb = \Drupal::service('breadcrumb')->build(\Drupal::routeMatch());
+    CacheableMetadata::createFromRenderArray($variables)->addCacheableDependency($breadcrumb)->applyTo($variables);
+    $links = $breadcrumb->getLinks();
+    if (count($links) > 1) {
+      $parent = end($links);
+      $variables['back_link'] = [
+        'url' => $parent->getUrl()->toString(),
+        'text' => $parent->getText(),
+      ];
+    }
+  }
+  $variables['#cache']['tags'][] = 'config:gutenberg.settings';
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for block.html.twig.
+ */
+function gutenberg_base_preprocess_block(&$variables) {
+  $plugin_id = $variables['plugin_id'] ?? '';
+
+  // The page title of a node page is rendered by node.html.twig, in the page
+  // header band, or with an entity title block. A search page renders its
+  // own band.
+  if ($plugin_id === 'page_title_block' && (_gutenberg_base_route_node() || _gutenberg_base_is_search_page())) {
+    $variables['content'] = [];
+    $variables['label'] = '';
+    $variables['attributes']['hidden'] = TRUE;
+  }
+
+  // Search page: the search form renders the page header band (see
+  // form--search-page.html.twig), and the results follow in the narrow
+  // column.
+  if ($plugin_id === 'system_main_block' && _gutenberg_base_is_search_page()) {
+    $variables['attributes']['class'][] = 'search-page';
+  }
+
+  // Menus: pass the region to menu.html.twig, which styles the menu after it
+  // (main menu in the panel, quick links in the header, footer, sidebar).
+  if (($variables['base_plugin_id'] ?? '') === 'system_menu_block' && !empty($variables['elements']['#id'])) {
+    $block = Block::load($variables['elements']['#id']);
+    if ($block) {
+      $variables['content']['#attributes']['region'] = $block->getRegion();
+    }
+  }
+
+  // Branding: inline the default logo, so that it follows the text color of
+  // the scheme and of dark mode.
+  if ($plugin_id === 'system_branding_block' && !empty($variables['site_logo']) && _gutenberg_base_theme_setting('logo.use_default')) {
+    $path = \Drupal::root() . '/' . \Drupal::service('extension.list.theme')->getPath('gutenberg_base') . '/logo.svg';
+    if (is_file($path)) {
+      $svg = file_get_contents($path);
+      $svg = preg_replace('/<svg /', '<svg class="site-branding__logo" width="38" height="42" aria-hidden="true" ', $svg, 1);
+      $variables['site_logo_inline'] = Markup::create($svg);
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for menu.html.twig.
+ */
+function gutenberg_base_preprocess_menu(&$variables) {
+  $region = $variables['attributes']['region'] ?? NULL;
+  unset($variables['attributes']['region']);
+  $variants = [
+    'primary_menu' => 'main',
+    'secondary_menu' => 'quick',
+    'footer' => 'footer',
+    'sidebar' => 'sidebar',
+  ];
+  $variables['menu_variant'] = $variants[$region] ?? NULL;
+  // The main menu is two columns of rows, filled column by column.
+  if ($variables['menu_variant'] === 'main') {
+    $variables['attributes']['style'] = '--rows: ' . max(1, (int) ceil(count($variables['items']) / 2)) . ';';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for menu-local-task.html.twig.
+ */
+function gutenberg_base_preprocess_menu_local_task(&$variables) {
+  $variables['link']['#options']['attributes']['class'][] = 'tabs__link';
+  if (!empty($variables['is_active'])) {
+    $variables['link']['#options']['attributes']['class'][] = 'is-active';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for comment.html.twig.
+ */
+function gutenberg_base_preprocess_comment(&$variables) {
+  /** @var \Drupal\comment\CommentInterface $comment */
+  $comment = $variables['comment'];
+  $words = preg_split('/\s+/', trim((string) $comment->getAuthorName())) ?: [];
+  $initials = implode('', array_map(fn($word) => mb_substr($word, 0, 1), array_slice($words, 0, 2)));
+  $variables['author_initials'] = mb_strtoupper($initials);
+  $variables['created_iso'] = date('c', $comment->getCreatedTime());
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the search block form.
+ */
+function gutenberg_base_form_search_block_form_alter(array &$form, FormStateInterface $form_state) {
+  $form['#attributes']['class'][] = 'search-form';
+  $form['keys']['#attributes']['placeholder'] = t('Search the site …');
+  $form['actions']['submit']['#attributes']['class'][] = 'button--primary';
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for the search page form.
+ */
+function gutenberg_base_form_search_form_alter(array &$form, FormStateInterface $form_state) {
+  $form['#attributes']['class'][] = 'search-page-form';
+  if (isset($form['basic']['keys'])) {
+    // The search page title says what is searched (see
+    // gutenberg_base_preprocess_block()).
+    $form['basic']['keys']['#title_display'] = 'invisible';
+    $form['basic']['keys']['#attributes']['placeholder'] = t('Search the site …');
+    $form['basic']['submit']['#attributes']['class'][] = 'button--primary';
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for form.
+ */
+function gutenberg_base_theme_suggestions_form_alter(array &$suggestions, array $variables) {
+  if (($variables['element']['#form_id'] ?? '') === 'search_form' && _gutenberg_base_is_search_page()) {
+    $suggestions[] = 'form__search_page';
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for form--search-page.html.twig.
+ */
+function gutenberg_base_preprocess_form__search_page(&$variables) {
+  // The search has run when the form renders, so the pager has the number
+  // of results.
+  $keys = trim((string) \Drupal::request()->query->get('keys', ''));
+  $variables['search_title'] = $keys === ''
+    ? t('Search')
+    : t('Search results for “@keys”', ['@keys' => $keys]);
+  $total = $keys === '' ? 0 : (\Drupal::service('pager.manager')->getPager()?->getTotalItems() ?? 0);
+  $variables['search_count'] = $total
+    ? \Drupal::translation()->formatPlural($total, '1 result', '@count results')
+    : NULL;
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for search-result.html.twig.
+ */
+function gutenberg_base_preprocess_search_result(&$variables) {
+  // The content type, and the date when the type displays it, like the node.
+  $result = $variables['result'];
+  $variables['type'] = $result['type'] ?? NULL;
+  $node = $result['node'] ?? NULL;
+  if ($node instanceof NodeInterface && NodeType::load($node->bundle())?->displaySubmitted()) {
+    $variables['date'] = \Drupal::service('date.formatter')->format($node->getCreatedTime(), 'custom', 'j F Y');
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for the search results item list.
+ */
+function gutenberg_base_preprocess_item_list__search_results(&$variables) {
+  $variables['attributes']['class'][] = 'search-results';
+  // Without keywords, nothing was searched, so there are no "no results".
+  if (trim((string) \Drupal::request()->query->get('keys', '')) === '') {
+    $variables['empty'] = NULL;
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK_alter() for menu.
+ */
+function gutenberg_base_theme_suggestions_menu_alter(array &$suggestions, array $variables) {
+  // Add region-based menu template suggestions.
+  if (isset($variables['attributes']['region'])) {
+    $suggestions[] = 'menu__' . $variables['attributes']['region'];
+  }
+}
+
+/**
+ * Implements THEMENAME_gutenberg_definition_alter().
+ *
+ * Swaps the editor palette for the one of the color scheme of the theme
+ * settings, and passes the scheme and the weight set to js/editor.js, which
+ * applies them to the editor canvas.
+ */
+function gutenberg_base_gutenberg_definition_alter(array &$definition) {
+  $scheme = _gutenberg_base_theme_setting('color_scheme', 'gutenberg_base') ?: 'mono';
+  if ($scheme !== 'mono') {
+    $palette = _gutenberg_base_scheme_palette($scheme);
+    if ($palette) {
+      $definition['theme-support']['__experimentalFeatures']['color']['palette']['theme'] = $palette;
+    }
+  }
+  $definition['theme-support']['gutenbergBase'] = [
+    'scheme' => $scheme,
+    'lightWeight' => (bool) _gutenberg_base_theme_setting('light_weight', 'gutenberg_base'),
+    'roundButtons' => _gutenberg_base_theme_setting('button_shape', 'gutenberg_base') === 'round',
+  ];
+}
+
+/**
+ * Returns the editor palette of a color scheme.
+ *
+ * The palettes are the style variations of the design system, in the
+ * theme.json format, in schemes/<scheme>.json.
+ *
+ * @param string $scheme
+ *   The scheme.
+ *
+ * @return array
+ *   The palette entries, or an empty array if the scheme has no file.
+ */
+function _gutenberg_base_scheme_palette(string $scheme): array {
+  $path = \Drupal::root() . '/' . \Drupal::service('extension.list.theme')->getPath('gutenberg_base') . '/schemes/' . $scheme . '.json';
+  if (!is_file($path)) {
+    return [];
+  }
+  $data = json_decode(file_get_contents($path), TRUE);
+  return $data['settings']['color']['palette'] ?? [];
+}
+
+/**
+ * Returns the node of the current route, when it is a node page.
+ *
+ * @return \Drupal\node\NodeInterface|null
+ *   The node, or NULL if the route is not a node canonical page.
+ */
+function _gutenberg_base_route_node(): ?NodeInterface {
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() !== 'entity.node.canonical') {
+    return NULL;
+  }
+  $node = $route_match->getParameter('node');
+  return $node instanceof NodeInterface ? $node : NULL;
+}
+
+/**
+ * Checks whether the current page is a search page.
+ *
+ * @return bool
+ *   TRUE on the page of a search plugin, like the content search.
+ */
+function _gutenberg_base_is_search_page(): bool {
+  return str_starts_with((string) \Drupal::routeMatch()->getRouteName(), 'search.view_');
+}
+
+/**
+ * Returns the first block of the Gutenberg content of a node.
+ *
+ * The content is the text field of the node with a text format, the field
+ * the editor edits, parsed by the block parser of the module: each block is
+ * an array with its blockName (e.g. core/cover), attrs (the attributes of
+ * its block comment), innerHTML and innerBlocks. The whitespace between the
+ * root blocks is parsed as freeform blocks without a name, which are
+ * skipped; HTML without a block comment (classic content) is a freeform
+ * block with content, which counts as the first block.
+ *
+ * The sibling pattern for finding a block anywhere in the content, inner
+ * blocks included, is EntityTitleProcessor::isPlaced().
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node.
+ *
+ * @return array|null
+ *   The first block, or NULL if the content has no blocks.
+ */
+function _gutenberg_base_first_block(NodeInterface $node): ?array {
+  $fields = UtilsController::getEntityTextFields($node);
+  $content = $fields ? (string) $node->get($fields[0])->value : '';
+  if (!str_contains($content, '<!-- wp:')) {
+    return NULL;
+  }
+  foreach ((new BlockParser())->parse($content) as $block) {
+    if (!empty($block['blockName']) || trim($block['innerHTML'] ?? '') !== '') {
+      return $block;
+    }
+  }
+  return NULL;
+}
+
+/**
+ * Whether the content of a node starts with a cover that overlays the header.
+ *
+ * The "Overlay the site header" option of the Cover block is the
+ * headerOverlay attribute that js/cover-header-overlay.js adds to the block,
+ * saved in its block comment. It only takes effect when the content also
+ * places the title, with the entity title block: the page header band
+ * renders between the site header and the cover otherwise. The result is
+ * memoized, since the content is parsed for several hooks of one page.
+ *
+ * @param \Drupal\node\NodeInterface $node
+ *   The node.
+ *
+ * @return bool
+ *   Whether the site header overlays the first block of the content.
+ */
+function _gutenberg_base_has_header_overlay(NodeInterface $node): bool {
+  $results = &drupal_static(__FUNCTION__, []);
+  $key = $node->id() . ':' . $node->getRevisionId() . ':' . $node->language()->getId();
+  if (!isset($results[$key])) {
+    $block = _gutenberg_base_first_block($node);
+    $results[$key] = $block
+      && ($block['blockName'] ?? '') === 'core/cover'
+      && !empty($block['attrs']['headerOverlay'])
+      && EntityTitleProcessor::isPlaced($node);
+  }
+  return $results[$key];
+}

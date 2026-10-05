@@ -1,0 +1,4 @@
+libraries-edit:
+  - gutenberg_test_block_api_v2/card-v2
+libraries-view:
+  - gutenberg_test_block_api_v2/card-v2-style

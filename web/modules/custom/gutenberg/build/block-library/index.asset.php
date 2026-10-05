@@ -1,0 +1,1 @@
+<?php return array('dependencies' => array('drupal-gutenberg-components', 'react-jsx-runtime', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-data', 'wp-element', 'wp-rich-text'), 'version' => '190ec3e2c7780fc8ab1b');

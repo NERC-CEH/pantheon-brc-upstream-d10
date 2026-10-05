@@ -1,0 +1,81 @@
+{#
+/**
+ * @file
+ * Gutenberg Base theme override for comments.
+ *
+ * A comment is an avatar (the user picture, or the initials of the author)
+ * next to the author, the time, the content and the links.
+ *
+ * Available variables:
+ * - author: (optional) Comment author. Can be link or plain text.
+ * - author_initials: The initials of the author, for the avatar.
+ * - content: The content-related items for the comment display. Use
+ *   {{ content }} to print them all, or print a subset such as
+ *   {{ content.field_example }}. Use the following code to temporarily
+ *   suppress the printing of a given child element:
+ *   @code
+ *   {{ content|without('field_example') }}
+ *   @endcode
+ * - created: (optional) Formatted date and time for when the comment was
+ *   created. Preprocess functions can reformat it by calling
+ *   DateFormatter::format() with the desired parameters on the
+ *   'comment.created' variable.
+ * - created_iso: The creation time in ISO 8601 format, for the time element.
+ * - permalink: Comment permalink.
+ * - user_picture: The comment author's profile picture.
+ * - status: Comment status. Possible values are:
+ *   unpublished, published, or preview.
+ * - title: (optional) Comment title, linked to the comment.
+ * - attributes: HTML attributes for the containing element.
+ * - content_attributes: HTML attributes for the content.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - parent: A text string that is only displayed if the comment is a reply to
+ *   another comment.
+ *
+ * @see template_preprocess_comment()
+ */
+#}
+<article{{ attributes.addClass('comment', 'js-comment', status != 'published' ? 'comment--' ~ status) }}>
+  {#
+    Hide the "new" indicator by default, let a piece of JavaScript ask the
+    server which comments are new for the user. Rendering the final "new"
+    indicator here would break the render cache.
+  #}
+  <mark class="hidden" data-comment-timestamp="{{ new_indicator_timestamp }}"></mark>
+
+  {% if user_picture %}
+    <div class="comment__avatar">{{ user_picture }}</div>
+  {% else %}
+    <div class="comment__avatar" aria-hidden="true">{{ author_initials }}</div>
+  {% endif %}
+
+  <div class="comment__body">
+    <footer class="comment__meta">
+      <span class="comment__author">{{ author }}</span>
+      <time class="comment__time" datetime="{{ created_iso }}">{{ created }}</time>
+      {#
+        Indicate the semantic relationship between parent and child comments
+        for accessibility. The list is difficult to navigate in a screen
+        reader without this information.
+      #}
+      {% if parent %}
+        <p class="visually-hidden">{{ parent }}</p>
+      {% endif %}
+    </footer>
+    <div{{ content_attributes.addClass('comment__content') }}>
+      {% if title %}
+        {{ title_prefix }}
+        <h3{{ title_attributes.addClass('comment__title') }}>{{ title }}</h3>
+        {{ title_suffix }}
+      {% endif %}
+      {{ content|without('links') }}
+    </div>
+    {% if content.links or permalink %}
+      <div class="comment__links">
+        {{ content.links }}
+        {{ permalink }}
+      </div>
+    {% endif %}
+  </div>
+</article>
