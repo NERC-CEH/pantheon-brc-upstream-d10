@@ -626,8 +626,15 @@ var addMediaRowOnClick;
         rowNumber = rowNumber.substring(0, 1);
         $(field).val(rowNumber);
       } else {
-        $(field).val(typeof indiciaData.control_speciesmap_existing_feature === 'undefined' || indiciaData.control_speciesmap_existing_feature===null ?
-            indiciaData['gridSampleCounter-' + gridId] : indiciaData.control_speciesmap_existing_feature.attributes.subSampleIndex);
+        var sampleIdx = indiciaData['gridSampleCounter-' + gridId];
+        // Use the new feature, or existing feature, to determine the sample
+        // index, if on a multiplace speciesmap.
+        if (indiciaData.control_speciesmap_mode === 'Add' && indiciaData.control_speciesmap_new_feature) {
+          sampleIdx = indiciaData.control_speciesmap_new_feature.attributes.subSampleIndex;
+        } else if (indiciaData.control_speciesmap_existing_feature) {
+          sampleIdx = indiciaData.control_speciesmap_existing_feature.attributes.subSampleIndex;
+        }
+        $(field).val(sampleIdx);
       }
     });
     // add the row to the bottom of the grid

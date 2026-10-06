@@ -423,7 +423,17 @@ var control_speciesmap_addcontrols;
               if (block.hasClass('added')) {
                 block.remove();
               } else {
-                block.find("[name$='\:sample\:deleted']").val('t').removeAttr('disabled');
+                var deletedField = block.find("[name$=':sample:deleted']");
+                if (deletedField.length) {
+                  deletedField.val('t').prop('disabled', false);
+                } else {
+                  var srefFieldName = block.find("[name$=':sample:entered_sref']").attr('name');
+                  $('<input>', {
+                    type: 'hidden',
+                    name: srefFieldName.replace(/sample:entered_sref$/, 'sample:deleted'),
+                    value: 't'
+                  }).appendTo(block);
+                }
                 block.hide();
               }
               indiciaData.control_speciesmap_selectFeatureControl.unselectAll();
