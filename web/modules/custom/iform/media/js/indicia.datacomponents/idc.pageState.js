@@ -36,7 +36,8 @@
 
   var cookieChunkSize = 3500;
   var stateSchemaVersion = 3;
-  var customFilterControlSelector = '.es-filter-param:not(.es-location-select-geom), .es-location-select, .es-higher-geography-select';
+  var customFilterControlSelector = '.es-filter-param:not(.es-location-select-geom), ' +
+    '.es-location-select, .es-higher-geography-select, .user-filter';
 
   /**
    * Notify the page-state coordinator that component-owned state changed.
