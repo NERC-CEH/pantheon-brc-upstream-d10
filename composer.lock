@@ -2987,17 +2987,17 @@
         },
         {
             "name": "drupal/ai_content_suggestions",
-            "version": "1.5.1",
+            "version": "1.5.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ai_content_suggestions.git",
-                "reference": "1.5.1"
+                "reference": "1.5.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ai_content_suggestions-1.5.1.zip",
-                "reference": "1.5.1",
-                "shasum": "f7027db270a2185dde9c4374d72804d38126f107"
+                "url": "https://ftp.drupal.org/files/projects/ai_content_suggestions-1.5.2.zip",
+                "reference": "1.5.2",
+                "shasum": "a2f03b657f754eea5ebf305b9a8d77fc06970a05"
             },
             "require": {
                 "drupal/ai": "^1.4",
@@ -3007,8 +3007,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.5.1",
-                    "datestamp": "1790965412",
+                    "version": "1.5.2",
+                    "datestamp": "1791397977",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -3954,20 +3954,20 @@
         },
         {
             "name": "drupal/bootstrap",
-            "version": "3.40.0",
+            "version": "3.42.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap.git",
-                "reference": "8.x-3.40"
+                "reference": "8.x-3.42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.40.zip",
-                "reference": "8.x-3.40",
-                "shasum": "dd613d39c4f31c9b6656037948eff5d429ded892"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.42.zip",
+                "reference": "8.x-3.42",
+                "shasum": "9e6b12b9e7c99a83183d090ea5a7a354888200ac"
             },
             "require": {
-                "drupal/core": "^10.4 || ^11.1",
+                "drupal/core": "^10.5 || ^11.2",
                 "drupal/jquery_ui": "^1.7",
                 "drupal/jquery_ui_draggable": "^2.1",
                 "drupal/jquery_ui_resizable": "^2.1"
@@ -3979,8 +3979,8 @@
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.40",
-                    "datestamp": "1775420242",
+                    "version": "8.x-3.42",
+                    "datestamp": "1791408007",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -6984,20 +6984,20 @@
         },
         {
             "name": "drupal/custom_formatters",
-            "version": "4.1.0",
+            "version": "4.2.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/custom_formatters.git",
-                "reference": "4.1.0"
+                "reference": "4.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/custom_formatters-4.1.0.zip",
-                "reference": "4.1.0",
-                "shasum": "3563901985fd8dca6dbf94d9a28128c72ede92d9"
+                "url": "https://ftp.drupal.org/files/projects/custom_formatters-4.2.0.zip",
+                "reference": "4.2.0",
+                "shasum": "93c9ee9084d7644e00ca73b278b2af45e86615b7"
             },
             "require": {
-                "drupal/core": "^8.8 || ^9 || ^10 || ^11",
+                "drupal/core": "^8.8 || ^9 || ^10 || ^11 || ^12",
                 "php": ">=8.2"
             },
             "require-dev": {
@@ -7015,8 +7015,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.1.0",
-                    "datestamp": "1786524022",
+                    "version": "4.2.0",
+                    "datestamp": "1791473729",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -11744,27 +11744,28 @@
         },
         {
             "name": "drupal/klaro",
-            "version": "3.1.1",
+            "version": "3.1.2",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/klaro.git",
-                "reference": "3.1.1"
+                "reference": "3.1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/klaro-3.1.1.zip",
-                "reference": "3.1.1",
-                "shasum": "d6bb6fed0d7e6f2e5bb47eb9e7043613ec182041"
+                "url": "https://ftp.drupal.org/files/projects/klaro-3.1.2.zip",
+                "reference": "3.1.2",
+                "shasum": "a7c65a7c9ffb4ccc232d5e1180b7eab0ab1d6db8"
             },
             "require": {
                 "drupal/core": "^10.2 || ^11",
-                "drupal/klaro_js": "~3.1.0"
+                "drupal/klaro_js": "~3.1.0",
+                "masterminds/html5": "^2.8"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.1.1",
-                    "datestamp": "1782906912",
+                    "version": "3.1.2",
+                    "datestamp": "1791367970",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12168,26 +12169,26 @@
         },
         {
             "name": "drupal/libraries",
-            "version": "4.1.1",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/libraries.git",
-                "reference": "4.1.1"
+                "reference": "4.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/libraries-4.1.1.zip",
-                "reference": "4.1.1",
-                "shasum": "d4bee63f8bfdc95afad577433c5601521712ec10"
+                "url": "https://ftp.drupal.org/files/projects/libraries-4.2.1.zip",
+                "reference": "4.2.1",
+                "shasum": "29dbce0a551878faca804e5e1f6fe647c91bb6e3"
             },
             "require": {
-                "drupal/core": "^10 || ^11"
+                "drupal/core": "^10.2 || ^11 || ^12"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "4.1.1",
-                    "datestamp": "1760564444",
+                    "version": "4.2.1",
+                    "datestamp": "1791474564",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12308,26 +12309,29 @@
         },
         {
             "name": "drupal/linked_field",
-            "version": "1.7.0",
+            "version": "1.8.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/linked_field.git",
-                "reference": "8.x-1.7"
+                "reference": "8.x-1.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/linked_field-8.x-1.7.zip",
-                "reference": "8.x-1.7",
-                "shasum": "c304792746a92d105f08931d2b6e09b20ee8d618"
+                "url": "https://ftp.drupal.org/files/projects/linked_field-8.x-1.8.zip",
+                "reference": "8.x-1.8",
+                "shasum": "393f42ed3a06f5bbc7e9a69a8c1e12b74ae01fa4"
             },
             "require": {
                 "drupal/core": "^8.8 || ^9 || ^10 || ^11"
             },
+            "require-dev": {
+                "drupal/token": "^1"
+            },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.7",
-                    "datestamp": "1748842765",
+                    "version": "8.x-1.8",
+                    "datestamp": "1791390190",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -12352,7 +12356,7 @@
                     "homepage": "https://www.drupal.org/user/531118"
                 }
             ],
-            "description": "Adds the functionality to link fields to a specific destination.",
+            "description": "Linked Field allows you to link fields in the field formatter settings.",
             "homepage": "https://www.drupal.org/project/linked_field",
             "support": {
                 "source": "https://git.drupalcode.org/project/linked_field"
@@ -13372,26 +13376,26 @@
         },
         {
             "name": "drupal/menu_item_extras",
-            "version": "3.1.3",
+            "version": "3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/menu_item_extras.git",
-                "reference": "3.1.3"
+                "reference": "3.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/menu_item_extras-3.1.3.zip",
-                "reference": "3.1.3",
-                "shasum": "99091d8aea77282c143743423ab8e0919ba1a654"
+                "url": "https://ftp.drupal.org/files/projects/menu_item_extras-3.2.0.zip",
+                "reference": "3.2.0",
+                "shasum": "017e97584fc346c3664624ec42434aba8fdb0425"
             },
             "require": {
-                "drupal/core": "^10.3 || ^11"
+                "drupal/core": "^10.3 || ^11 || ^12"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.1.3",
-                    "datestamp": "1790575936",
+                    "version": "3.2.0",
+                    "datestamp": "1791473117",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -14243,30 +14247,36 @@
         },
         {
             "name": "drupal/photoswipe",
-            "version": "5.0.10",
+            "version": "5.0.11",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/photoswipe.git",
-                "reference": "5.0.10"
+                "reference": "5.0.11"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/photoswipe-5.0.10.zip",
-                "reference": "5.0.10",
-                "shasum": "03c701c926c31342357427ecd8ec85d450d55ff7"
+                "url": "https://ftp.drupal.org/files/projects/photoswipe-5.0.11.zip",
+                "reference": "5.0.11",
+                "shasum": "b76d3c9b37aed9e8105737c8aeaaa7119374aa30"
             },
             "require": {
                 "drupal/core": "^9.3 || ^10 || ^11"
             },
+            "require-dev": {
+                "drupal/svg_image": "^3.0",
+                "drupal/svg_image_field": "^2.0",
+                "enshrined/svg-sanitize": "^0.22"
+            },
             "suggest": {
+                "enshrined/svg-sanitize": "SVG sanitization library if using one of the svg submodules.",
                 "npm-asset/photoswipe": "Required to make the 'photoswipe' module functional. Expected version: ^5",
                 "npm-asset/photoswipe-dynamic-caption-plugin": "Required to make the 'photoswipe_dynamic_caption' submodule functional. Expected version: ^1.2"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "5.0.10",
-                    "datestamp": "1788534587",
+                    "version": "5.0.11",
+                    "datestamp": "1791458589",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -28387,16 +28397,16 @@
         },
         {
             "name": "thinkshout/mailchimp-api-php",
-            "version": "v3.1.5",
+            "version": "v3.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinkshout/mailchimp-api-php.git",
-                "reference": "e335a5462f811dfb68aea39b5494bfcaa9a2377e"
+                "reference": "63cb8c1e77916783a29b5a7a1f55afcf4bcee195"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thinkshout/mailchimp-api-php/zipball/e335a5462f811dfb68aea39b5494bfcaa9a2377e",
-                "reference": "e335a5462f811dfb68aea39b5494bfcaa9a2377e",
+                "url": "https://api.github.com/repos/thinkshout/mailchimp-api-php/zipball/63cb8c1e77916783a29b5a7a1f55afcf4bcee195",
+                "reference": "63cb8c1e77916783a29b5a7a1f55afcf4bcee195",
                 "shasum": ""
             },
             "require": {
@@ -28426,9 +28436,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thinkshout/mailchimp-api-php/issues",
-                "source": "https://github.com/thinkshout/mailchimp-api-php/tree/v3.1.5"
+                "source": "https://github.com/thinkshout/mailchimp-api-php/tree/v3.1.7"
             },
-            "time": "2026-09-02T18:08:47+00:00"
+            "time": "2026-09-15T19:40:22+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

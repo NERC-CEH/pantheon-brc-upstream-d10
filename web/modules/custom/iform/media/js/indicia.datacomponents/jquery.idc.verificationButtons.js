@@ -1013,7 +1013,6 @@
   function saveVerifyCommentForSelection(occurrenceIds, status, comment, email) {
     var pgUpdates = getVerifyPgUpdates(status, comment, email);
     var esUpdates = getVerifyEsUpdates(status);
-    var data;
     const applyDecisionToParentSample = status.status && occurrenceIds.length === 1 && $('.apply-to-parent-sample-contents:enabled').hasClass('active');
     rowsToRemove = [];
     activeRequests = 0;
@@ -1038,19 +1037,37 @@
       activeRequests++;
       $.post(
         indiciaData.ajaxFormPostVerify,
-        pgUpdates,
-        function success(response) {
-          if (response !== 'OK') {
-            alert('Indicia records update failed');
-          }
+        pgUpdates
+      )
+      .done(function(response) {
+        if (response === 'OK') {
+          postUpdatesToEs(occurrenceIds, esUpdates);
+        } else {
+          $.fancyDialog({
+            title: indiciaData.lang.verificationButtons.verificationDecisionUpdateFailed,
+            message:indiciaData.lang.verificationButtons.verificationDecisionUpdateFailedMsg +
+              (response && response.error ? response.error : 'Unknown error'),
+            cancelButton: null
+          });
         }
-      ).always(cleanupAfterAjaxUpdate);
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        console.error('Indicia records update failed:', textStatus, errorThrown);
+        $.fancyDialog({
+          title: indiciaData.lang.verificationButtons.verificationDecisionUpdateFailed,
+          message:indiciaData.lang.verificationButtons.verificationDecisionUpdateFailedMsg +
+            (jqXHR.responseJSON ? jqXHR.responseJSON.error : errorThrown),
+          cancelButton: null
+        });
+      })
+      .always(cleanupAfterAjaxUpdate);
     } else if (status.query) {
       const unprocessedComment = pgUpdates['occurrence_comment:comment'];
       // No bulk API for query updates at the moment, so process one at a time.
       $.each(occurrenceIds, function eachOccurrence() {
-        var item = $(listOutputControl).find('[data-row-id="' + indiciaData.idPrefix + this + '"],[data-row-id="' + indiciaData.idPrefix + this + '!"]');
-        pgUpdates['occurrence_comment:occurrence_id'] = this;
+        const occurrenceId = this;
+        var item = $(listOutputControl).find('[data-row-id="' + indiciaData.idPrefix + occurrenceId + '"],[data-row-id="' + indiciaData.idPrefix + occurrenceId + '!"]');
+        pgUpdates['occurrence_comment:occurrence_id'] = occurrenceId;
         // Using the standard data services API so comment template applied on
         // client.
         pgUpdates['occurrence_comment:comment'] = commentTemplateReplacements(item, unprocessedComment, 'Q');
@@ -1058,12 +1075,38 @@
         activeRequests++;
         $.post(
           indiciaData.ajaxFormPostComment,
-          pgUpdates
-        ).always(cleanupAfterAjaxUpdate);
+          pgUpdates,
+          null,
+          'json'
+        ).done(function(response) {
+          if (response && typeof response === 'object' && response.success) {
+            postUpdatesToEs([occurrenceId], esUpdates);
+          } else {
+            console.error('Indicia records update failed:', response);
+            $.fancyDialog({
+              title: indiciaData.lang.verificationButtons.verificationDecisionUpdateFailed,
+              message: indiciaData.lang.verificationButtons.verificationDecisionUpdateFailedMsg +
+                (response && response.error ? response.error : 'Unknown error'),
+              cancelButton: null
+            });
+          }
+        })
+        .fail(function(jqXHR, textStatus, errorThrown) {
+          $.fancyDialog({
+            title: indiciaData.lang.verificationButtons.verificationDecisionUpdateFailed,
+            message: indiciaData.lang.verificationButtons.verificationDecisionUpdateFailedMsg +
+              (jqXHR.responseJSON ? jqXHR.responseJSON.error : errorThrown),
+            cancelButton: null
+          });
+        })
+        .always(cleanupAfterAjaxUpdate);
       });
     }
+  }
+
+  function postUpdatesToEs(occurrenceIds, esUpdates) {
     // Now post update to Elasticsearch.
-    data = {
+    const data = {
       ids: occurrenceIds,
       doc: esUpdates
     };
