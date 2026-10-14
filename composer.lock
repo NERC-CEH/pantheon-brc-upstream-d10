@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "014899a8019311ca88424d76856efcbc",
+    "content-hash": "7f2a0d50492177138afdaf6f0366bba3",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -3957,20 +3957,20 @@
         },
         {
             "name": "drupal/bootstrap",
-            "version": "3.40.0",
+            "version": "3.44.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/bootstrap.git",
-                "reference": "8.x-3.40"
+                "reference": "8.x-3.44"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.40.zip",
-                "reference": "8.x-3.40",
-                "shasum": "dd613d39c4f31c9b6656037948eff5d429ded892"
+                "url": "https://ftp.drupal.org/files/projects/bootstrap-8.x-3.44.zip",
+                "reference": "8.x-3.44",
+                "shasum": "864f69581ff178693ad30435c67186188a678821"
             },
             "require": {
-                "drupal/core": "^10.4 || ^11.1",
+                "drupal/core": "^10.5 || ^11.2",
                 "drupal/jquery_ui": "^1.7",
                 "drupal/jquery_ui_draggable": "^2.1",
                 "drupal/jquery_ui_resizable": "^2.1"
@@ -3982,8 +3982,8 @@
             "type": "drupal-theme",
             "extra": {
                 "drupal": {
-                    "version": "8.x-3.40",
-                    "datestamp": "1775420242",
+                    "version": "8.x-3.44",
+                    "datestamp": "1791927108",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13090,68 +13090,6 @@
             "homepage": "https://www.drupal.org/project/media_directories",
             "support": {
                 "source": "https://git.drupalcode.org/project/media_directories"
-            }
-        },
-        {
-            "name": "drupal/media_entity_download",
-            "version": "2.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://git.drupalcode.org/project/media_entity_download.git",
-                "reference": "8.x-2.4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/media_entity_download-8.x-2.4.zip",
-                "reference": "8.x-2.4",
-                "shasum": "0851da63a679cc1b0106088b8809857650bc484c"
-            },
-            "require": {
-                "drupal/core": "^9 || ^10 || ^11"
-            },
-            "conflict": {
-                "drupal/linkit": "<6.0.1"
-            },
-            "require-dev": {
-                "drupal/linkit": "^6 || ^7"
-            },
-            "type": "drupal-module",
-            "extra": {
-                "drupal": {
-                    "version": "8.x-2.4",
-                    "datestamp": "1731513891",
-                    "security-coverage": {
-                        "status": "covered",
-                        "message": "Covered by Drupal's security advisory policy"
-                    }
-                }
-            },
-            "notification-url": "https://packages.drupal.org/8/downloads",
-            "license": [
-                "GPL-2.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "berdir",
-                    "homepage": "https://www.drupal.org/user/214652"
-                },
-                {
-                    "name": "kevinquillen",
-                    "homepage": "https://www.drupal.org/user/317279"
-                },
-                {
-                    "name": "webflo",
-                    "homepage": "https://www.drupal.org/user/254778"
-                }
-            ],
-            "description": "This module provides a route for linking to media assets by URI for users to download without worrying about the actual file path.",
-            "homepage": "https://www.drupal.org/project/media_entity_download",
-            "keywords": [
-                "Drupal"
-            ],
-            "support": {
-                "source": "http://cgit.drupalcode.org/media_entity_download",
-                "issues": "https://www.drupal.org/project/issues/media_entity_download"
             }
         },
         {

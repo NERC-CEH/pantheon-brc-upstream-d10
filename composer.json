@@ -282,7 +282,7 @@
         "drupal/entity_usage": "^2.0-beta28",
         "drupal/twig_tweak": "^3.4",
         "drupal/book": "2.x",
-        "drupal/bootstrap": "3.40",
+        "drupal/bootstrap": "3.x",
         "drupal/ckeditor_details": "^2.1@beta",
         "drupal/pantheon_advanced_page_cache": "^2.3",
         "phpoffice/phpspreadsheet": "^3.10",
@@ -320,8 +320,7 @@
         "drupal/registration_role": "^2.0",
         "drupal/responsivewrappers": "^2.1",
         "drupal/forum": "^1.0",
-        "fonticonpicker/fonticonpicker": "^3.1",
-        "drupal/media_entity_download": "^2.4"
+        "fonticonpicker/fonticonpicker": "^3.1"
     },
     "conflict": {
         "drupal/drupal": "*"
