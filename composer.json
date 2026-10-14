@@ -320,7 +320,8 @@
         "drupal/registration_role": "^2.0",
         "drupal/responsivewrappers": "^2.1",
         "drupal/forum": "^1.0",
-        "fonticonpicker/fonticonpicker": "^3.1"
+        "fonticonpicker/fonticonpicker": "^3.1",
+        "drupal/media_entity_download": "^2.4"
     },
     "conflict": {
         "drupal/drupal": "*"
