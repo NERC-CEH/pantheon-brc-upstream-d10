@@ -3180,28 +3180,34 @@
         },
         {
             "name": "drupal/ai_validations",
-            "version": "1.3.0",
+            "version": "1.4.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/ai_validations.git",
-                "reference": "1.3.0"
+                "reference": "1.4.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/ai_validations-1.3.0.zip",
-                "reference": "1.3.0",
-                "shasum": "0f518aecbf97a7d51f03cccca6fb8a593f42e44a"
+                "url": "https://ftp.drupal.org/files/projects/ai_validations-1.4.0.zip",
+                "reference": "1.4.0",
+                "shasum": "e325bbcd5eb34c8a9f343707c6cefc62756b6c92"
             },
             "require": {
                 "drupal/ai": "^1.3",
                 "drupal/core": "^10.4 || ^11 || ^12",
                 "drupal/field_validation": "^3.0@beta"
             },
+            "require-dev": {
+                "drupal/ai_context": "1.0.x-dev"
+            },
+            "suggest": {
+                "drupal/ai_context": "1.0.0-beta5 or later. Push site context into AI validation prompts via the Context Control Center consumer type."
+            },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "1.3.0",
-                    "datestamp": "1782915000",
+                    "version": "1.4.0",
+                    "datestamp": "1792067901",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5459,17 +5465,17 @@
         },
         {
             "name": "drupal/commerce",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/commerce.git",
-                "reference": "3.3.11"
+                "reference": "3.3.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/commerce-3.3.11.zip",
-                "reference": "3.3.11",
-                "shasum": "7f000ac4d0fcc307d04ac24c4f9485668451a577"
+                "url": "https://ftp.drupal.org/files/projects/commerce-3.3.12.zip",
+                "reference": "3.3.12",
+                "shasum": "6cc7d94fd33aafd32c4e1408191c5ac66094a504"
             },
             "require": {
                 "commerceguys/intl": "^2.1.0",
@@ -5505,8 +5511,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5539,7 +5545,7 @@
         },
         {
             "name": "drupal/commerce_cart",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_order": "*",
@@ -5548,8 +5554,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5582,7 +5588,7 @@
         },
         {
             "name": "drupal/commerce_number_pattern",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_store": "*",
@@ -5591,8 +5597,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5625,7 +5631,7 @@
         },
         {
             "name": "drupal/commerce_order",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_number_pattern": "*",
@@ -5639,8 +5645,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5673,7 +5679,7 @@
         },
         {
             "name": "drupal/commerce_payment",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_order": "*",
@@ -5683,8 +5689,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5781,7 +5787,7 @@
         },
         {
             "name": "drupal/commerce_price",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/core": "^10.3 || ^11"
@@ -5789,8 +5795,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -5823,7 +5829,7 @@
         },
         {
             "name": "drupal/commerce_product",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_price": "*",
@@ -5833,8 +5839,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -6076,7 +6082,7 @@
         },
         {
             "name": "drupal/commerce_store",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_price": "*",
@@ -6085,8 +6091,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -6119,7 +6125,7 @@
         },
         {
             "name": "drupal/commerce_tax",
-            "version": "3.3.11",
+            "version": "3.3.12",
             "require": {
                 "drupal/commerce": "*",
                 "drupal/commerce_order": "*",
@@ -6129,8 +6135,8 @@
             "type": "metapackage",
             "extra": {
                 "drupal": {
-                    "version": "3.3.11",
-                    "datestamp": "1791983965",
+                    "version": "3.3.12",
+                    "datestamp": "1792155590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -7108,7 +7114,7 @@
                     "homepage": "https://www.drupal.org/user/2978505"
                 },
                 {
-                    "name": "N.kishorekumar",
+                    "name": "n.kishorekumar",
                     "homepage": "https://www.drupal.org/user/2887361"
                 },
                 {
@@ -8135,10 +8141,6 @@
                     "homepage": "https://www.drupal.org/user/620694"
                 },
                 {
-                    "name": "arthur_lorenz",
-                    "homepage": "https://www.drupal.org/user/3529915"
-                },
-                {
                     "name": "claudiu.cristea",
                     "homepage": "https://www.drupal.org/user/56348"
                 },
@@ -8165,6 +8167,10 @@
                 {
                     "name": "norman.lol",
                     "homepage": "https://www.drupal.org/user/2482808"
+                },
+                {
+                    "name": "utor.io",
+                    "homepage": "https://www.drupal.org/user/3529915"
                 }
             ],
             "description": "Create versionable, trackable legal forms for site users",
@@ -9631,6 +9637,10 @@
                 {
                     "name": "legolasbo",
                     "homepage": "https://www.drupal.org/user/2480548"
+                },
+                {
+                    "name": "smustgrave",
+                    "homepage": "https://www.drupal.org/user/3252890"
                 }
             ],
             "description": "Fixed text link formatter.",
@@ -11148,7 +11158,7 @@
                     "homepage": "https://www.drupal.org/user/205645"
                 },
                 {
-                    "name": "Wim Leers",
+                    "name": "wim leers",
                     "homepage": "https://www.drupal.org/user/99777"
                 },
                 {
@@ -11385,7 +11395,7 @@
                     "homepage": "https://www.drupal.org/user/205645"
                 },
                 {
-                    "name": "Wim Leers",
+                    "name": "wim leers",
                     "homepage": "https://www.drupal.org/user/99777"
                 },
                 {
@@ -13676,7 +13686,7 @@
                     "homepage": "https://www.drupal.org/user/143172"
                 },
                 {
-                    "name": "rik.scholten",
+                    "name": "rik.henkie",
                     "homepage": "https://www.drupal.org/user/3661104"
                 }
             ],
@@ -14461,22 +14471,22 @@
         },
         {
             "name": "drupal/profile",
-            "version": "1.14.0",
+            "version": "1.16.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/profile.git",
-                "reference": "8.x-1.14"
+                "reference": "8.x-1.16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/profile-8.x-1.14.zip",
-                "reference": "8.x-1.14",
-                "shasum": "eda73cb55a9034b318fb87bc9f8db4b778c4fdd6"
+                "url": "https://ftp.drupal.org/files/projects/profile-8.x-1.16.zip",
+                "reference": "8.x-1.16",
+                "shasum": "a2d993414cf3644a21e9ff8d6904306114cd42c5"
             },
             "require": {
-                "drupal/core": "^9 || ^10 || ^11",
+                "drupal/core": "^10.3 || ^11",
                 "drupal/entity": "^1.0",
-                "php": "^7.4 || ^8.0"
+                "php": "^8.1"
             },
             "require-dev": {
                 "drupal/search_api": "~1.30",
@@ -14485,8 +14495,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.14",
-                    "datestamp": "1765287779",
+                    "version": "8.x-1.16",
+                    "datestamp": "1792489590",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -15969,6 +15979,10 @@
                 {
                     "name": "p0deje",
                     "homepage": "https://www.drupal.org/user/529960"
+                },
+                {
+                    "name": "the_g_bomb",
+                    "homepage": "https://www.drupal.org/user/492012"
                 }
             ],
             "description": "SecKit provides Drupal with various security-hardening options.",
@@ -16865,17 +16879,17 @@
         },
         {
             "name": "drupal/superfish",
-            "version": "1.16.0",
+            "version": "1.17.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/superfish.git",
-                "reference": "8.x-1.16"
+                "reference": "8.x-1.17"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/superfish-8.x-1.16.zip",
-                "reference": "8.x-1.16",
-                "shasum": "03cd6c274d09aa6669c0536603aedffd9843f337"
+                "url": "https://ftp.drupal.org/files/projects/superfish-8.x-1.17.zip",
+                "reference": "8.x-1.17",
+                "shasum": "7ed041f3ec0d0f99a465df99a3053f3d9ff0827e"
             },
             "require": {
                 "drupal/core": "^9 || ^10 || ^11",
@@ -16884,8 +16898,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.16",
-                    "datestamp": "1788648013",
+                    "version": "8.x-1.17",
+                    "datestamp": "1792187358",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17059,6 +17073,7 @@
                 "drupal/core": "^9 || ^10 || ^11"
             },
             "require-dev": {
+                "drupal/search": "*",
                 "drupal/synonyms_list_field": "*"
             },
             "type": "drupal-module",
@@ -18312,7 +18327,7 @@
                     "role": "Maintainer"
                 },
                 {
-                    "name": "Jorrit",
+                    "name": "jorrit",
                     "homepage": "https://www.drupal.org/user/161217"
                 },
                 {
@@ -19395,7 +19410,7 @@
                     "homepage": "https://www.drupal.org/user/3668491"
                 },
                 {
-                    "name": "Honza Pobořil",
+                    "name": "honza pobořil",
                     "homepage": "https://www.drupal.org/user/123612"
                 },
                 {
@@ -20268,16 +20283,16 @@
         },
         {
             "name": "enshrined/svg-sanitize",
-            "version": "1.0.0",
+            "version": "1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/darylldoyle/svg-sanitizer.git",
-                "reference": "f3300fcd1bbf67d205b52217c75d0f7d6a8c47ff"
+                "reference": "1976ff93c8d8a234cdd3ff99626bd43ecf11bf49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/darylldoyle/svg-sanitizer/zipball/f3300fcd1bbf67d205b52217c75d0f7d6a8c47ff",
-                "reference": "f3300fcd1bbf67d205b52217c75d0f7d6a8c47ff",
+                "url": "https://api.github.com/repos/darylldoyle/svg-sanitizer/zipball/1976ff93c8d8a234cdd3ff99626bd43ecf11bf49",
+                "reference": "1976ff93c8d8a234cdd3ff99626bd43ecf11bf49",
                 "shasum": ""
             },
             "require": {
@@ -20307,9 +20322,9 @@
             "description": "An SVG sanitizer for PHP",
             "support": {
                 "issues": "https://github.com/darylldoyle/svg-sanitizer/issues",
-                "source": "https://github.com/darylldoyle/svg-sanitizer/tree/1.0.0"
+                "source": "https://github.com/darylldoyle/svg-sanitizer/tree/1.1.1"
             },
-            "time": "2026-09-01T09:35:47+00:00"
+            "time": "2026-10-20T09:45:10+00:00"
         },
         {
             "name": "enyo/dropzone",
@@ -20599,22 +20614,22 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.15.5",
+            "version": "7.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "ee80339fd9177ba44c49cdb653ff02a4d1106b9a"
+                "reference": "ffb62ec787050ae4fa9449cdd6b80335db69bda2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ee80339fd9177ba44c49cdb653ff02a4d1106b9a",
-                "reference": "ee80339fd9177ba44c49cdb653ff02a4d1106b9a",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ffb62ec787050ae4fa9449cdd6b80335db69bda2",
+                "reference": "ffb62ec787050ae4fa9449cdd6b80335db69bda2",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^2.5.3",
-                "guzzlehttp/psr7": "^2.13.1",
+                "guzzlehttp/promises": "^2.6",
+                "guzzlehttp/psr7": "^2.13.2",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
                 "symfony/deprecation-contracts": "^2.5 || ^3.0",
@@ -20707,7 +20722,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.15.5"
+                "source": "https://github.com/guzzle/guzzle/tree/7.16.0"
             },
             "funding": [
                 {
@@ -20723,20 +20738,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T09:21:06+00:00"
+            "time": "2026-10-18T13:38:36+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.5.3",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "cde49999552d185d64715fe9c1f77a2aadd2f9f1"
+                "reference": "3d88c829bd5f13d13847b39067dbf09a60af2154"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/cde49999552d185d64715fe9c1f77a2aadd2f9f1",
-                "reference": "cde49999552d185d64715fe9c1f77a2aadd2f9f1",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/3d88c829bd5f13d13847b39067dbf09a60af2154",
+                "reference": "3d88c829bd5f13d13847b39067dbf09a60af2154",
                 "shasum": ""
             },
             "require": {
@@ -20791,7 +20806,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.5.3"
+                "source": "https://github.com/guzzle/promises/tree/2.6.0"
             },
             "funding": [
                 {
@@ -20807,20 +20822,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T09:11:28+00:00"
+            "time": "2026-10-18T12:46:59+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
-            "version": "2.13.1",
+            "version": "2.13.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/psr7.git",
-                "reference": "95e7828100de18b4e269fb1703be530082d5166d"
+                "reference": "adee536f95101929f262b8c59e8a61472f347d58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/95e7828100de18b4e269fb1703be530082d5166d",
-                "reference": "95e7828100de18b4e269fb1703be530082d5166d",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/adee536f95101929f262b8c59e8a61472f347d58",
+                "reference": "adee536f95101929f262b8c59e8a61472f347d58",
                 "shasum": ""
             },
             "require": {
@@ -20910,7 +20925,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/2.13.1"
+                "source": "https://github.com/guzzle/psr7/tree/2.13.2"
             },
             "funding": [
                 {
@@ -20926,7 +20941,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-24T09:13:11+00:00"
+            "time": "2026-10-17T23:49:46+00:00"
         },
         {
             "name": "html2text/html2text",
@@ -21365,16 +21380,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.10.3",
+            "version": "2.10.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "6efbd9c472b91db0a3350fcd601c8332c2382e1f"
+                "reference": "40821b7606d8d946bac57dbd2290076c722e3a65"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/6efbd9c472b91db0a3350fcd601c8332c2382e1f",
-                "reference": "6efbd9c472b91db0a3350fcd601c8332c2382e1f",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/40821b7606d8d946bac57dbd2290076c722e3a65",
+                "reference": "40821b7606d8d946bac57dbd2290076c722e3a65",
                 "shasum": ""
             },
             "require": {
@@ -21468,7 +21483,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-09-21T13:07:34+00:00"
+            "time": "2026-10-17T19:59:50+00:00"
         },
         {
             "name": "league/config",
@@ -21781,16 +21796,16 @@
         },
         {
             "name": "league/html-to-markdown",
-            "version": "5.1.4",
+            "version": "5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/html-to-markdown.git",
-                "reference": "0be46a17d8e42ff5522d935b1b182a283bf7378d"
+                "reference": "905eb9374feee6cedf9b972fc47c7c26a86bbec1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/html-to-markdown/zipball/0be46a17d8e42ff5522d935b1b182a283bf7378d",
-                "reference": "0be46a17d8e42ff5522d935b1b182a283bf7378d",
+                "url": "https://api.github.com/repos/thephpleague/html-to-markdown/zipball/905eb9374feee6cedf9b972fc47c7c26a86bbec1",
+                "reference": "905eb9374feee6cedf9b972fc47c7c26a86bbec1",
                 "shasum": ""
             },
             "require": {
@@ -21803,6 +21818,7 @@
                 "phpstan/phpstan": "^1.8.8 || ^2.0",
                 "phpunit/phpunit": "^8.5 || ^9.2 || ^10.5 || ^11.0 || ^12.0 || ^13.0",
                 "scrutinizer/ocular": "^1.6",
+                "symfony/process": "^5.4 || ^6.0 || ^7.0 || ^8.0",
                 "unleashedtech/php-coding-standard": "^2.7 || ^3.0",
                 "vimeo/psalm": "^4.22 || ^5.0 || ^6.0"
             },
@@ -21812,7 +21828,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "5.2-dev"
+                    "dev-master": "5.3-dev"
                 }
             },
             "autoload": {
@@ -21846,7 +21862,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/html-to-markdown/issues",
-                "source": "https://github.com/thephpleague/html-to-markdown/tree/5.1.4"
+                "source": "https://github.com/thephpleague/html-to-markdown/tree/5.2.3"
             },
             "funding": [
                 {
@@ -21866,7 +21882,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-10-10T16:25:01+00:00"
+            "time": "2026-10-19T04:13:34+00:00"
         },
         {
             "name": "league/oauth2-server",
@@ -21958,20 +21974,21 @@
         },
         {
             "name": "league/uri",
-            "version": "7.8.1",
+            "version": "7.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/uri.git",
-                "reference": "08cf38e3924d4f56238125547b5720496fac8fd4"
+                "reference": "fcc872a3d872aa13f935e0cd1887b9abb06da07f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/uri/zipball/08cf38e3924d4f56238125547b5720496fac8fd4",
-                "reference": "08cf38e3924d4f56238125547b5720496fac8fd4",
+                "url": "https://api.github.com/repos/thephpleague/uri/zipball/fcc872a3d872aa13f935e0cd1887b9abb06da07f",
+                "reference": "fcc872a3d872aa13f935e0cd1887b9abb06da07f",
                 "shasum": ""
             },
             "require": {
-                "league/uri-interfaces": "^7.8.1",
+                "ext-mbstring": "*",
+                "league/uri-interfaces": "^7.9.0",
                 "php": "^8.1",
                 "psr/http-factory": "^1"
             },
@@ -22044,7 +22061,7 @@
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
-                "source": "https://github.com/thephpleague/uri/tree/7.8.1"
+                "source": "https://github.com/thephpleague/uri/tree/7.9.0"
             },
             "funding": [
                 {
@@ -22052,20 +22069,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-15T20:22:25+00:00"
+            "time": "2026-10-16T15:19:33+00:00"
         },
         {
             "name": "league/uri-interfaces",
-            "version": "7.8.1",
+            "version": "7.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/uri-interfaces.git",
-                "reference": "85d5c77c5d6d3af6c54db4a78246364908f3c928"
+                "reference": "eb5f6d24e6a4fe0a8e9c78ded4eb1dfff1404f58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/85d5c77c5d6d3af6c54db4a78246364908f3c928",
-                "reference": "85d5c77c5d6d3af6c54db4a78246364908f3c928",
+                "url": "https://api.github.com/repos/thephpleague/uri-interfaces/zipball/eb5f6d24e6a4fe0a8e9c78ded4eb1dfff1404f58",
+                "reference": "eb5f6d24e6a4fe0a8e9c78ded4eb1dfff1404f58",
                 "shasum": ""
             },
             "require": {
@@ -22128,7 +22145,7 @@
                 "docs": "https://uri.thephpleague.com",
                 "forum": "https://thephpleague.slack.com",
                 "issues": "https://github.com/thephpleague/uri-src/issues",
-                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.8.1"
+                "source": "https://github.com/thephpleague/uri-interfaces/tree/7.9.0"
             },
             "funding": [
                 {
@@ -22136,7 +22153,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-03-08T20:05:35+00:00"
+            "time": "2026-10-16T15:19:33+00:00"
         },
         {
             "name": "lobsterr/drupal-superfish",
@@ -22612,21 +22629,21 @@
         },
         {
             "name": "nette/schema",
-            "version": "v1.3.6",
+            "version": "v1.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nette/schema.git",
-                "reference": "c54350438cd6914616f790a49cb424605f421562"
+                "reference": "c1162897273bf9499ca57924c4688a19d82c9310"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nette/schema/zipball/c54350438cd6914616f790a49cb424605f421562",
-                "reference": "c54350438cd6914616f790a49cb424605f421562",
+                "url": "https://api.github.com/repos/nette/schema/zipball/c1162897273bf9499ca57924c4688a19d82c9310",
+                "reference": "c1162897273bf9499ca57924c4688a19d82c9310",
                 "shasum": ""
             },
             "require": {
                 "nette/utils": "^4.0",
-                "php": "8.1 - 8.5"
+                "php": "8.1 - 8.6"
             },
             "require-dev": {
                 "nette/phpstan-rules": "^1.0",
@@ -22673,9 +22690,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nette/schema/issues",
-                "source": "https://github.com/nette/schema/tree/v1.3.6"
+                "source": "https://github.com/nette/schema/tree/v1.3.7"
             },
-            "time": "2026-08-16T21:58:41+00:00"
+            "time": "2026-10-20T15:46:50+00:00"
         },
         {
             "name": "nette/utils",
@@ -30264,16 +30281,16 @@
         },
         {
             "name": "open-telemetry/api",
-            "version": "1.10.0",
+            "version": "1.10.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/api.git",
-                "reference": "7c029c4a6fd457094a20569bf98f93d95e9a7559"
+                "reference": "b2bc26bf8bd6b2b6447b3626b2a1b5733873aa0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/7c029c4a6fd457094a20569bf98f93d95e9a7559",
-                "reference": "7c029c4a6fd457094a20569bf98f93d95e9a7559",
+                "url": "https://api.github.com/repos/opentelemetry-php/api/zipball/b2bc26bf8bd6b2b6447b3626b2a1b5733873aa0b",
+                "reference": "b2bc26bf8bd6b2b6447b3626b2a1b5733873aa0b",
                 "shasum": ""
             },
             "require": {
@@ -30330,7 +30347,7 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2026-07-06T12:28:04+00:00"
+            "time": "2026-09-16T01:59:09+00:00"
         },
         {
             "name": "open-telemetry/context",

@@ -338,17 +338,22 @@
     indiciaData.restoredEsLocationFilterValues = {};
     $(customFilterControlSelector).each(function eachFilterControl(index) {
       var controlState = state[getCustomFilterControlKey(this, index)];
-      var isLocationControl = $(this).hasClass('es-location-select') ||
-        $(this).hasClass('es-higher-geography-select');
+      var $control = $(this);
+      var isLocationControl = $control.hasClass('es-location-select') ||
+        $control.hasClass('es-higher-geography-select');
       if (!controlState || typeof controlState !== 'object') {
         return;
       }
-      $(this).val(resetLocations && isLocationControl ? '' : controlState.value);
+      $control.val(resetLocations && isLocationControl ? '' : controlState.value);
+      // Ensure selects with no selected option default to the first option.
+      if (this.tagName === 'SELECT' && this.selectedIndex === -1 && this.options.length) {
+        this.selectedIndex = 0;
+      }
       if (isLocationControl && !resetLocations) {
         indiciaData.restoredEsLocationFilterValues[this.id] = controlState.value;
       }
       if (Object.prototype.hasOwnProperty.call(controlState, 'checked')) {
-        $(this).prop('checked', controlState.checked === true);
+        $control.prop('checked', controlState.checked === true);
       }
     });
     if (resetLocations) {
