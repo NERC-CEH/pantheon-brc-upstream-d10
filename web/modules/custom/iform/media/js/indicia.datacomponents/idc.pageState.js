@@ -35,9 +35,11 @@
   }
 
   var cookieChunkSize = 3500;
-  var stateSchemaVersion = 3;
+  var maxCookieHeaderSize = 4096;
+  var stateSchemaVersion = 4;
   var customFilterControlSelector = '.es-filter-param:not(.es-location-select-geom), ' +
     '.es-location-select, .es-higher-geography-select, .user-filter';
+  var excludedCustomFilterControlSelector = '.exclude-page-state';
 
   /**
    * Notify the page-state coordinator that component-owned state changed.
@@ -119,6 +121,17 @@
   }
 
   /**
+   * Estimate the combined Cookie header size for a page-state value.
+   */
+  function getCookieHeaderSize(key, chunks) {
+    var size = key.length + 1 + String(chunks.length).length;
+    $.each(chunks, function eachChunk(idx, chunk) {
+      size += 2 + key.length + 1 + String(idx).length + 1 + encodeURIComponent(chunk).length;
+    });
+    return size;
+  }
+
+  /**
    * Return a cookie-safe key derived from the current page.
    *
    * @param object el
@@ -172,9 +185,19 @@
       version: stateSchemaVersion,
       state: state
     });
-    var chunks = getCookieChunks(serialised);
     var oldChunkCount = parseInt(indiciaFns.cookie(key), 10);
-    var chunkCount = chunks.length;
+    var chunks;
+    var chunkCount;
+    if (encodeURIComponent(serialised).length > maxCookieHeaderSize) {
+      removeStoredState(key);
+      return;
+    }
+    chunks = getCookieChunks(serialised);
+    chunkCount = chunks.length;
+    if (getCookieHeaderSize(key, chunks) > maxCookieHeaderSize) {
+      removeStoredState(key);
+      return;
+    }
     if (chunkCount < 1) {
       removeStoredState(key);
       return;
@@ -280,7 +303,7 @@
   /**
    * Return a stable state key for an Elasticsearch filter control.
    */
-  function getCustomFilterControlKey(control, index) {
+  function getCustomFilterControlKey(control) {
     var id = $(control).attr('id');
     var name = $(control).attr('name');
     if (id) {
@@ -292,7 +315,16 @@
       }).index(control);
       return 'name:' + name + ':' + nameIndex;
     }
-    return 'index:' + index;
+    return 'index:' + $(customFilterControlSelector).index(control);
+  }
+
+  /**
+   * Return filter controls that are safe to persist in request cookies.
+   */
+  function getPersistedCustomFilterControls() {
+    return $(customFilterControlSelector).filter(function excludeFreeTextControls() {
+      return !$(this).is(excludedCustomFilterControlSelector);
+    });
   }
 
   /**
@@ -300,7 +332,7 @@
    */
   function getCustomFilterControlState(useDefaults) {
     var state = {};
-    $(customFilterControlSelector).each(function eachFilterControl(index) {
+    getPersistedCustomFilterControls().each(function eachFilterControl() {
       var value = $(this).val();
       if (useDefaults && this.tagName === 'SELECT') {
         value = $(this).find('option').filter(function defaultOption() {
@@ -321,7 +353,7 @@
       if ($(this).is(':checkbox, :radio')) {
         controlState.checked = useDefaults ? this.defaultChecked : $(this).is(':checked');
       }
-      state[getCustomFilterControlKey(this, index)] = controlState;
+      state[getCustomFilterControlKey(this)] = controlState;
     });
     return state;
   }
@@ -336,8 +368,8 @@
       return;
     }
     indiciaData.restoredEsLocationFilterValues = {};
-    $(customFilterControlSelector).each(function eachFilterControl(index) {
-      var controlState = state[getCustomFilterControlKey(this, index)];
+    getPersistedCustomFilterControls().each(function eachFilterControl() {
+      var controlState = state[getCustomFilterControlKey(this)];
       var $control = $(this);
       var isLocationControl = $control.hasClass('es-location-select') ||
         $control.hasClass('es-higher-geography-select');

@@ -292,6 +292,38 @@ var IdcEsDataSource;
     }
 
     /**
+     * Handle a population error.
+     *
+     * @param string responseErrorMsg
+     *   The error message returned from the server.
+     * @param int status
+     *   The HTTP status code of the response.
+     */
+    function handlePopulationError(responseErrorMsg, status) {
+      hideAllSpinners.call(this);
+      let message = indiciaData.lang.esDataSource.searchFailed;
+      if (status === 400) {
+        // Bad request, probably due to a malformed query.
+        if (responseErrorMsg && responseErrorMsg.indexOf('Failed to parse query') === 0) {
+          const failedQuery = responseErrorMsg.substr(23, responseErrorMsg.length - 24).replace('\"', '"');
+          message = indiciaData.lang.esDataSource.searchPhraseInvalid.replace('%query%', failedQuery);
+        }
+      } else if (status === 401) {
+        message = indiciaData.lang.esDataSource.searchFailedUnauthorised;
+      }
+      // Only show the error if not already shown for this set of population
+      // requests.
+      if (typeof indiciaData.sourceErrorsShown === 'undefined' || indiciaData.sourceErrorsShown.indexOf(message) === -1) {
+        $.fancyDialog({
+          title: indiciaData.lang.esDataSource.searchFailedTitle,
+          message: message,
+          cancelButton: null
+        });
+        indiciaData.sourceErrorsShown.push(message);
+      }
+    }
+
+    /**
      * AJAX success handler for the population call.
      */
     function handlePopulationResponse(request, response, onlyForControl, requestId) {
@@ -300,23 +332,7 @@ var IdcEsDataSource;
         return;
       }
       if (response.error || (response.code && response.code !== 200)) {
-        hideAllSpinners.call(this);
-        let message = 'Elasticsearch query failed';
-        if (response.code === 400) {
-          // Bad request, probably due to a malformed query.
-          if (response.message && response.message.indexOf('Failed to parse query') === 0) {
-            const failedQuery = response.message.substr(23, response.message.length - 24).replace('\"', '"');
-            message = indiciaData.lang.esDataSource.searchPhraseInvalid.replace('%query%', failedQuery);
-          }
-        }
-        if (typeof indiciaData.sourceErrorsShown === 'undefined' || indiciaData.sourceErrorsShown.indexOf(message) === -1) {
-          $.fancyDialog({
-            title: indiciaData.lang.esDataSource.searchFailedTitle,
-            message: message,
-            cancelButton: null
-          });
-          indiciaData.sourceErrorsShown.push(message);
-        }
+        handlePopulationError.call(source, response.error, response.code || 200);
       } else {
         // Store the total count, method might be aggregation size, or hits size.
         if (response.aggregations) {
@@ -405,15 +421,9 @@ var IdcEsDataSource;
               return;
             }
             hideAllSpinners.call(source);
+            // Don't bother if not done - i.e. error because user navigated away.
             if (jqXHR.readyState === 4) {
-              // Don't bother if not done - i.e. error because user navigated away.
-              const message = 'Elasticsearch query failed';
-              $.fancyDialog({
-                title: indiciaData.lang.esDataSource.searchFailedTitle,
-                message: message,
-                cancelButton: null
-              });
-              indiciaData.sourceErrorsShown.push(message);
+              handlePopulationError.call(source, jqXHR.responseText, jqXHR.status);
             }
           },
           dataType: 'json'
