@@ -1,10 +1,11 @@
 /**
  * @file
- * Contract bootstrap for optional Elasticsearch page-state controls.
+ * Coordinate persistence and restoration of Elasticsearch page-state controls.
  *
  * Indicia, the OPAL Online Recording Toolkit.
  *
- * This file contains the page-state coordinator and its storage contract.
+ * Collect user overrides from filter, source and output providers,
+ * store them in browser storage, and restore them before data population.
  * Individual providers remain responsible for their own state shape.
  */
 
@@ -34,11 +35,10 @@
     }
   }
 
-  var cookieChunkSize = 3500;
-  var maxCookieHeaderSize = 4096;
-  var stateSchemaVersion = 4;
+  var stateSchemaVersion = 5;
   var customFilterControlSelector = '.es-filter-param:not(.es-location-select-geom), ' +
     '.es-location-select, .es-higher-geography-select, .user-filter';
+  // Controls can opt out of persistence without being excluded from reset.
   var excludedCustomFilterControlSelector = '.exclude-page-state';
 
   /**
@@ -58,6 +58,9 @@
 
   /**
    * Track asynchronous work required before restored filters can be applied.
+   *
+   * Linked selects can require several requests to restore their options.
+   * Population must wait until all outstanding restoration work has completed.
    */
   indiciaFns.beginPageStateRestoreOperation = function beginPageStateRestoreOperation() {
     indiciaData.pageStateRestoreOperationCount = (indiciaData.pageStateRestoreOperationCount || 0) + 1;
@@ -89,57 +92,43 @@
   };
 
   /**
-   * Split a value into chunks that remain within the limit after cookie
-   * encoding.
+   * Apply the same consent check as indiciaFns.cookie(), including to reads.
    */
-  function getCookieChunks(value) {
-    var chunks = [];
-    var chunk = '';
-    var encodedLength = 0;
-    for (var idx = 0; idx < value.length; idx++) {
-      var character = value.charAt(idx);
-      var characterCode = value.charCodeAt(idx);
-      if (characterCode >= 0xD800 && characterCode <= 0xDBFF && idx + 1 < value.length) {
-        var nextCharacterCode = value.charCodeAt(idx + 1);
-        if (nextCharacterCode >= 0xDC00 && nextCharacterCode <= 0xDFFF) {
-          character += value.charAt(++idx);
-        }
-      }
-      var encodedCharacterLength = encodeURIComponent(character).length;
-      if (chunk && encodedLength + encodedCharacterLength > cookieChunkSize) {
-        chunks.push(chunk);
-        chunk = '';
-        encodedLength = 0;
-      }
-      chunk += character;
-      encodedLength += encodedCharacterLength;
+  function pageStateStorageAllowed() {
+    if (indiciaData.cookieCompliance === 'eu_cookie_compliance') {
+      var agreed = $.cookie ? $.cookie('cookie-agreed') : null;
+      return agreed !== null && agreed !== '0';
     }
-    if (chunk) {
-      chunks.push(chunk);
-    }
-    return chunks;
+    return true;
   }
 
   /**
-   * Estimate the combined Cookie header size for a page-state value.
+   * Keep zero-expiry state session-only; other state survives browser restarts.
    */
-  function getCookieHeaderSize(key, chunks) {
-    var size = key.length + 1 + String(chunks.length).length;
-    $.each(chunks, function eachChunk(idx, chunk) {
-      size += 2 + key.length + 1 + String(idx).length + 1 + encodeURIComponent(chunk).length;
-    });
-    return size;
+  function getPageStateStorage(expires) {
+    return Number(expires) === 0 ? window.sessionStorage : window.localStorage;
   }
 
   /**
-   * Return a cookie-safe key derived from the current page.
+   * Report blocked or full browser storage without breaking the verification UI.
+   */
+  function reportStorageError(error) {
+    if (error.name !== 'SecurityError' && error.name !== 'QuotaExceededError' &&
+        error.name !== 'NS_ERROR_DOM_QUOTA_REACHED') {
+      throw error;
+    }
+    console.warn('Page state could not be persisted: browser storage is blocked or full.', error);
+  }
+
+  /**
+   * Return a browser-storage key scoped to the page, control and current user.
    *
    * @param object el
    *   Page-state control element.
    * @return string
    *   Storage key prefix.
    */
-  function getStorageKey(el, schemaVersion) {
+  function getStorageKey(el) {
     var configuredKey = el.settings.storageKey;
     var pageKey = window.location.pathname || 'page';
     var storageKey = configuredKey ||
@@ -147,99 +136,127 @@
     var userScope = typeof indiciaData.user_id !== 'undefined' && indiciaData.user_id !== null && indiciaData.user_id !== ''
       ? String(indiciaData.user_id)
       : 'anonymous';
-    schemaVersion = typeof schemaVersion === 'undefined' ? stateSchemaVersion : schemaVersion;
-    return storageKey + '-v' + schemaVersion + '-u' + userScope.replace(/[^a-zA-Z0-9_-]/g, '_');
+    return storageKey + '-v' + stateSchemaVersion + '-u' + userScope.replace(/[^a-zA-Z0-9_-]/g, '_');
   }
 
   /**
-   * Remove a page-state cookie and any chunk cookies belonging to it.
+   * Remove old page-state cookies, including orphaned chunks and other accounts.
+   *
+   * Cookie paths are not exposed to JavaScript, so expire each visible name at
+   * the current path and its ancestors, including old browser-default paths.
+   * Deletion intentionally bypasses the consent wrapper: it creates no state.
    */
-  function removeStoredState(key) {
-    var manifest = indiciaFns.cookie(key);
-    var chunkCount = manifest ? parseInt(manifest, 10) : 0;
-    indiciaFns.cookie(key, null);
-    if (!isNaN(chunkCount)) {
-      for (var idx = 0; idx < chunkCount; idx++) {
-        indiciaFns.cookie(key + '-' + idx, null);
+  function removeLegacyStateCookies(el) {
+    var paths = ['/'];
+    var pathname = window.location.pathname;
+    var configuredKey = el.settings.storageKey;
+    for (var idx = 1; idx <= pathname.length; idx++) {
+      if (idx === pathname.length || pathname.charAt(idx) === '/') {
+        paths.push(pathname.substring(0, idx));
+        paths.push(pathname.substring(0, idx) + '/');
       }
     }
+    $.each(document.cookie.split(';'), function eachCookie(idx, cookie) {
+      var name = cookie.trim().split('=')[0];
+      if (name.indexOf('idc-page-state-') !== 0 &&
+          !(configuredKey && name.indexOf(configuredKey + '-v') === 0 && /-v\d+-u[\w-]+$/.test(name))) {
+        return;
+      }
+      $.each(paths, function eachPath(idx, path) {
+        $.cookie(name, null, { path: path });
+      });
+    });
   }
 
   /**
-   * Remove cookies left behind by earlier page-state schemas.
+   * Remove saved state even when consent has since been withdrawn.
    */
-  function removeObsoleteStoredStates(el) {
-    for (var version = 1; version < stateSchemaVersion; version++) {
-      removeStoredState(getStorageKey(el, version));
+  function removeStoredState(key, expires) {
+    try {
+      getPageStateStorage(expires).removeItem(key);
+    }
+    catch (error) {
+      reportStorageError(error);
     }
   }
 
   /**
-   * Store JSON state in one or more cookies.
+   * Store JSON state without adding it to HTTP request headers.
    *
-   * A short manifest cookie stores the number of chunks. The wrapper used for
-   * all reads and writes honours the site's cookie-consent configuration.
+   * Browser storage has no cookie-style expiry, so record an absolute timestamp
+   * for persistent state. Zero-expiry state lives only in this tab's session.
    */
   function storeState(key, state, expires) {
+    if (!pageStateStorageAllowed()) {
+      return false;
+    }
+    expires = typeof expires === 'undefined' ? 30 : Number(expires);
     var serialised = JSON.stringify({
       version: stateSchemaVersion,
+      expiresAt: expires === 0 ? null : Date.now() + expires * 24 * 60 * 60 * 1000,
       state: state
     });
-    var oldChunkCount = parseInt(indiciaFns.cookie(key), 10);
-    var chunks;
-    var chunkCount;
-    if (encodeURIComponent(serialised).length > maxCookieHeaderSize) {
-      removeStoredState(key);
-      return;
+    try {
+      getPageStateStorage(expires).setItem(key, serialised);
+      return true;
     }
-    chunks = getCookieChunks(serialised);
-    chunkCount = chunks.length;
-    if (getCookieHeaderSize(key, chunks) > maxCookieHeaderSize) {
-      removeStoredState(key);
-      return;
+    catch (error) {
+      reportStorageError(error);
+      // Do not restore an outdated filter after a failed save.
+      removeStoredState(key, expires);
+      return false;
     }
-    if (chunkCount < 1) {
-      removeStoredState(key);
-      return;
-    }
-    if (!isNaN(oldChunkCount)) {
-      for (var oldIdx = chunkCount; oldIdx < oldChunkCount; oldIdx++) {
-        indiciaFns.cookie(key + '-' + oldIdx, null);
-      }
-    }
-    for (var idx = 0; idx < chunkCount; idx++) {
-      indiciaFns.cookie(key + '-' + idx, chunks[idx], {
-        expires: expires
-      });
-    }
-    indiciaFns.cookie(key, String(chunkCount), { expires: expires });
   }
 
   /**
    * Read and parse state stored by storeState().
    */
-  function readStoredState(key) {
-    var chunkCount = parseInt(indiciaFns.cookie(key), 10);
-    var serialised = '';
-    var stored;
-    if (isNaN(chunkCount) || chunkCount < 1) {
+  function readStoredState(key, expires) {
+    if (!pageStateStorageAllowed()) {
       return null;
     }
-    for (var idx = 0; idx < chunkCount; idx++) {
-      serialised += indiciaFns.cookie(key + '-' + idx) || '';
+    var serialised;
+    var stored;
+    try {
+      serialised = getPageStateStorage(expires).getItem(key);
+    }
+    catch (error) {
+      reportStorageError(error);
+      return null;
+    }
+    if (serialised === null) {
+      return null;
     }
     try {
       stored = JSON.parse(serialised);
-      if (!stored || stored.version !== stateSchemaVersion || !stored.state || typeof stored.state !== 'object') {
-        removeStoredState(key);
-        return null;
-      }
-      return stored.state;
     }
     catch (error) {
-      removeStoredState(key);
+      if (!(error instanceof SyntaxError)) {
+        throw error;
+      }
+      console.warn('Invalid saved page state was removed.', error);
+      removeStoredState(key, expires);
       return null;
     }
+    if (!stored || stored.version !== stateSchemaVersion || !Array.isArray(stored.state) ||
+        !stored.state.every(function validChange(change) {
+          return change && Array.isArray(change.path) && change.path.length > 0 &&
+            change.path.every(function validPathPart(part) {
+              return typeof part === 'string' && part !== '__proto__' &&
+                part !== 'constructor' && part !== 'prototype';
+            });
+        }) ||
+        (Number(expires) === 0 ? stored.expiresAt !== null :
+          typeof stored.expiresAt !== 'number' || !isFinite(stored.expiresAt))) {
+      console.warn('Invalid or incompatible saved page state was removed.');
+      removeStoredState(key, expires);
+      return null;
+    }
+    if (stored.expiresAt !== null && stored.expiresAt <= Date.now()) {
+      removeStoredState(key, expires);
+      return null;
+    }
+    return stored.state;
   }
 
   /**
@@ -302,6 +319,9 @@
 
   /**
    * Return a stable state key for an Elasticsearch filter control.
+   *
+   * Prefer IDs, then disambiguate repeated names by position. Positional keys
+   * use the full control list so excluding a control does not shift other keys.
    */
   function getCustomFilterControlKey(control) {
     var id = $(control).attr('id');
@@ -319,7 +339,10 @@
   }
 
   /**
-   * Return filter controls that are safe to persist in request cookies.
+   * Return custom filter controls not explicitly excluded from persistence.
+   *
+   * Use the same selection for capture and restoration so excluded controls
+   * cannot be overwritten by values saved before they were excluded.
    */
   function getPersistedCustomFilterControls() {
     return $(customFilterControlSelector).filter(function excludeFreeTextControls() {
@@ -329,10 +352,15 @@
 
   /**
    * Capture values of custom Elasticsearch filter controls.
+   *
+   * For reset defaults, use the original HTML values rather than live values
+   * that may already have changed during page initialisation. Include excluded
+   * controls in these defaults: exclusion applies to persistence, not reset.
    */
   function getCustomFilterControlState(useDefaults) {
     var state = {};
-    getPersistedCustomFilterControls().each(function eachFilterControl() {
+    var controls = useDefaults ? $(customFilterControlSelector) : getPersistedCustomFilterControls();
+    controls.each(function eachFilterControl() {
       var value = $(this).val();
       if (useDefaults && this.tagName === 'SELECT') {
         value = $(this).find('option').filter(function defaultOption() {
@@ -360,6 +388,9 @@
 
   /**
    * Restore custom Elasticsearch filter controls without triggering reloads.
+   *
+   * Reset uses defaults for all controls, including those excluded from saved
+   * state, and clears linked location selections instead of restoring them.
    */
   function restoreCustomFilterControlState(state, resetLocations) {
     var linkedChildIds = {};
@@ -368,7 +399,8 @@
       return;
     }
     indiciaData.restoredEsLocationFilterValues = {};
-    getPersistedCustomFilterControls().each(function eachFilterControl() {
+    var controls = resetLocations ? $(customFilterControlSelector) : getPersistedCustomFilterControls();
+    controls.each(function eachFilterControl() {
       var controlState = state[getCustomFilterControlKey(this)];
       var $control = $(this);
       var isLocationControl = $control.hasClass('es-location-select') ||
@@ -404,6 +436,8 @@
         }
       });
     }
+    // Restore linked select chains from their roots only. Loading each parent's
+    // options then allows its saved child selection to be restored in order.
     $.each(indiciaData.linkedSelects || [], function identifyLinkedChildren() {
       linkedChildIds[$('#' + this.escapedId).attr('id')] = true;
     });
@@ -450,6 +484,7 @@
       return false;
     }
     currentReportFilterState = indiciaFns.getReportFilterPageState();
+    // Preserve current values for categories this control does not restore.
     reportFilterState = $.extend(true, {}, currentReportFilterState);
     if (categoryEnabled(el, 'selectedFilter')) {
       reportFilterState.selectedFilter = state.selectedFilter;
@@ -528,6 +563,60 @@
   }
 
   /**
+   * Capture JSON values only, excluding reset-only controls and undefined fields.
+   */
+  function capturePersistedState(el) {
+    return JSON.parse(JSON.stringify(captureState(el)));
+  }
+
+  /**
+   * Record changed leaves only. Arrays are replaced as a unit; an absent value
+   * means deletion, so clearing a default filter is distinct from leaving it.
+   */
+  function getStateChanges(state, defaults, path, changes) {
+    if (state && defaults && typeof state === 'object' && typeof defaults === 'object' &&
+        !Array.isArray(state) && !Array.isArray(defaults)) {
+      $.each(Object.keys(defaults), function eachDefault(idx, key) {
+        if (!Object.prototype.hasOwnProperty.call(state, key)) {
+          changes.push({ path: path.concat(key) });
+        }
+      });
+      $.each(Object.keys(state), function eachField(idx, key) {
+        getStateChanges(state[key], defaults[key], path.concat(key), changes);
+      });
+    }
+    else if (JSON.stringify(state) !== JSON.stringify(defaults)) {
+      changes.push({ path: path, value: state });
+    }
+    return changes;
+  }
+
+  /**
+   * Rebuild full provider state from this page's defaults and saved overrides.
+   * Do not deep-merge arrays or sort objects: removed fields must stay removed.
+   */
+  function applyStateChanges(defaults, changes) {
+    var state = JSON.parse(JSON.stringify(defaults));
+    $.each(changes, function eachChange(idx, change) {
+      var target = state;
+      $.each(change.path.slice(0, -1), function eachParent(idx, key) {
+        if (!target[key] || typeof target[key] !== 'object') {
+          target[key] = {};
+        }
+        target = target[key];
+      });
+      var key = change.path[change.path.length - 1];
+      if (Object.prototype.hasOwnProperty.call(change, 'value')) {
+        target[key] = change.value;
+      }
+      else {
+        delete target[key];
+      }
+    });
+    return state;
+  }
+
+  /**
    * Restore provider state without triggering requests.
    */
   function restoreState(el, state) {
@@ -536,6 +625,7 @@
     }
     if (state.reportFilters && (categoryEnabled(el, 'selectedFilter') || categoryEnabled(el, 'filterDefinition'))) {
       if (!restoreReportFilterState(el, state.reportFilters)) {
+        // The optional provider can load later; retain its state for that hook.
         indiciaData.pendingReportFilterPageState = {
           el: el,
           state: state.reportFilters
@@ -576,6 +666,7 @@
       currentReportFilterState = indiciaFns.getReportFilterPageState();
       indiciaFns.resetReportFilterPageState();
       resetReportFilterState = indiciaFns.getReportFilterPageState();
+      // The provider resets all categories; put back those excluded here.
       if (!categoryEnabled(el, 'selectedFilter')) {
         resetReportFilterState.selectedFilter = currentReportFilterState.selectedFilter;
         resetReportFilterState.id = currentReportFilterState.id;
@@ -613,26 +704,53 @@
    * Persist the current state for a control.
    */
   function saveControlState(el) {
-    storeState(getStorageKey(el), captureState(el), el.settings.expires);
+    if (!el.idcPageStateRestoreAttempted || indiciaData.pageStateRestoreOperationCount) {
+      return;
+    }
+    var changes = getStateChanges(capturePersistedState(el), el.pageStatePersistenceDefaults, [], []);
+    if (!changes.length) {
+      removeStoredState(getStorageKey(el), el.settings.expires);
+      setResetButtonSavedState(el, false);
+      return;
+    }
+    setResetButtonSavedState(el, storeState(getStorageKey(el), changes, el.settings.expires));
   }
 
   /**
-   * Restore state for a control, if a valid cookie exists.
+   * Show whether this control currently has saved page state.
+   */
+  function setResetButtonSavedState(el, isSaved) {
+    var $resetButton = $(el).find('.persist-page-state-reset');
+    if (isSaved) {
+      $resetButton.addClass('active');
+    }
+    else {
+      $resetButton.removeClass('active');
+    }
+  }
+
+  /**
+   * Restore state for a control, if valid, unexpired browser state exists.
    */
   function loadControlState(el) {
-    var state = readStoredState(getStorageKey(el));
-    if (!state) {
+    var state = readStoredState(getStorageKey(el), el.settings.expires);
+    if (!state || !state.length) {
+      if (state) {
+        removeStoredState(getStorageKey(el), el.settings.expires);
+      }
+      setResetButtonSavedState(el, false);
       return false;
     }
-    restoreState(el, state);
+    restoreState(el, applyStateChanges(el.pageStatePersistenceDefaults, state));
+    setResetButtonSavedState(el, true);
     return true;
   }
 
   /**
    * Initialise all page-state controls emitted on the page.
    *
-   * The registry gives the future coordinator one stable discovery point while
-   * keeping control-specific configuration on the originating DOM element.
+   * Register each control once and capture its defaults before restoring saved
+   * values, so "Reset all" returns to page defaults rather than the saved state.
    */
   indiciaFns.initPageStateControls = function initPageStateControls() {
     indiciaData.pageStateControls = indiciaData.pageStateControls || [];
@@ -643,18 +761,21 @@
       }
       el.idcPageStateInitialised = true;
       el.settings = getControlConfig(el);
-      removeObsoleteStoredStates(el);
+      removeLegacyStateCookies(el);
       el.pageStateDefaults = captureState(el, true);
       indiciaData.pageStateControls.push(el);
       $(el).find('.persist-page-state-reset').on('click', function resetClick() {
         indiciaFns.beginPageStateRestoreOperation();
         resetState(el);
-        removeStoredState(getStorageKey(el));
+        removeStoredState(getStorageKey(el), el.settings.expires);
+        setResetButtonSavedState(el, false);
         if (indiciaFns.applyFilterToReports) {
           indiciaFns.applyFilterToReports(true, false, false);
           indiciaFns.populateDataSources(true);
         }
         indiciaFns.endPageStateRestoreOperation();
+        // Reset providers may normalize their defaults (e.g. location selects).
+        el.pageStatePersistenceDefaults = capturePersistedState(el);
         $(el).trigger('pageStateReset');
       });
       // If report filter builder on the page, move into the filter toolbar.
@@ -672,15 +793,27 @@
    * page bootstrap calls this after datasource hookup and immediately before
    * the page's first population path.
    *
+   * @param bool restoreSavedState
+   *   Set false when editing an explicitly supplied filter: establish defaults
+   *   for subsequent user changes without replacing that filter with saved state.
+   *
    * @return bool
    *   True if at least one control restored stored state.
    */
-  indiciaFns.restorePageStateControls = function restorePageStateControls() {
+  indiciaFns.restorePageStateControls = function restorePageStateControls(restoreSavedState) {
     var restored = false;
     $.each(indiciaData.pageStateControls || [], function eachControl() {
       if (!this.idcPageStateRestoreAttempted) {
-        this.idcPageStateRestoreAttempted = true;
-        this.idcPageStateWasRestored = loadControlState(this);
+        // Report-filter defaults are not final until its initial filter loads.
+        this.pageStatePersistenceDefaults = capturePersistedState(this);
+        indiciaFns.beginPageStateRestoreOperation();
+        try {
+          this.idcPageStateWasRestored = restoreSavedState !== false && loadControlState(this);
+          this.idcPageStateRestoreAttempted = true;
+        }
+        finally {
+          indiciaFns.endPageStateRestoreOperation();
+        }
       }
       restored = this.idcPageStateWasRestored || restored;
     });

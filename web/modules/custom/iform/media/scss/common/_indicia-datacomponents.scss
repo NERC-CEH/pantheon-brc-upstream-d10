@@ -103,6 +103,8 @@ body {
 
 /* idcCardGallery plugin */
 .idc-cardGallery {
+  /* idc-tools are position absolutely within this container */
+  position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;
   &.open-image-on-click {
@@ -343,6 +345,7 @@ body {
 
 /* idcDataGrid plugin */
 .idc-dataGrid {
+  /* idc-tools are position absolutely within this container */
   position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;

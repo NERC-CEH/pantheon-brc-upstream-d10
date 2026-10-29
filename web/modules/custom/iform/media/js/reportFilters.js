@@ -1542,7 +1542,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  function filterLoaded(data) {
+  function filterLoaded(data, onLoaded) {
     indiciaData.filter.def = $.extend(JSON.parse(data[0].definition), filterOverride);
     indiciaData.filter.id = data[0].id;
     indiciaData.filter.title = data[0].title;
@@ -1553,7 +1553,13 @@ jQuery(document).ready(function ($) {
         indiciaData.filterParser[name].fixLegacyFilter(indiciaData.filter.def);
       }
     });
-    indiciaFns.applyFilterToReports();
+    // Initial page-state restoration needs normalized defaults before requests.
+    if (typeof onLoaded === 'function') {
+      indiciaFns.applyFilterToReports(false, false, false);
+    }
+    else {
+      indiciaFns.applyFilterToReports();
+    }
     $('#filter-reset').removeClass('disabled');
     $('#filter-delete').removeClass('disabled');
     $('#active-filter-label').html('Active filter: ' + data[0].title);
@@ -1581,7 +1587,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  loadFilter = function (id, getParams) {
+  loadFilter = function (id, getParams, onLoaded) {
     var def;
     filterOverride = getParams;
     if ($('#standard-params span.changed:visible').length === 0
@@ -1644,7 +1650,10 @@ jQuery(document).ready(function ($) {
           id: id,
           title: $('#select-filter option:selected').html(),
           definition: def
-        }]);
+        }], onLoaded);
+        if (typeof onLoaded === 'function') {
+          onLoaded();
+        }
       } else {
         $.ajax({
           url: indiciaData.read.url + 'index.php/services/data/filter/' + id,
@@ -1656,7 +1665,12 @@ jQuery(document).ready(function ($) {
           },
           dataType: 'jsonp',
           crossDomain: true
-        }).done(filterLoaded);
+        }).done(function initialFilterLoaded(data) {
+          filterLoaded(data, onLoaded);
+          if (typeof onLoaded === 'function') {
+            onLoaded();
+          }
+        });
       }
     }
   };

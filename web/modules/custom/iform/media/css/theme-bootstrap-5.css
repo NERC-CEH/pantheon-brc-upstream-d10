@@ -967,6 +967,8 @@ body > .loading-spinner {
 
 /* idcCardGallery plugin */
 .idc-cardGallery {
+  /* idc-tools are position absolutely within this container */
+  position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;
 }
@@ -1235,6 +1237,7 @@ body > .loading-spinner {
 
 /* idcDataGrid plugin */
 .idc-dataGrid {
+  /* idc-tools are position absolutely within this container */
   position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;
@@ -2015,6 +2018,13 @@ input.precise-date-picker {
   }
 }
 /* Verification buttons control */
+.verification-popup legend {
+  float: none;
+}
+.verification-popup legend .btn-sm {
+  font-size: 12px;
+  padding: 2px 4px;
+}
 .verification-popup #ctrl-wrap-template-name .input-group-text.ctrl-addons {
   padding: 0;
 }

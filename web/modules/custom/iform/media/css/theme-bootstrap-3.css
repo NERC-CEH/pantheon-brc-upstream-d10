@@ -967,6 +967,8 @@ body > .loading-spinner {
 
 /* idcCardGallery plugin */
 .idc-cardGallery {
+  /* idc-tools are position absolutely within this container */
+  position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;
 }
@@ -1235,6 +1237,7 @@ body > .loading-spinner {
 
 /* idcDataGrid plugin */
 .idc-dataGrid {
+  /* idc-tools are position absolutely within this container */
   position: relative;
   /* Ensure height enough for spinner. */
   min-height: 140px;

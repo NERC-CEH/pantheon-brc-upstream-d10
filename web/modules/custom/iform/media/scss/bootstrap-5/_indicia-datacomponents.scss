@@ -1,5 +1,12 @@
 /* Verification buttons control */
 .verification-popup {
+  legend {
+    float: none;
+    .btn-sm {
+      font-size: 12px;
+      padding: 2px 4px;
+    }
+  }
   #ctrl-wrap-template-name {
     // Pad the button rather than the container, so it has a wider click area.
     .input-group-text.ctrl-addons {
