@@ -19,6 +19,11 @@ debug simple_oauth tokens:
   description: 'Allows accessing to extended information about the token and the access it grants under /oauth/debug.'
   restrict access: TRUE
 
+administer consumer access settings:
+  title: 'Administer consumer access settings'
+  description: 'Add any role or user to consumers and mark consumers as not 3rd party, which skips the consent form. This can give consumers any access on the site, including full administrative access.'
+  restrict access: TRUE
+
 grant simple_oauth codes:
   title: 'Grant OAuth2 codes'
   description: 'Allow using the AuthCode grant'

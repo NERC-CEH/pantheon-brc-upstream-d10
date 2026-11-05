@@ -53,17 +53,17 @@
   .ctrl-wrap {
     &.not-full-width-sm {
       .input-group {
-        max-width: 200px;
+        max-width: 14em;
       }
     }
     &.not-full-width-md {
       .input-group {
-        max-width: 400px;
+        max-width: 28em;
       }
     }
     &.not-full-width-lg {
       .input-group {
-        max-width: 600px;
+        max-width: 42em;
       }
     }
   }

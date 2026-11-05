@@ -57,12 +57,18 @@ class ClientRepository implements ClientRepositoryInterface {
     $client_drupal_entity = $client_entity->getDrupalEntity();
     $secret_field = $client_drupal_entity->get('secret');
 
+    // Determine if a client secret is configured. The client may omit the
+    // parameter if the configured secret is NULL or if the value of the
+    // secret is the hash of an empty string.
+    // @see https://datatracker.ietf.org/doc/html/rfc6749#section-2.3.1
+    $secret_field_is_empty = $secret_field->isEmpty() || $this->passwordChecker->check('', $secret_field->value);
+
     // Determine whether the client is public. Note that if a client secret is
     // provided it should be validated, even if the client is non-confidential.
     // The client_credentials grant is specifically special-cased.
     // @see https://datatracker.ietf.org/doc/html/rfc6749#section-4.4
     if (!$client_drupal_entity->get('confidential')->value &&
-      $secret_field->isEmpty() &&
+      $secret_field_is_empty &&
       empty($client_secret) &&
       $grant_type !== 'client_credentials') {
       return TRUE;
@@ -70,7 +76,7 @@ class ClientRepository implements ClientRepositoryInterface {
 
     // Check if a secret has been provided for this client and validate it.
     // @see https://datatracker.ietf.org/doc/html/rfc6749#section-3.2.1
-    return (!$secret_field->isEmpty())
+    return !$secret_field_is_empty
       // The client secret may be NULL; it fails validation without checking.
       ? $client_secret && $this->passwordChecker->check($client_secret, $client_drupal_entity->get('secret')->value)
       : TRUE;

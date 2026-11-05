@@ -578,7 +578,8 @@ window.indiciaFns = {};
         projection: prj
       },
       success: callback,
-      dataType: 'jsonp'
+      dataType: 'jsonp',
+      crossDomain: true
     });
   }
 
@@ -746,40 +747,45 @@ window.indiciaFns = {};
       if (restoringPageState) {
         indiciaFns.beginPageStateRestoreOperation();
       }
-      var request = $.getJSON(options.request + '&' + options.query.replace('%22val%22', parentSelect.val()), function onResponse(data) {
-        childSelect.find('option').remove();
-        if (data.length > 0) {
-          childSelect.removeClass('ui-state-disabled');
-          childSelect.show();
-          if (data.length > 1) {
-            childSelect.append('<option value="">&lt;Please select&gt;</option>');
-          }
-          $.each(data, function eachData() {
-            childSelect.append('<option value="' + this[options.valueField] + '">' + this[options.captionField] + '</option>');
-          });
-          if (hasRestoredValue) {
-            childSelect.val(restoredValues[childId]);
-          }
-          if (!hasRestoredValue && typeof indiciaData['default' + options.id] !== 'undefined') {
-            $(childSelect).find('option[value="' + indiciaData['default' + options.id] + '"]').attr('selected', true);
-          }
-        } else {
-          if (data.error) {
-            ctrlLabel = $(childSelect).closest('.ctrl-wrap').find('label');
-            controlName = ctrlLabel.length > 0 ? ctrlLabel.html().replace(/:$/, '') : 'linked';
-            $.fancyDialog({
-              title: indiciaData.lang.linkedLists.databaseError,
-              message: indiciaData.lang.linkedLists.databaseErrorMsg.replace('{1}', controlName),
-              cancelButton: null
+      var request = $.ajax({
+        url: options.request + '&' + options.query.replace('%22val%22', parentSelect.val()),
+        dataType: 'jsonp',
+        crossDomain: true,
+        success: function onResponse(data) {
+          childSelect.find('option').remove();
+          if (data.length > 0) {
+            childSelect.removeClass('ui-state-disabled');
+            childSelect.show();
+            if (data.length > 1) {
+              childSelect.append('<option value="">&lt;Please select&gt;</option>');
+            }
+            $.each(data, function eachData() {
+              childSelect.append('<option value="' + this[options.valueField] + '">' + this[options.captionField] + '</option>');
             });
+            if (hasRestoredValue) {
+              childSelect.val(restoredValues[childId]);
+            }
+            if (!hasRestoredValue && typeof indiciaData['default' + options.id] !== 'undefined') {
+              $(childSelect).find('option[value="' + indiciaData['default' + options.id] + '"]').attr('selected', true);
+            }
+          } else {
+            if (data.error) {
+              ctrlLabel = $(childSelect).closest('.ctrl-wrap').find('label');
+              controlName = ctrlLabel.length > 0 ? ctrlLabel.html().replace(/:$/, '') : 'linked';
+              $.fancyDialog({
+                title: indiciaData.lang.linkedLists.databaseError,
+                message: indiciaData.lang.linkedLists.databaseErrorMsg.replace('{1}', controlName),
+                cancelButton: null
+              });
+            }
+            if (options.hideChildrenUntilLoaded) {
+              childSelect.hide();
+            }
+            childSelect.addClass('ui-state-disabled').html('<option disabled>' + options.instruct + '</option>');
           }
-          if (options.hideChildrenUntilLoaded) {
-            childSelect.hide();
-          }
-          childSelect.addClass('ui-state-disabled').html('<option disabled>' + options.instruct + '</option>');
+          delete restoredValues[childId];
+          childSelect.trigger('change', hasRestoredValue ? [{ deferPopulation: true, pageStateRestore: true }] : []);
         }
-        delete restoredValues[childId];
-        childSelect.trigger('change', hasRestoredValue ? [{ deferPopulation: true, pageStateRestore: true }] : []);
       });
       if (restoringPageState) {
         request.always(indiciaFns.endPageStateRestoreOperation);
@@ -1039,14 +1045,19 @@ jQuery(document).ready(function ($) {
     return false;
   });
 
+  var linkedSelectParentsToInitialise = [];
   $.each(indiciaData.linkedSelects, function() {
     var selectInfo = this;
     indiciaFns.on('change', '#' + this.parentControlId, {}, function onChange() {
       indiciaFns.changeLinkedParentSelect(this, selectInfo);
     });
-    if ($('#' + this.escapedId + ' option').length === 0) {
-      $('#' + this.parentControlId).trigger('change');
+    if ($('#' + this.escapedId + ' option').length === 0 &&
+        $.inArray(this.parentControlId, linkedSelectParentsToInitialise) === -1) {
+      linkedSelectParentsToInitialise.push(this.parentControlId);
     }
+  });
+  $.each(linkedSelectParentsToInitialise, function triggerInitialLinkedSelectLoad(index, parentControlId) {
+    $('#' + parentControlId).trigger('change');
   });
 
   // Handle controls with enableIf option - enabled only when another control

@@ -29,12 +29,6 @@ class UserRepository implements UserRepositoryInterface {
    * {@inheritdoc}
    */
   public function getUserEntityByUserCredentials($username, $password, $grantType, ClientEntityInterface $clientEntity) {
-    if (filter_var($username, FILTER_VALIDATE_EMAIL)) {
-      $user = user_load_by_mail($username);
-      if ($user) {
-        $username = $user->getAccountName();
-      }
-    }	  
     // TODO: Use authenticateWithFloodProtection when #2825084 lands.
     if ($uid = $this->userAuth->authenticate($username, $password)) {
       $user = new UserEntity();

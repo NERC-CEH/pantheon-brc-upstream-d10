@@ -9,14 +9,30 @@
   vertical-align: middle;
 }
 
+.ctrl-wrap.not-full-width-date input {
+  width: 10em;
+  max-width: 100%;
+}
+.ctrl-wrap.not-full-width-date .input-group {
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: nowrap;
+}
+.ctrl-wrap.not-full-width-date .input-group > input {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+.ctrl-wrap.not-full-width-date .input-group > .ctrl-addons {
+  flex-shrink: 0;
+}
 .ctrl-wrap.not-full-width-sm * {
-  max-width: 200px;
+  max-width: 14em;
 }
 .ctrl-wrap.not-full-width-md * {
-  max-width: 400px;
+  max-width: 28em;
 }
 .ctrl-wrap.not-full-width-lg * {
-  max-width: 600px;
+  max-width: 42em;
 }
 
 .helpText, .helpTextLeft {
@@ -1099,15 +1115,8 @@ body > .loading-spinner {
   border-radius: 4px;
 }
 .idc-cardGallery .es-card-gallery .card .verification-buttons-cntr button {
-  border: solid #f0f0f0 1px;
-  border-radius: 4px;
-  background: none;
-  box-shadow: none;
-  color: black;
-  text-shadow: none;
-  min-height: 22px;
+  padding: 5px;
   margin: 4px;
-  padding: 6px;
 }
 .idc-cardGallery .es-card-gallery .card .verification-buttons-cntr button:hover {
   background: #f0f0f0;
@@ -1465,15 +1474,8 @@ body > .loading-spinner {
 }
 
 .idc-verificationButtons-row button, .idc-verificationButtons-row a {
-  border: solid #f0f0f0 1px;
-  border-radius: 4px;
-  background: none;
-  box-shadow: none;
-  color: black;
-  text-shadow: none;
-  min-height: 22px;
+  padding: 5px;
   margin: 4px;
-  padding: 6px;
 }
 .idc-verificationButtons-row button:hover, .idc-verificationButtons-row a:hover {
   background: #f0f0f0;

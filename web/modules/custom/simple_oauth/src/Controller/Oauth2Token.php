@@ -9,6 +9,8 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Oauth2Token extends ControllerBase {
@@ -24,6 +26,11 @@ class Oauth2Token extends ControllerBase {
   protected $clientRepository;
 
   /**
+   * Logger channel.
+   */
+  protected LoggerInterface $logger;
+
+  /**
    * Oauth2Token constructor.
    *
    * @param \Drupal\simple_oauth\Plugin\Oauth2GrantManagerInterface $grant_manager
@@ -31,9 +38,14 @@ class Oauth2Token extends ControllerBase {
    * @param \League\OAuth2\Server\Repositories\ClientRepositoryInterface $client_repository
    *   The client repository service.
    */
-  public function __construct(Oauth2GrantManagerInterface $grant_manager, ClientRepositoryInterface $client_repository) {
+  public function __construct(
+    Oauth2GrantManagerInterface $grant_manager,
+    ClientRepositoryInterface $client_repository,
+    LoggerInterface $logger
+  ) {
     $this->grantManager = $grant_manager;
     $this->clientRepository = $client_repository;
+    $this->logger = $logger;
   }
 
   /**
@@ -42,7 +54,8 @@ class Oauth2Token extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.oauth2_grant.processor'),
-      $container->get('simple_oauth.repositories.client')
+      $container->get('simple_oauth.repositories.client'),
+      $container->get('logger.channel.simple_oauth')
     );
   }
 
@@ -69,7 +82,10 @@ class Oauth2Token extends ControllerBase {
       $response = $this->handleToken($request, $auth_server);
     }
     catch (OAuthServerException $exception) {
-      watchdog_exception('simple_oauth', $exception);
+      $this->logger->log(
+          $exception->getCode() < 500 ? LogLevel::NOTICE : LogLevel::ERROR,
+          $exception->getMessage() . ' Hint: ' . $exception->getHint() . '.'
+      );
       $response = $exception->generateHttpResponse(new Response());
     }
     return $response;

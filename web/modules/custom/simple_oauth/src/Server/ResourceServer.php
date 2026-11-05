@@ -22,7 +22,7 @@ class ResourceServer implements ResourceServerInterface {
    *
    * @var \League\OAuth2\Server\ResourceServer|null
    */
-  protected ?LeagueResourceServer $subject;
+  protected ?LeagueResourceServer $subject = NULL;
 
   /**
    * The message factory.

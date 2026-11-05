@@ -45,19 +45,28 @@
   .ctrl-wrap {
     &.not-full-width-sm {
       .input-group {
-        max-width: 200px;
+        max-width: 14em;
       }
     }
     &.not-full-width-md {
       .input-group {
-        max-width: 400px;
+        max-width: 28em;
       }
     }
     &.not-full-width-lg {
       .input-group {
-        max-width: 600px;
+        max-width: 42em;
       }
     }
+  }
+}
+// Flex lets date inputs shrink without including addons in their width allowance.
+.ctrl-wrap.not-full-width-date .input-group {
+  display: flex;
+  > .input-group-addon {
+    display: flex;
+    align-items: center;
+    width: auto;
   }
 }
 /*

@@ -83,6 +83,7 @@ function simple_oauth_entity_base_field_info(EntityTypeInterface $entity_type) {
       ->setSetting('handler', 'default')
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED)
       ->setTranslatable(FALSE)
+      ->addConstraint('Oauth2PrivilegedConsumerField')
       ->setDisplayOptions('view', [
         'label' => 'inline',
         'type' => 'entity_reference_label',
@@ -115,6 +116,7 @@ function simple_oauth_entity_base_field_info(EntityTypeInterface $entity_type) {
       ->setSetting('target_type', 'user')
       ->setSetting('handler', 'default')
       ->setTranslatable(FALSE)
+      ->addConstraint('Oauth2PrivilegedConsumerField')
       ->setDisplayOptions('view', [
         'label' => 'inline',
         'type' => 'entity_reference_label',
@@ -146,6 +148,15 @@ function simple_oauth_entity_base_field_info(EntityTypeInterface $entity_type) {
       ->setDefaultValue(FALSE);
   }
   return $fields;
+}
+
+/**
+ * Implements hook_entity_base_field_info_alter().
+ */
+function simple_oauth_entity_base_field_info_alter(&$fields, EntityTypeInterface $entity_type) {
+  if ($entity_type->id() === 'consumer' && isset($fields['third_party'])) {
+    $fields['third_party']->addConstraint('Oauth2PrivilegedConsumerField');
+  }
 }
 
 /**

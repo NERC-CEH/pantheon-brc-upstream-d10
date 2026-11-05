@@ -113,7 +113,7 @@ class Oauth2GrantManager extends DefaultPluginManager implements Oauth2GrantMana
     AccessTokenRepositoryInterface $access_token_repository,
     RefreshTokenRepositoryInterface $refresh_token_repository,
     ConfigFactoryInterface $config_factory,
-    ResponseTypeInterface|null $response_type = NULL
+    ResponseTypeInterface $response_type = NULL
   ) {
     parent::__construct('Plugin/Oauth2Grant', $namespaces, $module_handler, 'Drupal\simple_oauth\Plugin\Oauth2GrantInterface', 'Drupal\simple_oauth\Annotation\Oauth2Grant');
 
@@ -133,7 +133,7 @@ class Oauth2GrantManager extends DefaultPluginManager implements Oauth2GrantMana
   /**
    * {@inheritdoc}
    */
-  public function getAuthorizationServer($grant_type, ConsumerInterface|null $client = NULL) {
+  public function getAuthorizationServer($grant_type, ConsumerInterface $client = NULL) {
     try {
       /** @var \Drupal\simple_oauth\Plugin\Oauth2GrantInterface $plugin */
       $plugin = $this->createInstance($grant_type);

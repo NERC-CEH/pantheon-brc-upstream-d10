@@ -13,15 +13,8 @@ $dark-background-font-colour: #fff;
 }
 
 @mixin verification-button {
-  border: solid #f0f0f0 1px;
-  border-radius: 4px;
-  background: none;
-  box-shadow: none;
-  color: black;
-  text-shadow: none;
-  min-height: 22px;
+  padding: 5px;
   margin: 4px;
-  padding: 6px;
   &:hover {
     background: #f0f0f0;
     color: #000000;

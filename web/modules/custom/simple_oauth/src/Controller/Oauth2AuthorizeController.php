@@ -17,13 +17,14 @@ use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequest;
+use Psr\Log\LoggerInterface;
 use Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Oauth2AuthorizeController.
+ * Controller for authorization code grant.
  */
 class Oauth2AuthorizeController extends ControllerBase {
 
@@ -56,12 +57,19 @@ class Oauth2AuthorizeController extends ControllerBase {
   protected $knownClientRepository;
 
   /**
+   * The logger channel.
+   *
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * @var \League\OAuth2\Server\Repositories\ClientRepositoryInterface
    */
   protected $clientRepository;
 
   /**
-   * Oauth2AuthorizeController construct.
+   * Oauth2AuthorizeController constructor.
    *
    * @param \Symfony\Bridge\PsrHttpMessage\HttpMessageFactoryInterface $message_factory
    *   The PSR-7 converter.
@@ -73,19 +81,23 @@ class Oauth2AuthorizeController extends ControllerBase {
    *   The known client repository service.
    * @param \League\OAuth2\Server\Repositories\ClientRepositoryInterface $client_repository
    *   The client repository service.
+   * @param \Psr\Log\LoggerInterface $logger
+   *   Logger channel.
    */
   public function __construct(
     HttpMessageFactoryInterface $message_factory,
     Oauth2GrantManagerInterface $grant_manager,
     ConfigFactoryInterface $config_factory,
     KnownClientsRepositoryInterface $known_clients_repository,
-    ClientRepositoryInterface $client_repository
+    ClientRepositoryInterface $client_repository,
+    LoggerInterface $logger
   ) {
     $this->messageFactory = $message_factory;
     $this->grantManager = $grant_manager;
     $this->configFactory = $config_factory;
     $this->knownClientRepository = $known_clients_repository;
     $this->clientRepository = $client_repository;
+    $this->logger = $logger;
   }
 
   /**
@@ -97,7 +109,8 @@ class Oauth2AuthorizeController extends ControllerBase {
       $container->get('plugin.manager.oauth2_grant.processor'),
       $container->get('config.factory'),
       $container->get('simple_oauth.known_clients'),
-      $container->get('simple_oauth.repositories.client')
+      $container->get('simple_oauth.repositories.client'),
+      $container->get('logger.channel.simple_oauth')
     );
   }
 
@@ -145,7 +158,7 @@ class Oauth2AuthorizeController extends ControllerBase {
         'query' => ['destination' => $destination->toString()],
       ]);
       // Client ID and secret may be passed as Basic Auth. Copy the headers.
-      return new RedirectResponse($url->toString(), 302, $request->headers->all());
+      return new RedirectResponse($url->toString(), 302);
     }
     elseif (!$is_third_party || $this->isKnownClient($client_id, $scopes)) {
       // Login user may skip the grant step if the client is not third party or
@@ -166,7 +179,8 @@ class Oauth2AuthorizeController extends ControllerBase {
       }
       catch (OAuthServerException $exception) {
         $this->messenger()->addError($this->t('Fatal error. Unable to get the authorization server.'));
-        watchdog_exception('simple_oauth', $exception);
+        $this->logger->error($exception->getMessage() .
+          ' Hint: ' . $exception->getHint() . '.');
         return new RedirectResponse(Url::fromRoute('<front>')->toString());
       }
       if ($auth_request) {
@@ -209,7 +223,7 @@ class Oauth2AuthorizeController extends ControllerBase {
     AccountInterface $current_user,
     $can_grant_codes,
     $remembers_clients = FALSE,
-    KnownClientsRepositoryInterface|null $known_clients_repository = NULL
+    KnownClientsRepositoryInterface $known_clients_repository = NULL
   ) {
     // Once the user has logged in set the user on the AuthorizationRequest.
     $user_entity = new UserEntity();

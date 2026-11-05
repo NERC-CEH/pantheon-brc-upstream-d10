@@ -11,6 +11,7 @@ use Drupal\simple_oauth\PageCache\DisallowSimpleOauthRequests;
 use Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface;
 use Drupal\simple_oauth\Server\ResourceServerInterface;
 use Drupal\Tests\UnitTestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -42,11 +43,13 @@ class SimpleOauthAuthenticationTest extends UnitTestCase {
 
     $resource_server = $this->prophesize(ResourceServerInterface::class);
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
+    $logger = $this->prophesize(LoggerInterface::class);
     $this->oauthPageCacheRequestPolicy = new DisallowSimpleOauthRequests();
     $this->provider = new SimpleOauthAuthenticationProvider(
       $resource_server->reveal(),
       $entity_type_manager->reveal(),
-      $this->oauthPageCacheRequestPolicy
+      $this->oauthPageCacheRequestPolicy,
+      $logger->reveal(),
     );
   }
 

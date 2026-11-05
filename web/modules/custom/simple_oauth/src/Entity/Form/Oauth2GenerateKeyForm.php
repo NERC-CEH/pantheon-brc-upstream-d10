@@ -8,7 +8,9 @@ use Drupal\Core\Ajax\HtmlCommand;
 use Drupal\Core\Ajax\InvokeCommand;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Utility\Error;
 use Drupal\simple_oauth\Service\KeyGeneratorService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -22,12 +24,19 @@ class Oauth2GenerateKeyForm extends FormBase {
   private $keyGen;
 
   /**
+   * @var \Psr\Log\LoggerInterface
+   */
+  protected $logger;
+
+  /**
    * Oauth2GenerateKeyForm constructor.
    *
    * @param \Drupal\simple_oauth\Service\KeyGeneratorService $key_generator_service
+   * @param \Psr\Log\LoggerInterface $logger
    */
-  public function __construct(KeyGeneratorService $key_generator_service) {
+  public function __construct(KeyGeneratorService $key_generator_service, LoggerInterface $logger) {
     $this->keyGen = $key_generator_service;
+    $this->logger = $logger;
   }
 
   /**
@@ -35,7 +44,8 @@ class Oauth2GenerateKeyForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('simple_oauth.key.generator')
+      $container->get('simple_oauth.key.generator'),
+      $container->get('logger.channel.simple_oauth')
     );
   }
 
@@ -126,7 +136,8 @@ class Oauth2GenerateKeyForm extends FormBase {
     }
     catch (\Exception $exception) {
       // If exception log it and return an error message.
-      watchdog_exception('simple_oauth', $exception);
+      $variables = Error::decodeException($exception);
+      $this->logger->error('%type: @message in %function (line %line of %file).', $variables);
       $response->addCommand(new InvokeCommand('#key-error-message', 'show'));
       return $response->addCommand(new HtmlCommand('#key-error-message', $exception->getMessage()));
     }

@@ -9,14 +9,32 @@
 }
 
 .ctrl-wrap {
+  &.not-full-width-date {
+    input {
+      width: 10em;
+      max-width: 100%;
+    }
+    .input-group {
+      width: fit-content;
+      max-width: 100%;
+      flex-wrap: nowrap;
+      > input {
+        flex: 0 1 auto;
+        min-width: 0;
+      }
+      > .ctrl-addons {
+        flex-shrink: 0;
+      }
+    }
+  }
   &.not-full-width-sm * {
-    max-width: 200px;
+    max-width: 14em;
   }
   &.not-full-width-md * {
-    max-width: 400px;
+    max-width: 28em;
   }
   &.not-full-width-lg * {
-    max-width: 600px;
+    max-width: 42em;
   }
 }
 

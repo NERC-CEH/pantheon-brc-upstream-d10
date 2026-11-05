@@ -17,6 +17,7 @@ services:
       - '@simple_oauth.server.resource_server'
       - '@entity_type.manager'
       - '@simple_oauth.page_cache_request_policy.disallow_oauth2_token_requests'
+      - '@logger.channel.simple_oauth'
     tags:
       - { name: authentication_provider, provider_id: oauth2, global: TRUE, priority: 35 }
   simple_oauth.page_cache_request_policy.disallow_oauth2_token_requests:
@@ -24,7 +25,14 @@ services:
     public: false
     tags:
       - { name: page_cache_request_policy }
-
+  logger.channel.simple_oauth:
+    parent: logger.channel_base
+    arguments: ['simple_oauth']
+  Drupal\simple_oauth\EventSubscriber\ExceptionLoggingSubscriber:
+    decorates: 'exception.logger'
+    arguments:
+      - '@Drupal\simple_oauth\EventSubscriber\ExceptionLoggingSubscriber.inner'
+      - '@logger.channel.simple_oauth'
   simple_oauth.normalizer.oauth2_token:
     class: Drupal\simple_oauth\Normalizer\TokenEntityNormalizer
     arguments: [ '@entity_type.manager' ]

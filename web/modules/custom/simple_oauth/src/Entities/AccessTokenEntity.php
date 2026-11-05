@@ -5,7 +5,6 @@ namespace Drupal\simple_oauth\Entities;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Lcobucci\JWT\Signer\Rsa\Sha256;
-use Lcobucci\JWT\Token\RegisteredClaims;										
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\Traits\AccessTokenTrait;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
@@ -45,25 +44,8 @@ class AccessTokenEntity implements AccessTokenEntityInterface {
       ->relatedTo($this->getUserIdentifier())
       ->withClaim('scope', $this->getScopes());
 
-    if (isset($private_claims['iss'])) {
-      $builder->issuedBy($private_claims['iss']);
-    }										
     foreach ($private_claims as $claim_name => $value) {
-      if (in_array($claim_name, RegisteredClaims::ALL)) {
-        // Skip registered claims, as they are added above already.
-        continue;
-      }
-
-      try {
-        $builder->withClaim($claim_name, $value);
-      }
-      catch (\Exception $e) {
-        \Drupal::logger('simple_oauth')
-          ->error('Could not add private claim @claim_name to token: @error_message', [
-            '@claim_name' => $claim_name,
-            '@error_message' => $e->getMessage(),
-          ]);
-      }
+      $builder->withClaim($claim_name, $value);
     }
 
     return $builder->getToken($config->signer(), $config->signingKey());

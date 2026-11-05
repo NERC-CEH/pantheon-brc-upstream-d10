@@ -6,11 +6,11 @@ use Drupal\Core\Authentication\AuthenticationProviderInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\simple_oauth\Authentication\TokenAuthUser;
+use Drupal\simple_oauth\Exception\OAuthUnauthorizedHttpException;
 use Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface;
 use Drupal\simple_oauth\Server\ResourceServerInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /**
  * @internal
@@ -78,12 +78,10 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
       $auth_request = $this->resourceServer->validateAuthenticatedRequest($request);
     }
     catch (OAuthServerException $exception) {
-      // Procedural code here is hard to avoid.
-      watchdog_exception('simple_oauth', $exception);
-
-      throw new HttpException(
-        $exception->getHttpStatusCode(),
-        $exception->getHint(),
+      // Forward authentication challenge to be interpreted by the requester.
+      throw new OAuthUnauthorizedHttpException(
+        $this->getUnauthorizedExceptionChallenge($request, $exception),
+        $exception->getMessage(),
         $exception
       );
     }
@@ -106,10 +104,9 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
           ['%name' => $account->getAccountName()]
         )
       );
-      watchdog_exception('simple_oauth', $exception);
-      throw new HttpException(
-        $exception->getHttpStatusCode(),
-        $exception->getHint(),
+      throw new OAuthUnauthorizedHttpException(
+        $this->getUnauthorizedExceptionChallenge($request, $exception),
+        $exception->getMessage(),
         $exception
       );
     }
@@ -122,6 +119,27 @@ class SimpleOauthAuthenticationProvider implements AuthenticationProviderInterfa
     $request->headers->set('X-Consumer-ID', $account->getConsumer()->getClientId());
 
     return $account;
+  }
+
+
+  /**
+   * Formats challenge for unauthorized exception.
+   *
+   * @param \Symfony\Component\HttpFoundation\Request $request
+   *   Request.
+   * @param \League\OAuth2\Server\Exception\OAuthServerException $exception
+   *   Exception.
+   *
+   * @return string
+   *   Formatted challenge for result.
+   */
+  protected function getUnauthorizedExceptionChallenge(Request $request, OAuthServerException $exception) {
+    return sprintf(
+      '%s realm="OAuth", error="%s", error_description="%s"',
+      strpos($request->headers->get('Authorization'), 'Bearer') === 0 ? 'Bearer' : 'Basic',
+      $exception->getErrorType(),
+      $exception->getHint()
+    );
   }
 
 }
