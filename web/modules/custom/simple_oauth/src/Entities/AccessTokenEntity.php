@@ -44,6 +44,11 @@ class AccessTokenEntity implements AccessTokenEntityInterface {
       ->relatedTo($this->getUserIdentifier())
       ->withClaim('scope', $this->getScopes());
 
+    if (isset($private_claims['iss'])) {
+      $builder->issuedBy($private_claims['iss']);
+      unset($private_claims['iss']);
+    }
+
     foreach ($private_claims as $claim_name => $value) {
       $builder->withClaim($claim_name, $value);
     }
