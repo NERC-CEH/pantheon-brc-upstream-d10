@@ -307,7 +307,6 @@
         "drupal/entity_reference_modal": "^1.0",
         "drupal/tfa": "^1.10",
         "drupal/username_enumeration_prevention": "^1.4",
-        "drupal/simple_oauth": "5.2.6",
         "drupal/entity_notify": "^1.1",
         "drupal/etracker": "^3.1",
         "drupal/linkit": "^7.0",
@@ -322,7 +321,8 @@
         "drupal/forum": "^1.0",
         "fonticonpicker/fonticonpicker": "^3.1",
         "drupal/simple_user_management": "^1.11",
-        "drupal/extlink": "^2.0"
+        "drupal/extlink": "^2.0",
+        "drupal/simple_oauth": "5.2.6"
     },
     "conflict": {
         "drupal/drupal": "*"

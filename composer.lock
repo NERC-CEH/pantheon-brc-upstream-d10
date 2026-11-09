@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "06e770c23e7e825d27e4ab6c14c5280e",
+    "content-hash": "e8e80aaa45cf96aed3a9ab7a81bfa82c",
     "packages": [
         {
             "name": "academicpuma/locales",
@@ -2964,6 +2964,10 @@
                 {
                     "name": "anjaliprasannan",
                     "homepage": "https://www.drupal.org/user/3637917"
+                },
+                {
+                    "name": "breidert",
+                    "homepage": "https://www.drupal.org/user/135619"
                 },
                 {
                     "name": "b_sharpe",
@@ -11138,29 +11142,30 @@
         },
         {
             "name": "drupal/insert_view_adv",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/insert_view_adv.git",
-                "reference": "2.0.0"
+                "reference": "2.1.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/insert_view_adv-2.0.0.zip",
-                "reference": "2.0.0",
-                "shasum": "943c44102fffca3c33d96509ae0bd6a5dc5782cd"
+                "url": "https://ftp.drupal.org/files/projects/insert_view_adv-2.1.0.zip",
+                "reference": "2.1.0",
+                "shasum": "33264370039125c5d5ee36f95b8083aaf87cf0d5"
             },
             "require": {
-                "drupal/core": "^8.8.0 || ^9 || ^10 || ^11"
+                "drupal/core": "^10.1 || ^11 || ^12"
             },
             "require-dev": {
-                "drupal/bueditor": "*"
+                "drupal/bueditor": "*",
+                "drupal/entity_usage": "^2.3"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.0.0",
-                    "datestamp": "1769692201",
+                    "version": "2.1.0",
+                    "datestamp": "1793961160",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -11184,7 +11189,7 @@
                 "source": "https://git.drupalcode.org/project/insert_view_adv",
                 "issues": "https://drupal.org/project/issues/insert_view_adv"
             },
-            "published-time": "2026-01-29T13:09:55+00:00"
+            "published-time": "2026-11-06T10:32:18+00:00"
         },
         {
             "name": "drupal/job_scheduler",
@@ -13877,21 +13882,24 @@
         },
         {
             "name": "drupal/metatag",
-            "version": "2.2.5",
+            "version": "2.2.6",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/metatag.git",
-                "reference": "2.2.5"
+                "reference": "2.2.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/metatag-2.2.5.zip",
-                "reference": "2.2.5",
-                "shasum": "2851a7dd5e5b3c0c15defa658790386af4556199"
+                "url": "https://ftp.drupal.org/files/projects/metatag-2.2.6.zip",
+                "reference": "2.2.6",
+                "shasum": "9cd10f4b3eecc038921ed6a16f84fb9d5946af4e"
             },
             "require": {
                 "drupal/core": "^10.3 || ^11",
                 "drupal/token": "^1.17"
+            },
+            "conflict": {
+                "drupal/schema_metatag": "< 3.1.0"
             },
             "require-dev": {
                 "drupal/diff": "*",
@@ -13907,8 +13915,8 @@
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "2.2.5",
-                    "datestamp": "1793445181",
+                    "version": "2.2.6",
+                    "datestamp": "1793891825",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -13945,7 +13953,7 @@
                 "issues": "https://www.drupal.org/project/issues/metatag",
                 "docs": "https://www.drupal.org/docs/8/modules/metatag"
             },
-            "published-time": "2026-10-31T11:12:40+00:00"
+            "published-time": "2026-11-05T15:16:44+00:00"
         },
         {
             "name": "drupal/mobile_detect",
@@ -17306,26 +17314,26 @@
         },
         {
             "name": "drupal/stm",
-            "version": "1.2.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://git.drupalcode.org/project/stm.git",
-                "reference": "8.x-1.2"
+                "reference": "8.x-1.5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://ftp.drupal.org/files/projects/stm-8.x-1.2.zip",
-                "reference": "8.x-1.2",
-                "shasum": "d42b34ad9e82ace517347204053882e556e8a80b"
+                "url": "https://ftp.drupal.org/files/projects/stm-8.x-1.5.zip",
+                "reference": "8.x-1.5",
+                "shasum": "4b02b015193323fff58b9ef273b666ac2696b074"
             },
             "require": {
-                "drupal/core": "^9 || ^10"
+                "drupal/core": "^10 || ^11"
             },
             "type": "drupal-module",
             "extra": {
                 "drupal": {
-                    "version": "8.x-1.2",
-                    "datestamp": "1682523597",
+                    "version": "8.x-1.5",
+                    "datestamp": "1793988751",
                     "security-coverage": {
                         "status": "covered",
                         "message": "Covered by Drupal's security advisory policy"
@@ -17351,7 +17359,7 @@
             "support": {
                 "source": "https://git.drupalcode.org/project/stm"
             },
-            "published-time": "2023-04-26T15:39:43+00:00"
+            "published-time": "2026-11-06T18:10:41+00:00"
         },
         {
             "name": "drupal/super_login",
@@ -31266,16 +31274,16 @@
         },
         {
             "name": "open-telemetry/sdk",
-            "version": "1.16.0",
+            "version": "1.16.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opentelemetry-php/sdk.git",
-                "reference": "081aab5a46740f1fc4d74c55a76ba96b8f04d2a9"
+                "reference": "51ebca2563dd580d682d4f32b1611c1779424dac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/081aab5a46740f1fc4d74c55a76ba96b8f04d2a9",
-                "reference": "081aab5a46740f1fc4d74c55a76ba96b8f04d2a9",
+                "url": "https://api.github.com/repos/opentelemetry-php/sdk/zipball/51ebca2563dd580d682d4f32b1611c1779424dac",
+                "reference": "51ebca2563dd580d682d4f32b1611c1779424dac",
                 "shasum": ""
             },
             "require": {
@@ -31361,8 +31369,8 @@
                 "issues": "https://github.com/open-telemetry/opentelemetry-php/issues",
                 "source": "https://github.com/open-telemetry/opentelemetry-php"
             },
-            "time": "2026-11-05T11:54:49+00:00",
-            "published-time": "2026-11-05T12:00:59+00:00"
+            "time": "2026-11-06T02:25:35+00:00",
+            "published-time": "2026-11-06T02:32:38+00:00"
         },
         {
             "name": "open-telemetry/sem-conv",
