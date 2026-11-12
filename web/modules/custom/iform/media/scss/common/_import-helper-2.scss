@@ -53,12 +53,12 @@ $total-icon-size: $icon-size + $icon-padding * 2;
   }
 }
 .background-processing {
-  .panel-heading {
-    progress {
-      margin-bottom: 0;
-    }
+  .background-progress {
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
   }
-  .panel-body {
+  .background-processing-log {
     height: 150px;
     overflow-y: auto;
     p {

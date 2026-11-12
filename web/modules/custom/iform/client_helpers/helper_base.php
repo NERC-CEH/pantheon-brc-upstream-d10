@@ -45,6 +45,9 @@ $indicia_templates = [
   'buttonSmallClass' => 'btn-xs',
   // Classes applied to <a> when styled like a button.
   'anchorButtonClass' => 'indicia-button',
+  'cardClass' => 'panel panel-primary',
+  'cardHeadingClass' => 'panel-heading',
+  'cardBodyClass' => 'panel-body',
   // Floats.
   'floatLeftClass' => 'left',
   'floatRightClass' => 'right',
@@ -73,6 +76,18 @@ $indicia_templates = [
   // Message boxes.
   'messageBox' => '<div class="page-notice ui-state-default ui-corner-all">{message}</div>',
   'warningBox' => '<div class="page-notice ui-state-highlight ui-corner-all"><span class="fas fa-exclamation-triangle"></span>{message}</div>',
+  'backgroundProcessing' => <<<HTML
+    <div class="panel panel-info background-processing">
+      <div class="panel-heading">
+        <span class="background-processing-title">{backgroundProcessing}</span>
+        {progress}
+        <br/><a data-toggle="collapse" class="small" href="#background-extra" role="button" aria-expanded="false" aria-controls="background-extra">{moreInfo}</a>
+      </div>
+      <div id="background-extra" class="panel-collapse collapse">
+        <div class="panel-body background-processing-log"></div>
+      </div>
+    </div>
+    HTML,
   // Lock icons.
   'lock_icon' => '<span id="{id}_lock" class="unset-lock">&nbsp;</span>',
   'lock_javascript' => "indicia.locks.initControls (
@@ -2526,6 +2541,9 @@ HTML;
       'buttonDefaultClass' => $indicia_templates['buttonDefaultClass'],
       'buttonHighlightedClass' => $indicia_templates['buttonHighlightedClass'],
       'buttonSmallClass' => $indicia_templates['buttonSmallClass'],
+      'cardClass' => $indicia_templates['cardClass'],
+      'cardHeadingClass' => $indicia_templates['cardHeadingClass'],
+      'cardBodyClass' => $indicia_templates['cardBodyClass'],
       'inputGroupClass' => $indicia_templates['inputGroupClass'],
       'inputGroupAddonClass' => $indicia_templates['inputGroupAddonClass'],
       'jQueryValidateErrorClass' => $indicia_templates['error_class'],

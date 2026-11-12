@@ -56,6 +56,14 @@ function group_landing_pages_theme($existing, $type, $theme, $path) {
     'group_landing_page_overview' => [
       'variables' => $defaultVariables,
     ],
+    'group_landing_page_contained_groups' => [
+      'variables' => [
+        'heading' => '',
+        'groups' => [],
+        'warehouse_url' => '',
+        'card_classes' => [],
+      ],
+    ],
     'group_landing_page_progress' => [
       'variables' => $defaultVariables,
     ],

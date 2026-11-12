@@ -81,11 +81,17 @@
       }) }}
     </div>
   </div>
+  {% if container %}
+    {{ drupal_block('group_landing_pages_contained_groups', {
+      group_id: group_id,
+      contained_group_label: contained_group_label
+    }) }}
+  {% endif %}
   <div>
     {{ drupal_block('es_totals_block', {unverified_records: true, sensitive_records: true}) }}
   </div>
   {% if contained_by_group_id %}
-    <div class="row">
+    <div class="row well">
       <div class="col-md-8">
         <div class="row">
           {% if contained_by_group_logo_path %}

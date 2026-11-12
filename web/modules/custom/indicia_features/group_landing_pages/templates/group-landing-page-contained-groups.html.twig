@@ -1,0 +1,40 @@
+{#
+/**
+ * @file
+ * Cards linking to the visible direct children of a container group.
+ *
+ * Available variables:
+ * - heading: Translated section heading.
+ * - groups: Cards with title, description, logo_path, and url properties.
+ * - warehouse_url: Warehouse base URL, including its trailing slash.
+ * - card_classes: Container, heading, and body classes from Indicia templates.
+ */
+#}
+<div class="row">
+  <div class="col-md-12">
+    <h3>{{ heading }}</h3>
+    <div class="card-gallery group-contained-cards">
+      <ul>
+        {% for group in groups %}
+          <li>
+            <a href="{{ group.url }}">
+              <div class="group-card {{ card_classes.container }}">
+                <div class="group-card-heading {{ card_classes.heading }}">
+                  {% if group.logo_path %}
+                    <img src="{{ warehouse_url }}upload/med-{{ group.logo_path }}" alt="" loading="lazy" />
+                  {% else %}
+                    <i class="fas fa-user-friends fa-2x" aria-hidden="true"></i>
+                  {% endif %}
+                </div>
+                <div class="group-card-body {{ card_classes.body }}">
+                  <h4>{{ group.title }}</h4>
+                  <p>{{ group.description|striptags }}</p>
+                </div>
+              </div>
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>

@@ -12,6 +12,11 @@ page-links-block:
   css:
     component:
       css/page_links_block.css: {}
+contained-groups:
+  version: VERSION
+  css:
+    component:
+      css/contained_groups.css: {}
 blog-entries-view:
   version: VERSION
   css:

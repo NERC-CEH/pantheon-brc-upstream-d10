@@ -111,9 +111,10 @@ class GroupLandingPagesGroupPageLinksBlock extends IndiciaBlockBase {
   private function buildLink($href, $label, $icon, $buttonClass) {
     $url = UrlHelper::isExternal($href) ? Url::fromUri($href) : Url::fromUserInput($href);
     $icon = $icon ? Xss::filter($icon, ['i']) . ' ' : '';
+    $label = is_string($label) ? Html::escape($label) : $label;
     return [
       '#type' => 'link',
-      '#title' => Markup::create($icon . Html::escape($label)),
+      '#title' => Markup::create($icon . $label),
       '#url' => $url,
       '#options' => [
         'attributes' => [

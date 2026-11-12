@@ -23,6 +23,12 @@ Example templates are provided in the module's templates folder, and their heade
 the variables available in the header comment. Copy the required files to your theme's templates
 folders and modify them if you need a customised default group landing page template.
 
+The tabs use jQuery UI, initialised by `data_entry_helper::enable_tabs()`, independently of the
+site's Bootstrap version. Overrides of `group-landing-page-tabs.html.twig` must retain the
+`group-landing-page-tabs` wrapper ID, the `tab-header` list with links to the panel IDs, and
+the `indicia-lazy-load` panel classes. Do not add Bootstrap tab activation attributes or
+panel visibility classes, as jQuery UI manages tab activation and visibility.
+
 Theme suggestions are provided to allow you to create versions of the template file specific to
 certain group types, to container/contained groups, or specific to individual groups:
 
@@ -91,6 +97,32 @@ embedded in templates, including the following:
 The Group Landing Pages module also provides the following blocks:
 * group_landing_pages_group_page_links - a list of links to pages related to the group which the
   user has access to.
+* group_landing_pages_contained_groups - discovery-style cards linking to the direct children
+  of a container group. The default overview template displays these in a full-width row below
+  the description and page links, before the totals. Cards follow the discovery groups list's
+  visibility and date rules, are ordered alphabetically, and are hidden when there are no visible
+  children. Each card includes a logo (or fallback icon), title, and shortened plain-text
+  description. Available options:
+  * `group_id` - container group ID (required).
+  * `contained_group_label` - label used in the section heading (required).
+
+The cards use the active Indicia `cardClass`, `cardHeadingClass`, and
+`cardBodyClass` templates, matching group discovery: panels with Bootstrap 3
+and cards with Bootstrap 5. The card theme hook exposes these as
+`card_classes.container`, `card_classes.heading`, and `card_classes.body`.
+The fixed `group-card`, `group-card-heading`, and `group-card-body` classes
+are added by the Twig template, not by the configurable class templates.
+
+Custom overview templates can embed the cards inside their container-group condition:
+
+```twig
+{% if container %}
+  {{ drupal_block('group_landing_pages_contained_groups', {
+    group_id: group_id,
+    contained_group_label: contained_group_label
+  }) }}
+{% endif %}
+```
 
 Refer to the provided template (templates/group-landing-page-overview.html.twig) for an example of
 how to include the group blog entries view on the page.

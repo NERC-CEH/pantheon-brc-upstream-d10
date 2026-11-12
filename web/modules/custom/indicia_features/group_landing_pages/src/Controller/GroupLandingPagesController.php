@@ -22,6 +22,7 @@ class GroupLandingPagesController extends ControllerBase {
     }
     $group = $groups[0];
     \iform_load_helpers(['data_entry_helper', 'ElasticsearchReportHelper']);
+    \data_entry_helper::enable_tabs(['divId' => 'group-landing-page-tabs']);
     $conn = iform_get_connection_details();
     $readAuth = \helper_base::get_read_auth($conn['website_id'], $conn['password']);
     \ElasticsearchReportHelper::groupIntegration([
@@ -80,7 +81,7 @@ class GroupLandingPagesController extends ControllerBase {
         'library' => [
           'core/drupal.dialog.ajax',
           'group_landing_pages/core',
-          'group_landing_pages/blog_entries_view',
+          'group_landing_pages/blog-entries-view',
         ],
       ],
     ]);

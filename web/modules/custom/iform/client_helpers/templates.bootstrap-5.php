@@ -39,6 +39,9 @@ $indicia_templates['buttonDefaultClass'] = 'indicia-button btn btn-light';
 $indicia_templates['buttonHighlightedClass'] = 'indicia-button btn btn-primary';
 $indicia_templates['buttonWarningClass'] = 'indicia-button btn btn-danger';
 $indicia_templates['anchorButtonClass'] = 'indicia-button btn btn-light';
+$indicia_templates['cardClass'] = 'card border-primary';
+$indicia_templates['cardHeadingClass'] = 'card-header bg-primary text-white';
+$indicia_templates['cardBodyClass'] = 'card-body';
 $indicia_templates['buttonSmallClass'] = 'btn-sm';
 
 // Floats.
@@ -50,6 +53,19 @@ $indicia_templates['inputGroupAddonClass'] = 'input-group-text';
 
 $indicia_templates['messageBox'] = '<div class="alert alert-info" role="alert">{message}</div>';
 $indicia_templates['warningBox'] = '<div class="alert alert-warning" role="alert"><span class="fas fa-exclamation-triangle"></span>{message}</div>';
+
+$indicia_templates['backgroundProcessing'] = <<<HTML
+  <div class="card border-info background-processing">
+    <div class="card-header">
+      <span class="background-processing-title">{backgroundProcessing}</span>
+      {progress}
+      <br/><a data-bs-toggle="collapse" class="small" href="#background-extra" role="button" aria-expanded="false" aria-controls="background-extra">{moreInfo}</a>
+    </div>
+    <div id="background-extra" class="collapse">
+      <div class="card-body background-processing-log"></div>
+    </div>
+  </div>
+  HTML;
 
 $indicia_templates['speciesDetailsThumbnail'] = <<<HTML
 <div class="thumbnail">

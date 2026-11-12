@@ -1,0 +1,62 @@
+.group-contained-cards ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+}
+.group-contained-cards ul li {
+  list-style: none;
+  min-width: 0;
+}
+.group-contained-cards ul li a {
+  color: inherit;
+  display: block;
+  height: 100%;
+}
+.group-contained-cards ul li a:hover,
+.group-contained-cards ul li a:focus {
+  text-decoration: none;
+}
+.group-contained-cards .group-card {
+  height: 100%;
+  margin-bottom: 0;
+}
+.group-contained-cards a:hover .group-card,
+.group-contained-cards a:focus .group-card {
+  box-shadow: 0 0 21px 5px #aaaaaa;
+}
+.group-contained-cards .group-card-heading {
+  padding: 0;
+}
+.group-contained-cards .group-card-heading img {
+  object-fit: cover;
+  object-position: 50% 0;
+  max-height: 200px;
+  width: 100%;
+  margin: 0;
+}
+.group-contained-cards .group-card-heading i {
+  margin: 8px;
+}
+.group-contained-cards .group-card-body h4 {
+  margin-top: 0;
+}
+.group-contained-cards .group-card-body p {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 991px) {
+  .group-contained-cards ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 575px) {
+  .group-contained-cards ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

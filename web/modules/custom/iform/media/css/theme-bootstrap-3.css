@@ -2274,14 +2274,16 @@ label#click-buffer {
   color: green;
 }
 
-.background-processing .panel-heading progress {
+.background-processing .background-progress {
+  display: block;
+  width: 100%;
   margin-bottom: 0;
 }
-.background-processing .panel-body {
+.background-processing .background-processing-log {
   height: 150px;
   overflow-y: auto;
 }
-.background-processing .panel-body p {
+.background-processing .background-processing-log p {
   margin-bottom: 4px;
 }
 

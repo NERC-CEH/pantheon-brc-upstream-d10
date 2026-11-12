@@ -6,20 +6,19 @@
  */
 #}
 
-<ul class="nav nav-tabs tab-header">
-
-  <li class="active"><a data-toggle="tab" href="#overview-tab-content">Overview</a></li>
-  <li><a data-toggle="tab" href="#progress-tab-content">Progress</a></li>
-  <li><a data-toggle="tab" href="#taxa-tab-content">Species</a></li>
-</ul>
-<div class="tab-content">
-  <div id="overview-tab-content" class="tab-pane fade indicia-lazy-load in active">
+<div id="group-landing-page-tabs">
+  <ul class="tab-header">
+    <li><a href="#overview-tab-content">Overview</a></li>
+    <li><a href="#progress-tab-content">Progress</a></li>
+    <li><a href="#taxa-tab-content">Species</a></li>
+  </ul>
+  <div id="overview-tab-content" class="indicia-lazy-load">
     {{ overview_tab_content }}
   </div>
-  <div id="progress-tab-content" class="tab-pane fade indicia-lazy-load">
+  <div id="progress-tab-content" class="indicia-lazy-load">
     {{ progress_tab_content }}
   </div>
-  <div id="taxa-tab-content" class="tab-pane fade indicia-lazy-load">
+  <div id="taxa-tab-content" class="indicia-lazy-load">
     {{ taxa_tab_content }}
   </div>
 </div>

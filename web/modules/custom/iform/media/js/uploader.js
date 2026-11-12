@@ -101,8 +101,8 @@ jQuery(document).ready(function($) {
    *   Message to log.
    */
   function logBackgroundProcessingInfo(msg) {
-    $('.background-processing .panel-body').append('<p>' + msg + '</p>');
-    $('.background-processing .panel-body')[0].scrollTop = $('.background-processing .panel-body')[0].scrollHeight;
+    $('.background-processing-log').append('<p>' + msg + '</p>');
+    $('.background-processing-log')[0].scrollTop = $('.background-processing-log')[0].scrollHeight;
   }
 
   /**
@@ -332,7 +332,7 @@ jQuery(document).ready(function($) {
           msg += ' (' + Math.round(transferResult.progress) + '%)';
           if (transferResult.progress >= 100) {
             $('#file-progress').hide();
-            $('.background-processing .panel-heading span').text(indiciaData.lang.import_helper_2.backgroundProcessingDone);
+            $('.background-processing-title').text(indiciaData.lang.import_helper_2.backgroundProcessingDone);
           }
         }
         if (transferResult.status === 'ok') {
@@ -1024,7 +1024,7 @@ jQuery(document).ready(function($) {
           }
           else if (result.msgKey === 'findLookupFieldsDone') {
             indiciaData.findLookupFieldsDone = true;
-            $('.background-processing .panel-heading span').text(indiciaData.lang.import_helper_2.backgroundProcessingDone);
+            $('.background-processing-title').text(indiciaData.lang.import_helper_2.backgroundProcessingDone);
             if ($('.save-matches:enabled').length === 0) {
               // Nothing to match.
               $('#next-step').attr('disabled', false);
